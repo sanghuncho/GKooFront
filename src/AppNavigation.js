@@ -51,7 +51,7 @@ const IconCnt = styled.div`
 const Icon = props => <BaseIcon size={32} icon={props.icon} />;
 
 export class AppNavigation extends React.Component {
-
+    state = { selectedPath: '' }
     onItemSelection = arg => {
         this.setState({ selectedPath: arg.path });
       };
@@ -60,22 +60,22 @@ export class AppNavigation extends React.Component {
     return (
         <AppContainer>
             <Navigation>
-                <SideNav theme={theme} onItemSelection={this.onItemSelection}>
-                    <Nav id="1">
+                <SideNav theme={theme} onItemSelection={this.onItemSelection} 
+                selectedPath={this.state.selectedPath} >
+                    <Nav id= {"verwalter"}>
                         <IconCnt>
                             <Icon icon={users} />
                         </IconCnt>
                         <Text>Verwalter</Text>
                     </Nav>
-                    <Nav id="2">
+                    <Nav id={"2"}>
                         <IconCnt>
                             <Icon icon={circleO} />
                         </IconCnt>
-                        {/* <Text>Wirtshcaftseinheit</Text> */}
                         <TextWE>Wirtshcafs</TextWE>
                         <TextWE>einheit</TextWE>
                     </Nav>
-                    <Nav id="3">
+                    <Nav id={"3"}>
                         <IconCnt>
                             <Icon icon={cubes} />
                         </IconCnt>
