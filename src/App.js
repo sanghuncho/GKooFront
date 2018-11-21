@@ -15,6 +15,10 @@ import { buildingO } from 'react-icons-kit/fa/buildingO'
 import { connectdevelop } from 'react-icons-kit/fa/connectdevelop'
 import { pagelines } from 'react-icons-kit/fa/pagelines'
 
+import { Verwalter } from './Verwalter'
+import { Home } from './Home'
+import { Wirtschaftseinheit } from './Wirtschaftseinheit'
+import { Einheit } from './Einheit'
 
 var green = '#61a556';
 var lightGreen = '#90C088';
@@ -32,7 +36,7 @@ const Navigation = styled(BaseNavigation)`
   letter-spacing: 2px;
   width: 110px;
   line-height: 22px;
-  border-radius: 3px;
+  border-radius: 1px;
 `;
 
 const IconCnt = styled.div`
@@ -83,9 +87,9 @@ export class  NavigationLink extends React.Component {
   render() { return ( <AppContainer>
     <Navigation> 
       <SideNav theme={theme} onItemSelection={this.onItemSelection}>
-        <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height: '70px'}} onClick={() => {this.toggle(0)}} >
+        <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
           <Nav>
-              <NavLink style={{ textDecoration: 'none', color: 'white'}} to='/' >
+              <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
                 <IconCnt>
                   <Icon icon={pagelines} />
                 </IconCnt>
@@ -93,9 +97,9 @@ export class  NavigationLink extends React.Component {
               </NavLink>
           </Nav>
         </div>
-        <div style={{background: this.myColor(1), borderBottom:'1px solid #4D8444', height: '70px'}} onClick={() => {this.toggle(1)}} >
+        <div style={{background: this.myColor(1), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
           <Nav>
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/verwalter'>
+              <NavLink style={{ textDecoration:'none', color:'white' }} to='/verwalter'>
                 <IconCnt>
                   <Icon icon={users} />
                 </IconCnt>
@@ -103,9 +107,9 @@ export class  NavigationLink extends React.Component {
               </NavLink>
           </Nav>
         </div>
-        <div style={{background: this.myColor(2), borderBottom:'1px solid #4D8444', height: '70px'}} onClick={() => {this.toggle(2)}} >
+        <div style={{background: this.myColor(2), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
           <Nav>
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/wirtschaftseinheit'>
+              <NavLink style={{ textDecoration:'none', color:'white' }} to='/wirtschaftseinheit'>
                 <IconCnt>
                   <Icon icon={buildingO} />
                 </IconCnt>
@@ -114,7 +118,7 @@ export class  NavigationLink extends React.Component {
               </NavLink>          
           </Nav>
         </div>
-        <div style={{background: this.myColor(3), borderBottom:'1px solid #4D8444', height: '70px'}} onClick={() => {this.toggle(3)}} >
+        <div style={{background: this.myColor(3), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(3)}} >
           <Nav>
               <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/Einheit'>
                 <IconCnt>
@@ -138,15 +142,14 @@ const Main = () => (
   </Switch>
 );
 
-
 const Icon = props => <BaseIcon size={32} icon={props.icon} />;
 
 class App extends Component {
   render() {
     return (
       <div>
-        <nav class="navbar" style={{background:green, marginLeft:-16, height:50}}>
-         <a class="navbar-brand" href="/">
+        <nav className="navbar" style={{background:green, marginLeft:-16, height:50, borderRadius:2, boxShadow:"1px 1px 2px black"}}>
+         <a className="navbar-brand" href="/">
              <img src={ logo } width="180" height="50" alt=""/>
          </a>
         </nav>
@@ -160,34 +163,5 @@ class App extends Component {
     );
   }
 }
-
-const Home = () => (
-  <div className='home'>
-    <h1>Home Site</h1>
-    <p> Feel free to browse around and learn more about me.</p>
-  </div>
-);
-
-const Verwalter = () => (
-  <div className='verwalter'>
-    <h1>Verwalter</h1>
-    <p>Ipsum dolor dolorem consectetur est velit fugiat. Dolorem provident corporis fuga saepe distinctio ipsam? Et quos harum excepturi dolorum molestias?</p>
-    <p>Ipsum dolor dolorem consectetur est velit fugiat. Dolorem provident corporis fuga saepe distinctio ipsam? Et quos harum excepturi dolorum molestias?</p>
-  </div>
-);
-
-const Wirtschaftseinheit = () => (
-  <div className='home'>
-    <h1>Wirtschaftseinheit</h1>
-    <p> Feel free to browse around and learn more about me.</p>
-  </div>
-);
-
-const Einheit = () => (
-  <div className='home'>
-    <h1>Einheit</h1>
-    <p> 한국에 가고 싶다.</p>
-  </div>
-);
 
 export default App;
