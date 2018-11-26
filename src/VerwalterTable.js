@@ -45,7 +45,6 @@ export class VerwalterTable extends React.Component{
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
 
-  
         this.state = {
           verwalter:[],
           value: '',
@@ -56,23 +55,31 @@ export class VerwalterTable extends React.Component{
     handleClick(e){
       console.log("click"); 
       console.log(this.state.value);
-      const nr = this.state.value;
-      const array = this.state.verwalter;
-     
-      var found = this.findArrayElementByTitle(array, nr);
-      console.log(found);
-      this.setState({verwalter :''});
-      var newArray = [];
-      newArray.push(found);
-      this.setState({verwalter: newArray});
+      const verwalterNr = this.state.value;
+      //this.setState({verwalter :''});
+      console.log(this.isPositiveInteger(verwalterNr));
+      if (this.isPositiveInteger(verwalterNr)){
+        this.setState({verwalter :''});
+        this.fetchElementByNumber(verwalterNr);
+      }    
     }
 
-    findArrayElementByTitle(array, nr) {
-      console.log(array);
-      console.log(nr);
-      return array.find((element) => {
-        return element.nummer == nr;
-      })
+    isPositiveInteger(n) {
+      return n >>> 0 === parseFloat(n);
+    }
+
+    fetchElementByNumber(verwalterNr) {
+      console.log(verwalterNr);
+      fetch('http://localhost:8080/verwalter/' + verwalterNr)
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          var verwalterList = [];
+          verwalterList.push(data)
+          this.setState( {verwalter: verwalterList} )         
+          console.log(data);
+          })   
+     
     }
     
     handleChange(e) {
@@ -84,10 +91,8 @@ export class VerwalterTable extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( {verwalter: data} )
+          this.setState( { verwalter: data} )
           this.verwalterList = this.state.verwalter;
-          console.log(this.verwalterList)
-          console.log(this.verwalterList.toString());
           })      
     }
       
@@ -109,51 +114,12 @@ export class VerwalterTable extends React.Component{
           <Button style={{ background: '#61a556',color: 'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
         </Form>
       </VewalterFrom>
-      <ToolkitProvider
-            keyField="id"
-            data={ this.state.verwalter }
-            columns={ columns }
-            search>
-        {
-          props => (
-            <div>
-              {/* <VewalterFrom>
-                <MySearch { ...props.searchProps }/>
-              </VewalterFrom> */}
-               
-              <VerwalterTableWidth>
-                <BootstrapTable  { ...props.baseProps } />    
-              </VerwalterTableWidth>      
-            </div>
-            )
-        }
-      </ToolkitProvider>
+      <VerwalterTableWidth>
+        <BootstrapTable keyField='objectId' data={ this.state.verwalter } columns={ columns } />
+      </VerwalterTableWidth>
       </div>
     );}
 }
-
-const MySearch = (props) => {
-  
-  let input;
-  const handleClick = () => {
-    props.onSearch(input.value);
-  };
-
-  return (
-    <div>
-      <Form inline>
-      <input
-        className="form-control"
-        style={ { backgroundColor: 'white' } }
-        ref={ n => input = n }
-        type="text"
-        
-      />{''}
-      <Button style={{ background: '#61a556',color: 'white', marginLeft:'2px' }} onClick={ handleClick }> Suchen </Button>
-      </Form>
-    </div>
-  );
-};
 
 export default VerwalterTable
  

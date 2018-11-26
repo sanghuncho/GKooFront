@@ -18,7 +18,6 @@ var verwalterList = [{
   name:[]}
 ];
 
-
   //private apiUrl = "http://localhost:8080/verwalter/";
   //private api_List_Url = "http://localhost:8080/verwalterlist";
 
