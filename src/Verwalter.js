@@ -3,7 +3,7 @@ import { FormGroup, Form, ControlLabel, FormControl, Button, InputGroup} from 'r
 import styled from "styled-components";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import { VerwalterTable2 } from './VerwalterTable2'; 
+import { VerwalterTable } from './VerwalterTable'; 
 
 const VewalterFrom = styled.div`
   margin-top: 50px;
@@ -48,7 +48,7 @@ export class Verwalter extends React.Component {
   render() {
     return(
     <div>
-      <VewalterFrom>
+      {/* <VewalterFrom>
         <Form inline>
         <FormGroup>
           <ControlLabel></ControlLabel>
@@ -62,9 +62,9 @@ export class Verwalter extends React.Component {
           </FormGroup>{' '}
           <Button style={{ background: '#61a556',color: 'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
         </Form>
-      </VewalterFrom>
+      </VewalterFrom> */}
       
-     <VerwalterTable2/>
+     <VerwalterTable/>
     </div>
     );}
 }
