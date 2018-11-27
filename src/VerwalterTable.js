@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import { Route, Redirect } from 'react-router'
+import { WeTable } from './WeTable'
 
   const VewalterFrom = styled.div`
     margin-top: 50px;
@@ -35,6 +37,8 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
     text: 'Bezeichnung',
   }];
 
+  
+
 export class VerwalterTable extends React.Component{
   
     constructor(props, context) {
@@ -42,14 +46,33 @@ export class VerwalterTable extends React.Component{
 
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
-
         this.state = {
           verwalter:[],
           value: '',
+          redirect:false,
+          
         };
     }
 
+    setRedirect() {
+      this.setState({
+        redirect: true,
+      });
+      
+    }
+
+    renderRedirect = () => {
+      if (this.state.redirect) {
+        var verwalter = '2';
+        
+        return <Redirect to={{ pathname: '/wirtschaftseinheit/', state: { id: '123' }
+      }}
+      />
+      }
+    }
+
     handleClick(e){
+      console.log("handleClick")
       const verwalterNr = this.state.value;
       if (this.isPositiveInteger(verwalterNr)){
         this.setState({verwalter :''});
@@ -93,28 +116,38 @@ export class VerwalterTable extends React.Component{
     componentDidMount() {
       this.fetchVerwalterList() 
     }
-      
+    
     render() {
-        return(
-          <div>          
-      <VewalterFrom>
-        <Form inline>
-        <FormGroup>
-          <ControlLabel></ControlLabel>
-              <FormControl
-                type="text"
-                value={this.state.value}
-                placeholder="Verwalter Nummer"
-                onChange={this.handleChange}
-              />
-              <FormControl.Feedback />
-          </FormGroup>{' '}
-          <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
-        </Form>
-      </VewalterFrom>     
-      <VerwalterTableWidth>
-        <BootstrapTable keyField='objectId' data={this.state.verwalter} columns={columns} hover pagination={ paginationFactory() } bordered={false} />
-      </VerwalterTableWidth>
+      const rowEvents = {
+        onClick: (e, row, rowIndex) => {
+          console.log(`clicked on row with index: ${rowIndex}`);
+          this.setRedirect();
+        }
+      };
+
+      return(
+      <div>
+        
+        {this.renderRedirect()}
+        <VewalterFrom>
+          <Form inline>
+          <FormGroup>
+            <ControlLabel></ControlLabel>
+                <FormControl
+                  type="text"
+                  value={this.state.value}
+                  placeholder="Verwalter Nummer"
+                  onChange={this.handleChange}
+                />
+                <FormControl.Feedback />
+            </FormGroup>{' '}
+            <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
+          </Form>
+        </VewalterFrom>     
+        <VerwalterTableWidth>
+          <BootstrapTable keyField='objectId' data={ this.state.verwalter } columns={ columns } 
+            hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Tabelle ist leer"/>
+        </VerwalterTableWidth>
       </div>
     );}
 }

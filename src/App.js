@@ -133,6 +133,7 @@ const Main = () => (
     <Route exact path='/' component={Home}></Route>
     <Route exact path='/verwalter' component={Verwalter}></Route> 
     <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
+    <Route exact path='/wirtschaftseinheit/:id' component={Wirtschaftseinheit}></Route> 
     <Route exact path='/einheit' component={Einheit}></Route> 
   </Switch>
 );

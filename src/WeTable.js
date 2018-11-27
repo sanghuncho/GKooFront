@@ -6,6 +6,8 @@ import styled from "styled-components";
 import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import { Router, Route, browserHistory, IndexRoute} from 'react-router'
+import {withRouter} from 'react-router';
 
 const WeFrom = styled.div`
   margin-top: 50px;
@@ -43,17 +45,16 @@ const columns = [{
 
 export class WeTable extends React.Component {
 
-  constructor(props, context) {
+  constructor(props, context, match) {
     super(props, context);
 
   this.handleChangeVw = this.handleChangeVw.bind(this);
   this.handleChangeWe = this.handleChangeWe.bind(this);
   this.handleClick = this.handleClick.bind(this);
-
     this.state = {
       weList:[],
       vwNr: '',
-      weNr: '',
+      id: '',
     };
   }
 
@@ -71,6 +72,10 @@ export class WeTable extends React.Component {
     }else {
       this.clearTable();
     } 
+  }
+
+  setVerwalter(){
+    console.log('setVerwalter');
   }
 
   clearTable(){
@@ -102,7 +107,7 @@ export class WeTable extends React.Component {
       .then((result) => {
         return result.json();
       }).then((data) => {
-        console.log("DATA : "+data)
+        console.log("fetchWeList : "+data)
         this.setState( { weList: data} )
         // /this.verwalterList = this.state.verwalter;
         })   
@@ -116,40 +121,45 @@ export class WeTable extends React.Component {
     this.setState({ weNr: e.target.value });
   }
 
-  componentDidMount() {
-    this.fetchWeList() 
+  componentDidMount(props){
+    
+  }
+
+  loadId(props){
+    //console.log(this.routeParam);
   }
 
   render() {
     return(
       <div>
         <WeFrom>
-        <Form inline>
-        <FormGroup>
-          <ControlLabel></ControlLabel>          
-              <FormControl
-                type="text"
-                vwNr={this.state.vwNr}
-                placeholder="Verwalter Nummer"
-                onChange={this.handleChangeVw}
-              />{' '}
-              <FormControl
-                type="text"
-                weNr={this.state.weNr}
-                placeholder="We. Nummer"
-                onChange={this.handleChangeWe}
-              />        
-              <FormControl.Feedback />
-          </FormGroup>{' '}
-          <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px'}} onClick={this.handleClick}>Suchen</Button>      
-        </Form>
+          <Form inline>
+          <FormGroup>
+            <ControlLabel></ControlLabel>          
+                <FormControl
+                  type="text"
+                  vwNr={this.state.vwNr}
+                  placeholder="Verwalter Nummer"
+                  onChange={this.handleChangeVw}
+                />{' '}
+                <FormControl
+                  type="text"
+                  weNr={this.state.weNr}
+                  placeholder="We. Nummer"
+                  onChange={this.handleChangeWe}
+                />        
+                <FormControl.Feedback />
+            </FormGroup>{' '}
+            <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px'}} onClick={this.handleClick}>Suchen</Button>      
+          </Form>
         </WeFrom>
-        <WeTableWidth>
-          
+
+        <WeTableWidth> 
           <BootstrapTable keyField='objectId' data={ this.state.weList } columns={ columns }  hover pagination={ paginationFactory() } />
         </WeTableWidth>
+        
     </div>
   );}
 }
 
-export default WeTable;
+//export default withRouter(this.WeTable);

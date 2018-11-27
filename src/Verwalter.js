@@ -18,5 +18,5 @@ export class Verwalter extends React.Component {
     );}
 }
 
-export default Verwalter;
+//export default Verwalter;
 
