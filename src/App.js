@@ -20,17 +20,15 @@ import { Home } from './Home'
 import { Wirtschaftseinheit } from './Wirtschaftseinheit'
 import { Einheit } from './Einheit'
 
-var green = '#61a556';
-var lightGreen = '#90C088';
-var deepGreen = '#4D8444';
-var grey = '#979AA0';
+var naviGreen = '#80b13e'
+var grey = '#727676';
 
 const AppContainer = styled(BaseAppContainer)`
   height: calc(100vh);
 `;
 
 const Navigation = styled(BaseNavigation)`
-  background: #61a556;
+  background: #80b13e;
   color: #FFFFFF;
   font-size: 1em;
   letter-spacing: 2px;
@@ -47,10 +45,7 @@ const IconCnt = styled.div`
 `;
 
 const theme = {
-  //hoverBgColor: "#303641",
-  selectionBgColor: lightGreen,
-  //selectionIconColor: "#303641", 
-  
+  selectionBgColor: '#B0CC8B',
 };
 
 const Nav = styled(BaseNav)`
@@ -148,7 +143,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar" style={{background:green, marginLeft:-16, height:50, borderRadius:2, boxShadow:"1px 1px 2px black"}}>
+        <nav className="navbar" style={{background: naviGreen, marginLeft:-16, height:50, borderRadius:2, boxShadow:"1px 1px 2px black"}}>
          <a className="navbar-brand" href="/">
              <img src={ logo } width="180" height="50" alt=""/>
          </a>

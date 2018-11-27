@@ -3,39 +3,37 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import styled from "styled-components";
-import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import { FormGroup, Form, ControlLabel, FormControl, Button, InputGroup} from 'react-bootstrap';
-import filterFactory, { numberFilter, Comparator } from 'react-bootstrap-table2-filter';
+import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 
-const VewalterFrom = styled.div`
-  margin-top: 50px;
-  margin-left: 50px;
-`;
+  const VewalterFrom = styled.div`
+    margin-top: 50px;
+    margin-bottom : 10px;
+    margin-left:10%; 
+    margin-right:15%;
+  `;
 
- var products = [{
-    objectId: 1,
-    nummer: "Product1",
-    bezeichnung: 120
-  }];
+  const VerwalterTableWidth = styled.div`
+    margin-top: 25px;
+    margin-left:10%; 
+    margin-right:15%;
+    width: 1000px;
+    background: #FFFFFF;
+    padding: 0px 5px 5px 5px;
+    box-shadow: 2px 2px 3px 3px #888; 
+  `;
   
   const columns = [{
     dataField: 'objectId',
     text: 'Objekt ID',
-    searchable: false,
   }, {
     dataField: 'nummer',
     text: 'Verwalter Nummer',
   }, {
     dataField: 'bezeichnung',
     text: 'Bezeichnung',
-    searchable: false,
   }];
-
-  const VerwalterTableWidth = styled.div`
-  margin-top: 50px;
-  margin-left: 50px;
-  width: 1000px;
-`;
 
 export class VerwalterTable extends React.Component{
   
@@ -48,16 +46,11 @@ export class VerwalterTable extends React.Component{
         this.state = {
           verwalter:[],
           value: '',
-          found:'',
         };
     }
 
     handleClick(e){
-      console.log("click"); 
-      console.log(this.state.value);
       const verwalterNr = this.state.value;
-      //this.setState({verwalter :''});
-      console.log(this.isPositiveInteger(verwalterNr));
       if (this.isPositiveInteger(verwalterNr)){
         this.setState({verwalter :''});
         this.fetchElementByNumber(verwalterNr);
@@ -103,8 +96,8 @@ export class VerwalterTable extends React.Component{
       
     render() {
         return(
-          <div>
-        <VewalterFrom>
+          <div>          
+      <VewalterFrom>
         <Form inline>
         <FormGroup>
           <ControlLabel></ControlLabel>
@@ -116,11 +109,11 @@ export class VerwalterTable extends React.Component{
               />
               <FormControl.Feedback />
           </FormGroup>{' '}
-          <Button style={{ background: '#61a556',color: 'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
+          <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
         </Form>
-      </VewalterFrom>
+      </VewalterFrom>     
       <VerwalterTableWidth>
-        <BootstrapTable keyField='objectId' data={ this.state.verwalter } columns={ columns } />
+        <BootstrapTable keyField='objectId' data={this.state.verwalter} columns={columns} hover pagination={ paginationFactory() } bordered={false} />
       </VerwalterTableWidth>
       </div>
     );}
