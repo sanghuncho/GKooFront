@@ -1,13 +1,14 @@
 import * as React from "react";
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import styled from "styled-components";
 import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import { Route, Redirect } from 'react-router'
-import { WeTable } from './WeTable'
+import { Redirect } from 'react-router'
+import { BrowserRouter, Route, Link } from 'react-router-dom'
+import { Einheit }  from './Einheit';
+import { TableFrame }  from './TableFrame';
 
   const VewalterFrom = styled.div`
     margin-top: 50px;
@@ -37,21 +38,25 @@ import { WeTable } from './WeTable'
     text: 'Bezeichnung',
   }];
 
-  
 
 export class VerwalterTable extends React.Component{
   
     constructor(props, context) {
-        super(props, context);
+      super(props, context);
+
+      this.tableFrame =  React.createRef();
 
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
-        this.state = {
+      //this.updateItem = this.updateItem.bind(this);
+
+      this.state = {
           verwalter:[],
           value: '',
           redirect:false,
-          
-        };
+          propertyTest:'propertyTest',
+          //selected: '',
+      };
     }
 
     setRedirect() {
@@ -64,15 +69,15 @@ export class VerwalterTable extends React.Component{
     renderRedirect = () => {
       if (this.state.redirect) {
         var verwalter = '2';
-        
-        return <Redirect to={{ pathname: '/wirtschaftseinheit/', state: { id: '123' }
-      }}
-      />
+      
+        //return <Redirect to={{ pathname: '/wirtschaftseinheit/2', state: { id: '123' }} }/>
+        return <div><Redirect to= {"/wirtschaftseinheit/" + verwalter } /></div>
+        //return <WeTable/>
+        return 
       }
     }
 
     handleClick(e){
-      console.log("handleClick")
       const verwalterNr = this.state.value;
       if (this.isPositiveInteger(verwalterNr)){
         this.setState({verwalter :''});
@@ -116,6 +121,11 @@ export class VerwalterTable extends React.Component{
     componentDidMount() {
       this.fetchVerwalterList() 
     }
+
+    // updateItem(item) {
+    //   this.setState({ selected: item });
+    //   console.log("VW - Selected Value:: ", this.state.selected);
+    // }
     
     render() {
       const rowEvents = {
@@ -127,8 +137,8 @@ export class VerwalterTable extends React.Component{
 
       return(
       <div>
-        
         {this.renderRedirect()}
+
         <VewalterFrom>
           <Form inline>
           <FormGroup>
@@ -143,14 +153,29 @@ export class VerwalterTable extends React.Component{
             </FormGroup>{' '}
             <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px' }} onClick={this.handleClick}>Suchen</Button>      
           </Form>
-        </VewalterFrom>     
+        </VewalterFrom>
+
         <VerwalterTableWidth>
-          <BootstrapTable keyField='objectId' data={ this.state.verwalter } columns={ columns } 
-            hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Tabelle ist leer"/>
+          {/* <BootstrapTable keyField='objectId' data={ this.state.verwalter } columns={ columns } 
+            hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Tabelle ist leer"/> */}
+        
+        
         </VerwalterTableWidth>
+
+
+        <TableFrame verwalter = {this.state.verwalter} 
+                 propertyTest = {this.state.propertyTest}/>
+
+        <p> 한국에 가고 싶다..</p>
+        <p>{this.state.selected}</p>
+        {/* <Einheit propertyTest = {this.state.propertyTest}/> */}
+        
       </div>
     );}
 }
 
 export default VerwalterTable
- 
+
+
+
+
