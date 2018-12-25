@@ -10,12 +10,18 @@ import styled from "styled-components";
 import { SideNav, Nav as BaseNav} from "react-sidenav";
 import { Icon as BaseIcon } from "react-icons-kit";
 import { users } from "react-icons-kit/fa/users";
-import { home } from 'react-icons-kit/fa/home'
 import { buildingO } from 'react-icons-kit/fa/buildingO'
 import { connectdevelop } from 'react-icons-kit/fa/connectdevelop'
 import { pagelines } from 'react-icons-kit/fa/pagelines'
+import { Navbar, Nav, NavItem,Link } from 'react-bootstrap';
 
 import { Verwalter } from './Verwalter'
+import { BuyingService } from './BuyingService'
+import { ShippingService } from './ShippingService'
+import { MyPage } from './module_mypage/MyPage';
+import { CustomerCenter } from './CustomerCenter'
+import { Information } from './Infomation'
+
 import { Home } from './Home'
 import { Wirtschaftseinheit } from './Wirtschaftseinheit'
 import { Einheit } from './Einheit'
@@ -32,7 +38,7 @@ const Navigation = styled(BaseNavigation)`
   color: #FFFFFF;
   font-size: 1em;
   letter-spacing: 2px;
-  width: 110px;
+  width: 75px;
   line-height: 22px;
   border-radius: 1px;
 `;
@@ -48,7 +54,7 @@ const theme = {
   selectionBgColor: '#B0CC8B',
 };
 
-const Nav = styled(BaseNav)`
+const NavLinkStyle = styled(BaseNav)`
   flex-direction: column;
 `;
 
@@ -56,7 +62,22 @@ const Text = styled.div`
   padding-left: 5px;
 `;
 
-export class  NavigationLink extends React.Component {
+const navbar = {
+  backgroundColor: '#F16E10'
+};
+
+const MarginLeft50 = styled.div`
+  margin-left: 50px;
+  color: #FFF;
+`;
+
+const MarginLeft70 = styled.div`
+  margin-left: 70px;
+  color: #FFF;
+
+`;
+
+export class NavigationLink extends React.Component {
 
   state = { active: null };
   
@@ -79,62 +100,69 @@ export class  NavigationLink extends React.Component {
     this.setState({ selectedPath: arg.path });
   };
 
-  render() { return ( <AppContainer>
+  render() {
+    return ( 
+  <AppContainer>
     <Navigation> 
       <SideNav theme={theme} onItemSelection={this.onItemSelection}>
         <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
-          <Nav>
+          <NavLinkStyle>
               <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
                 <IconCnt>
                   <Icon icon={pagelines} />
                 </IconCnt>
                 <Text>Home</Text>
               </NavLink>
-          </Nav>
+          </NavLinkStyle>
         </div>
         <div style={{background: this.myColor(1), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
-          <Nav>
+          <NavLinkStyle>
               <NavLink style={{ textDecoration:'none', color:'white' }} to='/verwalter'>
                 <IconCnt>
                   <Icon icon={users} />
                 </IconCnt>
-                <Text>Verwalter</Text>
+                <Text>MyPage</Text>
               </NavLink>
-          </Nav>
+          </NavLinkStyle>
         </div>
         <div style={{background: this.myColor(2), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
-          <Nav>
+          <NavLinkStyle>
               <NavLink style={{ textDecoration:'none', color:'white' }} to='/wirtschaftseinheit'>
                 <IconCnt>
                   <Icon icon={buildingO} />
                 </IconCnt>
-                <Text>WE</Text>
-                
+                <Text>WE</Text>        
               </NavLink>          
-          </Nav>
+          </NavLinkStyle>
         </div>
         <div style={{background: this.myColor(3), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(3)}} >
-          <Nav>
+          <NavLinkStyle>
               <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/Einheit'>
                 <IconCnt>
                   <Icon icon={connectdevelop} />
                 </IconCnt>
                 <Text>Einheit</Text>
               </NavLink>
-          </Nav>
+          </NavLinkStyle>
         </div>
       </SideNav>
     </Navigation>
-  </AppContainer>);}
+  </AppContainer>
+  );}
 }
 
 const Main = () => (
   <Switch>
     <Route exact path='/' component={Home}></Route>
     <Route exact path='/verwalter' component={Verwalter}></Route> 
-    <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
+    <Route exact path='/buyingService' component={ BuyingService }></Route> 
+    <Route exact path='/shippingService' component={ ShippingService }></Route> 
+    <Route exact path='/information' component={ Information }></Route> 
+    <Route exact path='/mypage' component={ MyPage }></Route> 
+    <Route exact path='/customercenter' component={CustomerCenter}></Route> 
+    {/* <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
     <Route exact path='/wirtschaftseinheit/:id' component={Wirtschaftseinheit}></Route> 
-    <Route exact path='/einheit' component={Einheit}></Route> 
+    <Route exact path='/einheit' component={Einheit}></Route>  */}
   </Switch>
 );
 
@@ -144,15 +172,59 @@ class App extends Component {
   render() {
     return (
       <div>
-        <nav className="navbar" style={{background: naviGreen, marginLeft:-16, height:50, borderRadius:2, boxShadow:"1px 1px 2px black"}}>
-         <a className="navbar-brand" href="/">
-             <img src={ logo } width="180" height="50" alt=""/>
-         </a>
-        </nav>
+      <Navbar style={{background: naviGreen, height:"auto", borderRadius:2, boxShadow:"1px 1px 2px black"}}>
+        <Navbar.Header>
+          <Navbar.Brand>
+            <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/'>
+              <Text>GKoo</Text>
+            </NavLink>        
+          </Navbar.Brand>
+          <Navbar.Brand>
+            <MarginLeft50>  
+              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/information'>
+                <Text>이용안내</Text>
+              </NavLink>
+            </MarginLeft50>
+          </Navbar.Brand>
+          <Navbar.Brand>
+            <MarginLeft70>  
+              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/buyingservice'>
+                <Text>구매대행</Text>
+              </NavLink>
+            </MarginLeft70>
+          </Navbar.Brand>
+          <Navbar.Brand>
+            <MarginLeft70>
+              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/shippingservice'>
+                <Text>배송대행</Text>
+              </NavLink>
+            </MarginLeft70>
+          </Navbar.Brand>
+          <Navbar.Brand>
+            <MarginLeft70>
+              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/customercenter'>
+                <Text>고객센터</Text>
+              </NavLink>
+            </MarginLeft70>
+          </Navbar.Brand>
+          <Navbar.Brand>
+            <MarginLeft70>
+              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/mypage'>
+                  <Text>마이페이지</Text>
+              </NavLink>
+            </MarginLeft70>
+          </Navbar.Brand>
+        </Navbar.Header>  
+        <Nav bsStyle="pills" activeKey={1} >
+          <NavItem eventKey={1} href="/home">        
+          </NavItem>
+        </Nav>
+      </Navbar>
+
         <AppContainer>
-          <Navigation>
+          {/* <Navigation>
             <NavigationLink/>  
-          </Navigation>
+          </Navigation> */}
           <Main/>
         </AppContainer> 
       </div>  

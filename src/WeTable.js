@@ -6,9 +6,8 @@ import styled from "styled-components";
 import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-//import { Router, Route, browserHistory, IndexRoute} from 'react-router'
-import { VerwalterTable } from './VerwalterTable';
-import { TableFrame }  from './TableFrame';
+import { Router, Route, browserHistory, IndexRoute} from 'react-router'
+import {withRouter} from 'react-router';
 
 const WeFrom = styled.div`
   margin-top: 50px;
@@ -46,20 +45,16 @@ const columns = [{
 
 export class WeTable extends React.Component {
 
-  constructor(props, context) {
+  constructor(props, context, match) {
     super(props, context);
 
-    
   this.handleChangeVw = this.handleChangeVw.bind(this);
   this.handleChangeWe = this.handleChangeWe.bind(this);
   this.handleClick = this.handleClick.bind(this);
-  this.updateItem = this.updateItem.bind(this);
-  
     this.state = {
       weList:[],
-      vwnr: '',
+      vwNr: '',
       id: '',
-      selected: '',
     };
   }
 
@@ -68,7 +63,6 @@ export class WeTable extends React.Component {
     const weNr = this.state.weNr;
     console.log("VW" + this.state.vwNr);
     console.log("WE" + this.state.weNr);
-    
     if (this.isPositiveInteger(verwalterNr) && weNr == ''){
       this.setState({weList :''});
       this.fetchWeList(verwalterNr);
@@ -128,12 +122,11 @@ export class WeTable extends React.Component {
   }
 
   componentDidMount(props){
-    console.log(props);
+    
   }
 
-  updateItem(item) {
-    this.setState({ selected: item });
-    console.log("WE - Selected Value:: ", this.state.selected);
+  loadId(props){
+    //console.log(this.routeParam);
   }
 
   render() {
@@ -160,15 +153,11 @@ export class WeTable extends React.Component {
             <Button style={{ background:'#5e812e', color:'white', marginLeft:'2px'}} onClick={this.handleClick}>Suchen</Button>      
           </Form>
         </WeFrom>
-       
-        <TableFrame selectedTask = {this.updateItem}/>
 
-        <p> From VW...</p>
-        <p>{this.state.selected}</p>
-        {/* <WeTableWidth> 
+        <WeTableWidth> 
           <BootstrapTable keyField='objectId' data={ this.state.weList } columns={ columns }  hover pagination={ paginationFactory() } />
-        </WeTableWidth> */}
-
+        </WeTableWidth>
+        
     </div>
   );}
 }

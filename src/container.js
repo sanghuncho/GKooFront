@@ -35,7 +35,6 @@ export const ExampleNavigation = styled(Navigation)`
   height: 100%;
   margin-right: 4px;
   border: 0px solid rgba(0, 0, 0, 0.125); 
-  box-shadow: 2px 2px 4px #888;
 `;
 
 export const ExampleBody = styled.div`  
