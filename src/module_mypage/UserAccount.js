@@ -8,13 +8,9 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { Route, Redirect } from 'react-router'
 import { Table, Image } from "react-bootstrap"
 import item_123 from "../assets/item_123.jpg"
-
-  const VewalterFrom = styled.div`
-    margin-top: 50px;
-    margin-bottom : 10px;
-    margin-left:5%; 
-    margin-right:15%;
-  `;
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers } from "./AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
 
   const UserAccountTableStyle = styled.div`
     margin-top: 25px;
@@ -39,33 +35,38 @@ import item_123 from "../assets/item_123.jpg"
   `;
 
 const columnsUserAccount = [{
-  dataField: 'gkooId',
-  text: 'Gkoo ID',
-}, {
-  dataField: 'date',
-  text: '날짜',
-}, {
+    dataField: 'date',
+    text: '날짜',
+},{
   dataField: 'transactionMoney',
   text: '입금액',
+  formatter:unitFormatter
 }, {
   dataField: 'depositMoney',
   text: '적립금',
+  formatter:unitFormatter
+}, {
+  dataField: 'gkooId',
+  text: 'Gkoo ID',
 }, {
   dataField: 'itemName',
-  text: '아이템',
+  text: '물품명',
 }, {
-  dataField: 'itemFoto',
-  text: '아이템 사진',
-  formatter: fotoFormatter
+  dataField: 'itemImageUrl',
+  text: '물품사진',
+  formatter: imageFormatter
 }, {
   dataField: 'purchasePrice',
-  text: '구매 총금액'
+  text: '구매 총금액',
+  formatter:unitFormatter
 }, {
   dataField: 'shippingPrice',
-  text: '국제배송비'
+  text: '국제배송비',
+  formatter:unitFormatter
 }, {
   dataField: 'settleAmount',
-  text: '최종정산금액'
+  text: '최종정산금액',
+  formatter:unitFormatter
 }
 ];
 
@@ -73,29 +74,44 @@ const columnsPurchasing = [{
   dataField: 'gkooId',
   text: 'Gkoo ID',
 }, {
-  dataField: 'itemFoto',
-  text: '아이템 사진'
+  dataField: 'productName',
+  text: '물품명',
 }, {
-  dataField: 'itemPrice',
+  dataField: 'productImageUrl',
+  text: '물품사진',
+  formatter: imageFormatter
+}, {
+  dataField: 'productPrice',
   text: '물품 가격',
+  formatter:unitFormatter
 }, {
   dataField: 'serviceFee',
   text: '수수료',
+  formatter:unitFormatter
 }, {
-  dataField: 'purchasePrice',
-  text: '총금액'
+  dataField: 'totalPrice',
+  text: '총금액',
+  formatter:unitFormatter
 }, {
-  dataField: 'itemName',
-  text: '아이템이름',
-}, {
-  dataField: 'itemNumber',
-  text: '아이템번호',
-}
+  dataField: 'status',
+  text: '진행과정',
+} 
 ];
 
-function fotoFormatter() {        
+function imageFormatter(cell) {        
+  console.log("cell")
+  console.log(cell)
+  
   return (
-    <ImageObject/>
+    <ImageObject cell = {cell}/>
+  );
+}
+
+function unitFormatter(cell, row) {        
+  return (
+    <span>
+      { cell }원
+    </span>
   );
 }
 
@@ -107,11 +123,13 @@ export class UserAccount extends React.Component{
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
         this.state = {
-          UserAccount:[],
+          userAccount:[],
+          purchaseOrder:[],
           value: '',
           redirect:false,
           image:'',
-          loaded:false
+          loaded:false,
+          accessToken:''
         };
     }
 
@@ -136,21 +154,37 @@ export class UserAccount extends React.Component{
       return n >>> 0 === parseFloat(n);
     }
 
-    fetchEndSettlementList(){
-      fetch('http://localhost:8080/endSettlementList')
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { UserAccount: data} )
-        })   
-    }
+    // fetchEndSettlementList(){
+    //   fetch('http://localhost:8888/endSettlementList')
+    //     .then((result) => {
+    //        return result.json();
+    //     }).then((data) => {
+    //       this.setState( { userAccount: data} )
+    //       console.log(data)
+    //     })   
+    // }
+
+    // fetchPurchaseOrderList(){
+    //   fetch('http://localhost:8888/purchaseOderList')
+    //     .then((result) => {
+    //        return result.json();
+    //     }).then((data) => {
+    //       this.setState( { purchaseOrder: data} )
+    //       console.log(data)
+    //     })   
+    // }
  
     handleChange(e) {
        this.setState({ value: e.target.value });
     }
 
     componentDidMount() {
-      this.fetchEndSettlementList()
+      //this.setState({accessToken : this.props.bearToken})
+      // console.log("this.props.bearToken");
+      // console.log(this.props.bearToken);
+
+      //this.fetchEndSettlementList()
+      //this.fetchPurchaseOrderList()
     }
 
     render() {
@@ -167,19 +201,20 @@ export class UserAccount extends React.Component{
       const CaptionPurchaing = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
        padding: '0.5em', fontWeight:'bold' }}>구매대행 내역</h6>;
       
+     
       return(
       <div>
-        <UserBaseInfo/>
+        <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}/>
 
         <UserAccountTableStyle>
           <CaptionUserAccount/>
-          <BootstrapTable keyField='objectId'  data={ this.state.UserAccount } columns={ columnsUserAccount } 
+          <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsUserAccount } 
             hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
         </UserAccountTableStyle>
 
         <PurchasingTableStyle>
           <CaptionPurchaing/>
-          <BootstrapTable keyField='objectId'  data={ this.state.UserAccount } columns={ columnsPurchasing } 
+          <BootstrapTable keyField='objectId'  data={ this.props.purchaseOrder } columns={ columnsPurchasing } 
             hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
         </PurchasingTableStyle>
 
@@ -191,25 +226,29 @@ export class ImageObject extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      image:''
+      image:'',
+      keycloakAuth:'',
+      accessToken:''
     };
-}
+  }
 
   fetchPurchasedImage(){
-    fetch('http://localhost:8080/getItemImage')
+    console.log("this.props.cell")
+    console.log(this.props.cell)
+    console.log(this.props.token)
+
+    fetch('http://localhost:8888/getItemImage/' + this.props.cell)
       .then((response) => {
-         //return result.json();
          console.log(response)
          return response.blob();
       }).then((data) => {
         var objectURL = URL.createObjectURL(data);
-        //myImage.src = objectURL
         console.log("fetch image")
         console.log(objectURL)
         this.setState({image: objectURL})
       })
-
   }
+
   componentDidMount() {
     this.fetchPurchasedImage() 
   }
@@ -242,24 +281,30 @@ export class UserBaseInfo extends React.Component {
     this.state = {
       customerBaseInfo:'',
       value: '',
+      //accessToken:this.props.bearToken
     };
   }
 
   componentDidMount() {
-    this.fetchCustomerBaseInfo() 
+    //this.setState({accessToken:keycloak.token});
+    //this.fetchCustomerBaseInfo() 
   }
 
-  fetchCustomerBaseInfo(){
-    fetch('http://localhost:8080/customerinformation')
-      .then((result) => {
-         return result.json();
-      }).then((data) => {
-        this.setState( { customerBaseInfo: data} )
-      })   
-  }
+  // fetchCustomerBaseInfo(){
+  //   this.setTokenHeader()
+  //   fetch('http://localhost:8888/customerstatus', {headers})
+  //     .then((result) => {
+  //        return result.json();
+  //     }).then((data) => {
+  //       this.setState( { customerBaseInfo: data} )
+  //     })   
+  // }
 
+  // setTokenHeader(){
+  //   headers ['Authorization'] = 'Bearer ' + this.state.accessToken;
+  // }
+  
   render() {
-
     return(
       <UserBaseInfoTableStyle>
       <CaptionBaseInfo/>
@@ -269,22 +314,22 @@ export class UserBaseInfo extends React.Component {
       <tbody>
         <tr>
           <td width='300px'>개인사서함번호</td>
-          <td width='250px' align='right'>{this.state.customerBaseInfo.customerId}</td>
+          <td width='250px' align='right'>{this.props.customerBaseInfo.customerId}</td>
           <td width='300px'>보유예치금</td>
-          <td width='250px' align='right'>{this.state.customerBaseInfo.depositMoney}원</td>
+          <td width='250px' align='right'>{this.props.customerBaseInfo.insuranceAmount}원</td>
         </tr>
         <tr>
           <td>보유적립금</td>
-          <td align='right'>{this.state.customerBaseInfo.accumulatedMoney}원</td>
+          <td align='right'>{this.props.customerBaseInfo.depositeAmount}원</td>
           <td >보유포인트</td>
-          <td align='right'>{this.state.customerBaseInfo.savedPoint}p</td>
+          <td align='right'>{this.props.customerBaseInfo.pointAmount}p</td>
         </tr>
-        <tr>
+        {/* <tr>
           <td>도착내역</td>
           <td align='right'>{this.state.customerBaseInfo.arrivedItem}건</td>
           <td>배송내역</td>
           <td align='right'>{this.state.customerBaseInfo.shippingItem}건</td>
-        </tr>
+        </tr> */}
       </tbody>
     </Table>
     </UserBaseInfoTableStyle>

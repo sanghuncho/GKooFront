@@ -36,8 +36,8 @@ const IconCnt = styled.div`
 `;
 
 const Text = styled.div`
-  padding-left: 5px;
-  text-align: left;
+  padding-left:5px;
+  text-align:left;
   font-size:14px;
 `;
 

@@ -12,9 +12,13 @@ import {
   AppContainer as BaseAppContainer,
   ExampleNavigation as BaseNavigation,
 } from "../container";
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers } from "./AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
 
+//dynamic height
 const AppContainer = styled(BaseAppContainer)`
-  height: calc(130vh);
+  height: calc(150vh);
 `;
 const Navigation = styled(BaseNavigation)`
     background: #80b13e;
@@ -53,7 +57,13 @@ const Icon = props => <BaseIcon size={32} icon={props.icon} />;
 export class MyPage extends React.Component{
 
     state = { active: null,
-    image:null };
+    image:null,
+    keycloakAuth:null,
+    accessToken:"",
+    customerBaseInfo:'',
+    userAccount:'',
+    purchaseOrder:''
+   };
   
     toggle(position) {
       if (this.state.active === position) {
@@ -75,27 +85,66 @@ export class MyPage extends React.Component{
     };
 
     componentDidMount() {
-      this.fetchPurchasedImage()
+      //this.fetchPurchasedImage()
+      keycloak.init({onLoad: 'login-required'}).success(() => {
+          this.setState({ keycloakAuth: keycloak, 
+          accessToken:keycloak.token})
+          this.fetchCustomerBaseInfo(keycloak.token)
+          this.fetchEndSettlementList(keycloak.token)
+          this.fetchPurchaseOrderList(keycloak.token)
+      })
+    }
+
+    fetchPurchaseOrderList(token){
+      this.setTokenHeader(token)
+      fetch('http://localhost:8888/purchaseOderList', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { purchaseOrder: data} )
+          
+        })   
+    }
+
+    fetchEndSettlementList(token){
+      this.setTokenHeader(token)
+      fetch('http://localhost:8888/endSettlementList', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { userAccount: data} )
+          console.log(data)
+        })   
     }
 
     fetchPurchasedImage(){
-
-      fetch('http://localhost:8080/getItemImage')
+      fetch('http://localhost:8888/getItemImage')
         .then((response) => {
-           //return result.json();
            console.log(response)
            return response.blob();
         }).then((data) => {
           var objectURL = URL.createObjectURL(data);
-          //myImage.src = objectURL
-          console.log("fetch image")
-          console.log(objectURL)
           this.setState({image: objectURL, loaded:true})
         })
 
     }
 
+    fetchCustomerBaseInfo(token){
+      this.setTokenHeader(token)
+      fetch('http://localhost:8888/customerstatus', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { customerBaseInfo: data} )
+        })   
+    }
+
+    setTokenHeader(token){
+      headers ['Authorization'] = 'Bearer ' + token;
+    }
+
     render() {
+      
         return (
             <div>
             <AppContainer>
@@ -111,9 +160,20 @@ export class MyPage extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
+                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <NavLinkStyle>
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                            <IconCnt>
+                                <Icon icon={connectdevelop} />
+                            </IconCnt>
+                            <Text>스케줄</Text>
+                        </NavLink>
+                    </NavLinkStyle>
+                    </div>
+
                 </SideNav>
             </Navigation>
-            <body><UserAccount image={this.state.image}/></body>
+            <body><UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/></body>
             </AppContainer>
             </div>
            
