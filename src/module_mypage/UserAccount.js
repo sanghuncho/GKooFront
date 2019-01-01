@@ -8,9 +8,6 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { Route, Redirect } from 'react-router'
 import { Table, Image } from "react-bootstrap"
 import item_123 from "../assets/item_123.jpg"
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers } from "./AuthService"
-var keycloak = Keycloak(keycloakConfigLocal);
 
   const UserAccountTableStyle = styled.div`
     margin-top: 25px;
@@ -153,38 +150,12 @@ export class UserAccount extends React.Component{
     isPositiveInteger(n) {
       return n >>> 0 === parseFloat(n);
     }
-
-    // fetchEndSettlementList(){
-    //   fetch('http://localhost:8888/endSettlementList')
-    //     .then((result) => {
-    //        return result.json();
-    //     }).then((data) => {
-    //       this.setState( { userAccount: data} )
-    //       console.log(data)
-    //     })   
-    // }
-
-    // fetchPurchaseOrderList(){
-    //   fetch('http://localhost:8888/purchaseOderList')
-    //     .then((result) => {
-    //        return result.json();
-    //     }).then((data) => {
-    //       this.setState( { purchaseOrder: data} )
-    //       console.log(data)
-    //     })   
-    // }
  
     handleChange(e) {
        this.setState({ value: e.target.value });
     }
 
     componentDidMount() {
-      //this.setState({accessToken : this.props.bearToken})
-      // console.log("this.props.bearToken");
-      // console.log(this.props.bearToken);
-
-      //this.fetchEndSettlementList()
-      //this.fetchPurchaseOrderList()
     }
 
     render() {
@@ -231,7 +202,8 @@ export class ImageObject extends React.Component {
       accessToken:''
     };
   }
-
+  
+  /** it is useful code for image transformation */
   fetchPurchasedImage(){
     console.log("this.props.cell")
     console.log(this.props.cell)
@@ -250,13 +222,14 @@ export class ImageObject extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchPurchasedImage() 
+    var imagefile = 'data:image/jpg;base64,'+ this.props.cell;
+    this.setState({image: imagefile})
   }
 
   render() {
     return(
       <span>
-        <Image src={ this.state.image } width="80" height="40" responsive/>
+        <Image src={ 'data:image/jpg;base64,'+ this.props.cell } width="80" height="40" responsive/>
       </span>
     );}
 }
@@ -271,6 +244,7 @@ const UserBaseInfoTableStyle = styled.div`
     box-shadow: 2px 2px 3px 3px #888; 
     font-size: 15px;
   `;
+
 const CaptionBaseInfo = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
   padding: '0.5em', fontWeight:'bold' }}>기본정보</h6>;
 
@@ -281,28 +255,11 @@ export class UserBaseInfo extends React.Component {
     this.state = {
       customerBaseInfo:'',
       value: '',
-      //accessToken:this.props.bearToken
     };
   }
 
   componentDidMount() {
-    //this.setState({accessToken:keycloak.token});
-    //this.fetchCustomerBaseInfo() 
   }
-
-  // fetchCustomerBaseInfo(){
-  //   this.setTokenHeader()
-  //   fetch('http://localhost:8888/customerstatus', {headers})
-  //     .then((result) => {
-  //        return result.json();
-  //     }).then((data) => {
-  //       this.setState( { customerBaseInfo: data} )
-  //     })   
-  // }
-
-  // setTokenHeader(){
-  //   headers ['Authorization'] = 'Bearer ' + this.state.accessToken;
-  // }
   
   render() {
     return(

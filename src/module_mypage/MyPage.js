@@ -13,7 +13,7 @@ import {
   ExampleNavigation as BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers } from "./AuthService"
+import { keycloakConfigLocal, headers, localPort } from "./AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
 //dynamic height
@@ -85,7 +85,6 @@ export class MyPage extends React.Component{
     };
 
     componentDidMount() {
-      //this.fetchPurchasedImage()
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
@@ -97,19 +96,19 @@ export class MyPage extends React.Component{
 
     fetchPurchaseOrderList(token){
       this.setTokenHeader(token)
-      fetch('http://localhost:8888/purchaseOderList', {headers})
+      fetch(localPort + '/purchaseOderList', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
           this.setState( { purchaseOrder: data} )
-          
         })   
     }
 
     fetchEndSettlementList(token){
       this.setTokenHeader(token)
-      fetch('http://localhost:8888/endSettlementList', {headers})
+      fetch(localPort + '/endSettlementList', {headers})
         .then((result) => {
+          console.log(result)
            return result.json();
         }).then((data) => {
           this.setState( { userAccount: data} )
@@ -118,7 +117,7 @@ export class MyPage extends React.Component{
     }
 
     fetchPurchasedImage(){
-      fetch('http://localhost:8888/getItemImage')
+      fetch(localPort + '/getItemImage')
         .then((response) => {
            console.log(response)
            return response.blob();
