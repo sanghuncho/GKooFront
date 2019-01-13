@@ -88,6 +88,8 @@ export class MyPage extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
+          console.log("keycloak.subject");
+          console.log(keycloak.idTokenParsed.preferred_username);
           this.fetchCustomerBaseInfo(keycloak.token)
           this.fetchEndSettlementList(keycloak.token)
           this.fetchPurchaseOrderList(keycloak.token)
@@ -108,18 +110,15 @@ export class MyPage extends React.Component{
       this.setTokenHeader(token)
       fetch(localPort + '/endSettlementList', {headers})
         .then((result) => {
-          console.log(result)
            return result.json();
         }).then((data) => {
           this.setState( { userAccount: data} )
-          console.log(data)
         })   
     }
 
     fetchPurchasedImage(){
       fetch(localPort + '/getItemImage')
         .then((response) => {
-           console.log(response)
            return response.blob();
         }).then((data) => {
           var objectURL = URL.createObjectURL(data);
@@ -143,7 +142,6 @@ export class MyPage extends React.Component{
     }
 
     render() {
-      
         return (
             <div>
             <AppContainer>

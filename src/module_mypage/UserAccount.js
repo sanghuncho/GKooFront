@@ -95,10 +95,7 @@ const columnsPurchasing = [{
 } 
 ];
 
-function imageFormatter(cell) {        
-  console.log("cell")
-  console.log(cell)
-  
+function imageFormatter(cell) {    
   return (
     <ImageObject cell = {cell}/>
   );
@@ -205,18 +202,11 @@ export class ImageObject extends React.Component {
   
   /** it is useful code for image transformation */
   fetchPurchasedImage(){
-    console.log("this.props.cell")
-    console.log(this.props.cell)
-    console.log(this.props.token)
-
     fetch('http://localhost:8888/getItemImage/' + this.props.cell)
       .then((response) => {
-         console.log(response)
          return response.blob();
       }).then((data) => {
         var objectURL = URL.createObjectURL(data);
-        console.log("fetch image")
-        console.log(objectURL)
         this.setState({image: objectURL})
       })
   }
