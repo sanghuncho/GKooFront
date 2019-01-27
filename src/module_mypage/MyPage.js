@@ -2,11 +2,8 @@ import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
-import { pagelines } from 'react-icons-kit/fa/pagelines'
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
-import { users } from "react-icons-kit/fa/users";
-import { buildingO } from 'react-icons-kit/fa/buildingO'
-import { connectdevelop } from 'react-icons-kit/fa/connectdevelop'
+import { calendar, pagelines } from 'react-icons-kit/fa/'
 import { UserAccount } from "./UserAccount";
 import {
   AppContainer as BaseAppContainer,
@@ -24,7 +21,7 @@ const Navigation = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 100px;
+    width: 110px;
     line-height: 22px;
     border-radius: 0px;
 `;
@@ -161,7 +158,7 @@ export class MyPage extends React.Component{
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
                             <IconCnt>
-                                <Icon icon={connectdevelop} />
+                                <Icon icon={calendar} />
                             </IconCnt>
                             <Text>스케줄</Text>
                         </NavLink>

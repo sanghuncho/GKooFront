@@ -260,8 +260,8 @@ export class UserBaseInfo extends React.Component {
       </thead>
       <tbody>
         <tr>
-          <td width='300px'>개인사서함번호</td>
-          <td width='250px' align='right'>{this.props.customerBaseInfo.customerId}</td>
+          <td width='300px'>개인사서함주소</td>
+          <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td>
           <td width='300px'>보유예치금</td>
           <td width='250px' align='right'>{this.props.customerBaseInfo.insuranceAmount}원</td>
         </tr>
