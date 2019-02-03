@@ -179,7 +179,7 @@ class App extends Component {
             </NavLink>      
           </Navbar.Brand>
           <Nav className="mr-auto">
-              <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/information'>
+              <NavLink style={{ textDecoration: 'none', color: 'white', marginLeft:'10px', marginRight:'10px' }} to='/information'>
                 <Text>이용안내</Text>
               </NavLink>
               <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/buyingservice'>

@@ -17,7 +17,21 @@ const BodyContainer = styled(BaseAppContainer)`
 `;
 
 export class RequestShippingService extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = { 
+            agreement:false,
+        };
+        this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
+    
+    }
+
+    handleChangeOnCheckbox(e) {
+        this.setState({agreement:e.target.checked}) 
+    }
+
   render() {
+    const didAgreeWith=this.state.agreement;
     return(
         <div>
             <AppContainer>
@@ -41,9 +55,10 @@ export class RequestShippingService extends React.Component {
                         <Card.Text>7. 배송대행 상품의 입고지를 선택하여 신청서를 작성한 후에는 입고지 변경이 불가능 합니다.</Card.Text>
                         </Card.Body>
                         <Card.Footer> 
-                            <Form.Check type='checkbox' id ='checkboxAgreement' label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
+                            <Form.Check type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
                         </Card.Footer>
                     </Card>
+                    {didAgreeWith?<ShippingCenter/>:""}
                 </BodyContainer>
             </AppContainer>
         </div>
@@ -51,3 +66,73 @@ export class RequestShippingService extends React.Component {
 }
 
 export default RequestShippingService;
+
+class ShippingCenter extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = { 
+          easyShip:true,
+          customShip:false,
+          understandWarning:false,
+        };
+        this.handleChangeEasy = this.handleChangeEasy.bind(this);
+        this.handleChangeCustom = this.handleChangeCustom.bind(this);
+        this.handleChangeWarn = this.handleChangeWarn.bind(this);
+    }
+
+    handleChangeEasy(e) {
+        this.setState({easyShip:true})
+        this.setState({customShip:false})
+    }
+
+    handleChangeCustom(e) {
+        this.setState({easyShip:false}) 
+        this.setState({customShip:true})
+    }
+
+    handleChangeWarn(event) {
+        this.setState({understandWarning:event.target.checked}) 
+    }
+
+    render(){
+     const didUnderstand=this.state.understandWarning;   
+     return(
+        <div>
+            <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem' }}>
+                <Card.Header>물류센터</Card.Header>
+                <Card.Body >
+                    <Card.Text>
+                        <Form.Check type='radio' label='독일' checked='true'/>
+                    </Card.Text> 
+                </Card.Body>
+                
+                <Card.Header>서비스 선택</Card.Header>
+                <Card.Body>
+                    <Form.Check inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='간편배송' style={{marginRight:'10rem'}}/>
+                    <Form.Check inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='체크인배송'/>
+                </Card.Body>
+                <Card.Footer>
+                    <Form.Check checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
+                </Card.Footer>
+            </Card>
+            {didUnderstand?<InputProduct/>:""}
+        </div>
+    );}
+ }
+
+ class InputProduct extends React.Component{
+
+
+    render(){
+        return(
+            <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem', marginBottom:'1rem' }}>
+                <Card.Header>상품입력</Card.Header>
+                <Card.Body >
+                    <Card.Text>
+                        <Form.Check type='radio' label='독일' checked='true'/>
+                    </Card.Text> 
+                </Card.Body>
+            </Card>
+        );
+    }
+ }
