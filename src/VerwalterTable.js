@@ -3,11 +3,9 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import styled from "styled-components";
-import { FormGroup, Form, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { FormGroup, Form, FormControl, Button } from 'react-bootstrap';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import { Route, Redirect } from 'react-router'
-import { WeTable } from './WeTable'
 
   const VewalterFrom = styled.div`
     margin-top: 50px;
@@ -149,7 +147,6 @@ export class VerwalterTable extends React.Component{
         <VewalterFrom>
           <Form inline>
           <FormGroup>
-            <ControlLabel></ControlLabel>
                 <FormControl
                   type="text"
                   value={this.state.value}

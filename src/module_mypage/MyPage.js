@@ -164,7 +164,6 @@ export class MyPage extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-
                 </SideNav>
             </Navigation>
             <body><UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/></body>

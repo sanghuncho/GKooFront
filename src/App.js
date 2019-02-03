@@ -13,7 +13,7 @@ import { users } from "react-icons-kit/fa/users";
 import { buildingO } from 'react-icons-kit/fa/buildingO'
 import { connectdevelop } from 'react-icons-kit/fa/connectdevelop'
 import { pagelines } from 'react-icons-kit/fa/pagelines'
-import { Navbar, Nav, NavItem,Link } from 'react-bootstrap';
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
 import { Verwalter } from './Verwalter'
 import { BuyingService } from './BuyingService'
@@ -23,8 +23,7 @@ import { CustomerCenter } from './CustomerCenter'
 import { Information } from './Infomation'
 
 import { Home } from './Home'
-import { Wirtschaftseinheit } from './Wirtschaftseinheit'
-import { Einheit } from './Einheit'
+import { RequestShippingService } from './module_shippingService/RequestShippingService';
 
 var naviGreen = '#80b13e'
 var grey = '#727676';
@@ -59,7 +58,7 @@ const NavLinkStyle = styled(BaseNav)`
 `;
 
 const Text = styled.div`
-  padding-left: 5px;
+  padding-left: 10px;
 `;
 
 const navbar = {
@@ -156,7 +155,8 @@ const Main = () => (
     <Route exact path='/' component={Home}></Route>
     <Route exact path='/verwalter' component={Verwalter}></Route> 
     <Route exact path='/buyingService' component={ BuyingService }></Route> 
-    <Route exact path='/shippingService' component={ ShippingService }></Route> 
+    <Route exact path='/shippingService/' component={ ShippingService }></Route> 
+    <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route> 
     <Route exact path='/information' component={ Information }></Route> 
     <Route exact path='/mypage' component={ MyPage }></Route> 
     <Route exact path='/customercenter' component={CustomerCenter}></Route> 
@@ -173,48 +173,28 @@ class App extends Component {
     return (
       <div>
       <Navbar style={{background: naviGreen, height:"auto", borderRadius:2, boxShadow:"1px 1px 2px black"}}>
-        <Navbar.Header>
           <Navbar.Brand>
             <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/'>
               <Text>GKoo</Text>
-            </NavLink>        
+            </NavLink>      
           </Navbar.Brand>
-          <Navbar.Brand>
-            <MarginLeft50>  
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/information'>
+          <Nav className="mr-auto">
+              <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/information'>
                 <Text>이용안내</Text>
               </NavLink>
-            </MarginLeft50>
-          </Navbar.Brand>
-          <Navbar.Brand>
-            <MarginLeft70>  
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/buyingservice'>
+              <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/buyingservice'>
                 <Text>구매대행</Text>
               </NavLink>
-            </MarginLeft70>
-          </Navbar.Brand>
-          <Navbar.Brand>
-            <MarginLeft70>
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/shippingservice'>
+              <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/shippingservice'>
                 <Text>배송대행</Text>
               </NavLink>
-            </MarginLeft70>
-          </Navbar.Brand>
-          <Navbar.Brand>
-            <MarginLeft70>
-              <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/customercenter'>
+              <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/customercenter'>
                 <Text>고객센터</Text>
               </NavLink>
-            </MarginLeft70>
-          </Navbar.Brand>
-          <Navbar.Brand>
-            <MarginLeft70>
               <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/mypage'>
                   <Text>마이페이지</Text>
               </NavLink>
-            </MarginLeft70>
-          </Navbar.Brand>
-        </Navbar.Header>  
+          </Nav>
         <Nav bsStyle="pills" activeKey={1} >
           <NavItem eventKey={1} href="/home">        
           </NavItem>

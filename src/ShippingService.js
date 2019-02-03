@@ -23,7 +23,7 @@ const Navigation = styled(BaseNavigation)`
 `;
 
 const theme = {
-    selectionBgColor: '#B0CC8B',
+    selectionBgColor: '#727676',
   };
 
 const NavLinkStyle = styled(BaseNav)`
@@ -52,6 +52,7 @@ export class ShippingService extends React.Component{
     state = { active: null };
   
     toggle(position) {
+        console.log("toggle position: "+position)
       if (this.state.active === position) {
         this.setState({active : null})
       } else {
@@ -59,12 +60,13 @@ export class ShippingService extends React.Component{
       }
     }
   
-    myColor (position) {
-      if (this.state.active === position) {
-        return grey;
-      }
-      return "";
-    }
+    // myColor (position) {
+    //     console.log("color position: "+position)
+    //   if (this.state.active === position) {
+    //     return grey;
+    //   }
+    //   return "";
+    // }
   
     onItemSelection = arg => {
       this.setState({ selectedPath: arg.path });
@@ -73,12 +75,12 @@ export class ShippingService extends React.Component{
     render() {
         return (
             <div>
-                <AppContainer>
+                {/* <AppContainer> */}
                 <Navigation> 
                 <SideNav theme={theme} onItemSelection={this.onItemSelection}>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingService/requestShipping' >
                             <IconCnt>
                                 <Icon icon={bullseye} />
                             </IconCnt>
@@ -86,9 +88,9 @@ export class ShippingService extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingService/requestShipping' >
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
@@ -96,9 +98,9 @@ export class ShippingService extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingService/requestShipping' >
                             <IconCnt>
                                 <Icon icon={connectdevelop} />
                             </IconCnt>
@@ -108,7 +110,7 @@ export class ShippingService extends React.Component{
                     </div>
                 </SideNav>
             </Navigation>
-            </AppContainer>
+            {/* </AppContainer> */}
             </div>
         );}           
 } 
