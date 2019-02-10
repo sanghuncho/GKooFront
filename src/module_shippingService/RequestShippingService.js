@@ -4,10 +4,10 @@ import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
-import { Breadcrumb, Card, Form } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton } from 'react-bootstrap';
 
 const AppContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  height: calc(160vh);
   width: 100vw;
 `;
 
@@ -20,7 +20,8 @@ export class RequestShippingService extends React.Component {
     constructor(props, context) {
         super(props, context);
         this.state = { 
-            agreement:false,
+            //agreement:false,
+            agreement:true,
         };
         this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
     
@@ -73,7 +74,8 @@ class ShippingCenter extends React.Component{
         this.state = { 
           easyShip:true,
           customShip:false,
-          understandWarning:false,
+          //understandWarning:false,
+          understandWarning:true,
         };
         this.handleChangeEasy = this.handleChangeEasy.bind(this);
         this.handleChangeCustom = this.handleChangeCustom.bind(this);
@@ -121,16 +123,130 @@ class ShippingCenter extends React.Component{
  }
 
  class InputProduct extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = { 
+          trackingTitle:"운송사선택",
+          categoryTitle:"선택",
+          itemTitle:"선택",
+        };
 
+    }
+
+    handleSelectTracking(event, company) {
+        this.setState({trackingTitle:company}) 
+        console.log("change tracking")
+    }
+
+    handleSelectCategory(event, nr) {
+            this.setState({categoryTitle:nr}) 
+            console.log("change 3")
+    }
+
+    handleSelectItem(event, nr) {
+        this.setState({itemTitle:nr}) 
+        console.log("change 3")
+    }
 
     render(){
         return(
-            <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:'21rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품입력</Card.Header>
                 <Card.Body >
-                    <Card.Text>
-                        <Form.Check type='radio' label='독일' checked='true'/>
-                    </Card.Text> 
+
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3">
+                            쇼핑몰 URL
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="정확한 URL을 입력해주세요"/>
+                    </InputGroup>
+
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3">
+                            트랙킹번호
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                       
+                        <DropdownButton
+                            as={InputGroup.Prepend}
+                            variant="outline-secondary"
+                            title={this.state.trackingTitle}
+                            id="input-group-dropdown-1"
+                            >
+                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "DHL")}>DHL</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "헤르메스")}>헤르메스</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "기타")}>기타</Dropdown.Item>
+                        </DropdownButton>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="트랙킹번호"/>
+                        <InputGroup.Append>
+                            <InputGroup.Text>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
+                        </InputGroup.Append>
+                    </InputGroup>
+
+                    <InputGroup className="mb-3">
+                   
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon4">
+                                카테고리
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                       
+                        <DropdownButton
+                            as={InputGroup.Prepend}
+                            variant="outline-secondary"
+                            title={this.state.categoryTitle}
+                            id="input-group-dropdown-category"
+                            style={{ marginRight: '200px'}}
+                            >
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 1)}>1</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 2)}>2</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 3)}>3</Dropdown.Item>
+                        </DropdownButton>
+
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon4">
+                                품목
+                            </InputGroup.Text>
+                        </InputGroup.Prepend>
+                       
+                        <DropdownButton
+                            as={InputGroup.Prepend}
+                            variant="outline-secondary"
+                            title={this.state.itemTitle}
+                            id="input-group-dropdown-category"
+                            >
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 11)}>1</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 22)}>2</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 33)}>3</Dropdown.Item>
+                        </DropdownButton>
+                       
+                    </InputGroup>
+                    
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3">
+                            브랜드(영문)
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="정확한 브랜드이름을 입력해주세요"/>
+                    </InputGroup>
+
+                     <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3">
+                            상품명(영문)
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="정확한 영문 상품명을 입력해주세요"/>
+                    </InputGroup>
+
                 </Card.Body>
             </Card>
         );
