@@ -126,45 +126,94 @@ class ShippingCenter extends React.Component{
                     <Form.Check checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
                 </Card.Footer>
             </Card>
-            {didUnderstand?<InputProduct/>:""}
-            {didUnderstand?<InputDelievery/>:""}
+            {didUnderstand ? <InputDeliveryContent easyShip={this.state.easyShip}/>:""}
+            {/* {didUnderstand ? <InputDelivery/>:""} */}
+            {didUnderstand ? <TransportShippingRequest/>:""}
         </div>
     );}
  }
 
- class InputProduct extends React.Component{
+ class InputDeliveryContent extends React.Component{
     constructor(props) {
         super(props);
-        this.state = { 
-          trackingTitle:"운송사선택",
-          categoryTitle:"선택",
-          itemTitle:"선택",
-          prouctPrice:"",
-          productAmount:"",
-          totalPrice:"",
-
+        this.state = {
+            shopUrl:"",
+            brandName:"",
+            productName:"",
+            trackingTitle:"운송사선택",
+            trackingNumber:"",
+            categoryTitle:"선택",
+            itemTitle:"선택",
+            brandName:"",
+            receiverNameByKorea:"",
+            receiverNameByEnglish:"",
+            prouctPrice:"",
+            productAmount:"",
+            totalPrice:"",
+            changeServiceCall:false,
         };
+        this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
+        this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
+        this.handleSelectCategory       = this.handleSelectCategory.bind(this);
+        this.handleSelectItem           = this.handleSelectItem.bind(this);
+        this.inputBrandName             = this.inputBrandName.bind(this);
+        this.inputItemName              = this.inputItemName.bind(this);
+        this.inputReceiverNameByKorea    = this.inputReceiverNameByKorea.bind(this); 
+        this.inputReceiverNameByEnglish  = this.inputReceiverNameByEnglish.bind(this); 
+
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
         this.inputTotalPrice    = this.inputTotalPrice.bind(this);
+        this.inputShopUrl       = this.inputShopUrl.bind(this);
+        this.changeServiceCall  = this.changeServiceCall.bind(this);
     }
 
-    handleSelectTracking(event, company) {
+    handleChangeOwnerCheckbox(event){
+        
+    }
+
+    inputTrackingTitle(event, company) {
         this.setState({trackingTitle:company}) 
     }
 
-    handleSelectCategory(event, nr) {
-            this.setState({categoryTitle:nr}) 
+    inputTrackingNumber(event){
+        this.setState({trackingNumber:event.target.value}) 
     }
 
-    handleSelectItem(event, nr) {
-        this.setState({itemTitle:nr}) 
+    handleSelectCategory(event,ct) {
+        this.setState({categoryTitle:ct}) 
+    }
+
+    inputBrandName(event){
+        this.setState({brandName:event.target.value}) 
+    }
+
+    inputItemName(event){
+        this.setState({itemName:event.target.value}) 
+    }
+
+    handleSelectItem(event, it) {
+        this.setState({itemTitle:it}) 
+    }
+
+    inputReceiverNameByKorea(event){
+        this.setState({receiverNameByKorea:event.target.value}) 
+    }
+
+    inputReceiverNameByEnglish(event){
+        this.setState({receiverNameByEnglish:event.target.value}) 
+    }
+
+    inputShopUrl(event){
+        this.setState({
+            shopUrl:event.target.value
+        })
     }
 
     inputProductPrice(event){
-        const price = (event.target.value == "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        const amount = this.state.productAmount == "" ? "" : parseInt(this.state.productAmount)
-        const total = (price == "") || (amount == "") ? "" : price+amount
+        const price = (event.target.value === "") || (event.target.value === null) ? "" : parseInt(event.target.value)
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const total = (price === "") || (amount === "") ? "" : price+amount
         this.setState({
             productPrice:price,
             totoalPrice:total
@@ -175,9 +224,9 @@ class ShippingCenter extends React.Component{
     }
 
     inputProductAmount(event){
-        const price = (this.state.productAmount == "") ? "" : parseInt(this.state.productPrice)
-        const amount = (event.target.value == "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        const total = (price == "") || (amount == "") ? "" : price+amount
+        const price = (this.state.productAmount === "") ? "" : parseInt(this.state.productPrice)
+        const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
+        const total = (price === "") || (amount === "") ? "" : price+amount
         this.setState({
             productAmount:amount,
             totoalPrice:total
@@ -190,25 +239,33 @@ class ShippingCenter extends React.Component{
     inputTotalPrice(event){
         console.log("total price")
 
-        const price =  this.state.productPrice == "" ? "" : parseInt(this.state.productPrice) 
-        const amount = this.state.productAmount == "" ? "" : parseInt(this.state.productAmount)
-        const total = (price == "") || (amount == "") ? "" : price+amount
+        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const total = (price === "") || (amount === "") ? "" : price+amount
         console.log(price)
         this.setState({
             totalPrice:total
         })
     }
 
+    changeServiceCall(){
+        this.setState({
+            changeServiceCall:true,
+        })
+    }
+
     render(){
 
         const price = this.state.productPrice
-        const priceInt  = (price == "") || (price == null) || (price == undefined) ? "" : parseInt(price)
+        const priceInt  = (price === "") || (price === null) || (price === undefined) ? "" : parseInt(price)
         
         const amount = this.state.productAmount
-        const amountInt = (amount == "") || (amount == null || (amount == undefined)) ? "" : parseInt(amount)
-        const totalPrice = (priceInt == "" || amountInt == "") ? "" : priceInt + amountInt
+        const amountInt = (amount === "") || (amount === null || (amount === undefined)) ? "" : parseInt(amount)
+        const totalPrice = (priceInt === "" || amountInt === "") ? "" : priceInt + amountInt
 
         return(
+            <Card>
+            {/* 상품입력 박스*/}
             <Card border="dark" style={{ width: '80%', height:'26rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품입력</Card.Header>
                 <Card.Body >
@@ -219,7 +276,8 @@ class ShippingCenter extends React.Component{
                             쇼핑몰 URL
                         </InputGroup.Text>
                         </InputGroup.Prepend>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                        <FormControl id="basic-url" aria-describedby="basic-addon3"
+                            onChange = {this.inputShopUrl} 
                             placeholder="정확한 URL을 입력해주세요"/>
                     </InputGroup>
 
@@ -236,12 +294,13 @@ class ShippingCenter extends React.Component{
                             title={this.state.trackingTitle}
                             id="input-group-dropdown-1"
                             >
-                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "DHL")}>DHL</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectTracking(e, "기타")}>기타</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
                         </DropdownButton>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="트랙킹번호"/>
+                            placeholder="트랙킹번호"
+                            onChange = {this.inputTrackingNumber}/>
                         <InputGroup.Append>
                             <InputGroup.Text>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
                         </InputGroup.Append>
@@ -262,9 +321,9 @@ class ShippingCenter extends React.Component{
                             id="input-group-dropdown-category"
                             style={{ marginRight: '200px'}}
                             >
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 1)}>1</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 2)}>2</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, 3)}>3</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "전자제품")}>전자제품</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
                         </DropdownButton>
 
                         <InputGroup.Prepend>
@@ -279,9 +338,9 @@ class ShippingCenter extends React.Component{
                             title={this.state.itemTitle}
                             id="input-group-dropdown-category"
                             >
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 11)}>1</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 22)}>2</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, 33)}>3</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "오디오")}>오디오</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "쌀")}>쌀</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "강아지")}>강아지</Dropdown.Item>
                         </DropdownButton>
                        
                     </InputGroup>
@@ -292,8 +351,9 @@ class ShippingCenter extends React.Component{
                             브랜드(영문)
                         </InputGroup.Text>
                         </InputGroup.Prepend>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="정확한 브랜드이름을 입력해주세요"/>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3"
+                            placeholder="정확한 브랜드이름을 입력해주세요"
+                            onChange = {this.inputBrandName}/>
                     </InputGroup>
 
                      <InputGroup className="mb-3">
@@ -303,7 +363,8 @@ class ShippingCenter extends React.Component{
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="정확한 영문 상품명을 입력해주세요"/>
+                            placeholder="정확한 영문 상품명을 입력해주세요"
+                            onChange = {this.inputItemName}/>
                     </InputGroup>
 
                     <InputGroup className="mb-3">
@@ -339,29 +400,9 @@ class ShippingCenter extends React.Component{
                     </InputGroup>
                 </Card.Body>
             </Card>
-            );
-        }
-    }
-
-    class InputDelievery extends React.Component{
-
-        constructor(props) {
-            super(props);
-            this.state = { 
-              //trackingTitle:"운송사선택",
-             
-            };
-            //this.inputProductPrice  = this.inputProductPrice.bind(this);
-        }
-
-        handleChangeOwnerCheckbox(){
-
-        }
-
-        render(){
-    
-            return(
-                <Card border="dark" style={{ width: '80%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            
+            {/* 받는분정보 박스 */}
+            <Card border="dark" style={{ width: '80%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
                         <InputGroup className="mb-3">
@@ -378,7 +419,9 @@ class ShippingCenter extends React.Component{
                                                 이름(국문)
                                             </InputGroup.Text>
                                         </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange = { this.inputReceiverNameByKorea }
+                                    />
                                     <Form.Check type='checkbox' 
                                         onChange={e => this.handleChangeOwnerCheckbox(e)} label='회원정보와 동일'
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px'}}
@@ -392,7 +435,8 @@ class ShippingCenter extends React.Component{
                                                 이름(영문)
                                             </InputGroup.Text>
                                         </InputGroup.Prepend>
-                                        <FormControl id="basic-url" aria-describedby="basic-addon3"/>
+                                        <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                            onChange = { this.inputReceiverNameByEnglish }/>
                                     </InputGroup>    
                                     <Card.Body>
                                     <InputGroup>
@@ -514,13 +558,30 @@ class ShippingCenter extends React.Component{
                         </InputGroup>
 
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
-                            <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}>배송대행 신청하기</Button>
+                            <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
+                                onClick={this.changeServiceCall}
+                                >배송대행 신청하기
+                            </Button>
                             <Button size="lg" variant='secondary'>임시 저장하기</Button>
                         </InputGroup >
 
-                    <TransportShippingRequest/>
                     </Card.Body>
+                    <TransportShippingRequest 
+                        serviceCall={this.state.changeServiceCall}
+                        shopUrl={this.state.shopUrl}
+                        trackingTitle={this.state.trackingTitle}
+                        trackingNumber={this.state.trackingNumber}
+                        categoryTitle={this.state.categoryTitle}
+                        itemTitle={this.state.itemTitle}
+                        brandName={this.state.brandName}
+                        itemName={this.state.itemName}
+                        totalPrice={this.state.totalPrice}
+                        receiverNameByKorea={this.state.receiverNameByKorea}
+                        receiverNameByEnglish={this.state.receiverNameByEnglish}
+                        easyShip={this.props.easyShip}
+                        />
                 </Card>
-
-            );}
+            </Card>
+            );
+        }
     }
