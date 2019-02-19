@@ -4,15 +4,25 @@ import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
-import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button } from 'react-bootstrap';
+import { times, exchange, check, minus } from 'react-icons-kit/fa/'
+import { Icon as BaseIcon } from "react-icons-kit";
+import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
+
+const Icon = props => <BaseIcon size={16} icon={props.icon} />;
+const IconCnt = styled.div`
+    
+`;
+
+const IconStyle = {justifyContent:"center"}
 
 const AppContainer = styled(BaseAppContainer)`
-  height: calc(160vh);
-  width: 100vw;
+    height: calc(330vh);
+    width: 100vw;
 `;
 
 const BodyContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  height: calc(330vh);
   flex-direction: column;
 `;
 
@@ -24,7 +34,6 @@ export class RequestShippingService extends React.Component {
             agreement:true,
         };
         this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
-    
     }
 
     handleChangeOnCheckbox(e) {
@@ -118,6 +127,7 @@ class ShippingCenter extends React.Component{
                 </Card.Footer>
             </Card>
             {didUnderstand?<InputProduct/>:""}
+            {didUnderstand?<InputDelievery/>:""}
         </div>
     );}
  }
@@ -129,28 +139,77 @@ class ShippingCenter extends React.Component{
           trackingTitle:"운송사선택",
           categoryTitle:"선택",
           itemTitle:"선택",
-        };
+          prouctPrice:"",
+          productAmount:"",
+          totalPrice:"",
 
+        };
+        this.inputProductPrice  = this.inputProductPrice.bind(this);
+        this.inputProductAmount = this.inputProductAmount.bind(this);
+        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
     }
 
     handleSelectTracking(event, company) {
         this.setState({trackingTitle:company}) 
-        console.log("change tracking")
     }
 
     handleSelectCategory(event, nr) {
             this.setState({categoryTitle:nr}) 
-            console.log("change 3")
     }
 
     handleSelectItem(event, nr) {
         this.setState({itemTitle:nr}) 
-        console.log("change 3")
+    }
+
+    inputProductPrice(event){
+        const price = (event.target.value == "") || (event.target.value == null) ? "" : parseInt(event.target.value)
+        const amount = this.state.productAmount == "" ? "" : parseInt(this.state.productAmount)
+        const total = (price == "") || (amount == "") ? "" : price+amount
+        this.setState({
+            productPrice:price,
+            totoalPrice:total
+        })
+        console.log("product price")
+        console.log(price+"_"+amount+"_"+total)
+        console.log(this.state.productPrice+"_"+this.state.productAmount+"_"+this.state.totalPrice)
+    }
+
+    inputProductAmount(event){
+        const price = (this.state.productAmount == "") ? "" : parseInt(this.state.productPrice)
+        const amount = (event.target.value == "") || (event.target.value == null) ? "" : parseInt(event.target.value)
+        const total = (price == "") || (amount == "") ? "" : price+amount
+        this.setState({
+            productAmount:amount,
+            totoalPrice:total
+        })
+        console.log("product amount")
+        console.log(price+"_"+amount+"_"+total)
+        console.log(this.state.productPrice+"_"+this.state.productAmount+"_"+this.state.totalPrice)
+    }
+
+    inputTotalPrice(event){
+        console.log("total price")
+
+        const price =  this.state.productPrice == "" ? "" : parseInt(this.state.productPrice) 
+        const amount = this.state.productAmount == "" ? "" : parseInt(this.state.productAmount)
+        const total = (price == "") || (amount == "") ? "" : price+amount
+        console.log(price)
+        this.setState({
+            totalPrice:total
+        })
     }
 
     render(){
+
+        const price = this.state.productPrice
+        const priceInt  = (price == "") || (price == null) || (price == undefined) ? "" : parseInt(price)
+        
+        const amount = this.state.productAmount
+        const amountInt = (amount == "") || (amount == null || (amount == undefined)) ? "" : parseInt(amount)
+        const totalPrice = (priceInt == "" || amountInt == "") ? "" : priceInt + amountInt
+
         return(
-            <Card border="dark" style={{ width: '80%', height:'21rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:'26rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품입력</Card.Header>
                 <Card.Body >
 
@@ -247,8 +306,221 @@ class ShippingCenter extends React.Component{
                             placeholder="정확한 영문 상품명을 입력해주세요"/>
                     </InputGroup>
 
+                    <InputGroup className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3">
+                            단가/수량
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="상품단가"
+                            value={this.state.productPrice}
+                            onChange = {this.inputProductPrice}/>
+                        <IconCnt style={{marginTop:"5px",marginLeft:"2px", marginRight:"2px"}}>
+                                <Icon icon={ times } />
+                        </IconCnt>
+
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="수량"
+                            value={this.state.prouctAmount}
+                            onChange = {this.inputProductAmount}/>
+                        <IconCnt style={{marginTop:"5px", marginLeft:"5px", marginRight:"5px"}}>
+                                <Icon icon={ exchange } />
+                        </IconCnt>
+
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            value={ totalPrice }
+                            onChange = { this.inputTotalPrice }
+                            readOnly = "true"
+                            />
+                        <InputGroup.Append>
+                                <InputGroup.Text>(Euro)</InputGroup.Text>
+                        </InputGroup.Append>
+                    </InputGroup>
                 </Card.Body>
             </Card>
-        );
+            );
+        }
     }
- }
+
+    class InputDelievery extends React.Component{
+
+        constructor(props) {
+            super(props);
+            this.state = { 
+              //trackingTitle:"운송사선택",
+             
+            };
+            //this.inputProductPrice  = this.inputProductPrice.bind(this);
+        }
+
+        handleChangeOwnerCheckbox(){
+
+        }
+
+        render(){
+    
+            return(
+                <Card border="dark" style={{ width: '80%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
+                    <Card.Header>받는분 정보</Card.Header>
+                    <Card.Body >
+                        <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon3">
+                                    받는분
+                                </InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Card style={{ width: '90%'}}>
+                            <Card.Body>
+                                    <InputGroup className="mb-3" style={{ width: '80%'}}>
+                                        <InputGroup.Prepend >
+                                            <InputGroup.Text id="basic-addon3">
+                                                이름(국문)
+                                            </InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <Form.Check type='checkbox' 
+                                        onChange={e => this.handleChangeOwnerCheckbox(e)} label='회원정보와 동일'
+                                        style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px'}}
+                                    />
+                                    <Button variant="secondary">받는분 정보 불러오기</Button>
+                                    
+                                    </InputGroup >
+                                    <InputGroup className="mb-3" style={{ width: '40%'}}>
+                                        <InputGroup.Prepend>
+                                            <InputGroup.Text id="basic-addon3">
+                                                이름(영문)
+                                            </InputGroup.Text>
+                                        </InputGroup.Prepend>
+                                        <FormControl id="basic-url" aria-describedby="basic-addon3"/>
+                                    </InputGroup>    
+                                    <Card.Body>
+                                    <InputGroup>
+                                        <IconCnt style={{ marginRight:"5px" }}>
+                                            <Icon icon={ check } />
+                                        </IconCnt>
+                                        <Card.Text>상품을 수취하실 분의 성함/사업자 상호를 적어주세요. 상품도착후 변경은 불가능합니다</Card.Text>
+                                    </InputGroup>
+                                    <InputGroup>
+                                        <IconCnt style={{ marginRight:"5px" }}>
+                                            <Icon icon={ check } />
+                                        </IconCnt>
+                                        <Card.Text>통관시 받는분을 기준으로 수입신고 합니다.</Card.Text>
+                                    </InputGroup>
+                                    <InputGroup>
+                                        <IconCnt style={{ marginRight:"5px" }}>
+                                            <Icon icon={ check } />
+                                        </IconCnt>
+                                        <Card.Text>사업자 통관으로 진행하실 경우 받는분 이름(국문/영문)을 사업체 이름으로 기입주세요.</Card.Text>
+                                    </InputGroup>
+                                    </Card.Body>
+                            </Card.Body> 
+                            </Card> 
+                        </InputGroup>
+                   
+                        <InputGroup className="mb-3" >
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon3" >
+                                    받는분 정보
+                                </InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Card style={{ width: '86%'}}>
+                            <Card.Body>
+                                <Form.Check inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
+                                <Form.Check inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='사업자번호(사업자통관)'/>
+                                        
+                                    <InputGroup className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
+                                        <FormControl id="basic-url" aria-describedby="basic-addon3" placeholder="8자리 고유번호" style={{ marginRight:'10px'}}/>
+                                        <Button variant='secondary' style={{ marginRight:'10px'}}>발급방법</Button>
+                                        <Button variant='secondary'>내 개인통관고유번호 저장</Button>
+                                    </InputGroup >
+                                    <Form.Check type='checkbox' 
+                                        onChange={e => this.handleChangeOwnerCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
+                                        style={{}}
+                                    />
+                                     <InputGroup>
+                                     <IconCnt style={{ marginRight:"5px" }}>
+                                        <Icon icon={ check } />
+                                    </IconCnt>
+                                    <Card.Text style={{marginTop:'5px'}}>목록통관 대상품목도 개인통관고유번호 제출이 필수입니다.</Card.Text>
+                                    </InputGroup>
+                            </Card.Body> 
+                            </Card> 
+                        </InputGroup>
+
+                        <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon3" >
+                                    연락처
+                                </InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Card style={{ width: '90%'}}>
+                            <Card.Body>
+                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="basic-addon3">
+                                            연락처
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                        <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
+                                            <Icon icon={ minus } />
+                                        </IconCnt>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                        <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
+                                            <Icon icon={ minus } />
+                                        </IconCnt>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                </InputGroup >
+                                <InputGroup className="mb-3" style={{ width: '40%'}}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="basic-addon3">
+                                            우편번호
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" style={{ marginRight:'10px'}}/>
+                                    <Button variant='secondary' >우편번호 찾기</Button>
+                                </InputGroup >
+                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="basic-addon3">
+                                            주소
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                </InputGroup >
+                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text id="basic-addon3">
+                                            상세주소
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                </InputGroup >
+                            </Card.Body> 
+                            </Card> 
+                        </InputGroup>
+
+                        <InputGroup className="mb-3">
+                            <InputGroup.Prepend>
+                                <InputGroup.Text id="basic-addon3" >
+                                    국내배송 요청사항
+                                </InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <Card style={{ width: '80%'}}>
+                            <Card.Body>
+                            </Card.Body> 
+                            </Card> 
+                        </InputGroup>
+
+                        <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
+                            <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}>배송대행 신청하기</Button>
+                            <Button size="lg" variant='secondary'>임시 저장하기</Button>
+                        </InputGroup >
+
+                    <TransportShippingRequest/>
+                    </Card.Body>
+                </Card>
+
+            );}
+    }
