@@ -4,25 +4,28 @@ import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
-import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { times, exchange, check, minus } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
+
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
-    
 `;
 
 const IconStyle = {justifyContent:"center"}
 
 const AppContainer = styled(BaseAppContainer)`
-    height: calc(330vh);
-    width: 100vw;
+    height: calc(350vh);
+    width: 99vw;
 `;
 
 const BodyContainer = styled(BaseAppContainer)`
-  height: calc(330vh);
+  height: calc(350vh);
   flex-direction: column;
 `;
 
@@ -32,12 +35,21 @@ export class RequestShippingService extends React.Component {
         this.state = { 
             //agreement:false,
             agreement:true,
+            keycloakAuth:null,
+            accessToken:"",
         };
         this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
     }
 
     handleChangeOnCheckbox(e) {
         this.setState({agreement:e.target.checked}) 
+    }
+
+    componentDidMount() {
+        keycloak.init({onLoad: 'login-required'}).success(() => {
+            this.setState({ keycloakAuth: keycloak, 
+            accessToken:keycloak.token})
+        })
     }
 
   render() {
@@ -68,7 +80,7 @@ export class RequestShippingService extends React.Component {
                             <Form.Check type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
                         </Card.Footer>
                     </Card>
-                    {didAgreeWith?<ShippingCenter/>:""}
+                    {didAgreeWith?<ShippingCenter accessToken={this.state.accessToken}/>:""}
                 </BodyContainer>
             </AppContainer>
         </div>
@@ -126,7 +138,8 @@ class ShippingCenter extends React.Component{
                     <Form.Check checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
                 </Card.Footer>
             </Card>
-            {didUnderstand ? <InputDeliveryContent easyShip={this.state.easyShip}/>:""}
+            {didUnderstand ? <InputDeliveryContent easyShip={this.state.easyShip}
+                accessToken={this.props.accessToken}/>:""}
             {/* {didUnderstand ? <InputDelivery/>:""} */}
             {didUnderstand ? <TransportShippingRequest/>:""}
         </div>
@@ -138,38 +151,95 @@ class ShippingCenter extends React.Component{
         super(props);
         this.state = {
             shopUrl:"",
-            brandName:"",
-            productName:"",
+            
             trackingTitle:"운송사선택",
             trackingNumber:"",
+
             categoryTitle:"선택",
+            isValidCategory:false,
+            //categoryVariant:"danger",
+            categoryVariant:"outline-secondary",
+
             itemTitle:"선택",
+            isValidItemTitle:false,
+            //itemTitleVariant:"danger",
+            itemTitleVariant:"outline-secondary",
+
             brandName:"",
-            receiverNameByKorea:"",
-            receiverNameByEnglish:"",
-            prouctPrice:"",
+            itemName:"",
+            isValidItemName:false,
+            warningInvalidItemName: false,
+
+            productPrice:"",
             productAmount:"",
             totalPrice:"",
-            changeServiceCall:false,
+            isValidTotalPrice:false,
+
+            receiverNameByKorea:"",
+            setOwnerContent:false,
+            receiverNameByEnglish:"",
+
+            privateTransit:true,
+            businessTransit:false,
+
+            transitNumber:"",
+            isValidTransitNumber:false,
+
+            agreeWithCollection:false,
+
+            callNumberFront:"",
+            callNumberMiddle:"",
+            callNumberRear:"",
+
+            postCode:"",
+            deliveryAddress:"",
+            detailAddress:"",
+            deliveryMessage:"",
+
+            applyDeliveryService:false,
         };
+
+        this.inputShopUrl               = this.inputShopUrl.bind(this);
         this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
         this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
+
         this.handleSelectCategory       = this.handleSelectCategory.bind(this);
         this.handleSelectItem           = this.handleSelectItem.bind(this);
+
         this.inputBrandName             = this.inputBrandName.bind(this);
         this.inputItemName              = this.inputItemName.bind(this);
-        this.inputReceiverNameByKorea    = this.inputReceiverNameByKorea.bind(this); 
-        this.inputReceiverNameByEnglish  = this.inputReceiverNameByEnglish.bind(this); 
+
+        this.inputReceiverNameByKorea   = this.inputReceiverNameByKorea.bind(this);
+        this.setOwnerContentCheckbox    = this.setOwnerContentCheckbox.bind(this);  
+        this.inputReceiverNameByEnglish = this.inputReceiverNameByEnglish.bind(this); 
+
+        this.inputPrivateTransit  = this.inputPrivateTransit.bind(this); 
+        this.inputBusinessTransit  = this.inputBusinessTransit.bind(this); 
+        this.inputTransitNumber  = this.inputTransitNumber.bind(this); 
+        this.agreeWithCollectionCheckbox = this.agreeWithCollectionCheckbox.bind(this);
 
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
         this.inputTotalPrice    = this.inputTotalPrice.bind(this);
-        this.inputShopUrl       = this.inputShopUrl.bind(this);
-        this.changeServiceCall  = this.changeServiceCall.bind(this);
+
+        this.inputCallNumberFront    = this.inputCallNumberFront.bind(this);
+        this.inputCallNumberMiddle   = this.inputCallNumberMiddle.bind(this);
+        this.inputCallNumberRear     = this.inputCallNumberRear.bind(this);
+
+        this.inputPostCode              = this.inputPostCode.bind(this);
+        this.inputDeliveryAddress       = this.inputDeliveryAddress.bind(this);
+        this.inputDetailAddress         = this.inputDetailAddress.bind(this);
+        this.inputDeliveryMessage       = this.inputDeliveryMessage.bind(this);
+        
+        this.applyDeliveryService  = this.applyDeliveryService.bind(this);
+    }   
+
+    setOwnerContentCheckbox(event){        
+        this.setState({setOwnerContent:event.target.checked})
     }
 
-    handleChangeOwnerCheckbox(event){
-        
+    inputShopUrl(event){
+        this.setState({shopUrl:event.target.value})
     }
 
     inputTrackingTitle(event, company) {
@@ -180,8 +250,12 @@ class ShippingCenter extends React.Component{
         this.setState({trackingNumber:event.target.value}) 
     }
 
-    handleSelectCategory(event,ct) {
-        this.setState({categoryTitle:ct}) 
+    handleSelectCategory(event, title) {
+        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true}) 
+    }
+
+    handleSelectItem(event, it) {
+        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true}) 
     }
 
     inputBrandName(event){
@@ -189,11 +263,43 @@ class ShippingCenter extends React.Component{
     }
 
     inputItemName(event){
-        this.setState({itemName:event.target.value}) 
+        this.setState({itemName:event.target.value})
+        const itemName = this.state.itemName
+        itemName === "" ?  this.setState({isValidItemName:false}) : 
+            this.setState({isValidItemName:true, warningInvalidItemName:false}) 
     }
 
-    handleSelectItem(event, it) {
-        this.setState({itemTitle:it}) 
+    inputProductPrice(event){
+        const inputPrice = event.target.value
+        console.log("inputPrice : " + inputPrice)
+        const isProperPrice = Number.isInteger(parseInt(inputPrice))
+        console.log("isProperPrice : " + isProperPrice)
+        this.setState({
+            productPrice:inputPrice,
+        })
+    }
+
+    inputProductAmount(event){
+        const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
+        this.setState({
+            productAmount:amount,
+        })
+        console.log("product amount")
+    }
+
+    inputTotalPrice(event){
+        console.log("total price")
+
+        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const total = (price === "") || (amount === "") ? "" : price*amount
+        console.log(price)
+        this.setState({
+            totalPrice:total
+        })
+
+        total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
+        console.log("total : " + total)
     }
 
     inputReceiverNameByKorea(event){
@@ -204,67 +310,130 @@ class ShippingCenter extends React.Component{
         this.setState({receiverNameByEnglish:event.target.value}) 
     }
 
-    inputShopUrl(event){
+    inputPrivateTransit(e) {
+        this.setState({privateTransit:true})
+        this.setState({businessTransit:false})
+    }
+
+    inputBusinessTransit(e) {
+        this.setState({privateTransit:false})
+        this.setState({businessTransit:true})
+    }
+
+    inputTransitNumber(event){
+        this.setState({transitNumber:event.target.value})
+    }
+
+    agreeWithCollectionCheckbox(event){
+        this.setState({agreeWithCollection:event.target.checked})
+    }
+
+    inputCallNumberFront(event){
+        this.setState({callNumberFront:event.target.value})
+    }
+
+    inputCallNumberMiddle(event){
+        this.setState({callNumberMiddle:event.target.value})
+    }
+
+    inputCallNumberRear(event){
+        this.setState({callNumberRear:event.target.value})
+    }
+
+    applyDeliveryService(e, allowToApply, itemNameLength){
+        if(allowToApply){
+            console.log("allowToApply")
+            this.setState({applyDeliveryService:true})
+        } else {
+            console.log("Not allowToApply")
+            console.log("itemNameLength: " + itemNameLength)
+            itemNameLength === 0 ? this.setState({warningInvalidItemName:true}) : 
+                this.setState({warningInvalidItemName:false}) 
+            
+        }
+    }
+
+    inputPostCode(event){
         this.setState({
-            shopUrl:event.target.value
+            postCode:event.target.value
         })
     }
 
-    inputProductPrice(event){
-        const price = (event.target.value === "") || (event.target.value === null) ? "" : parseInt(event.target.value)
-        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
-        const total = (price === "") || (amount === "") ? "" : price+amount
+    inputDeliveryAddress(event){
         this.setState({
-            productPrice:price,
-            totoalPrice:total
-        })
-        console.log("product price")
-        console.log(price+"_"+amount+"_"+total)
-        console.log(this.state.productPrice+"_"+this.state.productAmount+"_"+this.state.totalPrice)
-    }
-
-    inputProductAmount(event){
-        const price = (this.state.productAmount === "") ? "" : parseInt(this.state.productPrice)
-        const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        const total = (price === "") || (amount === "") ? "" : price+amount
-        this.setState({
-            productAmount:amount,
-            totoalPrice:total
-        })
-        console.log("product amount")
-        console.log(price+"_"+amount+"_"+total)
-        console.log(this.state.productPrice+"_"+this.state.productAmount+"_"+this.state.totalPrice)
-    }
-
-    inputTotalPrice(event){
-        console.log("total price")
-
-        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
-        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
-        const total = (price === "") || (amount === "") ? "" : price+amount
-        console.log(price)
-        this.setState({
-            totalPrice:total
+            deliveryAddress:event.target.value
         })
     }
 
-    changeServiceCall(){
+    inputDetailAddress(event){
         this.setState({
-            changeServiceCall:true,
+            detailAddress:event.target.value
+        })
+    }
+
+    inputDeliveryMessage(event){
+        this.setState({
+            deliveryMessage:event.target.value
         })
     }
 
     render(){
 
         const price = this.state.productPrice
-        const priceInt  = (price === "") || (price === null) || (price === undefined) ? "" : parseInt(price)
+        const isNumberPrice = Number(price) 
+        const priceInt  = isNumberPrice ? price : 0
         
         const amount = this.state.productAmount
-        const amountInt = (amount === "") || (amount === null || (amount === undefined)) ? "" : parseInt(amount)
-        const totalPrice = (priceInt === "" || amountInt === "") ? "" : priceInt + amountInt
+        const isNumberAmount = Number(amount) 
+        const amountInt = isNumberAmount ? parseInt(amount) : 0 
+        const totalPrice = priceInt*amountInt
+
+        const categoryVariant = this.state.categoryVariant
+        const isValidCategory = this.state.isValidCategory
+
+        const itemTitleVariant = this.state.itemTitleVariant
+        const isValidItemTitle = this.state.isValidItemTitle
+
+        const transitNumber = this.state.transitNumber
+        //const isValidTransitNumber = this.state.isValidTransitNumber
+        const isValidTransitNumber = transitNumber.length == 8 ? true : false
+
+        const isValidItemName = this.state.isValidItemName
+        const itemNameLength = this.state.itemName.length
+        //const warningItemName = isValidItemName == true ? "" : true
+        const warningInvalidItemName =  this.state.warningInvalidItemName
+
+        const isValidTotalPrice = totalPrice == 0 ? false : true  
+        const allowToApply = (isValidCategory & isValidItemTitle & isValidTransitNumber 
+                & isValidItemName & isValidTotalPrice)
+
+        let popOver
+        let warnCategory
+        let warnItemTitle
+        let warnComma
+        let warnMessageTransitNumber
+
+        if(isValidCategory & isValidItemTitle & isValidTransitNumber){
+            popOver = <div></div>   
+        } else if( isValidCategory & isValidItemTitle & !isValidTransitNumber){
+            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유번호를 체크해주세요.";
+            popOver = <Popover id="popover-basic" title="필수기재사항">
+                            {warnMessageTransitNumber}
+                      </Popover>
+        } else {
+            warnCategory = isValidCategory ? "" : "카테고리";
+            warnItemTitle = isValidItemTitle ? "" : "품목";
+            warnComma = (isValidCategory || isValidItemTitle) ? "" : ", ";
+
+            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유번호를 체크해주세요.";
+            popOver = <Popover id="popover-basic" title="필수기재사항">
+                            {warnCategory}{warnComma} {warnItemTitle} 영역을 선택해주세요.<br/>
+                            {warnMessageTransitNumber}
+                      </Popover>
+        }
 
         return(
-            <Card>
+            <div>
             {/* 상품입력 박스*/}
             <Card border="dark" style={{ width: '80%', height:'26rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품입력</Card.Header>
@@ -316,7 +485,7 @@ class ShippingCenter extends React.Component{
                        
                         <DropdownButton
                             as={InputGroup.Prepend}
-                            variant="outline-secondary"
+                            variant = {categoryVariant}
                             title={this.state.categoryTitle}
                             id="input-group-dropdown-category"
                             style={{ marginRight: '200px'}}
@@ -334,7 +503,7 @@ class ShippingCenter extends React.Component{
                        
                         <DropdownButton
                             as={InputGroup.Prepend}
-                            variant="outline-secondary"
+                            variant={itemTitleVariant}
                             title={this.state.itemTitle}
                             id="input-group-dropdown-category"
                             >
@@ -362,9 +531,12 @@ class ShippingCenter extends React.Component{
                             상품명(영문)
                         </InputGroup.Text>
                         </InputGroup.Prepend>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                       
+                        <Form.Control id="basic-url" aria-describedby="basic-addon3" 
                             placeholder="정확한 영문 상품명을 입력해주세요"
-                            onChange = {this.inputItemName}/>
+                            onChange={this.inputItemName}
+                            type="text"
+                            isInvalid={warningInvalidItemName}/>
                     </InputGroup>
 
                     <InputGroup className="mb-3">
@@ -402,7 +574,7 @@ class ShippingCenter extends React.Component{
             </Card>
             
             {/* 받는분정보 박스 */}
-            <Card border="dark" style={{ width: '80%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width:'80%', height:'65rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
                         <InputGroup className="mb-3">
@@ -422,8 +594,9 @@ class ShippingCenter extends React.Component{
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         onChange = { this.inputReceiverNameByKorea }
                                     />
-                                    <Form.Check type='checkbox' 
-                                        onChange={e => this.handleChangeOwnerCheckbox(e)} label='회원정보와 동일'
+                                    <Form.Check type='checkbox'
+                                        onChange={e => this.setOwnerContentCheckbox(e)} label='회원정보와 동일'
+                                        checked={this.state.setOwnerContent}
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px'}}
                                     />
                                     <Button variant="secondary">받는분 정보 불러오기</Button>
@@ -470,16 +643,20 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '86%'}}>
                             <Card.Body>
-                                <Form.Check inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
-                                <Form.Check inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='사업자번호(사업자통관)'/>
+                                <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
+                                <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/>
                                         
                                     <InputGroup className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
-                                        <FormControl id="basic-url" aria-describedby="basic-addon3" placeholder="8자리 고유번호" style={{ marginRight:'10px'}}/>
+                                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                                            placeholder="8자리 고유번호" 
+                                            onChange = { this.inputTransitNumber }
+                                            style={{ marginRight:'10px'}}/>
                                         <Button variant='secondary' style={{ marginRight:'10px'}}>발급방법</Button>
                                         <Button variant='secondary'>내 개인통관고유번호 저장</Button>
                                     </InputGroup >
                                     <Form.Check type='checkbox' 
-                                        onChange={e => this.handleChangeOwnerCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
+                                        onChange={e => this.agreeWithCollectionCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
+                                        checked={this.state.agreeWithCollection}
                                         style={{}}
                                     />
                                      <InputGroup>
@@ -506,15 +683,18 @@ class ShippingCenter extends React.Component{
                                             연락처
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={e => this.inputCallNumberFront(e)} />
                                         <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
                                         </IconCnt>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={e => this.inputCallNumberMiddle(e)} />
                                         <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
                                         </IconCnt>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={e => this.inputCallNumberRear(e)} />
                                 </InputGroup >
                                 <InputGroup className="mb-3" style={{ width: '40%'}}>
                                     <InputGroup.Prepend>
@@ -522,7 +702,9 @@ class ShippingCenter extends React.Component{
                                             우편번호
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" style={{ marginRight:'10px'}}/>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                                        style={{ marginRight:'10px'}}
+                                        onChange={e => this.inputPostCode(e)}/>
                                     <Button variant='secondary' >우편번호 찾기</Button>
                                 </InputGroup >
                                 <InputGroup className="mb-3" style={{ width: '50%'}}>
@@ -531,7 +713,8 @@ class ShippingCenter extends React.Component{
                                             주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={e => this.inputDeliveryAddress(e)} />
                                 </InputGroup >
                                 <InputGroup className="mb-3" style={{ width: '50%'}}>
                                     <InputGroup.Prepend>
@@ -539,7 +722,8 @@ class ShippingCenter extends React.Component{
                                             상세주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3" />
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={e => this.inputDetailAddress(e)}/>
                                 </InputGroup >
                             </Card.Body> 
                             </Card> 
@@ -551,37 +735,65 @@ class ShippingCenter extends React.Component{
                                     국내배송 요청사항
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Card style={{ width: '80%'}}>
+                            <Card style={{ width: '80%', height: '8em'}}>
                             <Card.Body>
+                                <Form.Control id="basic-url" as="textarea" rows="3" 
+                                            aria-describedby="basic-addon3"
+                                            value={this.state.deliveryMessage}
+                                            onChange={e => this.inputDeliveryMessage(e)}
+                                            style={{ height:'5em'}}/>
                             </Card.Body> 
                             </Card> 
                         </InputGroup>
 
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
-                            <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
-                                onClick={this.changeServiceCall}
-                                >배송대행 신청하기
-                            </Button>
+                            <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
+                                <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
+                                    onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                    >배송대행 신청하기
+                                </Button>
+                            </OverlayTrigger>
                             <Button size="lg" variant='secondary'>임시 저장하기</Button>
                         </InputGroup >
 
                     </Card.Body>
                     <TransportShippingRequest 
-                        serviceCall={this.state.changeServiceCall}
+                        applyDeliveryService={this.state.applyDeliveryService}
+                        
                         shopUrl={this.state.shopUrl}
                         trackingTitle={this.state.trackingTitle}
                         trackingNumber={this.state.trackingNumber}
+                        
                         categoryTitle={this.state.categoryTitle}
                         itemTitle={this.state.itemTitle}
                         brandName={this.state.brandName}
                         itemName={this.state.itemName}
-                        totalPrice={this.state.totalPrice}
+                        
+                        totalPrice={totalPrice}
+                        
                         receiverNameByKorea={this.state.receiverNameByKorea}
+                        setOwnerContent={this.state.setOwnerContent}
                         receiverNameByEnglish={this.state.receiverNameByEnglish}
+                        
+                        privateTransit={this.state.privateTransit}
+                        transitNumber={this.state.transitNumber}
+                        agreeWithCollection={this.state.agreeWithCollection}
+                        
+                        callNumberFront={this.state.callNumberFront}
+                        callNumberMiddle={this.state.callNumberMiddle}
+                        callNumberRear={this.state.callNumberRear}
+
+                        postCode={this.state.postCode}
+                        deliveryAddress={this.state.deliveryAddress}
+                        detailAddress={this.state.detailAddress}
+                        deliveryMessage={this.state.deliveryMessage}
+
                         easyShip={this.props.easyShip}
+
+                        accessToken={this.props.accessToken}
                         />
                 </Card>
-            </Card>
+            </div>
             );
         }
     }

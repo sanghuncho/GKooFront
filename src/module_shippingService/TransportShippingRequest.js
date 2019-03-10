@@ -1,26 +1,94 @@
 import * as React from "react";
+import { headers, localPort } from "../module_mypage/AuthService"
+
 
 export class TransportShippingRequest extends React.Component {
     constructor(props, context) {
         super(props, context);
       }
 
-    
-    render() {
-      if (this.props.serviceCall){
+      createShippingService(contents){
+        const token = this.props.accessToken
+        this.setTokenHeader(token)
+        fetch('http://localhost:8888/createshippingservice', 
+                {method:'post', headers, 
+                  body:JSON.stringify(contents)})
+                .then((result) => { return result;}).then((contents) => {
+            console.log(contents)
+           }).catch(err => err);
+      }
 
-          console.log("Transport shopurl: " + this.props.shopUrl)
-          console.log("Transport easyship: " + this.props.easyShip)
-          console.log("Transport trackingTitle: " + this.props.trackingTitle)
-          console.log("Transport trackingNumber: " + this.props.trackingNumber)
-          console.log("Transport categoryTitle: " + this.props.categoryTitle)
-          console.log("Transport itemTitle: " + this.props.itemTitle)
-          console.log("Transport brandName: " + this.props.brandName) 
-          console.log("Transport itemName: " + this.props.itemName) 
-          console.log("Transport totalPrice: " + this.props.totalPrice) 
-          console.log("Transport receiverNameByKorea: " + this.props.receiverNameByKorea) 
-          console.log("Transport receiverNameByEnglish: " + this.props.receiverNameByEnglish) 
-        }
+      setTokenHeader(token){
+        headers ['Authorization'] = 'Bearer ' + token;
+      }
+
+    render() {
+        
+        if (this.props.applyDeliveryService){
+
+        console.log("Transport shopurl: " + this.props.shopUrl)
+        console.log("Transport easyship: " + this.props.easyShip)
+
+        console.log("Transport trackingTitle: " + this.props.trackingTitle)
+        console.log("Transport trackingNumber: " + this.props.trackingNumber)
+        console.log("Transport categoryTitle: " + this.props.categoryTitle)
+
+        console.log("Transport itemTitle: " + this.props.itemTitle)
+        console.log("Transport brandName: " + this.props.brandName) 
+        console.log("Transport itemName: " + this.props.itemName) 
+        console.log("Transport totalPrice: " + this.props.totalPrice) 
+          
+        console.log("Transport receiverNameByKorea: " + this.props.receiverNameByKorea) 
+        console.log("Transport setOwnerContent: " + this.props.setOwnerContent) 
+        console.log("Transport receiverNameByEnglish: " + this.props.receiverNameByEnglish) 
+          
+        console.log("Transport privateTransit: " + this.props.privateTransit) 
+        console.log("Transport transitNumber: " + this.props.transitNumber)
+        console.log("Transport agreeWithCollection: " + this.props.agreeWithCollection)
+          
+        console.log("Transport callNumberFront: " + this.props.callNumberFront)
+        console.log("Transport callNumberMiddle: " + this.props.callNumberMiddle)
+        console.log("Transport callNumberRear: " + this.props.callNumberRear)  
+          
+        console.log("Transport postCode: " + this.props.postCode)  
+        console.log("Transport DeliveryAddress: " + this.props.deliveryAddress)  
+        console.log("Transport DetailAddress: " + this.props.detailAddress)
+        console.log("Transport deliveryMessage: " + this.props.deliveryMessage)   
+       
+        const contents = [{shopUrl: this.props.shopUrl}, 
+                          {easyship:this.props.easyShip},
+
+                          {trackingTitle:this.props.trackingTitle},
+                          {trackingNumber:this.props.trackingNumber},
+                          {categoryTitle:this.props.categoryTitle},
+
+                          {itemTitle:this.props.itemTitle},
+                          {brandName:this.props.brandName},
+                          {itemName:this.props.itemName},
+                          
+                          {totalPrice:this.props.totalPrice},
+
+                          {receiverNameByKorea:this.props.receiverNameByKorea},
+                          {setOwnerContent:this.props.setOwnerContent},
+                          {receiverNameByEnglish:this.props.receiverNameByEnglish},
+
+                          {privateTransit:this.props.privateTransit},
+                          {transitNumber:this.props.transitNumber},
+                          {agreeWithCollection:this.props.agreeWithCollection},
+
+                          {callNumberFront:this.props.callNumberFront},
+                          {callNumberMiddle:this.props.callNumberMiddle},
+                          {callNumberRear:this.props.callNumberRear},
+
+                          {postCode:this.props.postCode},
+                          {deliveryAddress:this.props.deliveryAddress},
+                          {detailAddress:this.props.detailAddress},
+                          {deliveryMessage:this.props.deliveryMessage},               
+                        ]
+
+        this.createShippingService(contents)
+          
+    }
       return(
           <div>
               
