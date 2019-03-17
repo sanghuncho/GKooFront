@@ -4,11 +4,12 @@ import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
-import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
+    OverlayTrigger, ButtonGroup } from 'react-bootstrap';
 import { times, exchange, check, minus } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
-
+import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -146,12 +147,14 @@ class ShippingCenter extends React.Component{
     );}
  }
 
+ 
  class InputDeliveryContent extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             shopUrl:"",
-            
+            shopUrlList:[],
+
             trackingTitle:"운송사선택",
             trackingNumber:"",
 
@@ -169,6 +172,9 @@ class ShippingCenter extends React.Component{
             itemName:"",
             isValidItemName:false,
             warningInvalidItemName: false,
+            itemNameList:[],
+            itemList:[],
+            heightOfInputProduct:"26",
 
             productPrice:"",
             productAmount:"",
@@ -213,14 +219,15 @@ class ShippingCenter extends React.Component{
         this.setOwnerContentCheckbox    = this.setOwnerContentCheckbox.bind(this);  
         this.inputReceiverNameByEnglish = this.inputReceiverNameByEnglish.bind(this); 
 
+        this.inputProductPrice  = this.inputProductPrice.bind(this);
+        this.inputProductAmount = this.inputProductAmount.bind(this);
+        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
+
         this.inputPrivateTransit  = this.inputPrivateTransit.bind(this); 
         this.inputBusinessTransit  = this.inputBusinessTransit.bind(this); 
         this.inputTransitNumber  = this.inputTransitNumber.bind(this); 
         this.agreeWithCollectionCheckbox = this.agreeWithCollectionCheckbox.bind(this);
 
-        this.inputProductPrice  = this.inputProductPrice.bind(this);
-        this.inputProductAmount = this.inputProductAmount.bind(this);
-        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
 
         this.inputCallNumberFront    = this.inputCallNumberFront.bind(this);
         this.inputCallNumberMiddle   = this.inputCallNumberMiddle.bind(this);
@@ -232,6 +239,11 @@ class ShippingCenter extends React.Component{
         this.inputDeliveryMessage       = this.inputDeliveryMessage.bind(this);
         
         this.applyDeliveryService  = this.applyDeliveryService.bind(this);
+
+        this.handleChnageItemList = this.handleChnageItemList.bind(this)
+        this.removeItemOnList = this.removeItemOnList.bind(this)
+        this.updateItemOnList = this.updateItemOnList.bind(this)
+        this.handleChangeShopUrlList = this.handleChangeShopUrlList.bind(this)
     }   
 
     setOwnerContentCheckbox(event){        
@@ -240,6 +252,10 @@ class ShippingCenter extends React.Component{
 
     inputShopUrl(event){
         this.setState({shopUrl:event.target.value})
+    }
+
+    addShopUrlList(event){
+        this.setState({shopUrlList:event.target.value})
     }
 
     inputTrackingTitle(event, company) {
@@ -341,6 +357,7 @@ class ShippingCenter extends React.Component{
     }
 
     applyDeliveryService(e, allowToApply, itemNameLength){
+        console.log(this.state.shopUrlList)
         if(allowToApply){
             console.log("allowToApply")
             this.setState({applyDeliveryService:true})
@@ -377,6 +394,56 @@ class ShippingCenter extends React.Component{
         })
     }
 
+    // addItemNameField(event){
+    //     this.setState({
+    //         itemNameList:[...this.state.itemNameList, ""],
+    //         heightOfInputProduct:this.state.heightOfInputProduct+4
+    //     })
+    // }
+
+    // removeItemNameField(index){
+    //     this.state.itemNameList.splice(index, 1)
+    //     this.setState({itemNameList:this.state.itemNameList, 
+    //         heightOfInputProduct:this.state.heightOfInputProduct-4})
+    // }
+
+    addItemOnList(event){
+        this.setState({
+            itemList:[...this.state.itemList, ""],
+            //heightOfInputProduct:this.state.heightOfInputProduct+4
+        })
+    }
+
+    removeItemOnList(index){
+        //this.state.itemList.re(index, 1)
+        this.state.itemList.splice(index, 1)
+        console.log(index)
+        this.state.shopUrlList.splice(index, 1)
+
+        this.setState({itemList:this.state.itemList, shopUrlList:this.state.shopUrlList
+            //heightOfInputProduct:this.state.heightOfInputProduct-4
+        })
+    }
+
+    handleChnageItemList(e, index){
+        this.state.itemList[index]=e.target.value
+        this.setState({ itemList: this.state.itemList })
+        console.log("itemList:" + this.state.itemList)
+    }
+
+    handleChangeShopUrlList(e, index){
+        this.state.shopUrlList[index]=e.target.value
+        this.setState({ shopUrlList: this.state.shopUrlList })
+        console.log("shopUrlList:" + this.state.shopUrlList)
+    }
+
+    updateItemOnList(index){
+        console.log("update from child" + index)
+        this.setState({itemList:this.state.itemList, shopUrlList:this.state.shopUrlList
+            //heightOfInputProduct:this.state.heightOfInputProduct-4
+        })
+    }
+
     render(){
 
         const price = this.state.productPrice
@@ -402,6 +469,7 @@ class ShippingCenter extends React.Component{
         const itemNameLength = this.state.itemName.length
         //const warningItemName = isValidItemName == true ? "" : true
         const warningInvalidItemName =  this.state.warningInvalidItemName
+        const heightOfInputProduct = heightOfInputProduct + "rem"
 
         const isValidTotalPrice = totalPrice == 0 ? false : true  
         const allowToApply = (isValidCategory & isValidItemTitle & isValidTransitNumber 
@@ -435,10 +503,13 @@ class ShippingCenter extends React.Component{
         return(
             <div>
             {/* 상품입력 박스*/}
-            <Card border="dark" style={{ width: '80%', height:'26rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:{heightOfInputProduct}, marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품입력</Card.Header>
                 <Card.Body >
 
+                <Card border="dark" style={{ width: '100%'}}>
+                    <Card.Header>상품1</Card.Header>
+                    <Card.Body >
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3">
@@ -525,7 +596,7 @@ class ShippingCenter extends React.Component{
                             onChange = {this.inputBrandName}/>
                     </InputGroup>
 
-                     <InputGroup className="mb-3">
+                    <InputGroup className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3">
                             상품명(영문)
@@ -539,6 +610,21 @@ class ShippingCenter extends React.Component{
                             isInvalid={warningInvalidItemName}/>
                     </InputGroup>
 
+                    {/* {this.state.itemNameList.map((itemName, index) => {return (
+                        <div key={index}>
+                        <InputGroup className="mb-3">
+                            <Form.Control id="basic-url" aria-describedby="basic-addon3" 
+                                placeholder="영문 상품명"
+                                onChange={(e) => this.handleChnageItemList(e, index)}
+                            />
+                            <Button variant="secondary" onClick={() => this.removeItemNameField(index)} >상품명 제거</Button>
+                        </InputGroup>
+                        </div>
+                    )})}
+
+                    <Button variant="secondary" onClick={(e) => this.addItemNameField(e)} 
+                        style={{ marginRight: '100px'}}>상품명 추가</Button> */}
+                        
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3">
@@ -567,10 +653,34 @@ class ShippingCenter extends React.Component{
                             readOnly = "true"
                             />
                         <InputGroup.Append>
-                                <InputGroup.Text>(Euro)</InputGroup.Text>
+                            <InputGroup.Text>(Euro)</InputGroup.Text>
                         </InputGroup.Append>
                     </InputGroup>
+                 </Card.Body>
+                 </Card> 
+
+                {this.state.itemList.map((itemName, index) => { return (
+                    <div key={index}>
+                    {/* <InputGroup className="mb-3">
+                        <Form.Control id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="영문 상품명"
+                            onChange={(e) => this.handleChnageItemList(e, index)}
+                        />
+                        <Button variant="secondary" onClick={() => this.removeItemNameField(index)} >상품명 제거</Button>
+                    </InputGroup> */}
+                    <AdditionalProduct index={index} itemList={this.state.itemList} 
+                        shopUrlList={this.state.shopUrlList}
+                        updateOnList={this.updateItemOnList}
+                        />
+                    </div>
+                )})}
+
+                 {/* 상품추가 버튼 */}
+                 <Button variant="secondary" size="sm" onClick={(e) => this.addItemOnList(e)} 
+                            style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>상품 추가</Button>
+                 
                 </Card.Body>
+
             </Card>
             
             {/* 받는분정보 박스 */}
