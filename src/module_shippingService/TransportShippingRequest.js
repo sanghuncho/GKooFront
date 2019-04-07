@@ -27,9 +27,11 @@ export class TransportShippingRequest extends React.Component {
         if (this.props.applyDeliveryService){
 
         console.log("Transport shopurl: " + this.props.shopUrl)
+        console.log("Transport shopurlList: " + this.props.shopUrlList)
         console.log("Transport easyship: " + this.props.easyShip)
 
         console.log("Transport trackingTitle: " + this.props.trackingTitle)
+        console.log("Transport trackingTitleList: " + this.props.trackingTitleList)
         console.log("Transport trackingNumber: " + this.props.trackingNumber)
         console.log("Transport categoryTitle: " + this.props.categoryTitle)
 

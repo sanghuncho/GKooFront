@@ -1,8 +1,5 @@
 import * as React from "react";
 import styled from "styled-components";
-import {
-    AppContainer as BaseAppContainer,
-  } from "../container";
 import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button } from 'react-bootstrap';
 import { times, exchange} from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
@@ -53,17 +50,18 @@ export class AdditionalProduct extends React.Component{
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
         this.inputTotalPrice    = this.inputTotalPrice.bind(this);
-        this.removeItemOnList = this.removeItemOnList.bind(this)
+        
     }
 
     inputShopUrl(event){
         this.setState({shopUrl:event.target.value})
         console.log("index: "+this.props.index + " - "+ "shopUrl: "+ this.state.shopUrl)
-        this.props.shopUrlList[this.props.index] = this.state.shopUrl
+        this.props.shopUrlList[this.props.index] = event.target.value
     }
 
     inputTrackingTitle(event, company) {
-        this.setState({trackingTitle:company}) 
+        this.setState({trackingTitle:company})
+        this.props.trackingTitleList[this.props.index] = company
     }
 
     inputTrackingNumber(event){
@@ -120,19 +118,6 @@ export class AdditionalProduct extends React.Component{
 
         total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
         console.log("total : " + total)
-    }
-
-    removeItemOnList(e){
-        const index = this.props.index
-
-        this.props.itemList.splice(index, 1)
-        this.props.shopUrlList.splice(index, 1)
-        console.log("remove")
-        
-        //this.props.updateItemList()
-        //this.setState({itemList:this.state.itemList, shopUrlList:this.state.shopUrlList
-            //heightOfInputProduct:this.state.heightOfInputProduct-4
-        //})
     }
 
     render(){
@@ -287,8 +272,7 @@ export class AdditionalProduct extends React.Component{
                     </InputGroup.Append>
                 </InputGroup>
                 <Button variant="secondary" size="sm" 
-                    //onClick={this.removeItemOnList} 
-                    onClick={() => this.props.updateOnList(index)} 
+                    onClick={() => this.props.removeItemOnList(index)} 
                             style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>상품 삭제</Button>    
              </Card.Body>
              </Card>

@@ -21,12 +21,12 @@ const IconCnt = styled.div`
 const IconStyle = {justifyContent:"center"}
 
 const AppContainer = styled(BaseAppContainer)`
-    height: calc(350vh);
+    height:auto;
     width: 99vw;
 `;
 
 const BodyContainer = styled(BaseAppContainer)`
-  height: calc(350vh);
+  height:auto;
   flex-direction: column;
 `;
 
@@ -60,14 +60,15 @@ export class RequestShippingService extends React.Component {
             <AppContainer>
                 <ShippingService/>
                 
-                <BodyContainer>
+                <BodyContainer >
                     <Breadcrumb>
                         <Breadcrumb.Item active>배송대행</Breadcrumb.Item>
                         <Breadcrumb.Item active>배송대행 신청</Breadcrumb.Item>
                     </Breadcrumb> 
                     <Card border="dark" style={{ width: '80%', height:'21rem', marginTop:'1rem' }}>
                         <Card.Header>서비스 신청시 주의사항</Card.Header>
-                        <Card.Body style={{'max-height': 'calc(100vh - 210px)', 'overflow-y': 'auto'}}>
+                        <Card.Body style={{'height': '210px','overflow-y': 'scroll'}}>
+                        {/* <Card.Body style={{'max-height': '210px', 'overflow-y': 'auto'}}> */}
                         <Card.Text>1. 지쿠 배송대행 신청서에 기재된 모든 내용은 통관시 세관에 신고되므로 허위로 작성하실 수 없습니다.</Card.Text>
                         <Card.Text>2. 지쿠는 나눔배송 또는 분할배송 서비스를 제공하지 않습니다.</Card.Text>
                         <Card.Text>3. 한곳의 쇼핑몰에서 한번에 여러 개의 상품을 주문한 경우에는 하나의 배송대행 신청서에 모두 등록하여야 합니다. 
@@ -147,38 +148,51 @@ class ShippingCenter extends React.Component{
     );}
  }
 
- 
  class InputDeliveryContent extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            goodsList:[],
+
             shopUrl:"",
             shopUrlList:[],
 
             trackingTitle:"운송사선택",
+            trackingTitleList:[],
+
             trackingNumber:"",
+            trackingNumberList:[],
 
             categoryTitle:"선택",
+            categoryTitleList:[],
             isValidCategory:false,
             //categoryVariant:"danger",
             categoryVariant:"outline-secondary",
 
             itemTitle:"선택",
+            itemTitleList:[],
             isValidItemTitle:false,
             //itemTitleVariant:"danger",
             itemTitleVariant:"outline-secondary",
 
             brandName:"",
+            brandNameList:[],
+            
             itemName:"",
+            itemNameList:[],
             isValidItemName:false,
             warningInvalidItemName: false,
-            itemNameList:[],
-            itemList:[],
+            
             heightOfInputProduct:"26",
 
             productPrice:"",
+            productPriceList:[],
+
             productAmount:"",
+            productAmountList:[],
+
             totalPrice:"",
+            totalPriceList:[],
             isValidTotalPrice:false,
 
             receiverNameByKorea:"",
@@ -240,10 +254,7 @@ class ShippingCenter extends React.Component{
         
         this.applyDeliveryService  = this.applyDeliveryService.bind(this);
 
-        this.handleChnageItemList = this.handleChnageItemList.bind(this)
         this.removeItemOnList = this.removeItemOnList.bind(this)
-        this.updateItemOnList = this.updateItemOnList.bind(this)
-        this.handleChangeShopUrlList = this.handleChangeShopUrlList.bind(this)
     }   
 
     setOwnerContentCheckbox(event){        
@@ -252,10 +263,6 @@ class ShippingCenter extends React.Component{
 
     inputShopUrl(event){
         this.setState({shopUrl:event.target.value})
-    }
-
-    addShopUrlList(event){
-        this.setState({shopUrlList:event.target.value})
     }
 
     inputTrackingTitle(event, company) {
@@ -357,7 +364,9 @@ class ShippingCenter extends React.Component{
     }
 
     applyDeliveryService(e, allowToApply, itemNameLength){
+        console.log("==>additional shopList")
         console.log(this.state.shopUrlList)
+        console.log("<==additional shopList")
         if(allowToApply){
             console.log("allowToApply")
             this.setState({applyDeliveryService:true})
@@ -394,53 +403,18 @@ class ShippingCenter extends React.Component{
         })
     }
 
-    // addItemNameField(event){
-    //     this.setState({
-    //         itemNameList:[...this.state.itemNameList, ""],
-    //         heightOfInputProduct:this.state.heightOfInputProduct+4
-    //     })
-    // }
-
-    // removeItemNameField(index){
-    //     this.state.itemNameList.splice(index, 1)
-    //     this.setState({itemNameList:this.state.itemNameList, 
-    //         heightOfInputProduct:this.state.heightOfInputProduct-4})
-    // }
-
     addItemOnList(event){
         this.setState({
-            itemList:[...this.state.itemList, ""],
-            //heightOfInputProduct:this.state.heightOfInputProduct+4
+            goodsList:[...this.state.goodsList, ""],
+            heightOfInputProduct:this.state.heightOfInputProduct+4
         })
     }
 
     removeItemOnList(index){
-        //this.state.itemList.re(index, 1)
-        this.state.itemList.splice(index, 1)
-        console.log(index)
+        console.log("update from child::" + index)
+        this.state.goodsList.splice(index, 1)
         this.state.shopUrlList.splice(index, 1)
-
-        this.setState({itemList:this.state.itemList, shopUrlList:this.state.shopUrlList
-            //heightOfInputProduct:this.state.heightOfInputProduct-4
-        })
-    }
-
-    handleChnageItemList(e, index){
-        this.state.itemList[index]=e.target.value
-        this.setState({ itemList: this.state.itemList })
-        console.log("itemList:" + this.state.itemList)
-    }
-
-    handleChangeShopUrlList(e, index){
-        this.state.shopUrlList[index]=e.target.value
-        this.setState({ shopUrlList: this.state.shopUrlList })
-        console.log("shopUrlList:" + this.state.shopUrlList)
-    }
-
-    updateItemOnList(index){
-        console.log("update from child" + index)
-        this.setState({itemList:this.state.itemList, shopUrlList:this.state.shopUrlList
-            //heightOfInputProduct:this.state.heightOfInputProduct-4
+        this.setState({goodsList:this.state.goodsList, shopUrlList:this.state.shopUrlList,
         })
     }
 
@@ -610,21 +584,6 @@ class ShippingCenter extends React.Component{
                             isInvalid={warningInvalidItemName}/>
                     </InputGroup>
 
-                    {/* {this.state.itemNameList.map((itemName, index) => {return (
-                        <div key={index}>
-                        <InputGroup className="mb-3">
-                            <Form.Control id="basic-url" aria-describedby="basic-addon3" 
-                                placeholder="영문 상품명"
-                                onChange={(e) => this.handleChnageItemList(e, index)}
-                            />
-                            <Button variant="secondary" onClick={() => this.removeItemNameField(index)} >상품명 제거</Button>
-                        </InputGroup>
-                        </div>
-                    )})}
-
-                    <Button variant="secondary" onClick={(e) => this.addItemNameField(e)} 
-                        style={{ marginRight: '100px'}}>상품명 추가</Button> */}
-                        
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3">
@@ -659,18 +618,23 @@ class ShippingCenter extends React.Component{
                  </Card.Body>
                  </Card> 
 
-                {this.state.itemList.map((itemName, index) => { return (
+                {/* 상품추가 구현*/}
+                {this.state.goodsList.map((itemName, index) => { return (
                     <div key={index}>
-                    {/* <InputGroup className="mb-3">
-                        <Form.Control id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="영문 상품명"
-                            onChange={(e) => this.handleChnageItemList(e, index)}
-                        />
-                        <Button variant="secondary" onClick={() => this.removeItemNameField(index)} >상품명 제거</Button>
-                    </InputGroup> */}
-                    <AdditionalProduct index={index} itemList={this.state.itemList} 
+
+                    <AdditionalProduct index={index} 
                         shopUrlList={this.state.shopUrlList}
-                        updateOnList={this.updateItemOnList}
+                        trackingTitleList = {this.state.trackingTitleList}
+                        trackingNumberList = {this.state.trackingNumberList}
+                        categoryTitleList = {this.state.categoryTitleList}
+                        itemTitleList = {this.state.itemTitleList}
+                        brandNameList = {this.state.brandNameList}
+                        itemNameList = {this.state.itemNameList}
+                        productPriceList = {this.state.productPriceList}
+                        productAmountList = {this.state.productAmountList}
+                        totalPriceList = {this.state.totalPriceList}
+
+                        removeItemOnList={this.removeItemOnList}
                         />
                     </div>
                 )})}
@@ -871,7 +835,11 @@ class ShippingCenter extends React.Component{
                         applyDeliveryService={this.state.applyDeliveryService}
                         
                         shopUrl={this.state.shopUrl}
+                        shopUrlList={this.state.shopUrlList}
+
                         trackingTitle={this.state.trackingTitle}
+                        trackingTitleList={this.state.trackingTitleList}
+
                         trackingNumber={this.state.trackingNumber}
                         
                         categoryTitle={this.state.categoryTitle}
