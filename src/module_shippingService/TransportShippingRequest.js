@@ -32,6 +32,7 @@ export class TransportShippingRequest extends React.Component {
 
         console.log("Transport trackingTitle: " + this.props.trackingTitle)
         console.log("Transport trackingTitleList: " + this.props.trackingTitleList)
+
         console.log("Transport trackingNumber: " + this.props.trackingNumber)
         console.log("Transport categoryTitle: " + this.props.categoryTitle)
 
@@ -85,13 +86,18 @@ export class TransportShippingRequest extends React.Component {
                           {postCode:this.props.postCode},
                           {deliveryAddress:this.props.deliveryAddress},
                           {detailAddress:this.props.detailAddress},
-                          {deliveryMessage:this.props.deliveryMessage},               
+                          {deliveryMessage:this.props.deliveryMessage},
+                          //{shopUrlList: this.props.shopUrlList}     
+                          {shopUrlList: JSON.stringify(this.props.shopUrlList)}     
                         ]
+        
 
+        console.log(JSON.stringify(contents))
         this.createShippingService(contents)
-          
+        this.props.finishService()
     }
       return(
+        //without GUI
           <div>
               
           </div>

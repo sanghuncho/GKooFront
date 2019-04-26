@@ -5,7 +5,8 @@ import {
     AppContainer as BaseAppContainer,
   } from "../container";
 import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
-    OverlayTrigger, ButtonGroup } from 'react-bootstrap';
+    OverlayTrigger, Modal } from 'react-bootstrap';
+import { NavLink } from "react-router-dom";
 import { times, exchange, check, minus } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
@@ -217,6 +218,9 @@ class ShippingCenter extends React.Component{
             deliveryMessage:"",
 
             applyDeliveryService:false,
+            //without validation
+            //applyDeliveryService:true,
+            show: false,
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -255,6 +259,10 @@ class ShippingCenter extends React.Component{
         this.applyDeliveryService  = this.applyDeliveryService.bind(this);
 
         this.removeItemOnList = this.removeItemOnList.bind(this)
+        this.finishService = this.finishService.bind(this)
+
+        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
     }   
 
     setOwnerContentCheckbox(event){        
@@ -363,20 +371,24 @@ class ShippingCenter extends React.Component{
         this.setState({callNumberRear:event.target.value})
     }
 
-    applyDeliveryService(e, allowToApply, itemNameLength){
-        console.log("==>additional shopList")
-        console.log(this.state.shopUrlList)
-        console.log("<==additional shopList")
-        if(allowToApply){
-            console.log("allowToApply")
-            this.setState({applyDeliveryService:true})
-        } else {
-            console.log("Not allowToApply")
-            console.log("itemNameLength: " + itemNameLength)
-            itemNameLength === 0 ? this.setState({warningInvalidItemName:true}) : 
-                this.setState({warningInvalidItemName:false}) 
+    // applyDeliveryService(e, allowToApply, itemNameLength){
+    //     console.log("==>additional shopList")
+    //     console.log(this.state.shopUrlList)
+    //     console.log("<==additional shopList")
+    //     if(allowToApply){
+    //         console.log("allowToApply")
+    //         this.setState({applyDeliveryService:true})
+    //     } else {
+    //         console.log("Not allowToApply")
+    //         console.log("itemNameLength: " + itemNameLength)
+    //         itemNameLength === 0 ? this.setState({warningInvalidItemName:true}) : 
+    //             this.setState({warningInvalidItemName:false}) 
             
-        }
+    //     }
+    // }
+
+    applyDeliveryService(e, allowToApply, itemNameLength){
+        this.setState({applyDeliveryService:true})
     }
 
     inputPostCode(event){
@@ -416,6 +428,19 @@ class ShippingCenter extends React.Component{
         this.state.shopUrlList.splice(index, 1)
         this.setState({goodsList:this.state.goodsList, shopUrlList:this.state.shopUrlList,
         })
+    }
+
+    finishService(){
+        this.setState({applyDeliveryService:false})
+        console.log("finish service")
+    }
+
+    handleModalClose() {
+        this.setState({ show: false });
+    }
+    
+    handleModalShow() {
+        this.setState({ show: true });
     }
 
     render(){
@@ -642,7 +667,6 @@ class ShippingCenter extends React.Component{
                  {/* 상품추가 버튼 */}
                  <Button variant="secondary" size="sm" onClick={(e) => this.addItemOnList(e)} 
                             style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>상품 추가</Button>
-                 
                 </Card.Body>
 
             </Card>
@@ -823,17 +847,37 @@ class ShippingCenter extends React.Component{
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
                             <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
                                 <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
-                                    onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                    //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                    onClick={this.handleModalShow}
                                     >배송대행 신청하기
                                 </Button>
                             </OverlayTrigger>
                             <Button size="lg" variant='secondary'>임시 저장하기</Button>
                         </InputGroup >
 
+                        {/* if success after validation, then it shows the dialog*/}
+                        <Modal show={this.state.show} onHide={this.handleClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>배송대행 신청</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>배송대행을 신청하시겠습니까?</Modal.Body>
+                            <Modal.Footer>
+                                <NavLink to="/mypage">
+                                    <Button variant="success" onClick={this.handleModalClose}>
+                                    예
+                                    </Button>
+                                </NavLink>
+                                <Button variant="dark" onClick={this.handleModalClose}>
+                                취소
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+
                     </Card.Body>
                     <TransportShippingRequest 
                         applyDeliveryService={this.state.applyDeliveryService}
-                        
+                        finishService = {this.finishService}
+
                         shopUrl={this.state.shopUrl}
                         shopUrlList={this.state.shopUrlList}
 
@@ -847,6 +891,7 @@ class ShippingCenter extends React.Component{
                         brandName={this.state.brandName}
                         itemName={this.state.itemName}
                         
+                        //send the amount and every price!! 
                         totalPrice={totalPrice}
                         
                         receiverNameByKorea={this.state.receiverNameByKorea}
