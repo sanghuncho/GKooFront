@@ -61,7 +61,7 @@ export class RequestShippingService extends React.Component {
             <AppContainer>
                 <ShippingService/>
                 
-                <BodyContainer >
+                <BodyContainer>
                     <Breadcrumb>
                         <Breadcrumb.Item active>배송대행</Breadcrumb.Item>
                         <Breadcrumb.Item active>배송대행 신청</Breadcrumb.Item>
@@ -856,7 +856,7 @@ class ShippingCenter extends React.Component{
                         </InputGroup >
 
                         {/* if success after validation, then it shows the dialog*/}
-                        <Modal show={this.state.show} onHide={this.handleClose}>
+                        <Modal show={this.state.show} onHide={this.handleModalClose}>
                             <Modal.Header closeButton>
                                 <Modal.Title>배송대행 신청</Modal.Title>
                             </Modal.Header>

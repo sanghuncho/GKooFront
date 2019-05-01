@@ -8,6 +8,8 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { Route, Redirect } from 'react-router'
 import { Table, Image } from "react-bootstrap"
 import item_123 from "../assets/item_123.jpg"
+import { ServiceInformation } from "./ServiceInformation";
+import { OrderInformation } from "./OrderInformation";
 
   const UserAccountTableStyle = styled.div`
     margin-top: 25px;
@@ -131,7 +133,6 @@ export class UserAccount extends React.Component{
       this.setState({
         redirect: true,
       });
-      
     }
 
     handleClick(e){
@@ -173,6 +174,10 @@ export class UserAccount extends React.Component{
       return(
       <div>
         <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}/>
+        
+        <ServiceInformation/>
+        
+        <OrderInformation/>
 
         <UserAccountTableStyle>
           <CaptionUserAccount/>
@@ -282,3 +287,4 @@ export class UserBaseInfo extends React.Component {
     </UserBaseInfoTableStyle>
     );}
 }
+

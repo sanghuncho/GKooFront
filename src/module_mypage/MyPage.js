@@ -15,7 +15,7 @@ var keycloak = Keycloak(keycloakConfigLocal);
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  height: auto;
 `;
 const Navigation = styled(BaseNavigation)`
     background: #80b13e;
@@ -24,6 +24,11 @@ const Navigation = styled(BaseNavigation)`
     width: 110px;
     line-height: 22px;
     border-radius: 0px;
+    height: auto;
+`;
+const BodyContainer = styled(BaseAppContainer)`
+  height:auto;
+  flex-direction: column;
 `;
 
 const theme = {
@@ -100,6 +105,7 @@ export class MyPage extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { purchaseOrder: data} )
+          console.log(data)
         })   
     }
 
@@ -166,7 +172,11 @@ export class MyPage extends React.Component{
                     </div>
                 </SideNav>
             </Navigation>
-            <body><UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/></body>
+
+            <BodyContainer>
+              <UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/>
+            </BodyContainer>
+            
             </AppContainer>
             </div>
            
