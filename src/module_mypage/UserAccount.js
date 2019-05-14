@@ -13,7 +13,7 @@ import { OrderInformation } from "./OrderInformation";
 
   const UserAccountTableStyle = styled.div`
     margin-top: 25px;
-    margin-left:5%; 
+    margin-left:1%; 
     margin-right:15%;
     width: 1100px;
     background: #FFFFFF;
@@ -24,7 +24,7 @@ import { OrderInformation } from "./OrderInformation";
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
-    margin-left:5%; 
+    margin-left:1%; 
     margin-right:15%;
     width: 1100px;
     background: #FFFFFF;
@@ -173,10 +173,13 @@ export class UserAccount extends React.Component{
      
       return(
       <div>
+        
         <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}/>
         
+        {/* 이용현황 */}
         <ServiceInformation/>
         
+        {/* 전체메뉴 */}
         <OrderInformation/>
 
         <UserAccountTableStyle>
@@ -230,8 +233,8 @@ export class ImageObject extends React.Component {
 }
 
 const UserBaseInfoTableStyle = styled.div`
-    margin-top: 30px;
-    margin-left:5%; 
+    margin-top: 10px;
+    margin-left:1%; 
     margin-right:15%;
     width: 1100px;
     background: #FFFFFF;
@@ -257,6 +260,7 @@ export class UserBaseInfo extends React.Component {
   }
   
   render() {
+    {/* My Page image or sentences */}
     return(
       <UserBaseInfoTableStyle>
       <CaptionBaseInfo/>

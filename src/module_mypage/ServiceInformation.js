@@ -4,10 +4,11 @@ import { Table } from "react-bootstrap"
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { Link, NavLink } from "react-router-dom";
 
 const ServiceInfoTableStyle = styled.div`
   margin-top: 25px;
-  margin-left:5%; 
+  margin-left:1%; 
   margin-right:15%;
   width: 1100px;
   background: #FFFFFF;
@@ -16,9 +17,16 @@ const ServiceInfoTableStyle = styled.div`
   font-size: 15px;
 `;
 
+function recipientFormatter(cell, row) {        
+  return (
+    <RecipientLink cell = {cell}/>
+  );
+}
+
 const columnsUserAccount = [{
   dataField: 'recipientState',
   text: '입고현황',
+  formatter:recipientFormatter
   },{
   dataField: 'paymentState',
   text: '결제현황',
@@ -32,11 +40,12 @@ const columnsUserAccount = [{
 ];
 
 const data = [
-              {"recipientState":"0",
-                "paymentState":"0",
-                "deliveryState":"0",
-                "extraState":"0"
-              },{"recipientState":"입고대기",
+              // {"recipientState":"0",
+              //   "paymentState":"0",
+              //   "deliveryState":"0",
+              //   "extraState":"0"
+              // },
+              {"recipientState":"입고대기",
                 "paymentState":"결제요청",
                 "deliveryState":"해외배송중",
                 "extraState":"신청취소"
@@ -93,5 +102,21 @@ export class ServiceInformation extends React.Component {
          bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
     </ServiceInfoTableStyle>
     );}
+}
+
+class RecipientLink extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const cell = this.props.cell
+      console.log(cell)
+      return (
+        <div>
+           <Link to="/">{cell}</Link>
+        </div>
+      );
+    }    
 }
 

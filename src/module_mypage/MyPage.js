@@ -11,12 +11,16 @@ import {
 } from "../container";
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, localPort } from "./AuthService"
+import { MyPageSideNav } from "./MyPageSideNav";
+import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
+
 var keycloak = Keycloak(keycloakConfigLocal);
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
 `;
+
 const Navigation = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
@@ -148,32 +152,14 @@ export class MyPage extends React.Component{
         return (
             <div>
             <AppContainer>
-            <Navigation> 
-                <SideNav theme={theme} onItemSelection={this.onItemSelection}>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
-                    <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
-                            <IconCnt>
-                                <Icon icon={pagelines} />
-                            </IconCnt>
-                            <Text>배송비 안내</Text>
-                        </NavLink>
-                    </NavLinkStyle>
-                    </div>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
-                    <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
-                            <IconCnt>
-                                <Icon icon={calendar} />
-                            </IconCnt>
-                            <Text>스케줄</Text>
-                        </NavLink>
-                    </NavLinkStyle>
-                    </div>
-                </SideNav>
-            </Navigation>
-
+      
+            <MyPageSideNav/>
+            
             <BodyContainer>
+              <Breadcrumb style={{ width: '105%'}}>
+                <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
+              </Breadcrumb>
+
               <UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/>
             </BodyContainer>
             

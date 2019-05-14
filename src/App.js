@@ -24,6 +24,7 @@ import { Information } from './Infomation'
 
 import { Home } from './Home'
 import { RequestShippingService } from './module_shippingService/RequestShippingService';
+import { MyPageDetail } from './module_mypage/MyPageDetail';
 
 var naviGreen = '#80b13e'
 var grey = '#727676';
@@ -161,6 +162,7 @@ const Main = () => (
     <Route exact path='/information' component={ Information }></Route> 
     <Route exact path='/mypage' component={ MyPage }></Route> 
     <Route exact path='/customercenter' component={CustomerCenter}></Route> 
+    <Route exact path='/mypagedetail' component={MyPageDetail}></Route>
     {/* <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
     <Route exact path='/wirtschaftseinheit/:id' component={Wirtschaftseinheit}></Route> 
     <Route exact path='/einheit' component={Einheit}></Route>  */}

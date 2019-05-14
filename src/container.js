@@ -6,6 +6,12 @@ export const AppContainer = styled.div`
   width: 100%;
 `;
 
+export const NaviContainer = styled.div`
+  display: flex;
+  height: auto;
+  width: 100%;
+`;
+
 export const Navigation = styled.div`
   width: 110px;
   flex-shrink: 0;

@@ -14,7 +14,7 @@ const OrderInfoTableStyle = styled.div`
 
 const TabsStyle = styled.div`
   margin-top: 25px;
-  margin-left:5%; 
+  margin-left:1%; 
   margin-right:15%;
   width: 1100px;
   background: #FFFFFF;
@@ -123,9 +123,7 @@ export class OrderNumberLink extends React.Component {
 
   render() {
     return(
-      // <div>011011011</div>
-      <Link to="/">23259875</Link>
-      // <Route exact path='/' component={Home}></Route>
+      <Link to="/mypagedetail">23259875</Link>
     );}
 }
 
