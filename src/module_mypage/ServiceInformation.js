@@ -115,6 +115,7 @@ class RecipientLink extends React.Component{
       return (
         <div>
            <Link to="/">{cell}</Link>
+            
         </div>
       );
     }    

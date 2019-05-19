@@ -11,16 +11,7 @@ import item_123 from "../assets/item_123.jpg"
 import { ServiceInformation } from "./ServiceInformation";
 import { OrderInformation } from "./OrderInformation";
 
-  const UserAccountTableStyle = styled.div`
-    margin-top: 25px;
-    margin-left:1%; 
-    margin-right:15%;
-    width: 1100px;
-    background: #FFFFFF;
-    padding: 0px 5px 5px 5px;
-    box-shadow: 2px 2px 3px 3px #888; 
-    font-size: 13px;
-  `;
+ 
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
@@ -111,6 +102,7 @@ function unitFormatter(cell, row) {
   );
 }
 
+ {/* ToDo : userAccount name as mypagebody */}
 export class UserAccount extends React.Component{
   
     constructor(props, context) {
@@ -164,11 +156,8 @@ export class UserAccount extends React.Component{
         }
       };
 
-      const CaptionUserAccount = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
-       padding: '0.5em', fontWeight:'bold' }}>결제 내역</h6>;
-
       const CaptionPurchaing = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
-       padding: '0.5em', fontWeight:'bold' }}>구매대행 내역</h6>;
+       padding: '0.5em', fontWeight:'bold' }}>결제 현황</h6>;
       
      
       return(
@@ -182,21 +171,172 @@ export class UserAccount extends React.Component{
         {/* 전체메뉴 */}
         <OrderInformation/>
 
-        <UserAccountTableStyle>
+        <WarehouseInformation userAccount={ this.props.userAccount }/>
+
+        <PaymentInformation userAccount={ this.props.userAccount }/>
+
+        <DeliveryInformation userAccount={ this.props.userAccount }/>
+
+        
+        {/* <UserAccountTableStyle>
           <CaptionUserAccount/>
           <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsUserAccount } 
             hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-        </UserAccountTableStyle>
+        </UserAccountTableStyle> 
 
         <PurchasingTableStyle>
           <CaptionPurchaing/>
           <BootstrapTable keyField='objectId'  data={ this.props.purchaseOrder } columns={ columnsPurchasing } 
             hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-        </PurchasingTableStyle>
+        </PurchasingTableStyle> */}
+
+        {/* <PurchasingTableStyle>
+          <CaptionPurchaing/>
+          <BootstrapTable keyField='objectId'  data={ this.props.purchaseOrder } columns={ columnsPurchasing } 
+            hover pagination={ paginationFactory() } bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+        </PurchasingTableStyle> */}
 
       </div>
     );}
 } 
+
+const MyPageBodyTableStyle = styled.div`
+  margin-top: 25px;
+  margin-left:1%; 
+  margin-right:15%;
+  margin-bottom:25px;
+  width: 1100px;
+  background: #FFFFFF;
+  padding: 0px 5px 5px 5px;
+  box-shadow: 2px 2px 3px 3px #888; 
+  font-size: 13px;
+`;
+
+
+
+function CaptionMypageTable(props) {
+  return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
+  padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
+}
+
+class WarehouseInformation extends React.Component{
+  
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const rowEvents = {
+        onClick: (e, row, rowIndex) => {
+          console.log(`clicked on row with index: ${rowIndex}`);
+          this.setRedirect();
+        }
+      };
+      
+      const columnsWarehouse = [{
+        dataField: 'orderNumber',
+        text: '신청번호',}, {
+        dataField: 'productInfo',
+        text: '상품정보'}, {
+        dataField: 'recipient',
+        text: '받는분'}, {
+        dataField: 'deliveryState',
+        text: '진행상태'}, {
+        dataField: 'deliveryTracking',
+        text: '배송조회'}
+      ];
+
+      return (
+
+        <div>
+          <MyPageBodyTableStyle>
+          <CaptionMypageTable title="입고 현황"/>
+          <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsWarehouse } 
+            hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+          </MyPageBodyTableStyle>
+        </div>
+      );
+    }    
+}
+
+class PaymentInformation extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const rowEvents = {
+        onClick: (e, row, rowIndex) => {
+          console.log(`clicked on row with index: ${rowIndex}`);
+          this.setRedirect();
+        }
+      };
+
+      const columnsPayment = [{
+        dataField: 'orderNumber',
+        text: '신청번호',
+        }, {
+        dataField: 'productInfo',
+        text: '상품정보'}, {
+        dataField: 'recipient',
+        text: '받는분'},{
+        dataField: 'deliveryPayment',
+        text: '운송료'}, {
+        dataField: 'paymentState',
+        text: '결제상태'}, 
+      ];
+
+      return (
+        <div>
+          <MyPageBodyTableStyle>
+          <CaptionMypageTable title="결제 현황"/>
+          <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsPayment } 
+            hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+          </MyPageBodyTableStyle>
+        </div>
+      );
+    }    
+}
+
+class DeliveryInformation extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const rowEvents = {
+        onClick: (e, row, rowIndex) => {
+          console.log(`clicked on row with index: ${rowIndex}`);
+          this.setRedirect();
+        }
+      };
+
+      const columnsDelivery = [{
+        dataField: 'orderNumber',
+        text: '신청번호',
+        }, {
+        dataField: 'productInfo',
+        text: '상품정보'}, {
+        dataField: 'recipient',
+        text: '받는분'},{
+        dataField: 'deliveryPayment',
+        text: '운송료'}, {
+        dataField: 'deliveryState',
+        text: '진행상태'}, {
+        dataField: 'deliveryTracking',
+        text: '배송조회'}
+      ];
+
+      return (
+        <div>
+          <MyPageBodyTableStyle>
+            <CaptionMypageTable title="배송 현황"/>
+            <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsDelivery } 
+              hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+          </MyPageBodyTableStyle></div>
+      );
+    }    
+}
 
 export class ImageObject extends React.Component {
   constructor(props, context) {
