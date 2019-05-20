@@ -12,10 +12,7 @@ import { ServiceInformation } from "./ServiceInformation";
 import { OrderInformation } from "./OrderInformation";
 import { WarehouseInformation } from "./WarehouseInformation";
 import { PaymentInformation } from "./PaymentInformation";
-<<<<<<< HEAD
-=======
 import { DeliveryInformation } from "./DeliveryInformation";
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
@@ -226,77 +223,6 @@ function CaptionMypageTable(props) {
   padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
 }
 
-<<<<<<< HEAD
-class DeliveryInformation extends React.Component{
-=======
-class PaymentHistory extends React.Component{
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
-  constructor(props) {
-      super(props);
-    }
-    
-    render() {
-      const rowEvents = {
-        onClick: (e, row, rowIndex) => {
-          console.log(`clicked on row with index: ${rowIndex}`);
-          this.setRedirect();
-        }
-      };
-<<<<<<< HEAD
-
-      const columnsDelivery = [{
-        dataField: 'orderNumber',
-        text: '신청번호',
-        }, {
-        dataField: 'productInfo',
-        text: '상품정보'}, {
-        dataField: 'recipient',
-        text: '받는분'},{
-        dataField: 'deliveryPayment',
-        text: '운송료'}, {
-        dataField: 'deliveryState',
-        text: '진행상태'}, {
-        dataField: 'deliveryTracking',
-        text: '배송조회'}
-=======
-        
-      const ColumnsPaymentHistory = [{
-        dataField: 'orderNumber',
-        text: '신청번호',
-        }, {
-        dataField: 'paymentInfo',
-        text: '결제정보'}, {
-        dataField: 'payment',
-        text: '결제금액'},{
-        dataField: 'originPayment',
-        text: '실결제금액'}, {
-        dataField: 'kindPayment',
-        text: '결제수단'}, {
-        dataField: 'datePayment',
-        text: '결제일'}
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
-      ];
-
-      return (
-        <div>
-          <MyPageBodyTableStyle>
-<<<<<<< HEAD
-            <CaptionMypageTable title="배송 현황"/>
-            <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsDelivery } 
-              hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-          </MyPageBodyTableStyle></div>
-=======
-              <CaptionMypageTable title="결제내역"/>
-              <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ ColumnsPaymentHistory } 
-                  hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-          </MyPageBodyTableStyle>
-        </div>
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
-      );
-    }    
-}
-
-<<<<<<< HEAD
 class PaymentHistory extends React.Component{
   constructor(props) {
       super(props);
@@ -338,8 +264,6 @@ class PaymentHistory extends React.Component{
     }    
 }
 
-=======
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
 export class ImageObject extends React.Component {
   constructor(props, context) {
     super(props, context);

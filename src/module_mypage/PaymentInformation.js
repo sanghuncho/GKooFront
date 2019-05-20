@@ -196,11 +196,7 @@ class ApprovalPayment extends React.Component{
         return (
             <div>
                 <Button variant="secondary" size="sm" onClick={this.handleModalShow}>{this.props.paymentState}</Button>
-<<<<<<< HEAD
-                <Modal show={this.state.showModal} onHide={this.handleModalClose}>
-=======
                 <Modal show={this.state.showModal} onHide={this.handleModalClose} size="lg">
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
                     <Modal.Header closeButton>
                     <Modal.Title>{this.props.paymentState}</Modal.Title>
                     </Modal.Header>
@@ -214,11 +210,7 @@ class ApprovalPayment extends React.Component{
                     </Button>
                     </NavLink> */}
                     <Button variant="dark" onClick={this.handleModalClose}>
-<<<<<<< HEAD
-                        OK
-=======
                         닫음
->>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
                     </Button>
                     </Modal.Footer>
                 </Modal>
