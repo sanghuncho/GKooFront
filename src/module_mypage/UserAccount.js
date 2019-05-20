@@ -7,11 +7,11 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { Route, Redirect } from 'react-router'
 import { Table, Image } from "react-bootstrap"
-import item_123 from "../assets/item_123.jpg"
+import { NavLink } from "react-router-dom";
 import { ServiceInformation } from "./ServiceInformation";
 import { OrderInformation } from "./OrderInformation";
-
- 
+import { WarehouseInformation } from "./WarehouseInformation";
+import { PaymentInformation } from "./PaymentInformation";
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
@@ -171,12 +171,17 @@ export class UserAccount extends React.Component{
         {/* 전체메뉴 */}
         <OrderInformation/>
 
+        {/* 입고 현황 */}
         <WarehouseInformation userAccount={ this.props.userAccount }/>
 
+        {/* 결제 현황 */}  
         <PaymentInformation userAccount={ this.props.userAccount }/>
 
+        {/* 배송 현황 */}
         <DeliveryInformation userAccount={ this.props.userAccount }/>
 
+        {/* 결제내역 나중에 코딩 */}
+        {/* <PaymentHistory userAccount={ this.props.userAccount }/> */}
         
         {/* <UserAccountTableStyle>
           <CaptionUserAccount/>
@@ -212,90 +217,9 @@ const MyPageBodyTableStyle = styled.div`
   font-size: 13px;
 `;
 
-
-
 function CaptionMypageTable(props) {
   return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
   padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
-}
-
-class WarehouseInformation extends React.Component{
-  
-  constructor(props) {
-      super(props);
-    }
-    
-    render() {
-      const rowEvents = {
-        onClick: (e, row, rowIndex) => {
-          console.log(`clicked on row with index: ${rowIndex}`);
-          this.setRedirect();
-        }
-      };
-      
-      const columnsWarehouse = [{
-        dataField: 'orderNumber',
-        text: '신청번호',}, {
-        dataField: 'productInfo',
-        text: '상품정보'}, {
-        dataField: 'recipient',
-        text: '받는분'}, {
-        dataField: 'deliveryState',
-        text: '진행상태'}, {
-        dataField: 'deliveryTracking',
-        text: '배송조회'}
-      ];
-
-      return (
-
-        <div>
-          <MyPageBodyTableStyle>
-          <CaptionMypageTable title="입고 현황"/>
-          <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsWarehouse } 
-            hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-          </MyPageBodyTableStyle>
-        </div>
-      );
-    }    
-}
-
-class PaymentInformation extends React.Component{
-  constructor(props) {
-      super(props);
-    }
-    
-    render() {
-      const rowEvents = {
-        onClick: (e, row, rowIndex) => {
-          console.log(`clicked on row with index: ${rowIndex}`);
-          this.setRedirect();
-        }
-      };
-
-      const columnsPayment = [{
-        dataField: 'orderNumber',
-        text: '신청번호',
-        }, {
-        dataField: 'productInfo',
-        text: '상품정보'}, {
-        dataField: 'recipient',
-        text: '받는분'},{
-        dataField: 'deliveryPayment',
-        text: '운송료'}, {
-        dataField: 'paymentState',
-        text: '결제상태'}, 
-      ];
-
-      return (
-        <div>
-          <MyPageBodyTableStyle>
-          <CaptionMypageTable title="결제 현황"/>
-          <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsPayment } 
-            hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
-          </MyPageBodyTableStyle>
-        </div>
-      );
-    }    
 }
 
 class DeliveryInformation extends React.Component{
@@ -334,6 +258,47 @@ class DeliveryInformation extends React.Component{
             <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsDelivery } 
               hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
           </MyPageBodyTableStyle></div>
+      );
+    }    
+}
+
+class PaymentHistory extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const rowEvents = {
+        onClick: (e, row, rowIndex) => {
+          console.log(`clicked on row with index: ${rowIndex}`);
+          this.setRedirect();
+        }
+      };
+        
+      const ColumnsPaymentHistory = [{
+        dataField: 'orderNumber',
+        text: '신청번호',
+        }, {
+        dataField: 'paymentInfo',
+        text: '결제정보'}, {
+        dataField: 'payment',
+        text: '결제금액'},{
+        dataField: 'originPayment',
+        text: '실결제금액'}, {
+        dataField: 'kindPayment',
+        text: '결제수단'}, {
+        dataField: 'datePayment',
+        text: '결제일'}
+      ];
+
+      return (
+        <div>
+          <MyPageBodyTableStyle>
+              <CaptionMypageTable title="결제내역"/>
+              <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ ColumnsPaymentHistory } 
+                  hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+          </MyPageBodyTableStyle>
+        </div>
       );
     }    
 }

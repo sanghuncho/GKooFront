@@ -3,6 +3,7 @@ import React from 'react';
 import { MyPageSideNav } from "./MyPageSideNav";
 import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
+import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -14,14 +15,14 @@ const BodyContainer = styled(BaseAppContainer)`
 `;
 
 const UserAccountTableStyle = styled.div`
-margin-top: 25px;
-margin-left:5%; 
-margin-right:15%;
-width: 1100px;
-background: #FFFFFF;
-padding: 0px 5px 5px 5px;
-box-shadow: 2px 2px 3px 3px #888; 
-font-size: 13px;
+  margin-top: 25px;
+  margin-left:5%; 
+  margin-right:15%;
+  width: 1100px;
+  background: #FFFFFF;
+  padding: 0px 5px 5px 5px;
+  box-shadow: 2px 2px 3px 3px #888; 
+  font-size: 13px;
 `;
 
 export class MyPageDetail extends React.Component{
@@ -36,8 +37,9 @@ export class MyPageDetail extends React.Component{
             <MyPageSideNav/>
             
             <BodyContainer>
-            {/* 주문자정보 */}
-            <MyPageDetailWrapper/>
+
+              {/* 주문자정보 */}
+              <MyPageDetailWrapper/>
             
             </BodyContainer>
           </AppContainer>
@@ -217,60 +219,60 @@ class MyPageDetailProduct extends React.Component{
       }    
 }
 
-class MyPageDetailDeliveryPrice extends React.Component{
-    constructor(props) {
-        super(props);
-      }
+// export class MyPageDetailDeliveryPrice extends React.Component{
+//     constructor(props) {
+//         super(props);
+//       }
       
-      render() {
-        return (
-          <div>
-              <Card border="dark" style={{ width: '100%', height:'20rem', marginTop:'1rem', marginBottom:'1rem' }}>
-                <Card.Header>운송료 결제정보</Card.Header>
-                <Card.Body >
-                <Table bordered condensed responsive size="sm">
-                    <thead>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td width='400px'>결제번호</td>
-                        <td width='400px'>111</td>
-                        {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
-                    </tr>
-                    <tr>
-                        <td>결제일자</td>
-                        <td>2019.04.05</td>
-                    </tr>
-                    <tr>
-                        <td>무게정보</td>
-                        <td>54321</td>
-                    </tr>
-                    <tr>
-                        <td>해외배송비</td>
-                        <td>35000원</td>
-                    </tr>
-                    <tr>
-                        <td>합배송비/기타수수료</td>
-                        <td>0원</td>
-                    </tr>
-                    <tr>
-                        <td>총 결제금액</td>
-                        <td>35000원</td>
-                    </tr>
-                    <tr>
-                        <td>결제수단</td>
-                        <td>무통장입금</td>
-                    </tr>
-                    </tbody>
-                </Table>
-                </Card.Body>
-                {/* <Card.Footer>
-                </Card.Footer> */}
-                </Card>
-          </div>
-        );
-      }    
-}
+//       render() {
+//         return (
+//           <div>
+//               <Card border="dark" style={{ width: '100%', height:'20rem', marginTop:'1rem', marginBottom:'1rem' }}>
+//                 <Card.Header>운송료 결제정보</Card.Header>
+//                 <Card.Body >
+//                 <Table bordered condensed responsive size="sm">
+//                     <thead>
+//                     </thead>
+//                     <tbody>
+//                     <tr>
+//                         <td width='400px'>결제번호</td>
+//                         <td width='400px'>111</td>
+//                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
+//                     </tr>
+//                     <tr>
+//                         <td>결제일자</td>
+//                         <td>2019.04.05</td>
+//                     </tr>
+//                     <tr>
+//                         <td>무게정보</td>
+//                         <td>54321</td>
+//                     </tr>
+//                     <tr>
+//                         <td>해외배송비</td>
+//                         <td>35000원</td>
+//                     </tr>
+//                     <tr>
+//                         <td>합배송비/기타수수료</td>
+//                         <td>0원</td>
+//                     </tr>
+//                     <tr>
+//                         <td>총 결제금액</td>
+//                         <td>35000원</td>
+//                     </tr>
+//                     <tr>
+//                         <td>결제수단</td>
+//                         <td>무통장입금</td>
+//                     </tr>
+//                     </tbody>
+//                 </Table>
+//                 </Card.Body>
+//                 {/* <Card.Footer>
+//                 </Card.Footer> */}
+//                 </Card>
+//           </div>
+//         );
+//       }    
+// }
 
 class MyPageDetailPerson extends React.Component{
     constructor(props) {

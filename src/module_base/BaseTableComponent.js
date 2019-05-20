@@ -14,13 +14,7 @@ const data = [
     }
   ]
 
-const columnsBaseTableComponent = [{
-    dataField: 'date',
-    text: 'DATE',
-  },{
-    dataField: 'user',
-    text: 'USER',
-  } ];
+
 
 const BaseTableComponentStyle = styled.div`
     margin-top: 25px;
@@ -44,7 +38,22 @@ class BaseTableComponent extends React.Component{
       }
       
       render() {
-        
+        const rowEvents = {
+          onClick: (e, row, rowIndex) => {
+            console.log(`clicked on row with index: ${rowIndex}`);
+            this.setRedirect();
+          }
+        };
+
+        const columnsBaseTableComponent = [{
+          dataField: 'date',
+          text: 'DATE',
+        },{
+          dataField: 'user',
+          text: 'USER',
+        } ];
+
+
         return (
           <div>
             <BaseTableComponentStyle>

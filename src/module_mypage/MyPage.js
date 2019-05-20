@@ -160,6 +160,7 @@ export class MyPage extends React.Component{
                 <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
               </Breadcrumb>
 
+              {/* ToDo : userAccount name as mypagebody */}
               <UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/>
             </BodyContainer>
             
