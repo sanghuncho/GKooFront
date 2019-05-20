@@ -12,6 +12,10 @@ import { ServiceInformation } from "./ServiceInformation";
 import { OrderInformation } from "./OrderInformation";
 import { WarehouseInformation } from "./WarehouseInformation";
 import { PaymentInformation } from "./PaymentInformation";
+<<<<<<< HEAD
+=======
+import { DeliveryInformation } from "./DeliveryInformation";
+>>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
@@ -27,38 +31,38 @@ import { PaymentInformation } from "./PaymentInformation";
 const columnsUserAccount = [{
     dataField: 'date',
     text: '날짜',
-},{
-  dataField: 'transactionMoney',
-  text: '입금액',
-  formatter:unitFormatter
-}, {
-  dataField: 'depositMoney',
-  text: '적립금',
-  formatter:unitFormatter
-}, {
-  dataField: 'gkooId',
-  text: 'Gkoo ID',
-}, {
-  dataField: 'itemName',
-  text: '물품명',
-}, {
-  dataField: 'itemImageUrl',
-  text: '물품사진',
-  formatter: imageFormatter
-}, {
-  dataField: 'purchasePrice',
-  text: '구매 총금액',
-  formatter:unitFormatter
-}, {
-  dataField: 'shippingPrice',
-  text: '국제배송비',
-  formatter:unitFormatter
-}, {
-  dataField: 'settleAmount',
-  text: '최종정산금액',
-  formatter:unitFormatter
-}
-];
+  },{
+    dataField: 'transactionMoney',
+    text: '입금액',
+    formatter:unitFormatter
+  }, {
+    dataField: 'depositMoney',
+    text: '적립금',
+    formatter:unitFormatter
+  }, {
+    dataField: 'gkooId',
+    text: 'Gkoo ID',
+  }, {
+    dataField: 'itemName',
+    text: '물품명',
+  }, {
+    dataField: 'itemImageUrl',
+    text: '물품사진',
+    formatter: imageFormatter
+  }, {
+    dataField: 'purchasePrice',
+    text: '구매 총금액',
+    formatter:unitFormatter
+  }, {
+    dataField: 'shippingPrice',
+    text: '국제배송비',
+    formatter:unitFormatter
+  }, {
+    dataField: 'settleAmount',
+    text: '최종정산금액',
+    formatter:unitFormatter
+  }
+  ];
 
 const columnsPurchasing = [{
   dataField: 'gkooId',
@@ -222,7 +226,11 @@ function CaptionMypageTable(props) {
   padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
 }
 
+<<<<<<< HEAD
 class DeliveryInformation extends React.Component{
+=======
+class PaymentHistory extends React.Component{
+>>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
   constructor(props) {
       super(props);
     }
@@ -234,6 +242,7 @@ class DeliveryInformation extends React.Component{
           this.setRedirect();
         }
       };
+<<<<<<< HEAD
 
       const columnsDelivery = [{
         dataField: 'orderNumber',
@@ -249,19 +258,45 @@ class DeliveryInformation extends React.Component{
         text: '진행상태'}, {
         dataField: 'deliveryTracking',
         text: '배송조회'}
+=======
+        
+      const ColumnsPaymentHistory = [{
+        dataField: 'orderNumber',
+        text: '신청번호',
+        }, {
+        dataField: 'paymentInfo',
+        text: '결제정보'}, {
+        dataField: 'payment',
+        text: '결제금액'},{
+        dataField: 'originPayment',
+        text: '실결제금액'}, {
+        dataField: 'kindPayment',
+        text: '결제수단'}, {
+        dataField: 'datePayment',
+        text: '결제일'}
+>>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
       ];
 
       return (
         <div>
           <MyPageBodyTableStyle>
+<<<<<<< HEAD
             <CaptionMypageTable title="배송 현황"/>
             <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ columnsDelivery } 
               hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
           </MyPageBodyTableStyle></div>
+=======
+              <CaptionMypageTable title="결제내역"/>
+              <BootstrapTable keyField='objectId'  data={ this.props.userAccount } columns={ ColumnsPaymentHistory } 
+                  hover bordered={ false } rowEvents={ rowEvents } noDataIndication="Table is empty"  />
+          </MyPageBodyTableStyle>
+        </div>
+>>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
       );
     }    
 }
 
+<<<<<<< HEAD
 class PaymentHistory extends React.Component{
   constructor(props) {
       super(props);
@@ -303,6 +338,8 @@ class PaymentHistory extends React.Component{
     }    
 }
 
+=======
+>>>>>>> Payment in detail page is implemented and it needs improvement with better GUI
 export class ImageObject extends React.Component {
   constructor(props, context) {
     super(props, context);
