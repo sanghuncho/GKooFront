@@ -166,8 +166,8 @@ export class UserAccount extends React.Component{
         
         <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}/>
         
-        {/* 이용현황 */}
-        <ServiceInformation/>
+        {/* 이용현황 -- 나중에 코딩 */}
+        {/* <ServiceInformation/> */}
         
         {/* 전체메뉴 */}
         <OrderInformation/>
@@ -181,7 +181,7 @@ export class UserAccount extends React.Component{
         {/* 배송 현황 */}
         <DeliveryInformation userAccount={ this.props.userAccount }/>
 
-        {/* 결제내역 나중에 코딩 */}
+        {/* 결제내역 -- 나중에 코딩 */}
         {/* <PaymentHistory userAccount={ this.props.userAccount }/> */}
         
         {/* <UserAccountTableStyle>

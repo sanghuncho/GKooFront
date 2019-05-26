@@ -200,7 +200,7 @@ class ApprovalPayment extends React.Component{
                     <Modal.Header closeButton>
                     <Modal.Title>{this.props.paymentState}</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>결제내역
+                    <Modal.Body>
                         <MyPageDetailDeliveryPrice/>
                     </Modal.Body>
                     <Modal.Footer>
@@ -209,7 +209,7 @@ class ApprovalPayment extends React.Component{
                         OK
                     </Button>
                     </NavLink> */}
-                    <Button variant="dark" onClick={this.handleModalClose}>
+                    <Button variant="dark" size="sm" onClick={this.handleModalClose}>
                         닫음
                     </Button>
                     </Modal.Footer>

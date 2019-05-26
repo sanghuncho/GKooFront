@@ -9,7 +9,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 const OrderInfoTableStyle = styled.div`
   margin-top: 25px;
   width: 1090px;
-  font-size: 15px;
+  font-size: 13px;
 `;
 
 const TabsStyle = styled.div`
@@ -20,7 +20,7 @@ const TabsStyle = styled.div`
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
-  font-size: 15px;
+  font-size: 13px;
 `;
 
 function orderNumberFormatter(cell, row) {        

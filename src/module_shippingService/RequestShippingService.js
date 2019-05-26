@@ -123,6 +123,7 @@ class ShippingCenter extends React.Component{
     render(){
      const didUnderstand=this.state.understandWarning;   
      return(
+        /* ToDo : as component */
         <div>
             <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem' }}>
                 <Card.Header>물류센터</Card.Header>

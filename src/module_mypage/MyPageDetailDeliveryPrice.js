@@ -115,7 +115,7 @@ export class PaymentRequest extends React.Component{
                                   </InputGroup >
                                      
                                   <Card.Body>
-                                      우리은행 1002 044 635 530 조상훈 
+                                      입금계좌: 우리은행 1002 044 635 530, 예금주: 조상훈 
                                   </Card.Body>
                             </Card.Body> 
                             </Card> 
@@ -137,7 +137,7 @@ class PaymentCompletion extends React.Component{
       render() {
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'22rem', marginTop:'1rem', marginBottom:'1rem' }}>
+              <Card border="dark" style={{ width: '100%', height:'26rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>운송료 결제정보</Card.Header>
                 <Card.Body >
                 <Table bordered condensed responsive size="sm">
@@ -176,6 +176,14 @@ class PaymentCompletion extends React.Component{
                     <tr>
                         <td>결제수단</td>
                         <td>무통장입금</td>
+                    </tr>
+                    <tr>
+                        <td>입금계좌</td>
+                        <td>우리은행 1002 044 635 530, 예금주: 조상훈</td>
+                    </tr>
+                    <tr>
+                        <td>입금자명</td>
+                        <td>조성아</td>
                     </tr>
                     </tbody>
                 </Table>
