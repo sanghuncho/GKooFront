@@ -142,7 +142,7 @@ class ShippingCenter extends React.Component{
                     <Form.Check checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
                 </Card.Footer>
             </Card>
-            {didUnderstand ? <InputDeliveryContent easyShip={this.state.easyShip}
+            {didUnderstand ? <InputDeliveryContentWrapper easyShip={this.state.easyShip}
                 accessToken={this.props.accessToken}/>:""}
             {/* {didUnderstand ? <InputDelivery/>:""} */}
             {didUnderstand ? <TransportShippingRequest/>:""}
@@ -150,7 +150,7 @@ class ShippingCenter extends React.Component{
     );}
  }
 
- class InputDeliveryContent extends React.Component{
+ class InputDeliveryContentWrapper extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -644,7 +644,7 @@ class ShippingCenter extends React.Component{
                  </Card.Body>
                  </Card> 
 
-                {/* 상품추가 구현*/}
+                {/* 상품추가 구현 */}
                 {this.state.goodsList.map((itemName, index) => { return (
                     <div key={index}>
 
@@ -672,7 +672,9 @@ class ShippingCenter extends React.Component{
 
             </Card>
             
-            {/* 받는분정보 박스 */}
+            {/* 받는분정보 박스
+            ToDo : Component
+            */}
             <Card border="dark" style={{ width:'80%', height:'65rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
@@ -848,8 +850,9 @@ class ShippingCenter extends React.Component{
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
                             <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
                                 <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
-                                    //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
-                                    onClick={this.handleModalShow}
+                                    onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                    //확인 창 떠서 예 클리하면 DB 전달
+                                    //onClick={this.handleModalShow}
                                     >배송대행 신청하기
                                 </Button>
                             </OverlayTrigger>
@@ -863,8 +866,12 @@ class ShippingCenter extends React.Component{
                             </Modal.Header>
                             <Modal.Body>배송대행을 신청하시겠습니까?</Modal.Body>
                             <Modal.Footer>
+                                {/* not automtic link */}
                                 <NavLink to="/mypage">
-                                    <Button variant="success" onClick={this.handleModalClose}>
+                                    <Button variant="success" 
+                                        //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                        onClick={this.handleModalClose}
+                                        >
                                     예
                                     </Button>
                                 </NavLink>
@@ -873,8 +880,8 @@ class ShippingCenter extends React.Component{
                                 </Button>
                             </Modal.Footer>
                         </Modal>
-
                     </Card.Body>
+
                     <TransportShippingRequest 
                         applyDeliveryService={this.state.applyDeliveryService}
                         finishService = {this.finishService}
