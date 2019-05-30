@@ -25,13 +25,19 @@ const TabsStyle = styled.div`
 
 function orderNumberFormatter(cell, row) {        
   return (
-    <OrderNumberLink/>
+    <OrderNumberLink cell={cell}/>
   );
 }
 
 function trackingFormatter(cell, row) {        
   return (
     <TrackingButton/>
+  );
+}
+
+function deliveryStateFormatter(cell, row) {        
+  return (
+    <DeliveryState cell={cell}/>
   );
 }
 
@@ -47,7 +53,8 @@ const columnsUserAccount = [{
   dataField: 'deliveryPayment',
   text: '운송료'}, {
   dataField: 'deliveryState',
-  text: '진행상태'}, {
+  text: '진행상태',
+  formatter:deliveryStateFormatter}, {
   dataField: 'deliveryTracking',
   text: '배송조회',
   formatter:trackingFormatter}
@@ -86,6 +93,8 @@ export class OrderInformation extends React.Component {
   }
 
   render() {
+    console.log("OrderInformation result")
+    console.log(this.props.orderInformation)
     return(
       <div>
         <TabsStyle>
@@ -98,7 +107,7 @@ export class OrderInformation extends React.Component {
             <Tab eventKey="total" title="전체">
              {/*ToDo: contents located in center */}
             <OrderInfoTableStyle>
-                <BootstrapTable keyField='objectId'  data={ data } columns={ columnsUserAccount } 
+                <BootstrapTable keyField='objectId'  data={ this.props.orderInformation } columns={ columnsUserAccount } 
                     bordered={ true }  noDataIndication="Table is empty"  />
             </OrderInfoTableStyle>
             </Tab>
@@ -123,7 +132,7 @@ export class OrderNumberLink extends React.Component {
 
   render() {
     return(
-      <Link to="/mypagedetail">23259875</Link>
+      <Link to="/mypagedetail">{this.props.cell}</Link>
     );}
 }
 
@@ -172,4 +181,48 @@ export class TrackingButton extends React.Component {
           </Modal>
       </div>
     );}
+}
+
+class DeliveryState extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const state = this.props.cell;
+      let deliveryState;
+
+      // 입고대기 (1),
+      // 입고완료 (2),
+      // 결제요청 (3),
+      // 결제완료 (4),
+      // 해외배송중 (5),
+      // 통관진행 (6),
+      // 국내배송 (7),
+      // 배송완료 (8)
+
+      if (state==1) {
+        deliveryState = "입고대기";
+      } else if(state==2){
+        deliveryState = "입고완료";
+      } else if(state==3){
+        deliveryState = "결제요청";
+      } else if(state==4){
+        deliveryState = "결제완료";
+      } else if(state==5){
+        deliveryState = "해외배송중";
+      } else if(state==6){
+        deliveryState = "통관진행";
+      } else if(state==7){
+        deliveryState = "국내배송";
+      } else if(state==8){
+        deliveryState = "배송완료";
+      } else {
+        deliveryState = "";
+      }
+
+      return (
+        <div>{deliveryState}</div>
+      );
+    }    
 }

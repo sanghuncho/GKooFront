@@ -170,16 +170,16 @@ export class UserAccount extends React.Component{
         {/* <ServiceInformation/> */}
         
         {/* 전체메뉴 */}
-        <OrderInformation/>
+        <OrderInformation orderInformation={ this.props.orderInformation }/>
 
         {/* 입고 현황 */}
-        <WarehouseInformation userAccount={ this.props.userAccount }/>
+        <WarehouseInformation warehouseInformation={ this.props.warehouseInformation }/>
 
         {/* 결제 현황 */}  
-        <PaymentInformation userAccount={ this.props.userAccount }/>
+        <PaymentInformation orderInformation={ this.props.orderInformation }/>
 
         {/* 배송 현황 */}
-        <DeliveryInformation userAccount={ this.props.userAccount }/>
+        <DeliveryInformation orderInformation={ this.props.orderInformation }/>
 
         {/* 결제내역 -- 나중에 코딩 */}
         {/* <PaymentHistory userAccount={ this.props.userAccount }/> */}

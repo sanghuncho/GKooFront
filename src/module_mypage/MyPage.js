@@ -68,7 +68,9 @@ export class MyPage extends React.Component{
     accessToken:"",
     customerBaseInfo:'',
     userAccount:'',
-    purchaseOrder:''
+    purchaseOrder:'',
+    orderInformation:'',
+    warehouseInformation:'',
    };
   
     toggle(position) {
@@ -99,7 +101,31 @@ export class MyPage extends React.Component{
           this.fetchCustomerBaseInfo(keycloak.token)
           this.fetchEndSettlementList(keycloak.token)
           this.fetchPurchaseOrderList(keycloak.token)
+          this.fetchOrderInformation(keycloak.token)
+          this.fetchWarehouseInformation(keycloak.token)
       })
+    }
+
+    fetchOrderInformation(token){
+      this.setTokenHeader(token)
+      fetch(localPort + '/orderinformation', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { orderInformation: data} )
+        })   
+    }
+
+    fetchWarehouseInformation(token){
+      this.setTokenHeader(token)
+      fetch(localPort + '/warehouseinformation', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { warehouseInformation: data} )
+          console.log("WARE")
+          console.log(data)
+        })   
     }
 
     fetchPurchaseOrderList(token){
@@ -161,7 +187,13 @@ export class MyPage extends React.Component{
               </Breadcrumb>
 
               {/* ToDo : userAccount name as mypagebody */}
-              <UserAccount purchaseOrder={this.state.purchaseOrder} userAccount={this.state.userAccount} customerBaseInfo={ this.state.customerBaseInfo }/>
+              <UserAccount 
+                purchaseOrder={this.state.purchaseOrder} 
+                userAccount={this.state.userAccount} 
+                customerBaseInfo={ this.state.customerBaseInfo}
+                orderInformation={ this.state.orderInformation }
+                warehouseInformation={ this.state.warehouseInformation }
+                />
             </BodyContainer>
             
             </AppContainer>

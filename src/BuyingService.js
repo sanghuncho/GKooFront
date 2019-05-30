@@ -72,6 +72,7 @@ export class BuyingService extends React.Component{
     render() {
         return (
             <div>
+                
                 <Navigation> 
                     <SideNav theme={theme} onItemSelection={this.onItemSelection}>
                         <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'40px'}} onClick={() => {this.toggle(0)}} >
