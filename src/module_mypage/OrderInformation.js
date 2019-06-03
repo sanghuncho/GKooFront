@@ -25,7 +25,7 @@ const TabsStyle = styled.div`
 
 function orderNumberFormatter(cell, row) {        
   return (
-    <OrderNumberLink cell={cell}/>
+    <OrderNumberLink orderNumber={cell}/>
   );
 }
 
@@ -85,7 +85,6 @@ export class OrderInformation extends React.Component {
     super(props, context);
 
     this.state = {
-       
     };
   }
 
@@ -93,7 +92,6 @@ export class OrderInformation extends React.Component {
   }
 
   render() {
-    console.log("OrderInformation result")
     console.log(this.props.orderInformation)
     return(
       <div>
@@ -131,9 +129,16 @@ export class OrderNumberLink extends React.Component {
   }
 
   render() {
+    const orderNumber = this.props.orderNumber
+    // return(
+    //   <Link to={{pathname:'detailsmypage', 
+    //     state:{orderNumber:orderNumber}}}>{this.props.orderNumber}</Link>
+    // );}
     return(
-      <Link to="/mypagedetail">{this.props.cell}</Link>
+      <Link to={{pathname:"detailsmypage/"+ orderNumber}}>
+        {this.props.orderNumber}</Link>
     );}
+ 
 }
 
 export class TrackingButton extends React.Component {

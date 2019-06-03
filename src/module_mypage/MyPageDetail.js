@@ -4,6 +4,10 @@ import { MyPageSideNav } from "./MyPageSideNav";
 import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
+
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -28,8 +32,41 @@ const UserAccountTableStyle = styled.div`
 export class MyPageDetail extends React.Component{
     constructor(props) {
         super(props);
+
+        this.state = {
+          orderNumber:'',
+          keycloakAuth:null,
+          accessToken:"",
+          orderingPersonInfo:"",
+        }
       }
+
+      componentDidMount () {
+          const {id} = this.props.match.params
+          this.setState({orderNumber:id})
       
+          keycloak.init({onLoad: 'login-required'}).success(() => {
+            this.setState({ keycloakAuth: keycloak, 
+              accessToken:keycloak.token})
+              this.fetchOrderingPersonInforamtion(keycloak.token)
+            })
+      }
+
+      setTokenHeader(token){
+        headers ['Authorization'] = 'Bearer ' + token;
+      }
+
+      fetchOrderingPersonInforamtion(token){
+        this.setTokenHeader(token)
+        fetch('http://localhost:8888/orderingpersoninfo', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { orderingPersonInfo: data} )
+          console.log(data)
+        })  
+      }
+
       render() {
         return (
           <div>
@@ -38,8 +75,8 @@ export class MyPageDetail extends React.Component{
             
             <BodyContainer>
 
-              {/* 주문자정보 */}
-              <MyPageDetailWrapper/>
+              <MyPageDetailWrapper orderNumber={this.state.orderNumber}
+              />
             
             </BodyContainer>
           </AppContainer>
@@ -62,7 +99,7 @@ class MyPageDetailWrapper extends React.Component{
                 </Breadcrumb> 
                 
                 {/* 주문자정보 */}
-                <MyPageDetailPerson/>
+                <MyPageDetailPerson orderNumber={this.props.orderNumber}/>
 
                 {/* 수취인정보 */}
                 <MyPageDetailRecipient/>
@@ -157,6 +194,20 @@ class MyPageDetailProducts extends React.Component{
               <Card border="dark" style={{ width: '100%', height:'40rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품 정보</Card.Header>
                 <Card.Body>
+                <Table bordered condensed responsive size="sm">
+                <thead>
+                </thead>
+                <tbody>
+                <tr>
+                  <td width='300px'>트래킹번호</td>
+                  <td width='300px'>123456</td>
+                </tr>
+                <tr>
+                  <td>쇼핑몰 URL</td>
+                  <td>www.gkoo.de</td>
+                </tr>
+                </tbody>
+                </Table>
                 {this.state.productsList.map((itemName, index) => { return (
                     <div key={index}>
                     <MyPageDetailProduct/>
@@ -282,7 +333,7 @@ class MyPageDetailPerson extends React.Component{
       render() {
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'17rem', marginTop:'1rem' }}>
+              <Card border="dark" style={{ width: '100%', height:'13rem', marginTop:'1rem' }}>
                 <Card.Header>주문자 정보</Card.Header>
                 <Card.Body >
                 <Table bordered condensed responsive size="sm">
@@ -300,16 +351,16 @@ class MyPageDetailPerson extends React.Component{
                     </tr>
                     <tr>
                         <td>서비스신청번호</td>
-                        <td>54321</td>
+                        <td>{this.props.orderNumber}</td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                         <td>트래킹번호</td>
                         <td>123456</td>
                     </tr>
                     <tr>
                         <td>쇼핑몰 URL</td>
                         <td>www.gkoo.de</td>
-                    </tr>
+                    </tr> */}
                     </tbody>
                 </Table>
                 </Card.Body>
@@ -354,7 +405,7 @@ class MyPageDetailRecipient extends React.Component{
                         <td>대구광역시 달서구</td>
                     </tr>
                     <tr>
-                        <td>베송요청사항</td>
+                        <td>배송요청사항</td>
                         <td>관리실</td>
                     </tr>
                     </tbody>

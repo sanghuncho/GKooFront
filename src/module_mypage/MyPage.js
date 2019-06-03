@@ -96,13 +96,11 @@ export class MyPage extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
-          console.log("keycloak.subject");
-          console.log(keycloak.idTokenParsed.preferred_username);
           this.fetchCustomerBaseInfo(keycloak.token)
-          this.fetchEndSettlementList(keycloak.token)
-          this.fetchPurchaseOrderList(keycloak.token)
           this.fetchOrderInformation(keycloak.token)
           this.fetchWarehouseInformation(keycloak.token)
+          //this.fetchEndSettlementList(keycloak.token)
+          //this.fetchPurchaseOrderList(keycloak.token)
       })
     }
 
@@ -123,7 +121,6 @@ export class MyPage extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { warehouseInformation: data} )
-          console.log("WARE")
           console.log(data)
         })   
     }

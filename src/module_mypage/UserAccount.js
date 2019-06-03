@@ -111,7 +111,7 @@ export class UserAccount extends React.Component{
 
       this.handleChange = this.handleChange.bind(this);
       this.handleClick = this.handleClick.bind(this);
-        this.state = {
+      this.state = {
           userAccount:[],
           purchaseOrder:[],
           value: '',
