@@ -38,17 +38,22 @@ export class MyPageDetail extends React.Component{
           keycloakAuth:null,
           accessToken:"",
           orderingPersonInfo:"",
+          recipientInfo:"",
+          productsInfo:"",
+          productsCommonInfo:"",  
         }
       }
 
       componentDidMount () {
           const {id} = this.props.match.params
           this.setState({orderNumber:id})
-      
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
               accessToken:keycloak.token})
               this.fetchOrderingPersonInforamtion(keycloak.token)
+              this.fetchRecipientInforamtion(keycloak.token, id)
+              this.fetchProductsInforamtion(keycloak.token, id)
+              this.fetchProductsCommonInforamtion(keycloak.token, id)
             })
       }
 
@@ -67,6 +72,42 @@ export class MyPageDetail extends React.Component{
         })  
       }
 
+      fetchRecipientInforamtion(token, id){
+        this.setTokenHeader(token)
+        fetch('http://localhost:8888/recipientinfo/'+id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { recipientInfo: data} )
+          //console.log("recipientInformation")
+          //console.log(data)
+        })  
+      }
+
+      fetchProductsInforamtion(token, id){
+        this.setTokenHeader(token)
+        fetch('http://localhost:8888/productslistinfo/'+id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { productsInfo: data} )
+          console.log("productsInfo")
+          console.log(this.state.productsInfo)
+        })  
+      }
+
+      fetchProductsCommonInforamtion(token, id){
+        this.setTokenHeader(token)
+        fetch('http://localhost:8888/productscommoninfo/'+id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { productsCommonInfo: data} )
+          console.log("productsCommonInfo")
+          console.log(this.state.productsCommonInfo)
+        })  
+      }
+
       render() {
         return (
           <div>
@@ -75,7 +116,12 @@ export class MyPageDetail extends React.Component{
             
             <BodyContainer>
 
-              <MyPageDetailWrapper orderNumber={this.state.orderNumber}
+              <MyPageDetailWrapper 
+                orderNumber={this.state.orderNumber}
+                orderingPersonInfo={this.state.orderingPersonInfo}
+                recipientInfo={this.state.recipientInfo}
+                productsInfo={this.state.productsInfo}
+                productsCommonInfo={this.state.productsCommonInfo}
               />
             
             </BodyContainer>
@@ -99,22 +145,27 @@ class MyPageDetailWrapper extends React.Component{
                 </Breadcrumb> 
                 
                 {/* 주문자정보 */}
-                <MyPageDetailPerson orderNumber={this.props.orderNumber}/>
+                <MyPageDetailPerson 
+                  orderNumber={this.props.orderNumber}
+                  orderingPersonInfo={this.props.orderingPersonInfo}/>
 
                 {/* 수취인정보 */}
-                <MyPageDetailRecipient/>
-
-                {/* 배송료결제정보 */}
-                <MyPageDetailDeliveryPrice/>
+                <MyPageDetailRecipient
+                  recipientInfo={this.props.recipientInfo}/>
 
                 {/* 배송상태 */}
-                <MyPageDetailState/>
+                <MyPageDetailState productsCommonInfo={this.props.productsCommonInfo}/>
+
+                {/* 배송료 결제정보 */}
+                <MyPageDetailDeliveryPrice/>
 
                 {/* 상품정보 */}
-                <MyPageDetailProducts/>
+                <MyPageDetailProducts
+                  productsInfo={this.props.productsInfo}
+                  productsCommonInfo={this.props.productsCommonInfo}/>
 
                 {/* 총액정보 */}
-                <MyPageDetailProductPrice/>
+                <MyPageDetailProductPrice productsCommonInfo={this.props.productsCommonInfo}/>
           </div>
         );
       }    
@@ -132,7 +183,7 @@ class MyPageDetailState extends React.Component{
                 <Card.Header>서비스현황</Card.Header>
                 <Card.Body>
                     <Card.Text>
-                        배송중
+                        {this.props.productsCommonInfo.shipState}
                     </Card.Text> 
                 </Card.Body>
                 {/* <Card.Footer>
@@ -159,13 +210,13 @@ class MyPageDetailProductPrice extends React.Component{
                           {/* 상품 */}
                       </thead>
                       <tbody>
-                      <tr>
+                      {/* <tr>
                           <td width='300px'>현지배송비</td>
                           <td width='300px'>30Euro</td>
-                      </tr>
+                      </tr> */}
                       <tr>
                           <td width='300px'>총 구매금액</td>
-                          <td width='300px'>100Euro</td>
+                          <td width='300px'>{this.props.productsCommonInfo.totalPrice}원</td>
                       </tr>
                       </tbody>
                   </Table>
@@ -183,12 +234,20 @@ class MyPageDetailProducts extends React.Component{
         super(props);
 
         this.state = {
-            productsList:[1,2]
         }
 
       }
+
+      componentDidMount () {
+      }
       
       render() {
+        // Todo : refactoring
+        var array = new Array()
+        for(var i=0;i<this.props.productsInfo.length;i++){
+          array.push(i)
+        }
+
         return (
           <div>
               <Card border="dark" style={{ width: '100%', height:'40rem', marginTop:'1rem', marginBottom:'1rem' }}>
@@ -200,19 +259,22 @@ class MyPageDetailProducts extends React.Component{
                 <tbody>
                 <tr>
                   <td width='300px'>트래킹번호</td>
-                  <td width='300px'>123456</td>
+                  <td width='300px'>{this.props.productsCommonInfo.trackingNr}</td>
                 </tr>
                 <tr>
                   <td>쇼핑몰 URL</td>
-                  <td>www.gkoo.de</td>
+                  <td>{this.props.productsCommonInfo.shopUrl}</td>
                 </tr>
                 </tbody>
                 </Table>
-                {this.state.productsList.map((itemName, index) => { return (
+
+                {array.map((itemName, index) => { return (
                     <div key={index}>
-                    <MyPageDetailProduct/>
+                      <MyPageDetailProduct productIndex={index+1}
+                        product={this.props.productsInfo[index]}/>
                     </div>
                 )})}
+              
                 </Card.Body>
                 {/* <Card.Footer>
                 </Card.Footer> */}
@@ -237,31 +299,31 @@ class MyPageDetailProduct extends React.Component{
                     <tbody>
                     <tr>
                         <td width='300px'>상품</td>
-                        <td width='300px'>1</td>
+                        <td width='300px'>{this.props.productIndex}</td>
                     </tr>
                     <tr>
                         <td width='300px'>카테고리</td>
-                        <td width='300px'>전자</td>
+                        <td width='300px'>{this.props.product.categorytitle}</td>
                     </tr>
                     <tr>
                         <td>품목</td>
-                        <td>스피커</td>
+                        <td>{this.props.product.itemtitle}</td>
                     </tr>
                     <tr>
                         <td>브랜드</td>
-                        <td>삼성</td>
+                        <td>{this.props.product.brandname}</td>
                     </tr>
                     <tr>
                         <td>상품명</td>
-                        <td>Samsung</td>
+                        <td>{this.props.product.itemname}</td>
                     </tr>
                     <tr>
                         <td>수량</td>
-                        <td>1</td>
+                        <td>{this.props.product.amount}</td>
                     </tr>
                     <tr>
                         <td>단가</td>
-                        <td>35000원</td>
+                        <td>{this.props.product.price}원</td>
                     </tr>
                     </tbody>
                 </Table>
@@ -342,7 +404,7 @@ class MyPageDetailPerson extends React.Component{
                     <tbody>
                     <tr>
                         <td width='400px'>주문자명</td>
-                        <td width='400px'>조상훈</td>
+                        <td width='400px'>{this.props.orderingPersonInfo.fullname}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>
@@ -389,24 +451,24 @@ class MyPageDetailRecipient extends React.Component{
                     <tbody>
                     <tr>
                         <td width='400px'>받는분</td>
-                        <td width='400px'>조성준</td>
+                        <td width='400px'>{this.props.recipientInfo.nameKor}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>
                         <td>연락처</td>
-                        <td>017665224205</td>
+                        <td>{this.props.recipientInfo.phoneNr}</td>
                     </tr>
                     <tr>
                         <td>개인통관고유번호</td>
-                        <td>54321</td>
+                        <td>{this.props.recipientInfo.transitNr}</td>
                     </tr>
                     <tr>
                         <td>주소</td>
-                        <td>대구광역시 달서구</td>
+                        <td>{this.props.recipientInfo.fullAdress}</td>
                     </tr>
                     <tr>
                         <td>배송요청사항</td>
-                        <td>관리실</td>
+                        <td>{this.props.recipientInfo.usercomment}</td>
                     </tr>
                     </tbody>
                 </Table>

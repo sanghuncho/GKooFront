@@ -130,13 +130,9 @@ export class OrderNumberLink extends React.Component {
 
   render() {
     const orderNumber = this.props.orderNumber
-    // return(
-    //   <Link to={{pathname:'detailsmypage', 
-    //     state:{orderNumber:orderNumber}}}>{this.props.orderNumber}</Link>
-    // );}
     return(
       <Link to={{pathname:"detailsmypage/"+ orderNumber}}>
-        {this.props.orderNumber}</Link>
+        {orderNumber}</Link>
     );}
  
 }

@@ -110,7 +110,7 @@ export class MyPage extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( { orderInformation: data} )
+          this.setState({orderInformation: data})
         })   
     }
 
