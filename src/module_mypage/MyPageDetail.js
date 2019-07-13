@@ -40,8 +40,13 @@ export class MyPageDetail extends React.Component{
           orderingPersonInfo:"",
           recipientInfo:"",
           productsInfo:"",
-          productsCommonInfo:"",  
+          productsCommonInfo:"", 
+          ownerName:'', 
         }
+        this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
+        this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
+        this.fetchProductsCommonInforamtion = this.fetchProductsCommonInforamtion.bind(this)
+        this.fetchCommonInforamtion = this.fetchCommonInforamtion.bind(this)
       }
 
       componentDidMount () {
@@ -79,8 +84,8 @@ export class MyPageDetail extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { recipientInfo: data} )
-          //console.log("recipientInformation")
-          //console.log(data)
+          console.log("recipientInformation")
+          console.log(data)
         })  
       }
 
@@ -108,6 +113,39 @@ export class MyPageDetail extends React.Component{
         })  
       }
 
+      createPaymentOwnername(ownerName){
+        this.setState({ownerName:ownerName})
+        this.sendPaymentOwnername(ownerName)        
+      }
+
+      fetchCommonInforamtion(){
+        const id = this.state.orderNumber
+        this.setTokenHeader(this.state.accessToken)
+        fetch('http://localhost:8888/productscommoninfo/'+id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { productsCommonInfo: data} )
+          console.log("new  productsCommonInfo")
+          console.log(data)
+        })  
+      }
+      
+      sendPaymentOwnername(ownerName){
+        const orderNumber = this.state.orderNumber
+        console.log(ownerName)
+        const contents =  [{orderNumber: orderNumber}, {ownerName:ownerName}]
+        this.setTokenHeader(this.state.accessToken)
+        console.log("OwnerName: "+ contents)
+        fetch('http://localhost:8888/willpaydeleveryfee', 
+                {method:'post', headers, 
+                  body:JSON.stringify(contents)})
+                .then((result) => { return result;}).then((contents) => {
+            console.log(contents)
+           }).catch(err => err);
+        this.fetchCommonInforamtion()
+      }
+
       render() {
         return (
           <div>
@@ -122,6 +160,7 @@ export class MyPageDetail extends React.Component{
                 recipientInfo={this.state.recipientInfo}
                 productsInfo={this.state.productsInfo}
                 productsCommonInfo={this.state.productsCommonInfo}
+                createPaymentOwnername={this.createPaymentOwnername}
               />
             
             </BodyContainer>
@@ -157,7 +196,9 @@ class MyPageDetailWrapper extends React.Component{
                 <MyPageDetailState productsCommonInfo={this.props.productsCommonInfo}/>
 
                 {/* 배송료 결제정보 */}
-                <MyPageDetailDeliveryPrice/>
+                <MyPageDetailDeliveryPrice productsCommonInfo={this.props.productsCommonInfo}
+                                           createPaymentOwnername={this.props.createPaymentOwnername}
+                                           />
 
                 {/* 상품정보 */}
                 <MyPageDetailProducts
@@ -202,7 +243,7 @@ class MyPageDetailProductPrice extends React.Component{
       render() {
         return (
           <div>
-               <Card border="dark" style={{ width: '100%', height:'10rem', marginTop:'1rem', marginBottom:'1rem' }}>
+               <Card border="dark" style={{ width: '100%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>주문금액</Card.Header>
                 <Card.Body>
                 <Table bordered condensed responsive size="sm">
@@ -250,7 +291,7 @@ class MyPageDetailProducts extends React.Component{
 
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'40rem', marginTop:'1rem', marginBottom:'1rem' }}>
+              <Card border="dark" style={{ width: '100%', height:'42rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>상품 정보</Card.Header>
                 <Card.Body>
                 <Table bordered condensed responsive size="sm">
@@ -331,61 +372,6 @@ class MyPageDetailProduct extends React.Component{
         );
       }    
 }
-
-// export class MyPageDetailDeliveryPrice extends React.Component{
-//     constructor(props) {
-//         super(props);
-//       }
-      
-//       render() {
-//         return (
-//           <div>
-//               <Card border="dark" style={{ width: '100%', height:'20rem', marginTop:'1rem', marginBottom:'1rem' }}>
-//                 <Card.Header>운송료 결제정보</Card.Header>
-//                 <Card.Body >
-//                 <Table bordered condensed responsive size="sm">
-//                     <thead>
-//                     </thead>
-//                     <tbody>
-//                     <tr>
-//                         <td width='400px'>결제번호</td>
-//                         <td width='400px'>111</td>
-//                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
-//                     </tr>
-//                     <tr>
-//                         <td>결제일자</td>
-//                         <td>2019.04.05</td>
-//                     </tr>
-//                     <tr>
-//                         <td>무게정보</td>
-//                         <td>54321</td>
-//                     </tr>
-//                     <tr>
-//                         <td>해외배송비</td>
-//                         <td>35000원</td>
-//                     </tr>
-//                     <tr>
-//                         <td>합배송비/기타수수료</td>
-//                         <td>0원</td>
-//                     </tr>
-//                     <tr>
-//                         <td>총 결제금액</td>
-//                         <td>35000원</td>
-//                     </tr>
-//                     <tr>
-//                         <td>결제수단</td>
-//                         <td>무통장입금</td>
-//                     </tr>
-//                     </tbody>
-//                 </Table>
-//                 </Card.Body>
-//                 {/* <Card.Footer>
-//                 </Card.Footer> */}
-//                 </Card>
-//           </div>
-//         );
-//       }    
-// }
 
 class MyPageDetailPerson extends React.Component{
     constructor(props) {
