@@ -12,20 +12,25 @@ export class MyPageDetailDeliveryPrice extends React.Component{
         super(props);
         this.state = { 
             requestPayment: true,
+            productsCommonInfo: this.props.productsCommonInfo
         }
-        this.setPaymentCompletion = this.setPaymentCompletion.bind(this);    
+        this.setPaymentCompletion = this.setPaymentCompletion.bind(this);
+        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this)
       }
       
       setPaymentCompletion(event){
         this.setState({requestPayment:event})
       }
-      
-      setPaymentOwnerName(name){
-        console.log("name : " + name)
+
+      componentWillReceiveProps(nextProps) {
+        this.setState({ productsCommonInfo: nextProps.productsCommonInfo });
       }
+    
+      
       render() {
         //const arrived = this.props.productsCommonInfo.shipState === "입고대기" ? false : true; 
-        const paymentState = this.props.productsCommonInfo.paymentState
+        //const paymentState = this.props.productsCommonInfo.paymentState
+        const paymentState = this.state.productsCommonInfo.paymentState
         const arrived = true 
         let paymentContent;
 

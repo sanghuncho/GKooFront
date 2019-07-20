@@ -9,7 +9,9 @@ export class ManagementBase extends React.Component{
       
       render() {
         return (
-          <div></div>
+          <div>
+            inhertance https://reactjs.org/docs/composition-vs-inheritance.html
+          </div>
         );
       }    
 }

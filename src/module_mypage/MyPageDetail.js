@@ -8,7 +8,6 @@ import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
-
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
 `;
@@ -43,10 +42,10 @@ export class MyPageDetail extends React.Component{
           productsCommonInfo:"", 
           ownerName:'', 
         }
+
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
         this.fetchProductsCommonInforamtion = this.fetchProductsCommonInforamtion.bind(this)
-        this.fetchCommonInforamtion = this.fetchCommonInforamtion.bind(this)
       }
 
       componentDidMount () {
@@ -102,48 +101,35 @@ export class MyPageDetail extends React.Component{
       }
 
       fetchProductsCommonInforamtion(token, id){
+        console.log("productsCommonInfo")
         this.setTokenHeader(token)
         fetch('http://localhost:8888/productscommoninfo/'+id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
           this.setState( { productsCommonInfo: data} )
-          console.log("productsCommonInfo")
           console.log(this.state.productsCommonInfo)
         })  
       }
 
-      createPaymentOwnername(ownerName){
-        this.setState({ownerName:ownerName})
-        this.sendPaymentOwnername(ownerName)        
-      }
-
-      fetchCommonInforamtion(){
-        const id = this.state.orderNumber
-        this.setTokenHeader(this.state.accessToken)
-        fetch('http://localhost:8888/productscommoninfo/'+id, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { productsCommonInfo: data} )
-          console.log("new  productsCommonInfo")
-          console.log(data)
-        })  
-      }
-      
       sendPaymentOwnername(ownerName){
         const orderNumber = this.state.orderNumber
         console.log(ownerName)
         const contents =  [{orderNumber: orderNumber}, {ownerName:ownerName}]
         this.setTokenHeader(this.state.accessToken)
         console.log("OwnerName: "+ contents)
-        fetch('http://localhost:8888/willpaydeleveryfee', 
+        fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
-                .then((result) => { return result;}).then((contents) => {
-            console.log(contents)
+                .then((result) => { return result.json();}).then((data) => {
+                  this.setState( { productsCommonInfo: data} )
+                  console.log(data)
            }).catch(err => err);
-        this.fetchCommonInforamtion()
+      }
+
+      createPaymentOwnername(ownerName){
+        this.setState({ownerName:ownerName})
+        this.sendPaymentOwnername(ownerName)        
       }
 
       render() {

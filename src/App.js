@@ -158,13 +158,13 @@ const Main = () => (
     <Route exact path='/verwalter' component={Verwalter}></Route> 
     <Route exact path='/buyingService' component={ BuyingService }></Route> 
     <Route exact path='/shippingService/' component={ ShippingService }></Route> 
-    {/* <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route>  */}
     <Route exact path='/requestshipping' component={ RequestShippingService }></Route> 
     <Route exact path='/information' component={ Information }></Route> 
     <Route exact path='/mypage' component={ MyPage }></Route> 
     <Route exact path='/customercenter' component={CustomerCenter}></Route> 
     <Route exact path='/detailsmypage/:id' component={MyPageDetail}></Route>
     <Route exact path='/management' component={ManagementBase}></Route>
+    {/* <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route>  */}
     {/* <Route exact path='/detailsmypage' component={MyPageDetail}></Route> */}
     {/* <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
     <Route exact path='/wirtschaftseinheit/:id' component={Wirtschaftseinheit}></Route> 
