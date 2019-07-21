@@ -25,7 +25,7 @@ import { Information } from './Infomation'
 import { Home } from './Home'
 import { RequestShippingService } from './module_shippingService/RequestShippingService';
 import { MyPageDetail } from './module_mypage/MyPageDetail';
-import { ManagementBase } from './management/ManagementBase'
+import { ManagementController } from './management/ManagementController'
 
 var naviGreen = '#80b13e'
 var grey = '#727676';
@@ -163,7 +163,9 @@ const Main = () => (
     <Route exact path='/mypage' component={ MyPage }></Route> 
     <Route exact path='/customercenter' component={CustomerCenter}></Route> 
     <Route exact path='/detailsmypage/:id' component={MyPageDetail}></Route>
-    <Route exact path='/management' component={ManagementBase}></Route>
+    <Route exact path='/management' component={ManagementController}></Route>
+    {/* <Route exact path='/management' component={ManagementBase}></Route> */}
+
     {/* <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route>  */}
     {/* <Route exact path='/detailsmypage' component={MyPageDetail}></Route> */}
     {/* <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 

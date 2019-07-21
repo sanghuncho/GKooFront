@@ -30,6 +30,7 @@ const Navigation = styled(BaseNavigation)`
     border-radius: 0px;
     height: auto;
 `;
+
 const BodyContainer = styled(BaseAppContainer)`
   height:auto;
   flex-direction: column;

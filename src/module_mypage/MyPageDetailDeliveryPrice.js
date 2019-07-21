@@ -12,19 +12,19 @@ export class MyPageDetailDeliveryPrice extends React.Component{
         super(props);
         this.state = { 
             requestPayment: true,
-            productsCommonInfo: this.props.productsCommonInfo
+            //productsCommonInfo: this.props.productsCommonInfo
         }
         this.setPaymentCompletion = this.setPaymentCompletion.bind(this);
-        this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this)
+        //this.componentWillReceiveProps = this.componentWillReceiveProps.bind(this)
       }
       
       setPaymentCompletion(event){
         this.setState({requestPayment:event})
       }
 
-      componentWillReceiveProps(nextProps) {
-        this.setState({ productsCommonInfo: nextProps.productsCommonInfo });
-      }
+      // componentWillReceiveProps(nextProps) {
+      //   this.setState({ productsCommonInfo: nextProps.productsCommonInfo });
+      // }
     
       
       render() {
