@@ -22,7 +22,6 @@ export class ManagementController extends React.Component{
             this.setState({ keycloakAuth: keycloak, 
             accessToken:keycloak.token})
             this.fetchWarehouseCommonStates(keycloak.token)
-           
         })
       }
 
@@ -44,7 +43,8 @@ export class ManagementController extends React.Component{
       render() {
         return (
           <div>
-            <ManagementBase warehouse = {<WarehouseController/>} />
+            <ManagementBase warehouse = 
+              {<WarehouseController warehouseCommonStates = {this.state.warehouseCommonStates}/>} />
           </div>
         );
       }   

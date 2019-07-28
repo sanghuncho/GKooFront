@@ -178,7 +178,7 @@ class MyPageDetailWrapper extends React.Component{
                 <MyPageDetailRecipient
                   recipientInfo={this.props.recipientInfo}/>
 
-                {/* 배송상태 */}
+                {/* 서비스현황 */}
                 <MyPageDetailState productsCommonInfo={this.props.productsCommonInfo}/>
 
                 {/* 배송료 결제정보 */}

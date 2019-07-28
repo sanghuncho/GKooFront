@@ -7,7 +7,7 @@ const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
 `;
 
-export class MyPageDetailDeliveryPrice extends React.Component{
+export class  MyPageDetailDeliveryPrice extends React.Component{
     constructor(props) {
         super(props);
         this.state = { 
@@ -25,12 +25,11 @@ export class MyPageDetailDeliveryPrice extends React.Component{
       // componentWillReceiveProps(nextProps) {
       //   this.setState({ productsCommonInfo: nextProps.productsCommonInfo });
       // }
-    
-      
+ 
       render() {
         //const arrived = this.props.productsCommonInfo.shipState === "입고대기" ? false : true; 
-        //const paymentState = this.props.productsCommonInfo.paymentState
-        const paymentState = this.state.productsCommonInfo.paymentState
+        //const paymentState = this.state.productsCommonInfo.paymentState
+        const paymentState = this.props.productsCommonInfo.paymentState
         const arrived = true 
         let paymentContent;
 

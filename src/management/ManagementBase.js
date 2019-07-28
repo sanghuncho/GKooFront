@@ -26,7 +26,7 @@ export class ManagementBase extends React.Component{
           <div>
             <AppContainer>
 
-            <SideNavBaseComponent category1="1" category2="2"/>
+            <SideNavBaseComponent category1="module1" category2="module2"/>
 
             <BodyContainer>
               {this.props.warehouse}
