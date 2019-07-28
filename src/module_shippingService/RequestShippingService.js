@@ -5,7 +5,7 @@ import {
     AppContainer as BaseAppContainer,
   } from "../container";
 import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
-    OverlayTrigger, Modal } from 'react-bootstrap';
+    OverlayTrigger, Modal, Col, FormGroup } from 'react-bootstrap';
 import { NavLink } from "react-router-dom";
 import { times, exchange, check, minus } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
@@ -13,6 +13,8 @@ import { TransportShippingRequest } from "../module_shippingService/TransportShi
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
+import { RecipientController } from "./RecipientController";
+
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
@@ -512,7 +514,7 @@ class ShippingCenter extends React.Component{
                     <Card.Body >
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3">
+                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}} >
                             쇼핑몰 URL
                         </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -523,7 +525,7 @@ class ShippingCenter extends React.Component{
 
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3">
+                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                             트랙킹번호
                         </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -549,7 +551,7 @@ class ShippingCenter extends React.Component{
                     <InputGroup className="mb-3">
                    
                         <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon4">
+                            <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
                                 카테고리
                             </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -567,7 +569,7 @@ class ShippingCenter extends React.Component{
                         </DropdownButton>
 
                         <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon4">
+                            <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
                                 품목
                             </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -587,7 +589,7 @@ class ShippingCenter extends React.Component{
                     
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3">
+                        <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             브랜드(영문)
                         </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -598,7 +600,7 @@ class ShippingCenter extends React.Component{
 
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3">
+                        <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             상품명(영문)
                         </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -612,7 +614,7 @@ class ShippingCenter extends React.Component{
 
                     <InputGroup className="mb-3">
                         <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3">
+                        <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             단가/수량
                         </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -675,7 +677,7 @@ class ShippingCenter extends React.Component{
             {/* 받는분정보 박스
             ToDo : Component
             */}
-            <Card border="dark" style={{ width:'80%', height:'65rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width:'80%', height:'70rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
                         <InputGroup className="mb-3">
@@ -686,32 +688,38 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                    <InputGroup className="mb-3" style={{ width: '80%'}}>
+                                <InputGroup className="mb-4" style={{ width:'80%'}}>
                                         <InputGroup.Prepend >
                                             <InputGroup.Text id="basic-addon3">
                                                 이름(국문)
                                             </InputGroup.Text>
                                         </InputGroup.Prepend>
+                                    
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         onChange = { this.inputReceiverNameByKorea }
                                     />
+                                </InputGroup >
+                                <InputGroup className="mb-4" style={{ width:'80%'}}>
                                     <Form.Check type='checkbox'
                                         onChange={e => this.setOwnerContentCheckbox(e)} label='회원정보와 동일'
                                         checked={this.state.setOwnerContent}
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px'}}
                                     />
-                                    <Button variant="secondary">받는분 정보 불러오기</Button>
-                                    
-                                    </InputGroup >
-                                    <InputGroup className="mb-3" style={{ width: '40%'}}>
-                                        <InputGroup.Prepend>
+ 
+                                    <Button size='sm' variant="secondary">받는분 정보 불러오기</Button>
+                                </InputGroup>
+                                
+                                <InputGroup className="mb-4" style={{ width: '80%'}}>
+                                    <InputGroup.Prepend>
                                             <InputGroup.Text id="basic-addon3">
                                                 이름(영문)
                                             </InputGroup.Text>
                                         </InputGroup.Prepend>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                            style={{ width: '50px'}}
                                             onChange = { this.inputReceiverNameByEnglish }/>
-                                    </InputGroup>    
+                                    </InputGroup>
+
                                     <Card.Body>
                                     <InputGroup>
                                         <IconCnt style={{ marginRight:"5px" }}>
@@ -780,26 +788,30 @@ class ShippingCenter extends React.Component{
                             <Card.Body>
                                 <InputGroup className="mb-3" style={{ width: '50%'}}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3">
+                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             연락처
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        onChange={e => this.inputCallNumberFront(e)} />
+                                                style={{ width: '50px'}}
+                                                onChange={e => this.inputCallNumberFront(e)} />
                                         <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
                                         </IconCnt>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        onChange={e => this.inputCallNumberMiddle(e)} />
+                                                style={{ width: '50px'}}
+                                                onChange={e => this.inputCallNumberMiddle(e)} />
                                         <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
                                         </IconCnt>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        onChange={e => this.inputCallNumberRear(e)} />
-                                </InputGroup >
-                                <InputGroup className="mb-3" style={{ width: '40%'}}>
+                                                style={{ width: '50px'}}
+                                                onChange={e => this.inputCallNumberRear(e)} />
+                                </InputGroup>
+
+                                <InputGroup className="mb-3" style={{ width: '50%'}}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3">
+                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             우편번호
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
@@ -810,16 +822,16 @@ class ShippingCenter extends React.Component{
                                 </InputGroup >
                                 <InputGroup className="mb-3" style={{ width: '50%'}}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3">
+                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         onChange={e => this.inputDeliveryAddress(e)} />
                                 </InputGroup >
-                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup className="mb-3" style={{ width: '70%'}}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3">
+                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             상세주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
@@ -828,7 +840,11 @@ class ShippingCenter extends React.Component{
                                 </InputGroup >
                             </Card.Body> 
                             </Card> 
-                        </InputGroup>
+                        </InputGroup> 
+
+                        {/* 
+                        react table 비교후 결정
+                        <RecipientController/> */}
 
                         <InputGroup className="mb-3">
                             <InputGroup.Prepend>

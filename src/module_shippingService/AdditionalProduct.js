@@ -141,7 +141,7 @@ export class AdditionalProduct extends React.Component{
                 <Card.Body >
                 <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">
+                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                         쇼핑몰 URL
                     </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -153,7 +153,7 @@ export class AdditionalProduct extends React.Component{
 
                 <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">
+                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                         트랙킹번호
                     </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -179,7 +179,7 @@ export class AdditionalProduct extends React.Component{
                 <InputGroup className="mb-3">
                
                     <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon4">
+                        <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
                             카테고리
                         </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -197,7 +197,7 @@ export class AdditionalProduct extends React.Component{
                     </DropdownButton>
 
                     <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon4">
+                        <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
                             품목
                         </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -217,7 +217,7 @@ export class AdditionalProduct extends React.Component{
                 
                 <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">
+                    <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         브랜드(영문)
                     </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -228,7 +228,7 @@ export class AdditionalProduct extends React.Component{
 
                 <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">
+                    <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         상품명(영문)
                     </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -242,7 +242,7 @@ export class AdditionalProduct extends React.Component{
                     
                 <InputGroup className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3">
+                    <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         단가/수량
                     </InputGroup.Text>
                     </InputGroup.Prepend>
