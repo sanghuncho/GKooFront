@@ -172,10 +172,32 @@ export class MyPage extends React.Component{
       headers ['Authorization'] = 'Bearer ' + token;
     }
 
+    validToken(token){
+      return token === "" ? false : true
+    }
+
+    getEmptyPage(){
+      return ""
+    }
+
     render() {
+        const token = this.state.accessToken
+        let mypage;
+
+        if(this.validToken(token)){
+          mypage = <MypageController 
+                      purchaseOrder={this.state.purchaseOrder} 
+                      userAccount={this.state.userAccount} 
+                      customerBaseInfo={ this.state.customerBaseInfo}
+                      orderInformation={ this.state.orderInformation }
+                      warehouseInformation={ this.state.warehouseInformation }/>
+        } else {
+          mypage = this.getEmptyPage
+        }
         return (
             <div>
-            <AppContainer>
+              {mypage}
+            {/* <AppContainer>
       
             <MyPageSideNav/>
             
@@ -184,7 +206,6 @@ export class MyPage extends React.Component{
                 <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
               </Breadcrumb>
 
-              {/* ToDo : userAccount name as mypagebody */}
               <UserAccount 
                 purchaseOrder={this.state.purchaseOrder} 
                 userAccount={this.state.userAccount} 
@@ -194,8 +215,41 @@ export class MyPage extends React.Component{
                 />
             </BodyContainer>
             
-            </AppContainer>
+            </AppContainer> */}
             </div>
            
         );}           
-} 
+}
+
+export class MypageController extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <AppContainer>
+      
+          <MyPageSideNav/>
+      
+          <BodyContainer>
+            <Breadcrumb style={{ width: '105%'}}>
+              <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
+            </Breadcrumb>
+
+          {/* ToDo : userAccount name as mypagebody */}
+          <UserAccount 
+            purchaseOrder={this.props.purchaseOrder} 
+            userAccount={this.props.userAccount} 
+            customerBaseInfo={ this.props.customerBaseInfo}
+            orderInformation={ this.props.orderInformation }
+            warehouseInformation={ this.props.warehouseInformation }
+            />
+        </BodyContainer>
+        
+        </AppContainer>
+      </div>
+      );
+    }    
+}

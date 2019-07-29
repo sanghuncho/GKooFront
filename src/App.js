@@ -15,7 +15,6 @@ import { connectdevelop } from 'react-icons-kit/fa/connectdevelop'
 import { pagelines } from 'react-icons-kit/fa/pagelines'
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 
-import { Verwalter } from './Verwalter'
 import { BuyingService } from './BuyingService'
 import { ShippingService } from './ShippingService'
 import { MyPage } from './module_mypage/MyPage';
@@ -155,7 +154,6 @@ export class NavigationLink extends React.Component {
 const Main = () => (
   <Switch>
     <Route exact path='/' component={Home}></Route>
-    <Route exact path='/verwalter' component={Verwalter}></Route> 
     <Route exact path='/buyingService' component={ BuyingService }></Route> 
     <Route exact path='/shippingService/' component={ ShippingService }></Route> 
     <Route exact path='/requestshipping' component={ RequestShippingService }></Route> 
@@ -164,13 +162,9 @@ const Main = () => (
     <Route exact path='/customercenter' component={CustomerCenter}></Route> 
     <Route exact path='/detailsmypage/:id' component={MyPageDetail}></Route>
     <Route exact path='/management' component={ManagementController}></Route>
-    {/* <Route exact path='/management' component={ManagementBase}></Route> */}
 
     {/* <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route>  */}
     {/* <Route exact path='/detailsmypage' component={MyPageDetail}></Route> */}
-    {/* <Route exact path='/wirtschaftseinheit' component={Wirtschaftseinheit}></Route> 
-    <Route exact path='/wirtschaftseinheit/:id' component={Wirtschaftseinheit}></Route> 
-    <Route exact path='/einheit' component={Einheit}></Route>  */}
   </Switch>
 );
 

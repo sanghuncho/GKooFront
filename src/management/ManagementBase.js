@@ -29,7 +29,7 @@ export class ManagementBase extends React.Component{
             <SideNavBaseComponent category1="module1" category2="module2"/>
 
             <BodyContainer>
-              {this.props.warehouse}
+              {this.props.warehouse}  
             </BodyContainer> 
 
             </AppContainer>
