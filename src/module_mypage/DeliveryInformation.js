@@ -68,7 +68,7 @@ export class DeliveryInformation extends React.Component{
           dataField: 'deliveryState',
           text: '진행상태'}, {
           dataField: 'deliveryTracking',
-          text: '배송조회',
+          text: '국내 배송조회',
           formatter:trackingFormatter}
         ];
   

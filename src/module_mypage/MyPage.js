@@ -100,6 +100,8 @@ export class MyPage extends React.Component{
           this.fetchCustomerBaseInfo(keycloak.token)
           this.fetchOrderInformation(keycloak.token)
           this.fetchWarehouseInformation(keycloak.token)
+          
+          
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
@@ -107,6 +109,7 @@ export class MyPage extends React.Component{
 
     fetchOrderInformation(token){
       this.setTokenHeader(token)
+      console.log(token)
       fetch(localPort + '/orderinformation', {headers})
         .then((result) => {
            return result.json();

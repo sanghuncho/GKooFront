@@ -2,7 +2,7 @@ export const keycloakUrlLocal = 'http://localhost:8080/auth';
 export const keycloakConfigLocal = {
   'url': keycloakUrlLocal,
   'realm': 'gkoo',
-  'clientId': 'version_1_0_0',  
+  'clientId': 'version_0_1_0',  
   "enable-cors": true,
   "scope": "openid"
 };
