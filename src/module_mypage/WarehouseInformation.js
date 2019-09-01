@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from 'react';
 import { NavLink } from "react-router-dom";
-import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl } from "react-bootstrap"
+import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl, Form } from "react-bootstrap"
 import BootstrapTable from 'react-bootstrap-table-next';
 
 function CaptionMypageTable(props) {
@@ -31,14 +31,18 @@ const MyPageBodyTableStyle = styled.div`
 //   ]
 
 function deliveryStateFormatter(cell, row) {        
+  
   return (
     <DeliveryState cell={cell}/>
   );
 }
 
 function trackingFormatter(cell, row) {        
+  console.log("<-- trackingFormatter")
+  console.log(row)
+  console.log("trackingFormatter -->")
   return (
-    <TrackingView cell={cell}/>
+    <TrackingView cell={cell} row={row}/>
   );
 }
 
@@ -97,7 +101,7 @@ export class TrackingView extends React.Component {
       let trackingContent;
 
       if (trackingStatus == "default") {
-        trackingContent = <TrackingInputField/>
+        trackingContent = <TrackingInputField orderNumber = {this.props.row.orderNumber}/>
       } else {
         trackingContent = trackingStatus
       }
@@ -126,26 +130,6 @@ export class TrackingView extends React.Component {
           // 국내배송 (7),
           // 배송완료 (8)
     
-          // if (state==1) {
-          //   deliveryState = "입고대기";
-          // } else if(state==2){
-          //   deliveryState = "입고완료";
-          // } else if(state==3){
-          //   deliveryState = "결제요청";
-          // } else if(state==4){
-          //   deliveryState = "결제완료";
-          // } else if(state==5){
-          //   deliveryState = "해외배송중";
-          // } else if(state==6){
-          //   deliveryState = "통관진행";
-          // } else if(state==7){
-          //   deliveryState = "국내배송";
-          // } else if(state==8){
-          //   deliveryState = "배송완료";
-          // } else {
-          //   deliveryState = "";
-          // }
-
           switch(state){
             case 1 :
               deliveryState = "입고대기";
@@ -183,8 +167,10 @@ export class TrackingView extends React.Component {
       constructor(props) {
           super(props);
           this.state = {
+            orderNumber:this.props.orderNumber,
             showModal:false,
             trackingTitle:"운송사선택",
+            trackingNumber:"",
           };
       
           this.handleModalShow    = this.handleModalShow.bind(this);
@@ -193,6 +179,11 @@ export class TrackingView extends React.Component {
         }
 
         handleModalClose() {
+          this.setState({ showModal: false });
+        }
+
+        handleSaveClose(){
+
           this.setState({ showModal: false });
         }
       
@@ -213,30 +204,36 @@ export class TrackingView extends React.Component {
               <Modal.Title>트랙킹 정보</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <InputGroup className="mb-3">
-                        <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                            트랙킹번호
-                        </InputGroup.Text>
-                        </InputGroup.Prepend>
-                       
-                        <DropdownButton
+            <Form>
+              <row>
+                <InputGroup className="mb-3">
+                  <InputGroup.Prepend>
+                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                      트랙킹번호
+                    </InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <DropdownButton
                             as={InputGroup.Prepend}
                             variant="outline-secondary"
                             title={this.state.trackingTitle}
                             id="input-group-dropdown-1"
                             >
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
-                        </DropdownButton>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="트랙킹번호"
-                            onChange = {this.inputTrackingNumber}/>
-                        <InputGroup.Append>
-                            <InputGroup.Text style={{ fontSize: '11px'}}>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
-                        </InputGroup.Append>
-                    </InputGroup>
+                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
+                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
+                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
+                    </DropdownButton>
+                    <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                      placeholder="트랙킹번호"
+                      onChange = {this.inputTrackingNumber}/>
+                  </InputGroup>
+              </row>
+              <row>
+                <Form.Text className="text-muted">
+                트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.
+                {/* {this.state.orderNumber} */}
+                </Form.Text>
+              </row>   
+            </Form>
             </Modal.Body>
             <Modal.Footer>
               {/* <NavLink to="/">
@@ -244,8 +241,11 @@ export class TrackingView extends React.Component {
                 OK
               </Button>
               </NavLink> */}
-              <Button variant="dark" onClick={this.handleModalClose}>
+              <Button variant="dark" onClick={this.handleSaveClose}>
                 저장
+              </Button>
+              <Button variant="dark" onClick={this.handleModalClose}>
+                취소
               </Button>
             </Modal.Footer>
             </Modal>

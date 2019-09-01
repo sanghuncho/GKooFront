@@ -118,13 +118,17 @@ export class MyPage extends React.Component{
         })   
     }
 
+    updateTranckingNumber(token){
+
+    }
+
     fetchWarehouseInformation(token){
       this.setTokenHeader(token)
       fetch(localPort + '/warehouseinformation', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( { warehouseInformation: data} )
+          this.setState( { warehouseInformation: data } )
           console.log(data)
         })   
     }
