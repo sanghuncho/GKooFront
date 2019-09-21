@@ -5,7 +5,7 @@ import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, headers, basePort } from "../module_mypage/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const AppContainer = styled(BaseAppContainer)`
@@ -78,7 +78,7 @@ export class MyPageDetail extends React.Component{
 
       fetchRecipientInforamtion(token, id){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/recipientinfo/'+id, {headers})
+        fetch('http://localhost:8888/recipientinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -90,7 +90,7 @@ export class MyPageDetail extends React.Component{
 
       fetchProductsInforamtion(token, id){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/productslistinfo/'+id, {headers})
+        fetch('http://localhost:8888/productslistinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -103,7 +103,7 @@ export class MyPageDetail extends React.Component{
       fetchProductsCommonInforamtion(token, id){
         console.log("productsCommonInfo")
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/productscommoninfo/'+id, {headers})
+        fetch('http://localhost:8888/productscommoninfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {

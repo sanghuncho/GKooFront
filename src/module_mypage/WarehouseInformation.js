@@ -3,6 +3,9 @@ import React from 'react';
 import { NavLink } from "react-router-dom";
 import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl, Form } from "react-bootstrap"
 import BootstrapTable from 'react-bootstrap-table-next';
+import { keycloakConfigLocal, headers, localPort } from "./AuthService"
+import * as Keycloak from 'keycloak-js';
+import { EditTracking } from "./EditTracking";
 
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
@@ -37,12 +40,9 @@ function deliveryStateFormatter(cell, row) {
   );
 }
 
-function trackingFormatter(cell, row) {        
-  console.log("<-- trackingFormatter")
-  console.log(row)
-  console.log("trackingFormatter -->")
+function trackingFormatter(cell, row, rowIndex, formatExtraData) {
   return (
-    <TrackingView cell={cell} row={row}/>
+    <TrackingView cell={cell} row={row} accessToken={formatExtraData.data}/>
   );
 }
 
@@ -50,7 +50,7 @@ export class WarehouseInformation extends React.Component{
     constructor(props) {
         super(props);
       }
-      
+
       render() {
         
         const columnsWarehouse = [{
@@ -65,8 +65,11 @@ export class WarehouseInformation extends React.Component{
             formatter:deliveryStateFormatter}, {
             dataField: 'deliveryTracking',
             text: '독일내 트랙킹번호',
-            formatter:trackingFormatter}
+            formatter:trackingFormatter,
+            formatExtraData: {data:this.props.accessToken},
+          }
         ];
+
         return (
           <div>
             <MyPageBodyTableStyle>
@@ -75,7 +78,7 @@ export class WarehouseInformation extends React.Component{
                     // data={ this.props.userAccount } 
                     data={ this.props.warehouseInformation } 
                     columns={ columnsWarehouse } 
-                    bordered={ true }  noDataIndication="Table is empty"  />
+                    bordered={ true }  noDataIndication="Table is empty"/>
             </MyPageBodyTableStyle>
           </div>
         );
@@ -89,19 +92,15 @@ export class TrackingView extends React.Component {
         
       };
     }
-    
-    componentDidMount() {
-     
-    }
-  
-   
   
     render() {
       const trackingStatus = this.props.cell;
       let trackingContent;
 
       if (trackingStatus == "default") {
-        trackingContent = <TrackingInputField orderNumber = {this.props.row.orderNumber}/>
+        trackingContent = <EditTracking orderNumber = {this.props.row.orderNumber}
+                              accessToken={this.props.accessToken}/>
+         
       } else {
         trackingContent = trackingStatus
       }
@@ -162,94 +161,3 @@ export class TrackingView extends React.Component {
           );
         }    
     }
-
-  export class TrackingInputField extends React.Component{
-      constructor(props) {
-          super(props);
-          this.state = {
-            orderNumber:this.props.orderNumber,
-            showModal:false,
-            trackingTitle:"운송사선택",
-            trackingNumber:"",
-          };
-      
-          this.handleModalShow    = this.handleModalShow.bind(this);
-          this.handleModalClose   = this.handleModalClose.bind(this);
-          this.inputTrackingTitle = this.inputTrackingTitle.bind(this);
-        }
-
-        handleModalClose() {
-          this.setState({ showModal: false });
-        }
-
-        handleSaveClose(){
-
-          this.setState({ showModal: false });
-        }
-      
-        handleModalShow() {
-          this.setState({ showModal: true });
-        }
-        
-        inputTrackingTitle(event, company) {
-          this.setState({trackingTitle:company}) 
-        }
-        
-        render() {
-          return (
-            <div>
-            <Button variant="secondary" size="sm" onClick={this.handleModalShow}>트랙킹번호 입력</Button>
-            <Modal show={this.state.showModal} onHide={this.handleModalClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>트랙킹 정보</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-            <Form>
-              <row>
-                <InputGroup className="mb-3">
-                  <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                      트랙킹번호
-                    </InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <DropdownButton
-                            as={InputGroup.Prepend}
-                            variant="outline-secondary"
-                            title={this.state.trackingTitle}
-                            id="input-group-dropdown-1"
-                            >
-                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                      <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
-                    </DropdownButton>
-                    <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                      placeholder="트랙킹번호"
-                      onChange = {this.inputTrackingNumber}/>
-                  </InputGroup>
-              </row>
-              <row>
-                <Form.Text className="text-muted">
-                트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.
-                {/* {this.state.orderNumber} */}
-                </Form.Text>
-              </row>   
-            </Form>
-            </Modal.Body>
-            <Modal.Footer>
-              {/* <NavLink to="/">
-              <Button variant="success" onClick={this.handleModalClose}>
-                OK
-              </Button>
-              </NavLink> */}
-              <Button variant="dark" onClick={this.handleSaveClose}>
-                저장
-              </Button>
-              <Button variant="dark" onClick={this.handleModalClose}>
-                취소
-              </Button>
-            </Modal.Footer>
-            </Modal>
-            </div>
-          );
-        }    
-  }

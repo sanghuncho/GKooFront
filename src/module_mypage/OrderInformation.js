@@ -92,7 +92,7 @@ export class OrderInformation extends React.Component {
   }
 
   render() {
-    console.log(this.props.orderInformation)
+    //console.log(this.props.orderInformation)
     return(
       <div>
         <TabsStyle>

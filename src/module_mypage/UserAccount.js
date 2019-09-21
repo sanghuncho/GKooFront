@@ -173,7 +173,8 @@ export class UserAccount extends React.Component{
         <OrderInformation orderInformation={ this.props.orderInformation }/>
 
         {/* 입고 현황 */}
-        <WarehouseInformation warehouseInformation={ this.props.warehouseInformation }/>
+        <WarehouseInformation warehouseInformation={ this.props.warehouseInformation }
+                              accessToken = { this.props.accessToken }/>
 
         {/* 결제 현황 */}  
         <PaymentInformation orderInformation={ this.props.orderInformation }/>

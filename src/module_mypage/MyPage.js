@@ -72,6 +72,7 @@ export class MyPage extends React.Component{
     purchaseOrder:'',
     orderInformation:'',
     warehouseInformation:'',
+    trackingNumber:'1234',
    };
   
     toggle(position) {
@@ -109,7 +110,7 @@ export class MyPage extends React.Component{
 
     fetchOrderInformation(token){
       this.setTokenHeader(token)
-      console.log(token)
+      //console.log(token)
       fetch(localPort + '/orderinformation', {headers})
         .then((result) => {
            return result.json();
@@ -118,18 +119,24 @@ export class MyPage extends React.Component{
         })   
     }
 
-    updateTranckingNumber(token){
-
-    }
+    // updateTranckingNumber(orderNumber, trackingCompany, trackingNumber){
+    //   const contents =  [{orderNumber: orderNumber}, 
+    //       {trackingCompany:trackingCompany},
+    //       {trackingNumber:trackingNumber}]
+    //   this.setTokenHeader(this.state.accessToken)
+    //   fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
+    //             {method:'post', headers, 
+    //               body:JSON.stringify(contents)})
+    // }
 
     fetchWarehouseInformation(token){
       this.setTokenHeader(token)
       fetch(localPort + '/warehouseinformation', {headers})
-        .then((result) => {
+        .then((result) => { 
            return result.json();
         }).then((data) => {
           this.setState( { warehouseInformation: data } )
-          console.log(data)
+          //console.log(data)
         })   
     }
 
@@ -193,11 +200,12 @@ export class MyPage extends React.Component{
 
         if(this.validToken(token)){
           mypage = <MypageController 
-                      purchaseOrder={this.state.purchaseOrder} 
-                      userAccount={this.state.userAccount} 
-                      customerBaseInfo={ this.state.customerBaseInfo}
-                      orderInformation={ this.state.orderInformation }
-                      warehouseInformation={ this.state.warehouseInformation }/>
+                      purchaseOrder = { this.state.purchaseOrder } 
+                      userAccount = { this.state.userAccount } 
+                      customerBaseInfo = { this.state.customerBaseInfo}
+                      orderInformation = { this.state.orderInformation }
+                      warehouseInformation = { this.state.warehouseInformation }
+                      accessToken = { this.state.accessToken }/>
         } else {
           mypage = this.getEmptyPage
         }
@@ -252,6 +260,8 @@ export class MypageController extends React.Component{
             customerBaseInfo={ this.props.customerBaseInfo}
             orderInformation={ this.props.orderInformation }
             warehouseInformation={ this.props.warehouseInformation }
+            accessToken = { this.props.accessToken }
+
             />
         </BodyContainer>
         
