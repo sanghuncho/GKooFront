@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl, Form } from "react-bootstrap"
-import { headers } from "./AuthService"
+import { headers, basePort } from "./AuthService"
 
 export class EditTracking extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-          orderNumber:this.props.orderNumber,
           showModal:false,
+          orderNumber:this.props.orderNumber,
           trackingTitle:"운송사선택",
           trackingNumber:"",
         };
@@ -26,14 +26,15 @@ export class EditTracking extends React.Component{
       handleSaveClose(){
         this.updateTranckingNumber(this.props.accessToken)
         this.setState({ showModal: false });
+        window.location.reload();
       }
 
       updateTranckingNumber(accessToken){
         const contents =  [{orderNumber: this.state.orderNumber}, 
-            {trackingCompany:this.state.orderNumber},
-            {trackingNumber:this.state.trackingTitle}]
+            {trackingCompany:this.state.trackingTitle},
+            {trackingNumber:this.state.trackingNumber}]
         this.setTokenHeader(accessToken)
-        fetch('http://localhost:8888/updatetrackingnumber', 
+        fetch(basePort + '/updatetrackingnumber', 
                   {method:'post', headers, 
                     body:JSON.stringify(contents)})
       }

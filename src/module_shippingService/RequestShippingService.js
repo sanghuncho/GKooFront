@@ -750,7 +750,7 @@ class ShippingCenter extends React.Component{
                                     받는분 정보
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
-                            <Card style={{ width: '86%'}}>
+                            <Card style={{ width: '90%'}}>
                             <Card.Body>
                                 <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
                                 <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/>

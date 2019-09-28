@@ -2,8 +2,9 @@ import styled from "styled-components";
 import React from 'react';
 import { MyPageSideNav } from "./MyPageSideNav";
 import { AppContainer as BaseAppContainer } from "../container";
-import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
+import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-bootstrap"
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
+import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, basePort } from "../module_mypage/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -27,6 +28,8 @@ const UserAccountTableStyle = styled.div`
   box-shadow: 2px 2px 3px 3px #888; 
   font-size: 13px;
 `;
+
+const WhiteSmoke = '#F5F5F5'
 
 export class MyPageDetail extends React.Component{
     constructor(props) {
@@ -375,18 +378,20 @@ class MyPageDetailPerson extends React.Component{
                     </thead>
                     <tbody>
                     <tr>
-                        <td width='400px'>주문자명</td>
+                        <td width='400px' style={{backgroundColor: WhiteSmoke}}>주문자명</td>
                         <td width='400px'>{this.props.orderingPersonInfo.fullname}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>
-                        <td>물류센터</td>
+                        <td >물류센터</td>
                         <td>독일</td>
                     </tr>
                     <tr>
-                        <td>서비스신청번호</td>
+                        <td style={{backgroundColor: WhiteSmoke}}>서비스신청번호</td>
                         <td>{this.props.orderNumber}</td>
                     </tr>
+                    </tbody>
+                   
                     {/* <tr>
                         <td>트래킹번호</td>
                         <td>123456</td>
@@ -395,8 +400,19 @@ class MyPageDetailPerson extends React.Component{
                         <td>쇼핑몰 URL</td>
                         <td>www.gkoo.de</td>
                     </tr> */}
-                    </tbody>
                 </Table>
+                  {/* <InputGroup size="sm" className="mb-4" style={{ width:'90%'}}>
+                      <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3" style={{width:'100px'}}>
+                          주문자명
+                        </InputGroup.Text>
+                      </InputGroup.Prepend>
+                      <FormControl id="basic-url" aria-describedby="basic-addon3"
+                        disabled={true} 
+                        defaultValue={this.props.orderingPersonInfo.fullname}
+                        style={{backgroundColor: '#FFFFFF'}}
+                      />
+                    </InputGroup > */}
                 </Card.Body>
                 {/* <Card.Footer>
                 </Card.Footer> */}
@@ -409,22 +425,52 @@ class MyPageDetailPerson extends React.Component{
 class MyPageDetailRecipient extends React.Component{
     constructor(props) {
         super(props);
+        this.state = {
+          doEdit:false,
+          setButton:true,
+        }
+      }
+
+      doEditRecipient(){
+        this.setState({doEdit:true}) 
+        this.setState({setButton:false}) 
       }
       
       render() {
+        const setButton = this.state.setButton
+        let editButton;
+        if(setButton) {
+          editButton = <Button variant="secondary" size="sm" onClick={(e) => this.doEditRecipient(e)} 
+                            style={{ marginRight: '10px', float:"right"}}>수정</Button>
+        }
+
+        const doEdit = this.state.doEdit
+        let displayHeight;
+        let recipientFormDisplay;
+        if (doEdit) {
+          recipientFormDisplay = <CustomerRecipientEditor/>
+          displayHeight = '67rem'
+        } else {
+          recipientFormDisplay = <CompleteRecipientDisplay recipientInfo={this.props.recipientInfo}/>
+          displayHeight = '20rem'
+        }
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'17rem', marginTop:'1rem' }}>
-                <Card.Header>수취인 정보</Card.Header>
+              <Card border="dark" style={{ width: '100%', height:displayHeight, marginTop:'1rem' }}>
+                <Card.Header>수취인 정보
+                  {editButton}
+                </Card.Header>
                 <Card.Body >
-                <Table bordered condensed responsive size="sm">
+                  
+                  {recipientFormDisplay}
+
+                {/* <Table bordered condensed responsive size="sm">
                     <thead>
                     </thead>
                     <tbody>
                     <tr>
                         <td width='400px'>받는분</td>
                         <td width='400px'>{this.props.recipientInfo.nameKor}</td>
-                        {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>
                         <td>연락처</td>
@@ -443,12 +489,49 @@ class MyPageDetailRecipient extends React.Component{
                         <td>{this.props.recipientInfo.usercomment}</td>
                     </tr>
                     </tbody>
-                </Table>
+                </Table> */}
                 </Card.Body>
-                {/* <Card.Footer>
-                </Card.Footer> */}
                 </Card>
           </div>
         );
       }    
+}
+
+export class CompleteRecipientDisplay extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <Table bordered condensed responsive size="sm">
+                    <thead>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td width='400px'>받는분</td>
+                        <td width='400px'>{this.props.recipientInfo.nameKor}</td>
+                    </tr>
+                    <tr>
+                        <td>연락처</td>
+                        <td>{this.props.recipientInfo.phoneNr}</td>
+                    </tr>
+                    <tr>
+                        <td>개인통관고유번호</td>
+                        <td>{this.props.recipientInfo.transitNr}</td>
+                    </tr>
+                    <tr>
+                        <td>주소</td>
+                        <td>{this.props.recipientInfo.fullAdress}</td>
+                    </tr>
+                    <tr>
+                        <td>배송요청사항</td>
+                        <td>{this.props.recipientInfo.usercomment}</td>
+                    </tr>
+                    </tbody>
+          </Table>
+        </div>
+      );
+    }    
 }
