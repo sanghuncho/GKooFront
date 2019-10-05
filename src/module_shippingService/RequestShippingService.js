@@ -14,6 +14,7 @@ import { AdditionalProduct } from "../module_shippingService/AdditionalProduct"
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
 import { RecipientController } from "./RecipientController";
+import { InfoBadge } from "../module_base_component/InfoBadge";
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -509,10 +510,10 @@ class ShippingCenter extends React.Component{
                 <Card.Header>상품입력</Card.Header>
                 <Card.Body >
 
-                <Card border="dark" style={{ width: '100%'}}>
+                <Card border="dark" style={{ width: '90%'}}>
                     <Card.Header>상품1</Card.Header>
                     <Card.Body >
-                    <InputGroup className="mb-3">
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3" >
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}} >
                             쇼핑몰 URL
@@ -523,7 +524,7 @@ class ShippingCenter extends React.Component{
                             placeholder="정확한 URL을 입력해주세요"/>
                     </InputGroup>
 
-                    <InputGroup className="mb-3">
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                             트랙킹번호
@@ -543,9 +544,10 @@ class ShippingCenter extends React.Component{
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             placeholder="트랙킹번호"
                             onChange = {this.inputTrackingNumber}/>
-                        <InputGroup.Append>
+                        {/* <InputGroup.Append>
                             <InputGroup.Text>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
-                        </InputGroup.Append>
+                        </InputGroup.Append> */}
+                        <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
                     </InputGroup>
 
                     <InputGroup className="mb-3">
