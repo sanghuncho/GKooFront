@@ -24,12 +24,12 @@ export class EditTracking extends React.Component{
       }
 
       handleSaveClose(){
-        this.updateTranckingNumber(this.props.accessToken)
+        this.updateTrackingNumber(this.props.accessToken)
         this.setState({ showModal: false });
         window.location.reload();
       }
 
-      updateTranckingNumber(accessToken){
+      updateTrackingNumber(accessToken){
         const contents =  [{orderNumber: this.state.orderNumber}, 
             {trackingCompany:this.state.trackingTitle},
             {trackingNumber:this.state.trackingNumber}]

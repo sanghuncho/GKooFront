@@ -5,8 +5,9 @@ import { Card, Button, InputGroup, FormControl, Form, Badge } from "react-bootst
 import { Icon as BaseIcon } from "react-icons-kit";
 import { check, minus, circle } from 'react-icons-kit/fa/'
 import { InfoBadge } from "../module_base_component/InfoBadge";
+import { headers, basePort } from "../module_mypage/AuthService"
 
-/**
+/*
  *
  */
 const IconCnt = styled.div`
@@ -17,22 +18,162 @@ const IconCnt = styled.div`
 `;
 
 const textFontSize = '14px';
-
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;  
 
-export class CustomerRecipientEditor extends React.Component{
+export class CustomerRecipientEditor extends React.Component {
     constructor(props) {
         super(props);
+        
+        this.state = {
+            orderNumber:this.props.orderNumber,
+            recipient:this.props.recipientInfo,
+            edited:false,     
+            nameKor:this.props.recipientInfo.nameKor,
+            nameEng:this.props.recipientInfo.nameEng,
+            transitNr:this.props.recipientInfo.transitNr,
+            phonePrefic:this.props.recipientInfo.phonePrefic,
+            phoneInterfix:this.props.recipientInfo.phoneInterfix,
+            phoneSuffix:this.props.recipientInfo.phoneSuffix,
+            zipCode:this.props.recipientInfo.zipCode,
+            address:this.props.recipientInfo.address,
+            addressDetails:this.props.recipientInfo.addressDetails,
+            usercomment:this.props.recipientInfo.usercomment,
+        }
+
+        this.handleCancel = this.handleCancel.bind(this)
+        this.handleSave = this.handleSave.bind(this)
+        this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
+        this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
+        this.changeHandlerTransitNr = this.changeHandlerTransitNr.bind(this)
+        this.changeHandlerPhonePrefic = this.changeHandlerPhonePrefic.bind(this)
+        this.changeHandlerPhoneInterfix = this.changeHandlerPhoneInterfix.bind(this)
+        this.changeHandlerPhoneSuffix = this.changeHandlerPhoneSuffix.bind(this)
+        this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
+        this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
+        this.changeHandlerAddressDetails = this.changeHandlerAddressDetails.bind(this)
+        this.changeHandlerUsercomment = this.changeHandlerUsercomment.bind(this)
+    }
+
+
+       /*
+        * state 비교 하는 방법
+        */
+    //   shouldComponentUpdate(nextProps, nextState) {
+    //     return this.state.value != nextState.value;
+    //   }
+
+      handleCancel(update){
+          window.scrollTo(0, 340);
+          this.props.showStoredRecipient()
+      }
+
+      handleSave(){
+        //comparing the state?
+        if(this.state.edited){
+            this.updateRecipient(this.props.accessToken)
+        }
+        window.scrollTo(0, 340);
+        window.location.reload();
+        this.props.showStoredRecipient()
+      }
+
+      changeHandlerNameKor(event){
+        const nameKorRef = this.props.recipientInfo.nameKor
+        this.changeHandlerCommonState(nameKorRef, event)
+        this.setState({nameKor:event.target.value}) 
+      }
+
+      changeHandlerNameEng(event){
+        const nameEngRef = this.props.recipientInfo.nameEng
+        this.changeHandlerCommonState(nameEngRef, event)
+        this.setState({nameEng:event.target.value}) 
+      }
+
+      changeHandlerTransitNr(event){
+        const transitNrRef = this.props.recipientInfo.transitNr
+        this.changeHandlerCommonState(transitNrRef, event)
+        this.setState({transitNr:event.target.value}) 
+      }
+
+      changeHandlerPhonePrefic(event){
+        const phonePreficRef = this.props.recipientInfo.phonePrefic
+        this.changeHandlerCommonState(phonePreficRef, event)
+        this.setState({phonePrefic:event.target.value}) 
+      }
+
+      changeHandlerPhoneInterfix(event){
+        const phoneInterfixRef = this.props.recipientInfo.phoneInterfix
+        this.changeHandlerCommonState(phoneInterfixRef, event)
+        this.setState({phoneInterfix:event.target.value}) 
+      }
+
+      changeHandlerPhoneSuffix(event){
+        const phoneSuffixRef = this.props.recipientInfo.phoneSuffix
+        this.changeHandlerCommonState(phoneSuffixRef, event)
+        this.setState({phoneSuffix:event.target.value}) 
+      }
+
+      changeHandlerZipCode(event){
+        const phoneZipCodeRef = this.props.recipientInfo.zipCode
+        this.changeHandlerCommonState(phoneZipCodeRef, event)
+        this.setState({zipCode:event.target.value}) 
+      }
+
+      changeHandlerAddress(event){
+        const adressRef = this.props.recipientInfo.adress
+        this.changeHandlerCommonState(adressRef, event)
+        this.setState({adress:event.target.value}) 
+      }
+
+      changeHandlerAddressDetails(event){
+        const adressDetailsRef = this.props.recipientInfo.adressDetails
+        this.changeHandlerCommonState(adressDetailsRef, event)
+        this.setState({adressDetails:event.target.value}) 
+      }
+
+      changeHandlerUsercomment(event){
+        const usercommentRef = this.props.recipientInfo.usercomment
+        this.changeHandlerCommonState(usercommentRef, event)
+        this.setState({Usercomment:event.target.value}) 
+      }
+
+      changeHandlerCommonState(refState, event){
+        if(refState != event.target.value){
+            this.setState({edited:true})
+        } else {
+            this.setState({edited:false})
+        }
+      }
+
+      updateRecipient(accessToken){
+
+        const editedRecipientData =  [
+            {orderNumber: this.state.orderNumber},
+            {nameKor: this.state.nameKor}, 
+            {nameEng: this.state.nameEng},
+            {transitNr: this.state.transitNr},
+            {phonePrefic: this.state.phonePrefic},
+            {phoneInterfix: this.state.phoneInterfix},
+            {phoneSuffix: this.state.phoneSuffix},
+            {zipCode: this.state.zipCode},
+            {address: this.state.address},
+            {addressDetails: this.state.addressDetails},
+            {usercomment: this.state.usercomment}
+        ]
+
+        this.setTokenHeader(accessToken)
+        console.log(editedRecipientData)
+        fetch(basePort + '/updaterecipientdata', 
+                  {method:'post', headers, 
+                    body:JSON.stringify(editedRecipientData)})
       }
       
+      setTokenHeader(token){
+        headers ['Authorization'] = 'Bearer ' + token;
+      }
+
       render() {
-        // const addButton = this.props.addButton
-        // let applyButton;
-
-        // if(addButton) {
-        //     applyButton = <ShippingServiceApplyButton/>
-        // }
-
+        
         return (
         <div>
             <Card border="dark" style={{ width:'100%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
@@ -56,8 +197,9 @@ export class CustomerRecipientEditor extends React.Component{
                                         </InputGroup.Prepend>
                                     
                                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                            // onChange = { this.inputReceiverNameByKorea }
-                                            readOnly={"readonly"}
+                                            onChange = { this.changeHandlerNameKor }
+                                            // readOnly={"readonly"}
+                                            defaultValue={this.props.recipientInfo.nameKor}
                                             style={{backgroundColor: '#FFFFFF'}}
                                         />
                                     </InputGroup >
@@ -82,7 +224,8 @@ export class CustomerRecipientEditor extends React.Component{
                                             </InputGroup.Prepend>
                                             <FormControl id="basic-url" aria-describedby="basic-addon3"
                                                 style={{ width: '50px'}}
-                                                //onChange = { this.inputReceiverNameByEnglish }
+                                                defaultValue={this.props.recipientInfo.nameEng}
+                                                onChange = { this.changeHandlerNameEng }
                                                 />
                                     </InputGroup>
                                    
@@ -105,18 +248,21 @@ export class CustomerRecipientEditor extends React.Component{
                                 <Form.Check inline 
                                     //checked={this.state.privateTransit} 
                                     type='radio' 
+                                    checked={true}
                                     //onChange={e => this.inputPrivateTransit(e)} 
-                                    label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
+                                    label='개인통관고유번호' style={{marginRight:'10rem', fontSize:textFontSize}}/>
                                 <Form.Check inline 
                                     //checked={this.state.businessTransit} 
                                     type='radio' 
+                                    checked={false}
                                     //onChange={e => this.inputBusinessTransit(e)} 
                                     label='사업자번호(사업자통관)' style={{ fontSize: textFontSize}}/>
                                         
                                 <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                                            placeholder="8자리 고유번호" 
-                                            //onChange = { this.inputTransitNumber }
+                                            placeholder="8자리 고유번호"
+                                            defaultValue={this.props.recipientInfo.transitNr}
+                                            onChange = { this.changeHandlerTransitNr }
                                             style={{ marginRight:'10px'}}/>
                                         <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}>발급방법</Button>
                                         <Button size="sm" variant='secondary'>내 개인통관고유번호 저장</Button>
@@ -148,17 +294,20 @@ export class CustomerRecipientEditor extends React.Component{
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                                 style={{ width: '50px', marginRight:'1px'}}
-                                                //onChange={e => this.inputCallNumberFront(e)} 
+                                                onChange={this.changeHandlerPhonePrefic}
+                                                defaultValue={this.props.recipientInfo.phonePrefic}
                                                 />
                                             
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                                 style={{ width: '50px', marginRight:'1px'}}
-                                                //onChange={e => this.inputCallNumberMiddle(e)} 
+                                                onChange={this.changeHandlerPhoneInterfix}
+                                                defaultValue={this.props.recipientInfo.phoneInterfix}
                                                 />
                                        
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                                 style={{ width: '50px'}}
-                                                //onChange={e => this.inputCallNumberRear(e)} 
+                                                onChange={this.changeHandlerPhoneSuffix}
+                                                defaultValue={this.props.recipientInfo.phoneSuffix}
                                                 />
                                 </InputGroup>
 
@@ -170,7 +319,8 @@ export class CustomerRecipientEditor extends React.Component{
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                         style={{ marginRight:'10px'}}
-                                        //onChange={e => this.inputPostCode(e)}
+                                        defaultValue={this.props.recipientInfo.zipCode}
+                                        onChange={this.changeHandlerZipCode}
                                         />
                                     <Button size='sm' variant='secondary' >우편번호 찾기</Button>
                                 </InputGroup >
@@ -182,7 +332,8 @@ export class CustomerRecipientEditor extends React.Component{
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        //onChange={e => this.inputDeliveryAddress(e)} 
+                                        defaultValue={this.props.recipientInfo.address}
+                                        onChange={this.changeHandlerAddress} 
                                         />
                                 </InputGroup >
 
@@ -193,7 +344,8 @@ export class CustomerRecipientEditor extends React.Component{
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        //onChange={e => this.inputDetailAddress(e)}
+                                        defaultValue={this.props.recipientInfo.addressDetails}
+                                        onChange={this.changeHandlerAddressDetails}
                                         />
                                 </InputGroup >
                             </Card.Body> 
@@ -214,25 +366,28 @@ export class CustomerRecipientEditor extends React.Component{
                             <Card.Body>
                                 <Form.Control id="basic-url" as="textarea" rows="3" 
                                             aria-describedby="basic-addon3"
-                                            //value={this.state.deliveryMessage}
-                                            //onChange={e => this.inputDeliveryMessage(e)}
-                                            style={{ height:'5em'}}/>
+                                            defaultValue={this.props.recipientInfo.usercomment}
+                                            onChange={this.changeHandlerUsercomment}
+                                            style={{ height:'5em', fontSize:textFontSize}}/>
                             </Card.Body> 
                             </Card> 
                         </InputGroup>
                         
                 </Card.Body>
+
                  {/* 수정 OK 버튼 */}
                  <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
                             <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                                    //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
-                                    //onClick={this.handleModalShow}
+                                    onClick={this.handleSave}
                                     >완료
                             </Button>
-                            <Button size="sm" variant='secondary'>취소</Button>
+                            <Button size="sm" variant='secondary'
+                                onClick={(e) => this.handleCancel(e)}
+                            >취소</Button>
                 </InputGroup >
+                
             </Card>
         </div>
         );
-      }    //style={{ marginRight: '10px', float:"right"}}
+      } 
 }

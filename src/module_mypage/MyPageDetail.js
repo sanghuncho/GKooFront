@@ -31,6 +31,7 @@ const UserAccountTableStyle = styled.div`
 
 const WhiteSmoke = '#F5F5F5'
 
+
 export class MyPageDetail extends React.Component{
     constructor(props) {
         super(props);
@@ -89,6 +90,10 @@ export class MyPageDetail extends React.Component{
           console.log("recipientInformation")
           console.log(data)
         })  
+      }
+
+      updateRecipient(){
+        console.log("update recipient!")
       }
 
       fetchProductsInforamtion(token, id){
@@ -150,6 +155,7 @@ export class MyPageDetail extends React.Component{
                 productsInfo={this.state.productsInfo}
                 productsCommonInfo={this.state.productsCommonInfo}
                 createPaymentOwnername={this.createPaymentOwnername}
+                accessToken={this.state.accessToken}
               />
             
             </BodyContainer>
@@ -179,15 +185,19 @@ class MyPageDetailWrapper extends React.Component{
 
                 {/* 수취인정보 */}
                 <MyPageDetailRecipient
-                  recipientInfo={this.props.recipientInfo}/>
+                  recipientInfo={this.props.recipientInfo}
+                  orderNumber={this.props.orderNumber}
+                  accessToken={this.props.accessToken}
+                />
 
                 {/* 서비스현황 */}
-                <MyPageDetailState productsCommonInfo={this.props.productsCommonInfo}/>
+                <MyPageDetailState 
+                  productsCommonInfo={this.props.productsCommonInfo}/>
 
                 {/* 배송료 결제정보 */}
-                <MyPageDetailDeliveryPrice productsCommonInfo={this.props.productsCommonInfo}
-                                           createPaymentOwnername={this.props.createPaymentOwnername}
-                                           />
+                <MyPageDetailDeliveryPrice 
+                  productsCommonInfo={this.props.productsCommonInfo}
+                  createPaymentOwnername={this.props.createPaymentOwnername}/>
 
                 {/* 상품정보 */}
                 <MyPageDetailProducts
@@ -195,7 +205,8 @@ class MyPageDetailWrapper extends React.Component{
                   productsCommonInfo={this.props.productsCommonInfo}/>
 
                 {/* 총액정보 */}
-                <MyPageDetailProductPrice productsCommonInfo={this.props.productsCommonInfo}/>
+                <MyPageDetailProductPrice 
+                  productsCommonInfo={this.props.productsCommonInfo}/>
           </div>
         );
       }    
@@ -373,12 +384,12 @@ class MyPageDetailPerson extends React.Component{
               <Card border="dark" style={{ width: '100%', height:'13rem', marginTop:'1rem' }}>
                 <Card.Header>주문자 정보</Card.Header>
                 <Card.Body >
-                <Table bordered condensed responsive size="sm">
+                <Table striped bordered condensed responsive size="sm">
                     <thead>
                     </thead>
                     <tbody>
                     <tr>
-                        <td width='400px' style={{backgroundColor: WhiteSmoke}}>주문자명</td>
+                        <td width='400px'>주문자명</td>
                         <td width='400px'>{this.props.orderingPersonInfo.fullname}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
@@ -387,19 +398,10 @@ class MyPageDetailPerson extends React.Component{
                         <td>독일</td>
                     </tr>
                     <tr>
-                        <td style={{backgroundColor: WhiteSmoke}}>서비스신청번호</td>
+                        <td>서비스신청번호</td>
                         <td>{this.props.orderNumber}</td>
                     </tr>
                     </tbody>
-                   
-                    {/* <tr>
-                        <td>트래킹번호</td>
-                        <td>123456</td>
-                    </tr>
-                    <tr>
-                        <td>쇼핑몰 URL</td>
-                        <td>www.gkoo.de</td>
-                    </tr> */}
                 </Table>
                   {/* <InputGroup size="sm" className="mb-4" style={{ width:'90%'}}>
                       <InputGroup.Prepend>
@@ -429,11 +431,19 @@ class MyPageDetailRecipient extends React.Component{
           doEdit:false,
           setButton:true,
         }
+
+        this.showStoredRecipient = this.showStoredRecipient.bind(this)
       }
 
       doEditRecipient(){
         this.setState({doEdit:true}) 
         this.setState({setButton:false}) 
+      }
+
+      //move the page position 
+      showStoredRecipient(){
+        this.setState({doEdit:false}) 
+        this.setState({setButton:true}) 
       }
       
       render() {
@@ -448,11 +458,17 @@ class MyPageDetailRecipient extends React.Component{
         let displayHeight;
         let recipientFormDisplay;
         if (doEdit) {
-          recipientFormDisplay = <CustomerRecipientEditor/>
+          recipientFormDisplay = 
+            <CustomerRecipientEditor 
+              showStoredRecipient={this.showStoredRecipient}
+              recipientInfo={this.props.recipientInfo}
+              orderNumber={this.props.orderNumber}
+              accessToken={this.props.accessToken}
+             />
           displayHeight = '67rem'
         } else {
           recipientFormDisplay = <CompleteRecipientDisplay recipientInfo={this.props.recipientInfo}/>
-          displayHeight = '20rem'
+          displayHeight = '29rem'
         }
         return (
           <div>
@@ -463,33 +479,7 @@ class MyPageDetailRecipient extends React.Component{
                 <Card.Body >
                   
                   {recipientFormDisplay}
-
-                {/* <Table bordered condensed responsive size="sm">
-                    <thead>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td width='400px'>받는분</td>
-                        <td width='400px'>{this.props.recipientInfo.nameKor}</td>
-                    </tr>
-                    <tr>
-                        <td>연락처</td>
-                        <td>{this.props.recipientInfo.phoneNr}</td>
-                    </tr>
-                    <tr>
-                        <td>개인통관고유번호</td>
-                        <td>{this.props.recipientInfo.transitNr}</td>
-                    </tr>
-                    <tr>
-                        <td>주소</td>
-                        <td>{this.props.recipientInfo.fullAdress}</td>
-                    </tr>
-                    <tr>
-                        <td>배송요청사항</td>
-                        <td>{this.props.recipientInfo.usercomment}</td>
-                    </tr>
-                    </tbody>
-                </Table> */}
+               
                 </Card.Body>
                 </Card>
           </div>
@@ -505,29 +495,41 @@ export class CompleteRecipientDisplay extends React.Component{
     render() {
       return (
         <div>
-          <Table bordered condensed responsive size="sm">
+          <Table bordered condensed responsive striped size="sm">
                     <thead>
                     </thead>
                     <tbody>
                     <tr>
-                        <td width='400px'>받는분</td>
-                        <td width='400px'>{this.props.recipientInfo.nameKor}</td>
+                        <td width='400px' >이름(국문)</td>
+                        <td width='400px' >{this.props.recipientInfo.nameKor}</td>
+                    </tr>
+                    <tr>
+                        <td width='400px'>이름(영문)</td>
+                        <td width='400px'>{this.props.recipientInfo.nameEng}</td>
+                    </tr>
+                    <tr>
+                        <td >개인통관고유번호</td>
+                        <td >{this.props.recipientInfo.transitNr}</td>
                     </tr>
                     <tr>
                         <td>연락처</td>
                         <td>{this.props.recipientInfo.phoneNr}</td>
                     </tr>
                     <tr>
-                        <td>개인통관고유번호</td>
-                        <td>{this.props.recipientInfo.transitNr}</td>
+                        <td >우편번호</td>
+                        <td >{this.props.recipientInfo.zipCode}</td>
                     </tr>
-                    <tr>
+                    <tr height="50">
                         <td>주소</td>
-                        <td>{this.props.recipientInfo.fullAdress}</td>
+                        <td>{this.props.recipientInfo.address}</td>
                     </tr>
-                    <tr>
-                        <td>배송요청사항</td>
-                        <td>{this.props.recipientInfo.usercomment}</td>
+                    <tr height="50">
+                        <td>상세 주소</td>
+                        <td>{this.props.recipientInfo.addressDetails}</td>
+                    </tr>
+                    <tr height="80">
+                        <td >배송요청사항</td>
+                        <td >{this.props.recipientInfo.usercomment}</td>
                     </tr>
                     </tbody>
           </Table>
