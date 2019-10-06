@@ -12,9 +12,9 @@ export class AdditionalProduct extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            shopUrl:"",
+            //shopUrl:"",
             
-            trackingTitle:"운송사선택",
+            //trackingTitle:"운송사선택",
             trackingNumber:"",
 
             categoryTitle:"선택",
@@ -37,8 +37,8 @@ export class AdditionalProduct extends React.Component{
             isValidTotalPrice:false,
 
         }
-        this.inputShopUrl               = this.inputShopUrl.bind(this);
-        this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
+        //this.inputShopUrl               = this.inputShopUrl.bind(this);
+        //this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
         this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
 
         this.handleSelectCategory       = this.handleSelectCategory.bind(this);
@@ -53,16 +53,15 @@ export class AdditionalProduct extends React.Component{
         
     }
 
-    inputShopUrl(event){
-        this.setState({shopUrl:event.target.value})
-        console.log("index: "+this.props.index + " - "+ "shopUrl: "+ this.state.shopUrl)
-        this.props.shopUrlList[this.props.index] = event.target.value
-    }
+    // inputShopUrl(event){
+    //     this.setState({shopUrl:event.target.value})
+    //     this.props.shopUrlList[this.props.index] = event.target.value
+    // }
 
-    inputTrackingTitle(event, company) {
-        this.setState({trackingTitle:company})
-        this.props.trackingTitleList[this.props.index] = company
-    }
+    // inputTrackingTitle(event, company) {
+    //     this.setState({trackingTitle:company})
+    //     this.props.trackingTitleList[this.props.index] = company
+    // }
 
     inputTrackingNumber(event){
         this.setState({trackingNumber:event.target.value}) 
@@ -136,50 +135,12 @@ export class AdditionalProduct extends React.Component{
         const totalPrice = priceInt*amountInt
 
         return(
-            <Card border="dark" style={{ width: '100%', marginTop:'10px'}}>
+            <Card border="dark" style={{ width: '90%', marginTop:'10px'}}>
                 <Card.Header>상품</Card.Header>
                 <Card.Body >
-                <InputGroup className="mb-3">
+                <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                        쇼핑몰 URL
-                    </InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                        onChange = {this.inputShopUrl} 
-                        //onChange = {this.props.handleChangeShopUrlList}
-                        placeholder="정확한 URL을 입력해주세요"/>
-                </InputGroup>
-
-                <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                    <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                        트랙킹번호
-                    </InputGroup.Text>
-                    </InputGroup.Prepend>
-                   
-                    <DropdownButton
-                        as={InputGroup.Prepend}
-                        variant="outline-secondary"
-                        title={this.state.trackingTitle}
-                        id="input-group-dropdown-1"
-                        >
-                        <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
-                    </DropdownButton>
-                    <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                        placeholder="트랙킹번호"
-                        onChange = {this.inputTrackingNumber}/>
-                    <InputGroup.Append>
-                        <InputGroup.Text>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
-                    </InputGroup.Append>
-                </InputGroup>
-
-                <InputGroup className="mb-3">
-               
-                    <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
+                        <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>
                             카테고리
                         </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -195,9 +156,10 @@ export class AdditionalProduct extends React.Component{
                         <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
                         <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
                     </DropdownButton>
-
+                </InputGroup> 
+                <InputGroup size="sm" className="mb-3">
                     <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
+                        <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>
                             품목
                         </InputGroup.Text>
                     </InputGroup.Prepend>
@@ -215,7 +177,7 @@ export class AdditionalProduct extends React.Component{
                    
                 </InputGroup>
                 
-                <InputGroup className="mb-3">
+                <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                     <InputGroup.Prepend>
                     <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         브랜드(영문)
@@ -226,7 +188,7 @@ export class AdditionalProduct extends React.Component{
                         onChange = {this.inputBrandName}/>
                 </InputGroup>
 
-                <InputGroup className="mb-3">
+                <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                     <InputGroup.Prepend>
                     <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         상품명(영문)
@@ -240,7 +202,7 @@ export class AdditionalProduct extends React.Component{
                         isInvalid={warningInvalidItemName}/>
                 </InputGroup>
                     
-                <InputGroup className="mb-3">
+                <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                     <InputGroup.Prepend>
                     <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                         단가/수량
@@ -250,7 +212,7 @@ export class AdditionalProduct extends React.Component{
                         placeholder="상품단가"
                         value={this.state.productPrice}
                         onChange = {this.inputProductPrice}/>
-                    <IconCnt style={{marginTop:"5px",marginLeft:"2px", marginRight:"2px"}}>
+                    <IconCnt style={{marginTop:"2px",marginLeft:"2px", marginRight:"2px"}}>
                             <Icon icon={ times } />
                     </IconCnt>
 
@@ -258,7 +220,7 @@ export class AdditionalProduct extends React.Component{
                         placeholder="수량"
                         value={this.state.prouctAmount}
                         onChange = {this.inputProductAmount}/>
-                    <IconCnt style={{marginTop:"5px", marginLeft:"5px", marginRight:"5px"}}>
+                    <IconCnt style={{marginTop:"2px", marginLeft:"5px", marginRight:"5px"}}>
                             <Icon icon={ exchange } />
                     </IconCnt>
 

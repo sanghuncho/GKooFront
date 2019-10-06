@@ -9,7 +9,7 @@ export class InfoBadge extends React.Component{
       render() {
         return (
           <div>
-            <InputGroup style={{ marginTop: '5px', marginBottom: '5px'}}>
+            <InputGroup style={{marginTop: '5px', marginBottom: '5px'}}>
                 <Badge variant="info" style={{ marginRight: '5px'}}>Info</Badge>
                 <Card.Text style={{ fontSize: '12px'}}>{this.props.infoText}</Card.Text>
             </InputGroup>

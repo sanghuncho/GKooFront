@@ -69,9 +69,9 @@ export class RequestShippingService extends React.Component {
                         <Breadcrumb.Item active>배송대행</Breadcrumb.Item>
                         <Breadcrumb.Item active>배송대행 신청</Breadcrumb.Item>
                     </Breadcrumb> 
-                    <Card border="dark" style={{ width: '80%', height:'21rem', marginTop:'1rem' }}>
+                    <Card border="dark" style={{ width: '80%', height:'20rem', marginTop:'1rem'}}>
                         <Card.Header>서비스 신청시 주의사항</Card.Header>
-                        <Card.Body style={{'height': '210px','overflow-y': 'scroll'}}>
+                        <Card.Body style={{'height': '210px','overflow-y': 'scroll', fontSize:'14px'}}>
                         {/* <Card.Body style={{'max-height': '210px', 'overflow-y': 'auto'}}> */}
                         <Card.Text>1. 지쿠 배송대행 신청서에 기재된 모든 내용은 통관시 세관에 신고되므로 허위로 작성하실 수 없습니다.</Card.Text>
                         <Card.Text>2. 지쿠는 나눔배송 또는 분할배송 서비스를 제공하지 않습니다.</Card.Text>
@@ -83,7 +83,7 @@ export class RequestShippingService extends React.Component {
                         <Card.Text>7. 배송대행 상품의 입고지를 선택하여 신청서를 작성한 후에는 입고지 변경이 불가능 합니다.</Card.Text>
                         </Card.Body>
                         <Card.Footer> 
-                            <Form.Check type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
+                            <Form.Check style={{fontSize:'15px'}} type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
                         </Card.Footer>
                     </Card>
                     {didAgreeWith?<ShippingCenter accessToken={this.state.accessToken}/>:""}
@@ -132,17 +132,17 @@ class ShippingCenter extends React.Component{
                 <Card.Header>물류센터</Card.Header>
                 <Card.Body >
                     <Card.Text>
-                        <Form.Check type='radio' label='독일' checked='true'/>
+                        <Form.Check style={{fontSize:'14px'}} type='radio' label='독일' checked='true'/>
                     </Card.Text> 
                 </Card.Body>
                 
                 <Card.Header>서비스 선택</Card.Header>
                 <Card.Body>
-                    <Form.Check inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='간편배송' style={{marginRight:'10rem'}}/>
-                    <Form.Check inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='체크인배송'/>
+                    <Form.Check style={{fontSize:'14px', marginRight:'10rem'}} inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='간편배송'/>
+                    <Form.Check style={{fontSize:'14px'}} inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='체크인배송'/>
                 </Card.Body>
                 <Card.Footer>
-                    <Form.Check checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
+                    <Form.Check style={{fontSize:'15px'}} checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
                 </Card.Footer>
             </Card>
             {didUnderstand ? <InputDeliveryContentWrapper easyShip={this.state.easyShip}
@@ -188,7 +188,7 @@ class ShippingCenter extends React.Component{
             isValidItemName:false,
             warningInvalidItemName: false,
             
-            heightOfInputProduct:"26",
+            heightOfInputProduct:"20",
 
             productPrice:"",
             productPriceList:[],
@@ -507,11 +507,10 @@ class ShippingCenter extends React.Component{
             <div>
             {/* 상품입력 박스*/}
             <Card border="dark" style={{ width: '80%', height:{heightOfInputProduct}, marginTop:'1rem', marginBottom:'1rem' }}>
-                <Card.Header>상품입력</Card.Header>
-                <Card.Body >
-
-                <Card border="dark" style={{ width: '90%'}}>
-                    <Card.Header>상품1</Card.Header>
+                <Card.Header>상품입력</Card.Header>          
+                <Card.Body>
+                <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
+                    <Card.Header>상품 배송 정보</Card.Header>
                     <Card.Body >
                     <InputGroup size="sm" style={{ width:'70%'}} className="mb-3" >
                         <InputGroup.Prepend>
@@ -544,34 +543,67 @@ class ShippingCenter extends React.Component{
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             placeholder="트랙킹번호"
                             onChange = {this.inputTrackingNumber}/>
-                        {/* <InputGroup.Append>
-                            <InputGroup.Text>트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다.</InputGroup.Text>
-                        </InputGroup.Append> */}
                         <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
                     </InputGroup>
-
-                    <InputGroup className="mb-3">
-                   
+                    </Card.Body>
+                </Card>
+                <Card border="dark" style={{ width: '90%'}}>
+                    <Card.Header>상품</Card.Header>
+                    <Card.Body >
+                    {/* <InputGroup size="sm" style={{ width:'70%'}} className="mb-3" >
                         <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
+                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}} >
+                            쇼핑몰 URL
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3"
+                            onChange = {this.inputShopUrl} 
+                            placeholder="정확한 URL을 입력해주세요"/>
+                    </InputGroup>
+
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
+                        <InputGroup.Prepend>
+                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                            트랙킹번호
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
+                       
+                        <DropdownButton
+                            as={InputGroup.Prepend}
+                            variant="outline-secondary"
+                            title={this.state.trackingTitle}
+                            id="input-group-dropdown-1"
+                            >
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
+                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
+                        </DropdownButton>
+                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            placeholder="트랙킹번호"
+                            onChange = {this.inputTrackingNumber}/>
+                        <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
+                    </InputGroup> */}
+
+                    <InputGroup size="sm" className="mb-3">
+                        <InputGroup.Prepend>
+                            <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>
                                 카테고리
                             </InputGroup.Text>
                         </InputGroup.Prepend>
-                       
                         <DropdownButton
                             as={InputGroup.Prepend}
                             variant = {categoryVariant}
                             title={this.state.categoryTitle}
                             id="input-group-dropdown-category"
-                            style={{ marginRight: '200px'}}
                             >
                             <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "전자제품")}>전자제품</Dropdown.Item>
                             <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
                             <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
                         </DropdownButton>
-
+                    </InputGroup> 
+                    <InputGroup size="sm" className="mb-3">   
                         <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon4" style={{ width: '100px'}}>
+                            <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>
                                 품목
                             </InputGroup.Text>
                         </InputGroup.Prepend>
@@ -589,7 +621,7 @@ class ShippingCenter extends React.Component{
                        
                     </InputGroup>
                     
-                    <InputGroup className="mb-3">
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             브랜드(영문)
@@ -600,7 +632,7 @@ class ShippingCenter extends React.Component{
                             onChange = {this.inputBrandName}/>
                     </InputGroup>
 
-                    <InputGroup className="mb-3">
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             상품명(영문)
@@ -614,7 +646,7 @@ class ShippingCenter extends React.Component{
                             isInvalid={warningInvalidItemName}/>
                     </InputGroup>
 
-                    <InputGroup className="mb-3">
+                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                         <InputGroup.Prepend>
                         <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
                             단가/수량
@@ -624,7 +656,7 @@ class ShippingCenter extends React.Component{
                             placeholder="상품단가"
                             value={this.state.productPrice}
                             onChange = {this.inputProductPrice}/>
-                        <IconCnt style={{marginTop:"5px",marginLeft:"2px", marginRight:"2px"}}>
+                        <IconCnt style={{marginTop:"2px",marginLeft:"2px", marginRight:"2px"}}>
                                 <Icon icon={ times } />
                         </IconCnt>
 
@@ -632,7 +664,7 @@ class ShippingCenter extends React.Component{
                             placeholder="수량"
                             value={this.state.prouctAmount}
                             onChange = {this.inputProductAmount}/>
-                        <IconCnt style={{marginTop:"5px", marginLeft:"5px", marginRight:"5px"}}>
+                        <IconCnt style={{marginTop:"2px", marginLeft:"5px", marginRight:"5px"}}>
                                 <Icon icon={ exchange } />
                         </IconCnt>
 
@@ -646,7 +678,7 @@ class ShippingCenter extends React.Component{
                         </InputGroup.Append>
                     </InputGroup>
                  </Card.Body>
-                 </Card> 
+                 </Card>
 
                 {/* 상품추가 구현 */}
                 {this.state.goodsList.map((itemName, index) => { return (
@@ -671,7 +703,7 @@ class ShippingCenter extends React.Component{
 
                  {/* 상품추가 버튼 */}
                  <Button variant="secondary" size="sm" onClick={(e) => this.addItemOnList(e)} 
-                            style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>상품 추가</Button>
+                            style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>상품 추가</Button>
                 </Card.Body>
 
             </Card>
@@ -679,10 +711,11 @@ class ShippingCenter extends React.Component{
             {/* 받는분정보 박스
             ToDo : Component
             */}
-            <Card border="dark" style={{ width:'80%', height:'70rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width:'80%', height:'65rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
-                        <InputGroup className="mb-3">
+                        
+                        <InputGroup size="sm" style={{ width:'90%'}} className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3">
                                     받는분
@@ -690,7 +723,7 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <InputGroup className="mb-4" style={{ width:'80%'}}>
+                                <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
                                         <InputGroup.Prepend >
                                             <InputGroup.Text id="basic-addon3">
                                                 이름(국문)
@@ -701,17 +734,17 @@ class ShippingCenter extends React.Component{
                                         onChange = { this.inputReceiverNameByKorea }
                                     />
                                 </InputGroup >
-                                <InputGroup className="mb-4" style={{ width:'80%'}}>
+                                <InputGroup size="sm" style={{ width:'70%'}} className="mb-4" >
                                     <Form.Check type='checkbox'
                                         onChange={e => this.setOwnerContentCheckbox(e)} label='회원정보와 동일'
                                         checked={this.state.setOwnerContent}
-                                        style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px'}}
+                                        style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                                     />
  
                                     <Button size='sm' variant="secondary">받는분 정보 불러오기</Button>
                                 </InputGroup>
                                 
-                                <InputGroup className="mb-4" style={{ width: '80%'}}>
+                                <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
                                     <InputGroup.Prepend>
                                             <InputGroup.Text id="basic-addon3">
                                                 이름(영문)
@@ -721,35 +754,17 @@ class ShippingCenter extends React.Component{
                                             style={{ width: '50px'}}
                                             onChange = { this.inputReceiverNameByEnglish }/>
                                     </InputGroup>
-
-                                    <Card.Body>
-                                    <InputGroup>
-                                        <IconCnt style={{ marginRight:"5px" }}>
-                                            <Icon icon={ check } />
-                                        </IconCnt>
-                                        <Card.Text>상품을 수취하실 분의 성함/사업자 상호를 적어주세요. 상품도착후 변경은 불가능합니다</Card.Text>
-                                    </InputGroup>
-                                    <InputGroup>
-                                        <IconCnt style={{ marginRight:"5px" }}>
-                                            <Icon icon={ check } />
-                                        </IconCnt>
-                                        <Card.Text>통관시 받는분을 기준으로 수입신고 합니다.</Card.Text>
-                                    </InputGroup>
-                                    <InputGroup>
-                                        <IconCnt style={{ marginRight:"5px" }}>
-                                            <Icon icon={ check } />
-                                        </IconCnt>
-                                        <Card.Text>사업자 통관으로 진행하실 경우 받는분 이름(국문/영문)을 사업체 이름으로 기입주세요.</Card.Text>
-                                    </InputGroup>
-                                    </Card.Body>
+                                    <InfoBadge infoText={"상품을 수취하실 분의 성함/사업자 상호를 적어주세요. 상품도착후 변경은 불가능합니다"} />
+                                    <InfoBadge infoText={"통관시 받는분을 기준으로 수입신고 합니다."} />
+                                    <InfoBadge infoText={"사업자 통관으로 진행하실 경우 받는분 이름(국문/영문)을 사업체 이름으로 기입주세요."} />
                             </Card.Body> 
                             </Card> 
                         </InputGroup>
                    
-                        <InputGroup className="mb-3" >
+                        <InputGroup size="sm" style={{ width:'90%'}} className="mb-3" >
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3" >
-                                    받는분 정보
+                                    받는분 <br/>정보
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
@@ -757,30 +772,25 @@ class ShippingCenter extends React.Component{
                                 <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
                                 <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/>
                                         
-                                    <InputGroup className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
+                                    <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                             placeholder="8자리 고유번호" 
                                             onChange = { this.inputTransitNumber }
                                             style={{ marginRight:'10px'}}/>
-                                        <Button variant='secondary' style={{ marginRight:'10px'}}>발급방법</Button>
-                                        <Button variant='secondary'>내 개인통관고유번호 저장</Button>
+                                        <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
+                                        <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button>
                                     </InputGroup >
+                                    
                                     <Form.Check type='checkbox' 
                                         onChange={e => this.agreeWithCollectionCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
                                         checked={this.state.agreeWithCollection}
-                                        style={{}}
-                                    />
-                                     <InputGroup>
-                                     <IconCnt style={{ marginRight:"5px" }}>
-                                        <Icon icon={ check } />
-                                    </IconCnt>
-                                    <Card.Text style={{marginTop:'5px'}}>목록통관 대상품목도 개인통관고유번호 제출이 필수입니다.</Card.Text>
-                                    </InputGroup>
+                                        style={{fontSize:'14px'}}/>
+                                    <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
                             </Card.Body> 
                             </Card> 
                         </InputGroup>
 
-                        <InputGroup className="mb-3">
+                        <InputGroup size="sm" style={{ width:'90%'}} className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3" >
                                     연락처
@@ -788,30 +798,30 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup size="sm" className="mb-3" style={{width: '50%'}}>
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                                        <InputGroup.Text id="basic-addon3" style={{width: '100px'}}>
                                             연락처
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px'}}
+                                                style={{width: '50px', marginRight:'1px'}}
                                                 onChange={e => this.inputCallNumberFront(e)} />
-                                        <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
+                                        {/* <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
-                                        </IconCnt>
+                                        </IconCnt> */}
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px'}}
+                                                style={{width: '50px', marginRight:'1px'}}
                                                 onChange={e => this.inputCallNumberMiddle(e)} />
-                                        <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
+                                        {/* <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
                                             <Icon icon={ minus } />
-                                        </IconCnt>
+                                        </IconCnt> */}
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px'}}
+                                                style={{width: '50px', marginRight:'1px'}}
                                                 onChange={e => this.inputCallNumberRear(e)} />
                                 </InputGroup>
 
-                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup size="sm" className="mb-3" style={{ width: '50%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             우편번호
@@ -820,9 +830,9 @@ class ShippingCenter extends React.Component{
                                     <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                         style={{ marginRight:'10px'}}
                                         onChange={e => this.inputPostCode(e)}/>
-                                    <Button variant='secondary' >우편번호 찾기</Button>
+                                    <Button size="sm" variant='secondary' >우편번호 찾기</Button>
                                 </InputGroup >
-                                <InputGroup className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup size="sm" className="mb-3" style={{ width: '80%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             주소
@@ -831,13 +841,14 @@ class ShippingCenter extends React.Component{
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         onChange={e => this.inputDeliveryAddress(e)} />
                                 </InputGroup >
-                                <InputGroup className="mb-3" style={{ width: '70%'}}>
+                                <InputGroup size="sm" className="mb-3" style={{ width: '80%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             상세주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        as="textarea" rows="2"
                                         onChange={e => this.inputDetailAddress(e)}/>
                                 </InputGroup >
                             </Card.Body> 
@@ -848,10 +859,10 @@ class ShippingCenter extends React.Component{
                         react table 비교후 결정
                         <RecipientController/> */}
 
-                        <InputGroup className="mb-3">
+                        <InputGroup size="sm" style={{ width:'100%'}} className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3" >
-                                    국내배송 요청사항
+                                    국내배송 <br/>요청사항
                                 </InputGroup.Text>
                             </InputGroup.Prepend>
                             <Card style={{ width: '80%', height: '8em'}}>

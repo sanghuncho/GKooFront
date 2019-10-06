@@ -519,11 +519,11 @@ export class CompleteRecipientDisplay extends React.Component{
                         <td >우편번호</td>
                         <td >{this.props.recipientInfo.zipCode}</td>
                     </tr>
-                    <tr height="50">
+                    <tr height="60">
                         <td>주소</td>
                         <td>{this.props.recipientInfo.address}</td>
                     </tr>
-                    <tr height="50">
+                    <tr height="60">
                         <td>상세 주소</td>
                         <td>{this.props.recipientInfo.addressDetails}</td>
                     </tr>

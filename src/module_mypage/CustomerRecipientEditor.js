@@ -176,7 +176,7 @@ export class CustomerRecipientEditor extends React.Component {
         
         return (
         <div>
-            <Card border="dark" style={{ width:'100%', height:'60rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width:'100%', height:'61rem', marginTop:'1rem', marginBottom:'5px' }}>
                 <Card.Header>
                     받는분 정보
                 </Card.Header>
@@ -325,7 +325,7 @@ export class CustomerRecipientEditor extends React.Component {
                                     <Button size='sm' variant='secondary' >우편번호 찾기</Button>
                                 </InputGroup >
 
-                                <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             주소
@@ -337,13 +337,14 @@ export class CustomerRecipientEditor extends React.Component {
                                         />
                                 </InputGroup >
 
-                                <InputGroup size='sm' className="mb-3" style={{ width: '70%'}}>
+                                <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
                                             상세주소
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        as="textarea" rows="2"
                                         defaultValue={this.props.recipientInfo.addressDetails}
                                         onChange={this.changeHandlerAddressDetails}
                                         />
