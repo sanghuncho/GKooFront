@@ -12,9 +12,6 @@ export class AdditionalProduct extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            //shopUrl:"",
-            
-            //trackingTitle:"운송사선택",
             trackingNumber:"",
 
             categoryTitle:"선택",
@@ -37,16 +34,11 @@ export class AdditionalProduct extends React.Component{
             isValidTotalPrice:false,
 
         }
-        //this.inputShopUrl               = this.inputShopUrl.bind(this);
-        //this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
         this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
-
         this.handleSelectCategory       = this.handleSelectCategory.bind(this);
         this.handleSelectItem           = this.handleSelectItem.bind(this);
-
         this.inputBrandName             = this.inputBrandName.bind(this);
         this.inputItemName              = this.inputItemName.bind(this);
-
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
         this.inputTotalPrice    = this.inputTotalPrice.bind(this);

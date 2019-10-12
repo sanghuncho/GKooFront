@@ -13,7 +13,6 @@ import { TransportShippingRequest } from "../module_shippingService/TransportShi
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
-import { RecipientController } from "./RecipientController";
 import { InfoBadge } from "../module_base_component/InfoBadge";
 
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -550,40 +549,6 @@ class ShippingCenter extends React.Component{
                 <Card border="dark" style={{ width: '90%'}}>
                     <Card.Header>상품</Card.Header>
                     <Card.Body >
-                    {/* <InputGroup size="sm" style={{ width:'70%'}} className="mb-3" >
-                        <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}} >
-                            쇼핑몰 URL
-                        </InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3"
-                            onChange = {this.inputShopUrl} 
-                            placeholder="정확한 URL을 입력해주세요"/>
-                    </InputGroup>
-
-                    <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
-                        <InputGroup.Prepend>
-                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                            트랙킹번호
-                        </InputGroup.Text>
-                        </InputGroup.Prepend>
-                       
-                        <DropdownButton
-                            as={InputGroup.Prepend}
-                            variant="outline-secondary"
-                            title={this.state.trackingTitle}
-                            id="input-group-dropdown-1"
-                            >
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
-                        </DropdownButton>
-                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="트랙킹번호"
-                            onChange = {this.inputTrackingNumber}/>
-                        <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
-                    </InputGroup> */}
-
                     <InputGroup size="sm" className="mb-3">
                         <InputGroup.Prepend>
                             <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>

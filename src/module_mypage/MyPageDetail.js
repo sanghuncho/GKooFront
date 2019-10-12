@@ -5,6 +5,7 @@ import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-bootstrap"
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
+import { MyPageDetailProducts } from "./MyPageDetailProducts"
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, basePort } from "../module_mypage/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -28,9 +29,6 @@ const UserAccountTableStyle = styled.div`
   box-shadow: 2px 2px 3px 3px #888; 
   font-size: 13px;
 `;
-
-const WhiteSmoke = '#F5F5F5'
-
 
 export class MyPageDetail extends React.Component{
     constructor(props) {
@@ -270,109 +268,6 @@ class MyPageDetailProductPrice extends React.Component{
       }    
 }
 
-class MyPageDetailProducts extends React.Component{
-    constructor(props) {
-        super(props);
-
-        this.state = {
-        }
-
-      }
-
-      componentDidMount () {
-      }
-      
-      render() {
-        // Todo : refactoring
-        var array = new Array()
-        for(var i=0;i<this.props.productsInfo.length;i++){
-          array.push(i)
-        }
-
-        return (
-          <div>
-              <Card border="dark" style={{ width: '100%', height:'42rem', marginTop:'1rem', marginBottom:'1rem' }}>
-                <Card.Header>상품 정보</Card.Header>
-                <Card.Body>
-                <Table bordered condensed responsive size="sm">
-                <thead>
-                </thead>
-                <tbody>
-                <tr>
-                  <td width='300px'>트래킹번호</td>
-                  <td width='300px'>{this.props.productsCommonInfo.trackingNr}</td>
-                </tr>
-                <tr>
-                  <td>쇼핑몰 URL</td>
-                  <td>{this.props.productsCommonInfo.shopUrl}</td>
-                </tr>
-                </tbody>
-                </Table>
-
-                {array.map((itemName, index) => { return (
-                    <div key={index}>
-                      <MyPageDetailProduct productIndex={index+1}
-                        product={this.props.productsInfo[index]}/>
-                    </div>
-                )})}
-              
-                </Card.Body>
-                {/* <Card.Footer>
-                </Card.Footer> */}
-                </Card>
-          </div>
-        );
-      }    
-}
-
-class MyPageDetailProduct extends React.Component{
-    constructor(props) {
-        super(props);
-      }
-      
-      render() {
-        return (
-          <div>
-              <Table bordered condensed responsive size="sm">
-                    <thead>
-                        {/* 상품 */}
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td width='300px'>상품</td>
-                        <td width='300px'>{this.props.productIndex}</td>
-                    </tr>
-                    <tr>
-                        <td width='300px'>카테고리</td>
-                        <td width='300px'>{this.props.product.categorytitle}</td>
-                    </tr>
-                    <tr>
-                        <td>품목</td>
-                        <td>{this.props.product.itemtitle}</td>
-                    </tr>
-                    <tr>
-                        <td>브랜드</td>
-                        <td>{this.props.product.brandname}</td>
-                    </tr>
-                    <tr>
-                        <td>상품명</td>
-                        <td>{this.props.product.itemname}</td>
-                    </tr>
-                    <tr>
-                        <td>수량</td>
-                        <td>{this.props.product.amount}</td>
-                    </tr>
-                    <tr>
-                        <td>단가</td>
-                        <td>{this.props.product.price}원</td>
-                    </tr>
-                    </tbody>
-                </Table>
-          </div>
-        );
-      }    
-}
-
 class MyPageDetailPerson extends React.Component{
     constructor(props) {
         super(props);
@@ -481,7 +376,7 @@ class MyPageDetailRecipient extends React.Component{
                   {recipientFormDisplay}
                
                 </Card.Body>
-                </Card>
+              </Card>
           </div>
         );
       }    
