@@ -26,37 +26,38 @@ export class TransportShippingRequest extends React.Component {
         
         if (this.props.applyDeliveryService){
 
-        console.log("Transport shopurl: " + this.props.shopUrl)
-        console.log("Transport shopurlList: " + this.props.shopUrlList)
-        console.log("Transport easyship: " + this.props.easyShip)
+        // console.log("Transport shopurl: " + this.props.shopUrl)
+        // console.log("Transport shopurlList: " + this.props.shopUrlList)
+        // console.log("Transport easyship: " + this.props.easyShip)
 
-        console.log("Transport trackingTitle: " + this.props.trackingTitle)
-        console.log("Transport trackingTitleList: " + this.props.trackingTitleList)
+        // console.log("Transport trackingTitle: " + this.props.trackingTitle)
+        // console.log("Transport trackingTitleList: " + this.props.trackingTitleList)
 
-        console.log("Transport trackingNumber: " + this.props.trackingNumber)
-        console.log("Transport categoryTitle: " + this.props.categoryTitle)
+        // console.log("Transport trackingNumber: " + this.props.trackingNumber)
+        // console.log("Transport categoryTitle: " + this.props.categoryTitle)
 
-        console.log("Transport itemTitle: " + this.props.itemTitle)
-        console.log("Transport brandName: " + this.props.brandName) 
-        console.log("Transport itemName: " + this.props.itemName) 
-        console.log("Transport totalPrice: " + this.props.totalPrice) 
+        // console.log("Transport itemTitle: " + this.props.itemTitle)
+        // console.log("Transport brandName: " + this.props.brandName) 
+        // console.log("Transport itemName: " + this.props.itemName) 
+        // console.log("Transport totalPrice: " + this.props.totalPrice) 
           
-        console.log("Transport receiverNameByKorea: " + this.props.receiverNameByKorea) 
-        console.log("Transport setOwnerContent: " + this.props.setOwnerContent) 
-        console.log("Transport receiverNameByEnglish: " + this.props.receiverNameByEnglish) 
+        // console.log("Transport receiverNameByKorea: " + this.props.receiverNameByKorea) 
+        // console.log("Transport setOwnerContent: " + this.props.setOwnerContent) 
+        // console.log("Transport receiverNameByEnglish: " + this.props.receiverNameByEnglish) 
           
-        console.log("Transport privateTransit: " + this.props.privateTransit) 
-        console.log("Transport transitNumber: " + this.props.transitNumber)
-        console.log("Transport agreeWithCollection: " + this.props.agreeWithCollection)
+        // console.log("Transport privateTransit: " + this.props.privateTransit) 
+        // console.log("Transport transitNumber: " + this.props.transitNumber)
+        // console.log("Transport agreeWithCollection: " + this.props.agreeWithCollection)
           
-        console.log("Transport callNumberFront: " + this.props.callNumberFront)
-        console.log("Transport callNumberMiddle: " + this.props.callNumberMiddle)
-        console.log("Transport callNumberRear: " + this.props.callNumberRear)  
+        // console.log("Transport callNumberFront: " + this.props.callNumberFront)
+        // console.log("Transport callNumberMiddle: " + this.props.callNumberMiddle)
+        // console.log("Transport callNumberRear: " + this.props.callNumberRear)  
           
-        console.log("Transport postCode: " + this.props.postCode)  
-        console.log("Transport DeliveryAddress: " + this.props.deliveryAddress)  
-        console.log("Transport DetailAddress: " + this.props.detailAddress)
-        console.log("Transport deliveryMessage: " + this.props.deliveryMessage)   
+        // console.log("Transport postCode: " + this.props.postCode)  
+        // console.log("Transport DeliveryAddress: " + this.props.deliveryAddress)  
+        // console.log("Transport DetailAddress: " + this.props.detailAddress)
+        // console.log("Transport deliveryMessage: " + this.props.deliveryMessage)  
+        //console.log("Transport deliveryMessage: " + this.props.productObjectList)   
        
         const contents = [{shopUrl: this.props.shopUrl}, 
                           {easyship:this.props.easyShip},
@@ -90,10 +91,37 @@ export class TransportShippingRequest extends React.Component {
                           //{shopUrlList: this.props.shopUrlList}     
                           {shopUrlList: JSON.stringify(this.props.shopUrlList)}     
                         ]
+
+                        const contentNewConstruct = [
+                          {easyship:this.props.easyShip},
+
+                          {deliveryObject: JSON.stringify(this.props.deliveryObject)},     
+                          {productObjectList: JSON.stringify(this.props.productObjectList)},
+                          
+                          {totalPrice:this.props.totalPrice},
+
+                          {receiverNameByKorea:this.props.receiverNameByKorea},
+                          {setOwnerContent:this.props.setOwnerContent},
+                          {receiverNameByEnglish:this.props.receiverNameByEnglish},
+
+                          {privateTransit:this.props.privateTransit},
+                          {transitNumber:this.props.transitNumber},
+                          {agreeWithCollection:this.props.agreeWithCollection},
+
+                          {callNumberFront:this.props.callNumberFront},
+                          {callNumberMiddle:this.props.callNumberMiddle},
+                          {callNumberRear:this.props.callNumberRear},
+
+                          {postCode:this.props.postCode},
+                          {deliveryAddress:this.props.deliveryAddress},
+                          {detailAddress:this.props.detailAddress},
+                          {deliveryMessage:this.props.deliveryMessage},
+                        ]
         
 
-        console.log(JSON.stringify(contents))
-        this.createShippingService(contents)
+        console.log(JSON.stringify(contentNewConstruct))
+        //this.createShippingService(contents)
+        this.createShippingService(contentNewConstruct)
         this.props.finishService()
     }
       return(

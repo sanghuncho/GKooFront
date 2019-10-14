@@ -12,9 +12,6 @@ export class AdditionalProduct extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            //shopUrl:"",
-            
-            //trackingTitle:"운송사선택",
             trackingNumber:"",
 
             categoryTitle:"선택",
@@ -37,9 +34,6 @@ export class AdditionalProduct extends React.Component{
             isValidTotalPrice:false,
 
         }
-        //this.inputShopUrl               = this.inputShopUrl.bind(this);
-        //this.inputTrackingTitle         = this.inputTrackingTitle.bind(this);
-        this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
 
         this.handleSelectCategory       = this.handleSelectCategory.bind(this);
         this.handleSelectItem           = this.handleSelectItem.bind(this);
@@ -53,47 +47,49 @@ export class AdditionalProduct extends React.Component{
         
     }
 
-    // inputShopUrl(event){
-    //     this.setState({shopUrl:event.target.value})
-    //     this.props.shopUrlList[this.props.index] = event.target.value
-    // }
-
-    // inputTrackingTitle(event, company) {
-    //     this.setState({trackingTitle:company})
-    //     this.props.trackingTitleList[this.props.index] = company
-    // }
-
-    inputTrackingNumber(event){
-        this.setState({trackingNumber:event.target.value}) 
+    componentDidMount() {
+        var productObject = {
+            categoryTitle: "",
+            itemTitle: "",
+            brandName: "",
+            itemName: "",
+            productPrice: null,
+            productAmount: null,
+            totalPrice: null,
+        };
+        this.props.productObjectList[this.props.index] = productObject
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true}) 
+        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
+        this.props.productObjectList[this.props.index].categoryTitle = title
     }
 
     handleSelectItem(event, it) {
-        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true}) 
+        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true})
+        this.props.productObjectList[this.props.index].itemTitle = it
     }
 
     inputBrandName(event){
-        this.setState({brandName:event.target.value}) 
+        this.setState({brandName:event.target.value})
+        this.props.productObjectList[this.props.index].brandName = event.target.value
     }
 
     inputItemName(event){
         this.setState({itemName:event.target.value})
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
-            this.setState({isValidItemName:true, warningInvalidItemName:false}) 
+            this.setState({isValidItemName:true, warningInvalidItemName:false})
+        this.props.productObjectList[this.props.index].itemName = itemName 
     }
 
     inputProductPrice(event){
         const inputPrice = event.target.value
-        console.log("inputPrice : " + inputPrice)
         const isProperPrice = Number.isInteger(parseInt(inputPrice))
-        console.log("isProperPrice : " + isProperPrice)
         this.setState({
             productPrice:inputPrice,
         })
+        this.props.productObjectList[this.props.index].productPrice = inputPrice
     }
 
     inputProductAmount(event){
@@ -101,7 +97,7 @@ export class AdditionalProduct extends React.Component{
         this.setState({
             productAmount:amount,
         })
-        console.log("product amount")
+        this.props.productObjectList[this.props.index].productAmount = amount
     }
 
     inputTotalPrice(event){
@@ -110,13 +106,12 @@ export class AdditionalProduct extends React.Component{
         const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
         const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
         const total = (price === "") || (amount === "") ? "" : price*amount
-        console.log(price)
         this.setState({
             totalPrice:total
         })
 
         total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
-        console.log("total : " + total)
+        this.props.productObjectList[this.props.index].totalPrice = total
     }
 
     render(){
