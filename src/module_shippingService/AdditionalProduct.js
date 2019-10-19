@@ -30,7 +30,7 @@ export class AdditionalProduct extends React.Component{
 
             productPrice:"",
             productAmount:"",
-            totalPrice:"",
+            productTotalPrice:"",
             isValidTotalPrice:false,
 
         }
@@ -43,36 +43,36 @@ export class AdditionalProduct extends React.Component{
 
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
-        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
+        this.inputProductTotalPrice    = this.inputProductTotalPrice.bind(this);
         
     }
 
     componentDidMount() {
-        var productObject = {
+        var shippingProduct = {
             categoryTitle: "",
             itemTitle: "",
             brandName: "",
             itemName: "",
             productPrice: null,
             productAmount: null,
-            totalPrice: null,
+            productTotalPrice: null,
         };
-        this.props.productObjectList[this.props.index] = productObject
+        this.props.shippingProductList[this.props.index] = shippingProduct
     }
 
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
-        this.props.productObjectList[this.props.index].categoryTitle = title
+        this.props.shippingProductList[this.props.index].categoryTitle = title
     }
 
     handleSelectItem(event, it) {
         this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true})
-        this.props.productObjectList[this.props.index].itemTitle = it
+        this.props.shippingProductList[this.props.index].itemTitle = it
     }
 
     inputBrandName(event){
         this.setState({brandName:event.target.value})
-        this.props.productObjectList[this.props.index].brandName = event.target.value
+        this.props.shippingProductList[this.props.index].brandName = event.target.value
     }
 
     inputItemName(event){
@@ -80,38 +80,46 @@ export class AdditionalProduct extends React.Component{
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
             this.setState({isValidItemName:true, warningInvalidItemName:false})
-        this.props.productObjectList[this.props.index].itemName = itemName 
+        this.props.shippingProductList[this.props.index].itemName = itemName 
     }
 
     inputProductPrice(event){
         const inputPrice = event.target.value
-        const isProperPrice = Number.isInteger(parseInt(inputPrice))
-        this.setState({
-            productPrice:inputPrice,
-        })
-        this.props.productObjectList[this.props.index].productPrice = inputPrice
+        //const isProperPrice = Number.isInteger(parseInt(inputPrice))
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const productTotalPrice = (inputPrice === "") || (amount === "") ? "" : inputPrice*amount 
+        this.setState({productPrice:inputPrice})
+        this.props.shippingProductList[this.props.index].productPrice = inputPrice
+
+        if(productTotalPrice != ""){
+            this.setState({productTotalPrice:productTotalPrice})
+            this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
+        }
     }
 
     inputProductAmount(event){
         const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        this.setState({
-            productAmount:amount,
-        })
-        this.props.productObjectList[this.props.index].productAmount = amount
+        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice)
+        const productTotalPrice = (price === "") || (amount === "") ? "" : price*amount 
+        this.setState({productAmount:amount})
+        this.props.shippingProductList[this.props.index].productAmount = amount
+        if(productTotalPrice != ""){
+            this.setState({productTotalPrice:productTotalPrice})
+            this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
+        }
     }
 
-    inputTotalPrice(event){
-        console.log("total price")
+    inputProductTotalPrice(event){
+        // console.log("total price")
+        // const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
+        // const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        // const productTotalPrice = (price === "") || (amount === "") ? "" : price*amount
+        // this.setState({
+        //     productTotalPrice:productTotalPrice
+        // })
 
-        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
-        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
-        const total = (price === "") || (amount === "") ? "" : price*amount
-        this.setState({
-            totalPrice:total
-        })
-
-        total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
-        this.props.productObjectList[this.props.index].totalPrice = total
+        // total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
+        // this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
     }
 
     render(){
@@ -127,7 +135,7 @@ export class AdditionalProduct extends React.Component{
         const amount = this.state.productAmount
         const isNumberAmount = Number(amount) 
         const amountInt = isNumberAmount ? parseInt(amount) : 0 
-        const totalPrice = priceInt*amountInt
+        const productTotalPrice = priceInt*amountInt
 
         return(
             <Card border="dark" style={{ width: '90%', marginTop:'10px'}}>
@@ -220,8 +228,8 @@ export class AdditionalProduct extends React.Component{
                     </IconCnt>
 
                     <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                        value={ totalPrice }
-                        onChange = { this.inputTotalPrice }
+                        value={ productTotalPrice }
+                        onChange = { this.inputProductTotalPrice }
                         readOnly = "true"
                         />
                     <InputGroup.Append>

@@ -95,11 +95,9 @@ export class TransportShippingRequest extends React.Component {
                         const contentNewConstruct = [
                           {easyship:this.props.easyShip},
 
-                          {deliveryObject: JSON.stringify(this.props.deliveryObject)},     
-                          {productObjectList: JSON.stringify(this.props.productObjectList)},
+                          {deliveryDataObject: JSON.stringify(this.props.deliveryObject)},     
+                          {shippingProductList: JSON.stringify(this.props.shippingProductList)},
                           
-                          {totalPrice:this.props.totalPrice},
-
                           {receiverNameByKorea:this.props.receiverNameByKorea},
                           {setOwnerContent:this.props.setOwnerContent},
                           {receiverNameByEnglish:this.props.receiverNameByEnglish},

@@ -44,12 +44,13 @@ export class MyPageDetail extends React.Component{
           recipientInfo:"",
           productsInfo:"",
           productsCommonInfo:"", 
-          ownerName:'', 
+          ownerName:'',
+          shipstate:'',
         }
 
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
-        this.fetchProductsCommonInforamtion = this.fetchProductsCommonInforamtion.bind(this)
+        //this.fetchProductsCommonInforamtion = this.fetchProductsCommonInforamtion.bind(this)
       }
 
       componentDidMount () {
@@ -103,8 +104,6 @@ export class MyPageDetail extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { productsInfo: data} )
-          console.log("productsInfo")
-          console.log(this.state.productsInfo)
         })  
       }
 
@@ -152,6 +151,7 @@ export class MyPageDetail extends React.Component{
                 orderNumber={this.state.orderNumber}
                 orderingPersonInfo={this.state.orderingPersonInfo}
                 recipientInfo={this.state.recipientInfo}
+                shipstate={this.state.shipstate}
                 productsInfo={this.state.productsInfo}
                 productsCommonInfo={this.state.productsCommonInfo}
                 createPaymentOwnername={this.createPaymentOwnername}
