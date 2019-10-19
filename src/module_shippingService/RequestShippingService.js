@@ -33,6 +33,8 @@ const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 
+const FITST_ELEMENT = 0;
+
 export class RequestShippingService extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -194,8 +196,8 @@ class ShippingCenter extends React.Component{
 
             productAmount:"",
             productAmountList:[],
+            productTotalPrice:"",
 
-            totalPrice:"",
             totalPriceList:[],
             isValidTotalPrice:false,
 
@@ -224,6 +226,8 @@ class ShippingCenter extends React.Component{
             //without validation
             //applyDeliveryService:true,
             show: false,
+            shippingProductList:[],
+            deliveryObject: null,
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -242,7 +246,7 @@ class ShippingCenter extends React.Component{
 
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
-        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
+        this.inputProductTotalPrice    = this.inputProductTotalPrice.bind(this);
 
         this.inputPrivateTransit  = this.inputPrivateTransit.bind(this); 
         this.inputBusinessTransit  = this.inputBusinessTransit.bind(this); 
@@ -266,7 +270,28 @@ class ShippingCenter extends React.Component{
 
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
-    }   
+    }
+
+    componentDidMount() {
+        var shippingProduct = {
+            categoryTitle: "",
+            itemTitle: "",
+            brandName: "",
+            itemName: "",
+            productPrice: null,
+            productAmount: null,
+            productTotalPrice: null,
+        };
+        {/* set the first product element */}
+        this.state.shippingProductList[0] = shippingProduct
+
+        var deliveryObject = {
+            shopUrl:"",
+            trackingTitle:"",
+            trackingNumber:""
+        }
+        this.setState({deliveryObject:deliveryObject})
+    }
 
     setOwnerContentCheckbox(event){        
         this.setState({setOwnerContent:event.target.checked})
@@ -274,66 +299,72 @@ class ShippingCenter extends React.Component{
 
     inputShopUrl(event){
         this.setState({shopUrl:event.target.value})
+        this.state.deliveryObject.shopUrl = event.target.value
     }
 
     inputTrackingTitle(event, company) {
-        this.setState({trackingTitle:company}) 
+        this.setState({trackingTitle:company})
+        this.state.deliveryObject.trackingTitle=company
     }
 
     inputTrackingNumber(event){
-        this.setState({trackingNumber:event.target.value}) 
+        this.setState({trackingNumber:event.target.value})
+        this.state.deliveryObject.trackingNumber = event.target.value 
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true}) 
+        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
+        this.state.shippingProductList[0].categoryTitle = title
     }
 
     handleSelectItem(event, it) {
-        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true}) 
+        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true})
+        this.state.shippingProductList[0].itemTitle = it
     }
 
     inputBrandName(event){
-        this.setState({brandName:event.target.value}) 
+        this.setState({brandName:event.target.value})
+        this.state.shippingProductList[0].brandName = event.target.value
     }
 
     inputItemName(event){
         this.setState({itemName:event.target.value})
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
-            this.setState({isValidItemName:true, warningInvalidItemName:false}) 
+            this.setState({isValidItemName:true, warningInvalidItemName:false})
+        this.state.shippingProductList[0].itemName = itemName
     }
 
     inputProductPrice(event){
         const inputPrice = event.target.value
-        console.log("inputPrice : " + inputPrice)
-        const isProperPrice = Number.isInteger(parseInt(inputPrice))
-        console.log("isProperPrice : " + isProperPrice)
-        this.setState({
-            productPrice:inputPrice,
-        })
+        //const isProperPrice = Number.isInteger(parseInt(inputPrice))
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const productTotalPrice = (inputPrice === "") || (amount === "") ? "" : inputPrice*amount 
+        this.setState({productPrice:inputPrice, productTotalPrice:productTotalPrice})
+        this.state.shippingProductList[0].productPrice = inputPrice
+        this.state.shippingProductList[0].productTotalPrice = productTotalPrice
     }
 
     inputProductAmount(event){
         const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        this.setState({
-            productAmount:amount,
-        })
-        console.log("product amount")
+        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice)
+        const productTotalPrice = (price === "") || (amount === "") ? "" : price*amount 
+        this.setState({productAmount:amount, productTotalPrice:productTotalPrice})
+        this.state.shippingProductList[0].productAmount = amount
+        this.state.shippingProductList[0].productTotalPrice = productTotalPrice
     }
 
-    inputTotalPrice(event){
-        console.log("total price")
+    inputProductTotalPrice(event){
+        // const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
+        // const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        // const total = (price === "") || (amount === "") ? "" : price*amount
+        
+        // this.setState({
+        //     totalPrice:total
+        // })
 
-        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
-        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
-        const total = (price === "") || (amount === "") ? "" : price*amount
-        console.log(price)
-        this.setState({
-            totalPrice:total
-        })
-
-        total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
-        console.log("total : " + total)
+        // total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
+        // console.log("total : " + total)
     }
 
     inputReceiverNameByKorea(event){
@@ -426,16 +457,17 @@ class ShippingCenter extends React.Component{
     }
 
     removeItemOnList(index){
-        console.log("update from child::" + index)
         this.state.goodsList.splice(index, 1)
         this.state.shopUrlList.splice(index, 1)
-        this.setState({goodsList:this.state.goodsList, shopUrlList:this.state.shopUrlList,
+        this.state.shippingProductList.splice(index, 1)
+        this.setState({goodsList:this.state.goodsList, 
+                shopUrlList:this.state.shopUrlList,
+                shippingProductList:this.state.shippingProductList
         })
     }
 
     finishService(){
         this.setState({applyDeliveryService:false})
-        console.log("finish service")
     }
 
     handleModalClose() {
@@ -455,7 +487,7 @@ class ShippingCenter extends React.Component{
         const amount = this.state.productAmount
         const isNumberAmount = Number(amount) 
         const amountInt = isNumberAmount ? parseInt(amount) : 0 
-        const totalPrice = priceInt*amountInt
+        const productTotalPrice = priceInt*amountInt
 
         const categoryVariant = this.state.categoryVariant
         const isValidCategory = this.state.isValidCategory
@@ -473,7 +505,7 @@ class ShippingCenter extends React.Component{
         const warningInvalidItemName =  this.state.warningInvalidItemName
         const heightOfInputProduct = heightOfInputProduct + "rem"
 
-        const isValidTotalPrice = totalPrice == 0 ? false : true  
+        const isValidTotalPrice = productTotalPrice == 0 ? false : true  
         const allowToApply = (isValidCategory & isValidItemTitle & isValidTransitNumber 
                 & isValidItemName & isValidTotalPrice)
 
@@ -540,6 +572,7 @@ class ShippingCenter extends React.Component{
                             <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
                         </DropdownButton>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                            style={{ width: '200px'}} 
                             placeholder="트랙킹번호"
                             onChange = {this.inputTrackingNumber}/>
                         <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
@@ -619,7 +652,7 @@ class ShippingCenter extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             placeholder="상품단가"
-                            value={this.state.productPrice}
+                            val ue={this.state.productPrice}
                             onChange = {this.inputProductPrice}/>
                         <IconCnt style={{marginTop:"2px",marginLeft:"2px", marginRight:"2px"}}>
                                 <Icon icon={ times } />
@@ -634,8 +667,8 @@ class ShippingCenter extends React.Component{
                         </IconCnt>
 
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            value={ totalPrice }
-                            onChange = { this.inputTotalPrice }
+                            value={ productTotalPrice }
+                            onChange = { this.inputProductTotalPrice }
                             readOnly = "true"
                             />
                         <InputGroup.Append>
@@ -645,13 +678,14 @@ class ShippingCenter extends React.Component{
                  </Card.Body>
                  </Card>
 
-                {/* 상품추가 구현 */}
+                {/* 상품추가 구현 index[0] = first element*/}
                 {this.state.goodsList.map((itemName, index) => { return (
                     <div key={index}>
 
-                    <AdditionalProduct index={index} 
+                    <AdditionalProduct index={index+1} 
                         shopUrlList={this.state.shopUrlList}
                         trackingTitleList = {this.state.trackingTitleList}
+                        shippingProductList = {this.state.shippingProductList}
                         trackingNumberList = {this.state.trackingNumberList}
                         categoryTitleList = {this.state.categoryTitleList}
                         itemTitleList = {this.state.itemTitleList}
@@ -878,24 +912,13 @@ class ShippingCenter extends React.Component{
 
                     <TransportShippingRequest 
                         applyDeliveryService={this.state.applyDeliveryService}
-                        finishService = {this.finishService}
+                        finishService={this.finishService}
 
-                        shopUrl={this.state.shopUrl}
-                        shopUrlList={this.state.shopUrlList}
+                        easyShip={this.props.easyShip}
 
-                        trackingTitle={this.state.trackingTitle}
-                        trackingTitleList={this.state.trackingTitleList}
+                        shippingProductList={this.state.shippingProductList}
+                        deliveryObject={this.state.deliveryObject}
 
-                        trackingNumber={this.state.trackingNumber}
-                        
-                        categoryTitle={this.state.categoryTitle}
-                        itemTitle={this.state.itemTitle}
-                        brandName={this.state.brandName}
-                        itemName={this.state.itemName}
-                        
-                        //send the amount and every price!! 
-                        totalPrice={totalPrice}
-                        
                         receiverNameByKorea={this.state.receiverNameByKorea}
                         setOwnerContent={this.state.setOwnerContent}
                         receiverNameByEnglish={this.state.receiverNameByEnglish}
@@ -912,8 +935,6 @@ class ShippingCenter extends React.Component{
                         deliveryAddress={this.state.deliveryAddress}
                         detailAddress={this.state.detailAddress}
                         deliveryMessage={this.state.deliveryMessage}
-
-                        easyShip={this.props.easyShip}
 
                         accessToken={this.props.accessToken}
                         />

@@ -30,85 +30,93 @@ export class AdditionalProduct extends React.Component{
 
             productPrice:"",
             productAmount:"",
-            totalPrice:"",
+            productTotalPrice:"",
             isValidTotalPrice:false,
 
         }
-        this.inputTrackingNumber        = this.inputTrackingNumber.bind(this);
         this.handleSelectCategory       = this.handleSelectCategory.bind(this);
         this.handleSelectItem           = this.handleSelectItem.bind(this);
         this.inputBrandName             = this.inputBrandName.bind(this);
         this.inputItemName              = this.inputItemName.bind(this);
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
-        this.inputTotalPrice    = this.inputTotalPrice.bind(this);
+        this.inputProductTotalPrice    = this.inputProductTotalPrice.bind(this);
         
     }
 
-    // inputShopUrl(event){
-    //     this.setState({shopUrl:event.target.value})
-    //     this.props.shopUrlList[this.props.index] = event.target.value
-    // }
-
-    // inputTrackingTitle(event, company) {
-    //     this.setState({trackingTitle:company})
-    //     this.props.trackingTitleList[this.props.index] = company
-    // }
-
-    inputTrackingNumber(event){
-        this.setState({trackingNumber:event.target.value}) 
+    componentDidMount() {
+        var shippingProduct = {
+            categoryTitle: "",
+            itemTitle: "",
+            brandName: "",
+            itemName: "",
+            productPrice: null,
+            productAmount: null,
+            productTotalPrice: null,
+        };
+        this.props.shippingProductList[this.props.index] = shippingProduct
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true}) 
+        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
+        this.props.shippingProductList[this.props.index].categoryTitle = title
     }
 
     handleSelectItem(event, it) {
-        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true}) 
+        this.setState({itemTitle:it, itemTitleVariant:"outline-secondary", isValidItemTitle:true})
+        this.props.shippingProductList[this.props.index].itemTitle = it
     }
 
     inputBrandName(event){
-        this.setState({brandName:event.target.value}) 
+        this.setState({brandName:event.target.value})
+        this.props.shippingProductList[this.props.index].brandName = event.target.value
     }
 
     inputItemName(event){
         this.setState({itemName:event.target.value})
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
-            this.setState({isValidItemName:true, warningInvalidItemName:false}) 
+            this.setState({isValidItemName:true, warningInvalidItemName:false})
+        this.props.shippingProductList[this.props.index].itemName = itemName 
     }
 
     inputProductPrice(event){
         const inputPrice = event.target.value
-        console.log("inputPrice : " + inputPrice)
-        const isProperPrice = Number.isInteger(parseInt(inputPrice))
-        console.log("isProperPrice : " + isProperPrice)
-        this.setState({
-            productPrice:inputPrice,
-        })
+        //const isProperPrice = Number.isInteger(parseInt(inputPrice))
+        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        const productTotalPrice = (inputPrice === "") || (amount === "") ? "" : inputPrice*amount 
+        this.setState({productPrice:inputPrice})
+        this.props.shippingProductList[this.props.index].productPrice = inputPrice
+
+        if(productTotalPrice != ""){
+            this.setState({productTotalPrice:productTotalPrice})
+            this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
+        }
     }
 
     inputProductAmount(event){
         const amount = (event.target.value === "") || (event.target.value == null) ? "" : parseInt(event.target.value)
-        this.setState({
-            productAmount:amount,
-        })
-        console.log("product amount")
+        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice)
+        const productTotalPrice = (price === "") || (amount === "") ? "" : price*amount 
+        this.setState({productAmount:amount})
+        this.props.shippingProductList[this.props.index].productAmount = amount
+        if(productTotalPrice != ""){
+            this.setState({productTotalPrice:productTotalPrice})
+            this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
+        }
     }
 
-    inputTotalPrice(event){
-        console.log("total price")
+    inputProductTotalPrice(event){
+        // console.log("total price")
+        // const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
+        // const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
+        // const productTotalPrice = (price === "") || (amount === "") ? "" : price*amount
+        // this.setState({
+        //     productTotalPrice:productTotalPrice
+        // })
 
-        const price =  this.state.productPrice === "" ? "" : parseInt(this.state.productPrice) 
-        const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
-        const total = (price === "") || (amount === "") ? "" : price*amount
-        console.log(price)
-        this.setState({
-            totalPrice:total
-        })
-
-        total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
-        console.log("total : " + total)
+        // total != 0 ? this.setState({isValidTotalPrice:true}) : this.setState({isValidTotalPrice:false})
+        // this.props.shippingProductList[this.props.index].productTotalPrice = productTotalPrice
     }
 
     render(){
@@ -124,7 +132,7 @@ export class AdditionalProduct extends React.Component{
         const amount = this.state.productAmount
         const isNumberAmount = Number(amount) 
         const amountInt = isNumberAmount ? parseInt(amount) : 0 
-        const totalPrice = priceInt*amountInt
+        const productTotalPrice = priceInt*amountInt
 
         return(
             <Card border="dark" style={{ width: '90%', marginTop:'10px'}}>
@@ -217,8 +225,8 @@ export class AdditionalProduct extends React.Component{
                     </IconCnt>
 
                     <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                        value={ totalPrice }
-                        onChange = { this.inputTotalPrice }
+                        value={ productTotalPrice }
+                        onChange = { this.inputProductTotalPrice }
                         readOnly = "true"
                         />
                     <InputGroup.Append>
