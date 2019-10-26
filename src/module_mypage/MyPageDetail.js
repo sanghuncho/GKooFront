@@ -200,7 +200,8 @@ class MyPageDetailWrapper extends React.Component{
                 {/* 상품정보 */}
                 <MyPageDetailProducts
                   productsInfo={this.props.productsInfo}
-                  productsCommonInfo={this.props.productsCommonInfo}/>
+                  productsCommonInfo={this.props.productsCommonInfo}
+                  accessToken={this.props.accessToken}/>
 
                 {/* 총액정보 */}
                 <MyPageDetailProductPrice 

@@ -12,8 +12,6 @@ export class AdditionalProduct extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            trackingNumber:"",
-
             categoryTitle:"선택",
             isValidCategory:false,
             categoryVariant:"outline-secondary",
