@@ -332,7 +332,7 @@ class ShippingCenter extends React.Component{
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
             this.setState({isValidItemName:true, warningInvalidItemName:false})
-        this.state.shippingProductList[0].itemName = itemName
+        this.state.shippingProductList[0].itemName = event.target.value
     }
 
     inputProductPrice(event){

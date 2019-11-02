@@ -61,7 +61,7 @@ export class MyPageDetailProducts extends React.Component{
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
           } else {
-            const dynamicHeight = (14 + 15*(this.props.productsInfo.length))
+            const dynamicHeight = (14 + 17*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
             productsListDisplay = <CompleteProductsListDisplay 
                 productsInfo={this.props.productsInfo}
@@ -91,6 +91,7 @@ export class EditorProductsList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            orderNumber:this.props.orderNumber,
             shopUrl:this.props.productsCommonInfo.shopUrl,
             trackingTitle:this.props.productsCommonInfo.trackingCompany,
             trackingNumber:this.props.productsCommonInfo.trackingNr,
@@ -106,33 +107,20 @@ export class EditorProductsList extends React.Component{
     }
 
     componentDidMount() {
-        var shippingProduct = {
-            categoryTitle: "",
-            itemTitle: "",
-            brandName: "",
-            itemName: "",
-            productPrice: null,
-            productAmount: null,
-            productTotalPrice: null,
-        };
-
-        //var array = new Array()
         for(var i=0; i<this.props.productsInfo.length; i++){
-          //array.push(i)
-          this.state.shippingProductList[i] = shippingProduct
+          this.state.shippingProductList[i] = ""
         }
+
         //{/* set the first product element */}
         //this.state.shippingProductList[0] = shippingProduct
 
         var deliveryObject = {
-            shopUrl:"",
-            trackingTitle:"",
-            trackingNumber:""
+            shopUrl:this.props.productsCommonInfo.shopUrl,
+            trackingTitle:this.props.productsCommonInfo.trackingCompany,
+            trackingNumber:this.props.productsCommonInfo.trackingNr
         }
         this.setState({deliveryObject:deliveryObject})
     }
-
-    
 
     handleShopUrl(event){
         this.setState({shopUrl:event.target.value})
@@ -159,12 +147,12 @@ export class EditorProductsList extends React.Component{
     updateDataEditorProductsList(accessToken){
 
         const editedProductsData =  [
-            {prdouctDelivery: this.state.deliveryObject},
-            {shippingProductList: this.state.shippingProductList}
+            {orderNumber: this.state.orderNumber},
+            {deliveryDataObject: JSON.stringify(this.state.deliveryObject)},
+            {shippingProductList: JSON.stringify(this.state.shippingProductList)}
         ]
 
         this.setTokenHeader(accessToken)
-        console.log(editedProductsData)
         fetch(basePort + '/updateDataEditorProductsList', 
                   {method:'post', headers, 
                     body:JSON.stringify(editedProductsData)})
@@ -177,7 +165,7 @@ export class EditorProductsList extends React.Component{
         
         window.scrollTo(0, 340);
         window.location.reload();
-        this.props.handleshowStoredRecipient()
+        this.props.handleShowStoredProductsList()
     }
 
     setTokenHeader(token){
@@ -186,7 +174,6 @@ export class EditorProductsList extends React.Component{
       
       render() {
         
-
         return (
           <div>
             {/*strcture.1: display the shop url, tracking data editor */}
@@ -331,14 +318,34 @@ class MyPageDetailProductEditor extends React.Component{
             productTotalPrice:this.props.product.totalPrice,
             isValidTotalPrice:false,
         };
+
         this.handleSelectCategory = this.handleSelectCategory.bind(this);
         this.handleSelectItem = this.handleSelectItem.bind(this);
         this.inputBrandName = this.inputBrandName.bind(this);
         this.inputItemName = this.inputItemName.bind(this);
         this.inputProductPrice  = this.inputProductPrice.bind(this);
         this.inputProductAmount = this.inputProductAmount.bind(this);
-        //this.inputProductTotalPrice    = this.inputProductTotalPrice.bind(this);
       }
+    componentDidMount() {
+        var shippingProduct = {
+            categoryTitle: "",
+            itemTitle: "",
+            brandName: "",
+            itemName: "",
+            productPrice: null,
+            productAmount: null,
+            productTotalPrice: null,
+        };
+
+        this.props.shippingProductList[this.props.productIndex] = shippingProduct
+        this.props.shippingProductList[this.props.productIndex].categoryTitle = this.props.product.categoryTitle
+        this.props.shippingProductList[this.props.productIndex].itemTitle = this.props.product.itemTitle
+        this.props.shippingProductList[this.props.productIndex].brandName = this.props.product.brandName
+        this.props.shippingProductList[this.props.productIndex].itemName = this.props.product.itemName
+        this.props.shippingProductList[this.props.productIndex].productPrice = this.props.product.price
+        this.props.shippingProductList[this.props.productIndex].productAmount = this.props.product.amount
+        this.props.shippingProductList[this.props.productIndex].productTotalPrice = this.props.product.totalPrice
+    }
 
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
@@ -360,7 +367,7 @@ class MyPageDetailProductEditor extends React.Component{
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
             this.setState({isValidItemName:true, warningInvalidItemName:false})
-        this.props.shippingProductList[this.props.productIndex].itemName = itemName
+        this.props.shippingProductList[this.props.productIndex].itemName = event.target.value
     }
 
     inputProductPrice(event){
@@ -541,13 +548,18 @@ class MyPageDetailProduct extends React.Component{
                         <td>{this.props.product.itemName}</td>
                     </tr>
                     <tr>
-                        <td>수량</td>
-                        <td>{this.props.product.amount}</td>
-                    </tr>
-                    <tr>
                         <td>단가</td>
                         <td>{this.props.product.price}원</td>
                     </tr>
+                    <tr>
+                        <td>수량</td>
+                        <td>{this.props.product.amount}개</td>
+                    </tr>
+                    <tr>
+                        <td>총 가격</td>
+                        <td>{this.props.product.totalPrice}원</td>
+                    </tr>
+                    
                     </tbody>
                 </Table>
           </div>

@@ -75,7 +75,6 @@ export class MyPageDetail extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { orderingPersonInfo: data} )
-          console.log(data)
         })  
       }
 
@@ -86,8 +85,6 @@ export class MyPageDetail extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { recipientInfo: data} )
-          console.log("recipientInformation")
-          console.log(data)
         })  
       }
 
@@ -106,14 +103,12 @@ export class MyPageDetail extends React.Component{
       }
 
       fetchProductsCommonInforamtion(token, id){
-        console.log("productsCommonInfo")
         this.setTokenHeader(token)
         fetch('http://localhost:8888/productscommoninfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
           this.setState( { productsCommonInfo: data} )
-          console.log(this.state.productsCommonInfo)
         })  
       }
 
@@ -201,7 +196,9 @@ class MyPageDetailWrapper extends React.Component{
                 <MyPageDetailProducts
                   productsInfo={this.props.productsInfo}
                   productsCommonInfo={this.props.productsCommonInfo}
-                  accessToken={this.props.accessToken}/>
+                  accessToken={this.props.accessToken}
+                  orderNumber={this.props.orderNumber}
+                  />
 
                 {/* 총액정보 */}
                 <MyPageDetailProductPrice 

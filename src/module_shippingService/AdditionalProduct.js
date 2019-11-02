@@ -75,7 +75,7 @@ export class AdditionalProduct extends React.Component{
         const itemName = this.state.itemName
         itemName === "" ?  this.setState({isValidItemName:false}) : 
             this.setState({isValidItemName:true, warningInvalidItemName:false})
-        this.props.shippingProductList[this.props.index].itemName = itemName 
+        this.props.shippingProductList[this.props.index].itemName = event.target.value 
     }
 
     inputProductPrice(event){
