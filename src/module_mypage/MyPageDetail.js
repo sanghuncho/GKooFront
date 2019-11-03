@@ -114,10 +114,8 @@ export class MyPageDetail extends React.Component{
 
       sendPaymentOwnername(ownerName){
         const orderNumber = this.state.orderNumber
-        console.log(ownerName)
         const contents =  [{orderNumber: orderNumber}, {ownerName:ownerName}]
         this.setTokenHeader(this.state.accessToken)
-        console.log("OwnerName: "+ contents)
         fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
@@ -185,7 +183,10 @@ class MyPageDetailWrapper extends React.Component{
 
                 {/* 서비스현황 */}
                 <MyPageDetailState 
-                  productsCommonInfo={this.props.productsCommonInfo}/>
+                  productsCommonInfo={this.props.productsCommonInfo}
+                  accessToken={this.props.accessToken}
+                  orderNumber={this.props.orderNumber}
+                />
 
                 {/* 배송료 결제정보 */}
                 <MyPageDetailDeliveryPrice 
@@ -211,9 +212,35 @@ class MyPageDetailWrapper extends React.Component{
 class MyPageDetailState extends React.Component{
     constructor(props) {
         super(props);
+
+        this.handleDeleteShippingService = this.handleDeleteShippingService.bind(this)
       }
+
+      handleDeleteShippingService(){
+        const deleteShippingServceData =  [
+          {orderNumber: this.props.orderNumber}
+        ]
+
+        this.setTokenHeader(this.props.accessToken)
+        fetch(basePort + '/deleteShipingServiceData', 
+                  {method:'post', headers, 
+                    body:JSON.stringify(deleteShippingServceData)})
+        window.location.replace("/mypage");
+      }
+
+      setTokenHeader(token){
+        headers ['Authorization'] = 'Bearer ' + token;
+    }
       
       render() {
+        let shipState = this.props.productsCommonInfo.shipState
+        /*refactoring : return only value backend, and rendering value to string in frontend*/
+        let notArrived = "입고대기"
+        let deleteButton;
+        if(shipState === notArrived) {
+          deleteButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleDeleteShippingService(e)} 
+                            style={{ marginRight: '10px', float:"right"}}>서비스 삭제</Button>
+        }
         return (
           <div>
               <Card border="dark" style={{ width: '100%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
@@ -221,10 +248,9 @@ class MyPageDetailState extends React.Component{
                 <Card.Body>
                     <Card.Text>
                         {this.props.productsCommonInfo.shipState}
+                        {deleteButton}
                     </Card.Text> 
                 </Card.Body>
-                {/* <Card.Footer>
-                </Card.Footer> */}
                 </Card>
           </div>
         );
