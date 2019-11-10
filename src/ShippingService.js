@@ -8,9 +8,10 @@ import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
 import { connectdevelop, cube, bullseye } from 'react-icons-kit/fa/'
+import { AppNavbar } from './AppNavbar'
 
 const AppContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  height: calc(180vh);
 `;
 
 const Navigation = styled(BaseNavigation)`
@@ -75,8 +76,33 @@ export class ShippingService extends React.Component{
     render() {
         return (
             <div>
-                {/* <AppContainer> */}
-                <Navigation> 
+            <AppNavbar/>
+            <AppContainer>
+                <ShippingServiceNavbar/>
+            </AppContainer>
+            </div>
+        );}           
+}
+
+export class ShippingServiceNavbar extends React.Component{
+    constructor(props) {
+        super(props);
+      }
+      
+    state = { active: null };
+  
+    toggle(position) {
+        console.log("toggle position: "+position)
+      if (this.state.active === position) {
+        this.setState({active : null})
+      } else {
+        this.setState({active : position})
+      }
+    }
+      render() {
+        return (
+          <div>
+              <Navigation> 
                 <SideNav theme={theme} onItemSelection={this.onItemSelection}>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
                     <NavLinkStyle>
@@ -111,7 +137,7 @@ export class ShippingService extends React.Component{
                     </div>
                 </SideNav>
             </Navigation>
-            {/* </AppContainer> */}
-            </div>
-        );}           
-} 
+          </div>
+        );
+      }    
+}

@@ -1,19 +1,20 @@
 import * as React from "react";
-import { ShippingService } from "../ShippingService";
+import { ShippingServiceNavbar } from "../ShippingService";
 import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
 import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
-    OverlayTrigger, Modal, Col, FormGroup } from 'react-bootstrap';
+    OverlayTrigger, Modal, Tooltip } from 'react-bootstrap';
 import { NavLink } from "react-router-dom";
-import { times, exchange, check, minus } from 'react-icons-kit/fa/'
+import { times, exchange, signOut } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE } from "../module_mypage/AuthService"
 import { InfoBadge } from "../module_base_component/InfoBadge";
+import { AppNavbar, LogoutButton } from '../AppNavbar'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -58,12 +59,20 @@ export class RequestShippingService extends React.Component {
         })
     }
 
+    handleLogout(){
+        keycloak.logout({ redirectUri: INITIAL_PAGE });
+    }
+
   render() {
     const didAgreeWith=this.state.agreement;
     return(
         <div>
+            <AppNavbar>
+                <LogoutButton keycloak ={this.state.keycloakAuth}/>
+            </AppNavbar>
+            
             <AppContainer>
-                <ShippingService/>
+                <ShippingServiceNavbar/>
                 
                 <BodyContainer>
                     <Breadcrumb>

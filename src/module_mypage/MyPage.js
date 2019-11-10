@@ -2,17 +2,16 @@ import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
-import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
-import { calendar, pagelines } from 'react-icons-kit/fa/'
 import { UserAccount } from "./UserAccount";
 import {
   AppContainer as BaseAppContainer,
   ExampleNavigation as BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, localPort } from "./AuthService"
+import { keycloakConfigLocal, headers, localPort, INITIAL_PAGE } from "./AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
-import { Table, Card, Breadcrumb, Form } from "react-bootstrap"
+import { Breadcrumb } from "react-bootstrap"
+import { AppNavbar, LogoutButton } from '../AppNavbar'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -59,7 +58,7 @@ const Text = styled.div`
 var naviGreen = '#80b13e'
 var grey = '#727676';
 
-const Icon = props => <BaseIcon size={32} icon={props.icon} />;
+const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 
 export class MyPage extends React.Component{
 
@@ -101,8 +100,6 @@ export class MyPage extends React.Component{
           this.fetchCustomerBaseInfo(keycloak.token)
           this.fetchOrderInformation(keycloak.token)
           this.fetchWarehouseInformation(keycloak.token)
-          
-          
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
@@ -136,7 +133,6 @@ export class MyPage extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { warehouseInformation: data } )
-          //console.log(data)
         })   
     }
 
@@ -169,7 +165,6 @@ export class MyPage extends React.Component{
           var objectURL = URL.createObjectURL(data);
           this.setState({image: objectURL, loaded:true})
         })
-
     }
 
     fetchCustomerBaseInfo(token){
@@ -211,26 +206,10 @@ export class MyPage extends React.Component{
         }
         return (
             <div>
+              <AppNavbar>
+                 <LogoutButton keycloak ={this.state.keycloakAuth}/>
+              </AppNavbar>
               {mypage}
-            {/* <AppContainer>
-      
-            <MyPageSideNav/>
-            
-            <BodyContainer>
-              <Breadcrumb style={{ width: '105%'}}>
-                <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
-              </Breadcrumb>
-
-              <UserAccount 
-                purchaseOrder={this.state.purchaseOrder} 
-                userAccount={this.state.userAccount} 
-                customerBaseInfo={ this.state.customerBaseInfo}
-                orderInformation={ this.state.orderInformation }
-                warehouseInformation={ this.state.warehouseInformation }
-                />
-            </BodyContainer>
-            
-            </AppContainer> */}
             </div>
            
         );}           

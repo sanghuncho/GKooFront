@@ -7,7 +7,7 @@ import {
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
-
+import { AppNavbar } from './AppNavbar'
 
 const Navigation = styled(BaseNavigation)`
     background: #FFFFFF;
@@ -72,7 +72,7 @@ export class BuyingService extends React.Component{
     render() {
         return (
             <div>
-                
+                <AppNavbar/>
                 <Navigation> 
                     <SideNav theme={theme} onItemSelection={this.onItemSelection}>
                         <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'40px'}} onClick={() => {this.toggle(0)}} >

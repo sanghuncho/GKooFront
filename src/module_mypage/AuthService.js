@@ -14,3 +14,5 @@ export const headers = {
 
 export const localPort = 'http://localhost:8888'
 export const basePort = 'http://localhost:8888'
+
+export const INITIAL_PAGE = 'http://localhost:3000/'
