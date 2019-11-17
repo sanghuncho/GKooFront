@@ -95,7 +95,7 @@ export class PaymentRequest extends React.Component {
 
     return (
       <div>
-        <Card border="dark" style={{ width: '100%', height: '34rem', marginTop: '1rem', marginBottom: '1rem' }}>
+        <Card border="dark" style={{ width: '80%', height: '34rem', marginTop: '1rem', marginBottom: '1rem' }}>
           <Card.Header>운송료 결제요청</Card.Header>
           <Card.Body >
             <InputGroup className="mb-3">

@@ -5,14 +5,12 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import styled from "styled-components";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import { Route, Redirect } from 'react-router'
-import { Table, Image } from "react-bootstrap"
-import { NavLink } from "react-router-dom";
-import { ServiceInformation } from "./ServiceInformation";
+import { Table, Image, Button, Card } from "react-bootstrap"
 import { OrderInformation } from "./OrderInformation";
 import { WarehouseInformation } from "./WarehouseInformation";
 import { PaymentInformation } from "./PaymentInformation";
 import { DeliveryInformation } from "./DeliveryInformation";
+import { UserBaseInfo } from "./UserBaseInfo";
 
   const PurchasingTableStyle = styled.div`
     margin-top: 25px;
@@ -304,6 +302,7 @@ const UserBaseInfoTableStyle = styled.div`
     margin-left:1%; 
     margin-right:15%;
     width: 1100px;
+    height:250px;
     background: #FFFFFF;
     padding: 3px 3px 3px 3px;
     box-shadow: 2px 2px 3px 3px #888; 
@@ -311,51 +310,11 @@ const UserBaseInfoTableStyle = styled.div`
   `;
 
 const CaptionBaseInfo = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
-  padding: '0.5em', fontWeight:'bold' }}>기본정보</h6>;
-
-export class UserBaseInfo extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-
-    this.state = {
-      customerBaseInfo:'',
-      value: '',
-    };
-  }
-
-  componentDidMount() {
-  }
-  
-  render() {
-    {/* My Page image or sentences */}
-    return(
-      <UserBaseInfoTableStyle>
-      <CaptionBaseInfo/>
-      <Table bordered condensed responsive>
-      <thead>
-      </thead>
-      <tbody>
-        <tr>
-          <td width='300px'>개인사서함주소</td>
-          <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td>
-          <td width='300px'>보유예치금</td>
-          <td width='250px' align='right'>{this.props.customerBaseInfo.insuranceAmount}원</td>
-        </tr>
-        <tr>
-          <td>보유적립금</td>
-          <td align='right'>{this.props.customerBaseInfo.depositeAmount}원</td>
-          <td >보유포인트</td>
-          <td align='right'>{this.props.customerBaseInfo.pointAmount}p</td>
-        </tr>
-        {/* <tr>
-          <td>도착내역</td>
-          <td align='right'>{this.state.customerBaseInfo.arrivedItem}건</td>
-          <td>배송내역</td>
-          <td align='right'>{this.state.customerBaseInfo.shippingItem}건</td>
-        </tr> */}
-      </tbody>
-    </Table>
-    </UserBaseInfoTableStyle>
-    );}
-}
+  padding: '0.5em', fontWeight:'bold' }}>기본정보
+   <Button variant="secondary" size="sm" 
+        style={{ marginRight: '10px', float:"right", marginBottom:'10px'}}>배송지관리</Button>
+   <Button variant="secondary" size="sm" 
+        //onClick={(e) => this.doEditRecipient(e)} 
+        style={{ marginRight: '10px', float:"right", marginBottom:'10px'}}>개인정보수정</Button>
+  </h6>;
 

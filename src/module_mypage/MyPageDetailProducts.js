@@ -69,7 +69,7 @@ export class MyPageDetailProducts extends React.Component{
           }
         return (
           <div>
-            <Card border="dark" style={{ width: '100%', height:displayHeight, marginTop:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:displayHeight, marginTop:'1rem' }}>
                 <Card.Header>상품 정보
                   {editButton}
                 </Card.Header>

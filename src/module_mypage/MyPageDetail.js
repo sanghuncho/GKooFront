@@ -8,6 +8,8 @@ import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageDetailProducts } from "./MyPageDetailProducts"
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, basePort } from "../module_mypage/AuthService"
+import { AppNavbar, LogoutButton } from '../AppNavbar'
+
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const AppContainer = styled(BaseAppContainer)`
@@ -133,6 +135,9 @@ export class MyPageDetail extends React.Component{
       render() {
         return (
           <div>
+          <AppNavbar>
+            <LogoutButton keycloak ={this.state.keycloakAuth}/>
+          </AppNavbar>
           <AppContainer>
             <MyPageSideNav/>
             
@@ -243,7 +248,7 @@ class MyPageDetailState extends React.Component{
         }
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
+              <Card border="dark" style={{ width: '80%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>서비스현황</Card.Header>
                 <Card.Body>
                     <Card.Text>
@@ -265,7 +270,7 @@ class MyPageDetailProductPrice extends React.Component{
       render() {
         return (
           <div>
-               <Card border="dark" style={{ width: '100%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
+               <Card border="dark" style={{ width: '80%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>주문금액</Card.Header>
                 <Card.Body>
                 <Table bordered condensed responsive size="sm">
@@ -300,7 +305,7 @@ class MyPageDetailPerson extends React.Component{
       render() {
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:'13rem', marginTop:'1rem' }}>
+              <Card border="dark" style={{ width: '80%', height:'13rem', marginTop:'1rem' }}>
                 <Card.Header>주문자 정보</Card.Header>
                 <Card.Body >
                 <Table striped bordered condensed responsive size="sm">
@@ -391,7 +396,7 @@ class MyPageDetailRecipient extends React.Component{
         }
         return (
           <div>
-              <Card border="dark" style={{ width: '100%', height:displayHeight, marginTop:'1rem' }}>
+              <Card border="dark" style={{ width: '80%', height:displayHeight, marginTop:'1rem' }}>
                 <Card.Header>수취인 정보
                   {editButton}
                 </Card.Header>

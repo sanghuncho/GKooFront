@@ -170,7 +170,7 @@ class ShippingCenter extends React.Component{
             goodsList:[],
 
             shopUrl:"",
-            shopUrlList:[],
+            //shopUrlList:[],
 
             trackingTitle:"운송사선택",
             trackingTitleList:[],
@@ -274,7 +274,7 @@ class ShippingCenter extends React.Component{
         
         this.applyDeliveryService  = this.applyDeliveryService.bind(this);
 
-        this.removeItemOnList = this.removeItemOnList.bind(this)
+        this.handleRemoveItemOnList = this.handleRemoveItemOnList.bind(this)
         this.finishService = this.finishService.bind(this)
 
         this.handleModalShow = this.handleModalShow.bind(this);
@@ -465,14 +465,12 @@ class ShippingCenter extends React.Component{
         })
     }
 
-    removeItemOnList(index){
+    handleRemoveItemOnList(index){
         this.state.goodsList.splice(index, 1)
-        this.state.shopUrlList.splice(index, 1)
         this.state.shippingProductList.splice(index, 1)
-        this.setState({goodsList:this.state.goodsList, 
-                shopUrlList:this.state.shopUrlList,
-                shippingProductList:this.state.shippingProductList
-        })
+        this.setState({
+                goodsList:this.state.goodsList, 
+                shippingProductList:this.state.shippingProductList })
     }
 
     finishService(){
@@ -691,8 +689,7 @@ class ShippingCenter extends React.Component{
                 {this.state.goodsList.map((itemName, index) => { return (
                     <div key={index}>
 
-                    <AdditionalProduct index={index+1} 
-                        shopUrlList={this.state.shopUrlList}
+                    <AdditionalProduct index={index} 
                         trackingTitleList = {this.state.trackingTitleList}
                         shippingProductList = {this.state.shippingProductList}
                         trackingNumberList = {this.state.trackingNumberList}
@@ -704,7 +701,7 @@ class ShippingCenter extends React.Component{
                         productAmountList = {this.state.productAmountList}
                         totalPriceList = {this.state.totalPriceList}
 
-                        removeItemOnList={this.removeItemOnList}
+                        handleRemoveItemOnList={this.handleRemoveItemOnList}
                         />
                     </div>
                 )})}
@@ -749,7 +746,7 @@ class ShippingCenter extends React.Component{
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                                     />
  
-                                    <Button size='sm' variant="secondary">받는분 정보 불러오기</Button>
+                                    <Button size='sm' variant="secondary">배송지 정보 불러오기</Button>
                                 </InputGroup>
                                 
                                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">

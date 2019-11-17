@@ -26,7 +26,6 @@ import { RequestShippingService } from './module_shippingService/RequestShipping
 import { MyPageDetail } from './module_mypage/MyPageDetail';
 import { ManagementController } from './management/ManagementController'
 
-
 class App extends Component {
   render() {
     return (

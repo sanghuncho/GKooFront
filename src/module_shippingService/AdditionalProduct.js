@@ -232,7 +232,7 @@ export class AdditionalProduct extends React.Component{
                     </InputGroup.Append>
                 </InputGroup>
                 <Button variant="secondary" size="sm" 
-                    onClick={() => this.props.removeItemOnList(index)} 
+                    onClick={() => this.props.handleRemoveItemOnList(index)} 
                             style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>상품 삭제</Button>    
              </Card.Body>
              </Card>
