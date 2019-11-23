@@ -8,87 +8,79 @@ export class UserBaseInfo extends React.Component{
         this.state = {
             // customerBaseInfo:'',
             // value: '',
-            doEdit:false,
-            setButton:true,
-            addressManager:false,
+            doEditUserBaseInfo:false,
+            doOpenAddressManager:false,
+            showBaseInfoButtons:true,
+            showUserBaseInfoButtons:false,
         };
-        this.handleShowStoredUserBaseInfo = this.handleShowStoredUserBaseInfo.bind(this)
+        this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
         this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
+        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
+        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
       }
 
       doEditUserBaseInfo(){
-        this.setState({doEdit:true}) 
-        this.setState({setButton:false}) 
+        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false}) 
       }
-
-      handleShowStoredUserBaseInfo(){
-        this.setState({doEdit:false}) 
-        this.setState({setButton:true}) 
-      }
-
+      
       doOpenAddressManager(){
-        this.setState({addressManager:true})
-        this.setState({setButton:false}) 
+        this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
+      }
+
+      handleMoveToBaseInfo(){
+        window.scrollTo(0, 0);
+        this.setState({doEditUserBaseInfo:false, showBaseInfoButtons:true}) 
       }
 
       handleShowStoredAddressManager(){
-        this.setState({addressManager:false}) 
-        this.setState({setButton:true}) 
+        this.setState({doOpenAddressManager:false}) 
+        this.setState({showBaseInfoButtons:true}) 
       }
     
       
       render() {
-        const setButton = this.state.setButton
+        const showBaseInfoButtons = this.state.showBaseInfoButtons
         let editButton;
         let addressManagerButton;
-        if(setButton) {
+        if(showBaseInfoButtons) {
           editButton = <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
-            style={{ marginRight: '10px', float:"right"}}>개인정보수정</Button>
+            style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
 
           addressManagerButton =  <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
                 style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
         }
     
-        const doEdit = this.state.doEdit
-        const addressManager = this.state.addressManager
+        const doEditUserBaseInfo = this.state.doEditUserBaseInfo
+        const doOpenAddressManager = this.state.doOpenAddressManager
         let displayHeight;
         let userbaseInfoDisplay;
         let headerTitle
-        if (doEdit) {
+        if (doEditUserBaseInfo) {
             userbaseInfoDisplay = 
               <UserBaseInfoEditor 
-                handleShowStoredUserBaseInfo={this.handleShowStoredUserBaseInfo}
+                handleMoveToBaseInfo={this.handleMoveToBaseInfo}
+                
                 // recipientInfo={this.props.recipientInfo}
                 // orderNumber={this.props.orderNumber}
                 // accessToken={this.props.accessToken}
                />
-            displayHeight = '40rem'
-            headerTitle = '개인정보'
-          } else if(addressManager) {
+            
+          } else if(doOpenAddressManager) {
             userbaseInfoDisplay = <AddressManager
                 handleShowStoredAddressManager={this.handleShowStoredAddressManager}/>
             displayHeight = '14rem'
             headerTitle = '배송지 관리'
           } else {
-            userbaseInfoDisplay = <CompleteUserBaseInfo userBaseInfo={this.props.customerBaseInfo}/>
-            displayHeight = '14rem'
-            headerTitle = '기본정보'
+            userbaseInfoDisplay = 
+              <CompleteUserBaseInfo 
+                userBaseInfo={this.props.customerBaseInfo}
+                doEditUserBaseInfo={this.doEditUserBaseInfo}
+                doOpenAddressManager={this.doOpenAddressManager}/>
           }
         return (
-            <Card border="dark" style={{ width: '80%', height:displayHeight, marginTop:'1rem' }}>
-            <Card.Header>{headerTitle}
-                 {/* 배송지관리버튼 */}
-                {addressManagerButton}
-                
-                {/* 개인정보수정버튼 */}
-                {editButton}
-            </Card.Header>
-            <Card.Body >
-              
-              {userbaseInfoDisplay}
-           
-            </Card.Body>
-          </Card> 
+          <div>
+            {userbaseInfoDisplay}
+          </div>
         );
       }    
 }
@@ -96,11 +88,33 @@ export class UserBaseInfo extends React.Component{
 export class CompleteUserBaseInfo extends React.Component{
     constructor(props) {
         super(props);
+
+        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
+        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
+      }
+
+      doEditUserBaseInfo(){
+        this.props.doEditUserBaseInfo()
+      }
+      
+      doOpenAddressManager(){
+        this.props.doOpenAddressManager()
       }
       
       render() {
         return (
           <div>
+            <Card border="dark" style={{ width: '80%', height:'14rem', marginTop:'1rem' }}>
+            <Card.Header>기본정보
+              {/* 배송지관리버튼 */}
+              <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
+                style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
+                
+              {/* 개인정보수정버튼 */}
+              <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
+                style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
+            </Card.Header>
+            <Card.Body >
             <Table bordered condensed responsive size="sm">
             <thead>
             </thead>
@@ -129,6 +143,8 @@ export class CompleteUserBaseInfo extends React.Component{
               </tr>
             </tbody>
           </Table>
+          </Card.Body>
+          </Card> 
           </div>
         );
       }    
@@ -137,11 +153,46 @@ export class CompleteUserBaseInfo extends React.Component{
 export class UserBaseInfoEditor extends React.Component{
     constructor(props) {
         super(props);
+        this.state = {
+          showUserBaseInfoDisplayer:true,
+        };
+      }
+
+    handleMoveToBaseInfo(update){
+        window.scrollTo(0, 0);
+        this.props.handleShowStoredUserBaseInfo()
+    }
+
+    doEditUserBaseInfo(){
+      this.setState({showUserBaseInfoEditButton:false}) 
+    }
+
+    handleSave(){
+      
+    }
+
+    render() {
+      let userBaseInfoDisplayer
+      if(this.state.showUserBaseInfoDisplayer) {
+        userBaseInfoDisplayer = <UserBaseInfoDisplayer
+          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}/>
+      }
+      return (
+          <div>
+             {userBaseInfoDisplayer}
+          </div>
+        );
+      }    
+}
+
+export class AddressManager extends React.Component{
+    constructor(props) {
+        super(props);
       }
 
       handleCancel(update){
         window.scrollTo(0, 0);
-        this.props.handleShowStoredUserBaseInfo()
+        this.props.handleShowStoredAddressManager()
     }
 
     handleSave(){
@@ -151,6 +202,39 @@ export class UserBaseInfoEditor extends React.Component{
       render() {
         return (
           <div>
+            <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
+                <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
+                    onClick={this.handleSave}
+                >완료
+                </Button>
+                <Button size="sm" variant='secondary' 
+                    onClick={(e) => this.handleCancel(e)}
+                >취소</Button>
+            </InputGroup >
+          </div>
+        );
+      }    
+}
+
+export class UserBaseInfoDisplayer extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+        <Card border="dark" style={{ width: '80%', height:'40rem', marginTop:'1rem' }}>
+            <Card.Header>개인정보
+              {/* 개인정보수정버튼 */}
+              <Button variant="secondary" size="sm" onClick={(e) => this.props.handleMoveToBaseInfo()} 
+                style={{ marginRight: '10px', float:"right"}}>OK</Button>
+              
+              <Button variant="secondary" size="sm" 
+                //onClick={(e) => this.doEditUserBaseInfo(e)} 
+                style={{ marginRight: '10px', float:"right"}}>개인정보 수정</Button>
+            </Card.Header>
+            <Card.Body >
             <InputGroup className="mb-3" >
               <InputGroup.Prepend>
                   <InputGroup.Text id="basic-addon3">
@@ -284,48 +368,19 @@ export class UserBaseInfoEditor extends React.Component{
               </Card> 
             </InputGroup>
 
-
-            <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                    onClick={this.handleSave}
-                >완료
-                </Button>
-                <Button size="sm" variant='secondary' 
-                    onClick={(e) => this.handleCancel(e)}
-                >취소</Button>
-            </InputGroup >
-          </div>
-        );
-      }    
-}
-
-export class AddressManager extends React.Component{
-    constructor(props) {
-        super(props);
-      }
-
-      handleCancel(update){
-        window.scrollTo(0, 0);
-        this.props.handleShowStoredAddressManager()
-    }
-
-    handleSave(){
-      
-    }
-      
-      render() {
-        return (
-          <div>
-            <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                    onClick={this.handleSave}
-                >완료
-                </Button>
-                <Button size="sm" variant='secondary' 
-                    onClick={(e) => this.handleCancel(e)}
-                >취소</Button>
-            </InputGroup >
-          </div>
-        );
-      }    
+            {/* <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
+                  <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
+                      onClick={this.handleSave}
+                  >완료
+                  </Button>
+                  <Button size="sm" variant='secondary' 
+                      onClick={(e) => this.handleCancel(e)}
+                  >취소</Button>
+            </InputGroup > */}
+            
+            </Card.Body>
+          </Card>
+        </div>
+      );
+    }    
 }
