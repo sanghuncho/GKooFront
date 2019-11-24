@@ -62,16 +62,17 @@ const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 
 export class MyPage extends React.Component{
 
-    state = { active: null,
-    image:null,
-    keycloakAuth:null,
-    accessToken:"",
-    customerBaseInfo:'',
-    userAccount:'',
-    purchaseOrder:'',
-    orderInformation:'',
-    warehouseInformation:'',
-    trackingNumber:'1234',
+    state = { 
+      active: null,
+      image:null,
+      keycloakAuth:null,
+      accessToken:"",
+      customerBaseInfo:'',
+      userAccount:'',
+      purchaseOrder:'',
+      orderInformation:'',
+      warehouseInformation:'',
+      trackingNumber:'1234',
    };
   
     toggle(position) {

@@ -1,18 +1,18 @@
 import styled from "styled-components";
 import React from 'react';
 import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
+import { keycloakConfigLocal, basePort, headers, localPort, setTokenHeader } from "./AuthService"
 
 export class UserBaseInfo extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            // customerBaseInfo:'',
-            // value: '',
             doEditUserBaseInfo:false,
             doOpenAddressManager:false,
             showBaseInfoButtons:true,
             showUserBaseInfoButtons:false,
         };
+
         this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
         this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
         this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
@@ -33,8 +33,7 @@ export class UserBaseInfo extends React.Component{
       }
 
       handleShowStoredAddressManager(){
-        this.setState({doOpenAddressManager:false}) 
-        this.setState({showBaseInfoButtons:true}) 
+        this.setState({doOpenAddressManager:false, showBaseInfoButtons:true}) 
       }
     
       
@@ -47,22 +46,21 @@ export class UserBaseInfo extends React.Component{
             style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
 
           addressManagerButton =  <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
-                style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
+            style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
         }
     
         const doEditUserBaseInfo = this.state.doEditUserBaseInfo
         const doOpenAddressManager = this.state.doOpenAddressManager
-        let displayHeight;
         let userbaseInfoDisplay;
+        let displayHeight;
         let headerTitle
         if (doEditUserBaseInfo) {
             userbaseInfoDisplay = 
               <UserBaseInfoEditor 
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
-                
+                accessToken={this.props.accessToken}
                 // recipientInfo={this.props.recipientInfo}
                 // orderNumber={this.props.orderNumber}
-                // accessToken={this.props.accessToken}
                />
             
           } else if(doOpenAddressManager) {
@@ -70,6 +68,7 @@ export class UserBaseInfo extends React.Component{
                 handleShowStoredAddressManager={this.handleShowStoredAddressManager}/>
             displayHeight = '14rem'
             headerTitle = '배송지 관리'
+
           } else {
             userbaseInfoDisplay = 
               <CompleteUserBaseInfo 
@@ -156,6 +155,8 @@ export class UserBaseInfoEditor extends React.Component{
         this.state = {
           showUserBaseInfoDisplayer:true,
         };
+        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
+        this.doShowUserBaseInfo = this.doShowUserBaseInfo.bind(this)
       }
 
     handleMoveToBaseInfo(update){
@@ -164,7 +165,11 @@ export class UserBaseInfoEditor extends React.Component{
     }
 
     doEditUserBaseInfo(){
-      this.setState({showUserBaseInfoEditButton:false}) 
+      this.setState({showUserBaseInfoDisplayer:false}) 
+    }
+
+    doShowUserBaseInfo(){
+      this.setState({showUserBaseInfoDisplayer:true}) 
     }
 
     handleSave(){
@@ -175,7 +180,16 @@ export class UserBaseInfoEditor extends React.Component{
       let userBaseInfoDisplayer
       if(this.state.showUserBaseInfoDisplayer) {
         userBaseInfoDisplayer = <UserBaseInfoDisplayer
-          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}/>
+          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
+          doEditUserBaseInfo={this.doEditUserBaseInfo}
+          displaySaveButton={false}
+          accessToken={this.props.accessToken} />
+      } else {
+        userBaseInfoDisplayer = <UserBaseInfoDisplayer
+          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
+          displaySaveButton={true}
+          doShowUserBaseInfo={this.doShowUserBaseInfo}
+          accessToken={this.props.accessToken} />
       }
       return (
           <div>
@@ -185,54 +199,89 @@ export class UserBaseInfoEditor extends React.Component{
       }    
 }
 
-export class AddressManager extends React.Component{
-    constructor(props) {
-        super(props);
-      }
-
-      handleCancel(update){
-        window.scrollTo(0, 0);
-        this.props.handleShowStoredAddressManager()
-    }
-
-    handleSave(){
-      
-    }
-      
-      render() {
-        return (
-          <div>
-            <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                    onClick={this.handleSave}
-                >완료
-                </Button>
-                <Button size="sm" variant='secondary' 
-                    onClick={(e) => this.handleCancel(e)}
-                >취소</Button>
-            </InputGroup >
-          </div>
-        );
-      }    
-}
-
 export class UserBaseInfoDisplayer extends React.Component{
   constructor(props) {
       super(props);
+      this.state = {
+        userBaseInfo:null
+      };
+      //this.handleCancel = this.handleCancel.bind(this)
     }
-    
+
+    componentDidMount () {
+      this.fetchUserBaseInfo(this.props.accessToken)
+    }
+
+    fetchUserBaseInfo(token){
+      setTokenHeader(token)
+      fetch(basePort + '/fetchuserbaseinfo', {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {
+          console.log(data);
+          this.setState( { userBaseInfo: data} )
+        }).catch(function() {
+          console.log("error fetching userbaseinfo");
+      });
+    }
+
+    /* 기번정보란으로 이동 */
+    handleCancel(){
+      window.scrollTo(0, 0);
+      this.props.handleMoveToBaseInfo()
+    }
+
+    handleSave(){
+      this.updateUserBaseInfo(this.props.accessToken)
+      this.props.doShowUserBaseInfo()
+    }
+
+    updateUserBaseInfo(accessToken){
+
+      const editedUserBaseInfo =  [
+          {username: "Sanghun"},
+      ]
+
+      setTokenHeader(accessToken)
+      console.log(editedUserBaseInfo)
+      fetch(basePort + '/updateuserbaseinfo', 
+                {method:'post', headers, 
+                  body:JSON.stringify(editedUserBaseInfo)})
+    }
+
     render() {
+      let saveButton;
+      let headerLine;
+      if(this.props.displaySaveButton){
+        /* 개인정보수정 편집가능 및 저장,취소버튼 노출 */
+        headerLine = '개인정보 수정'
+        saveButton = <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
+                          <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
+                              onClick={(e) => this.handleSave(e)}
+                          >완료
+                          </Button>
+                          <Button size="sm" variant='secondary' 
+                              onClick={(e) => this.handleCancel(e)}
+                          >취소</Button>
+                    </InputGroup >
+      } else {
+        /* 개인정보 ony read 및 개인정보수정 버튼 노출 */
+        headerLine = <div>개인정보
+                            <Button variant="secondary" size="sm" 
+                              onClick={(e) => this.props.handleMoveToBaseInfo()} 
+                              style={{ marginRight: '10px', float:"right"}}>OK</Button>
+                            
+                            <Button variant="secondary" size="sm" 
+                              onClick={(e) => this.props.doEditUserBaseInfo()} 
+                              style={{ marginRight: '10px', float:"right"}}>개인정보 수정</Button></div>
+      }
       return (
         <div>
         <Card border="dark" style={{ width: '80%', height:'40rem', marginTop:'1rem' }}>
-            <Card.Header>개인정보
-              {/* 개인정보수정버튼 */}
-              <Button variant="secondary" size="sm" onClick={(e) => this.props.handleMoveToBaseInfo()} 
-                style={{ marginRight: '10px', float:"right"}}>OK</Button>
+            <Card.Header>
               
-              <Button variant="secondary" size="sm" 
-                //onClick={(e) => this.doEditUserBaseInfo(e)} 
-                style={{ marginRight: '10px', float:"right"}}>개인정보 수정</Button>
+              {headerLine}
+              
             </Card.Header>
             <Card.Body >
             <InputGroup className="mb-3" >
@@ -368,18 +417,42 @@ export class UserBaseInfoDisplayer extends React.Component{
               </Card> 
             </InputGroup>
 
-            {/* <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                  <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                      onClick={this.handleSave}
-                  >완료
-                  </Button>
-                  <Button size="sm" variant='secondary' 
-                      onClick={(e) => this.handleCancel(e)}
-                  >취소</Button>
-            </InputGroup > */}
+            {/* 완료 및 저장버튼 */}
+            {saveButton}
             
             </Card.Body>
           </Card>
+        </div>
+      );
+    }    
+}
+
+export class AddressManager extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+
+    handleCancel(update){
+      window.scrollTo(0, 0);
+      this.props.handleShowStoredAddressManager()
+  }
+
+  handleSave(){
+    
+  }
+    
+    render() {
+      return (
+        <div>
+          <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
+              <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
+                  onClick={this.handleSave}
+              >완료
+              </Button>
+              <Button size="sm" variant='secondary' 
+                  onClick={(e) => this.handleCancel(e)}
+              >취소</Button>
+          </InputGroup >
         </div>
       );
     }    

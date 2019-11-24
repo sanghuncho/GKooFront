@@ -106,9 +106,6 @@ export class UserAccount extends React.Component{
   
     constructor(props, context) {
         super(props, context);
-
-      this.handleChange = this.handleChange.bind(this);
-      this.handleClick = this.handleClick.bind(this);
       this.state = {
           userAccount:[],
           purchaseOrder:[],
@@ -124,20 +121,6 @@ export class UserAccount extends React.Component{
       this.setState({
         redirect: true,
       });
-    }
-
-    handleClick(e){
-      const verwalterNr = this.state.value;
-      if (this.isPositiveInteger(verwalterNr)){
-        this.setState({verwalter :''});
-        this.fetchElementByNumber(verwalterNr);
-      } else {
-        this.fetchVerwalterList();
-      } 
-    }
-
-    isPositiveInteger(n) {
-      return n >>> 0 === parseFloat(n);
     }
  
     handleChange(e) {
@@ -162,23 +145,24 @@ export class UserAccount extends React.Component{
       return(
       <div>
         
-        <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}/>
+        <UserBaseInfo customerBaseInfo={this.props.customerBaseInfo}
+                      accessToken={this.props.accessToken}/>
         
         {/* 이용현황 -- 나중에 코딩 */}
         {/* <ServiceInformation/> */}
         
         {/* 전체메뉴 */}
-        <OrderInformation orderInformation={ this.props.orderInformation }/>
+        <OrderInformation orderInformation={this.props.orderInformation}/>
 
         {/* 입고 현황 */}
-        <WarehouseInformation warehouseInformation={ this.props.warehouseInformation }
-                              accessToken = { this.props.accessToken }/>
+        <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
+                              accessToken={this.props.accessToken}/>
 
         {/* 결제 현황 */}  
-        <PaymentInformation orderInformation={ this.props.orderInformation }/>
+        <PaymentInformation orderInformation={this.props.orderInformation}/>
 
         {/* 배송 현황 */}
-        <DeliveryInformation orderInformation={ this.props.orderInformation }/>
+        <DeliveryInformation orderInformation={this.props.orderInformation}/>
 
         {/* 결제내역 -- 나중에 코딩 */}
         {/* <PaymentHistory userAccount={ this.props.userAccount }/> */}

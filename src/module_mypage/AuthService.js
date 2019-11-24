@@ -12,6 +12,10 @@ export const headers = {
     'Content-Type': 'application/json'
 }
 
+export function setTokenHeader(token){
+  headers ['Authorization'] = 'Bearer ' + token;
+}
+
 export const localPort = 'http://localhost:8888'
 export const basePort = 'http://localhost:8888'
 
