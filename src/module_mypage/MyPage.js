@@ -67,7 +67,7 @@ export class MyPage extends React.Component{
       image:null,
       keycloakAuth:null,
       accessToken:"",
-      customerBaseInfo:'',
+      customerStatusData:'',
       userAccount:'',
       purchaseOrder:'',
       orderInformation:'',
@@ -98,7 +98,7 @@ export class MyPage extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
-          this.fetchCustomerBaseInfo(keycloak.token)
+          this.fetchCustomerStatusData(keycloak.token)
           this.fetchOrderInformation(keycloak.token)
           this.fetchWarehouseInformation(keycloak.token)
           //this.fetchEndSettlementList(keycloak.token)
@@ -168,13 +168,14 @@ export class MyPage extends React.Component{
         })
     }
 
-    fetchCustomerBaseInfo(token){
+    fetchCustomerStatusData(token){
       this.setTokenHeader(token)
       fetch('http://localhost:8888/customerstatus', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( { customerBaseInfo: data} )
+          console.log(data)
+          this.setState( { customerStatusData: data} )
         })   
     }
 
@@ -198,7 +199,7 @@ export class MyPage extends React.Component{
           mypage = <MypageController 
                       purchaseOrder = { this.state.purchaseOrder } 
                       userAccount = { this.state.userAccount } 
-                      customerBaseInfo = { this.state.customerBaseInfo}
+                      customerStatusData = { this.state.customerStatusData}
                       orderInformation = { this.state.orderInformation }
                       warehouseInformation = { this.state.warehouseInformation }
                       accessToken = { this.state.accessToken }/>
@@ -237,7 +238,7 @@ export class MypageController extends React.Component{
           <UserAccount 
             purchaseOrder={this.props.purchaseOrder} 
             userAccount={this.props.userAccount} 
-            customerBaseInfo={ this.props.customerBaseInfo}
+            customerStatusData={ this.props.customerStatusData}
             orderInformation={ this.props.orderInformation }
             warehouseInformation={ this.props.warehouseInformation }
             accessToken = { this.props.accessToken }

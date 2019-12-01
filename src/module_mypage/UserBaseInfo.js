@@ -11,6 +11,7 @@ export class UserBaseInfo extends React.Component{
             doOpenAddressManager:false,
             showBaseInfoButtons:true,
             showUserBaseInfoButtons:false,
+            userBaseInfo:null
         };
 
         this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
@@ -20,7 +21,30 @@ export class UserBaseInfo extends React.Component{
       }
 
       doEditUserBaseInfo(){
-        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false}) 
+        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
+      }
+      
+      componentDidMount() {
+        this.fetchUserBaseInfo(this.props.accessToken)
+      }
+
+      // componentDidMount () {
+      //   this.fetchUserBaseInfo(this.props.accessToken)
+      // }
+  
+      fetchUserBaseInfo(token){
+        setTokenHeader(token)
+        fetch(basePort + '/fetchuserbaseinfo', {headers})
+          .then((result) => { 
+            return result.json();
+          }).then((data) => {
+            console.log("UserBaseInfoDisplayer:" + data);
+           
+            //console.log(data);
+            this.setState( { userBaseInfo: data} )
+          }).catch(function() {
+            console.log("error fetching userbaseinfo");
+        });
       }
       
       doOpenAddressManager(){
@@ -59,6 +83,7 @@ export class UserBaseInfo extends React.Component{
               <UserBaseInfoEditor 
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
                 accessToken={this.props.accessToken}
+                userBaseInfo={this.state.userBaseInfo}
                 // recipientInfo={this.props.recipientInfo}
                 // orderNumber={this.props.orderNumber}
                />
@@ -72,7 +97,7 @@ export class UserBaseInfo extends React.Component{
           } else {
             userbaseInfoDisplay = 
               <CompleteUserBaseInfo 
-                userBaseInfo={this.props.customerBaseInfo}
+                customerStatusData={this.props.customerStatusData}
                 doEditUserBaseInfo={this.doEditUserBaseInfo}
                 doOpenAddressManager={this.doOpenAddressManager}/>
           }
@@ -103,7 +128,7 @@ export class CompleteUserBaseInfo extends React.Component{
       render() {
         return (
           <div>
-            <Card border="dark" style={{ width: '80%', height:'14rem', marginTop:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:'11rem', marginTop:'1rem' }}>
             <Card.Header>기본정보
               {/* 배송지관리버튼 */}
               <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
@@ -120,25 +145,15 @@ export class CompleteUserBaseInfo extends React.Component{
             <tbody>
               <tr>
                 <td width='300px'>개인사서함주소</td>
-                <td width='250px' align='right'>gkoo-{this.props.userBaseInfo.customerId}</td>
+                <td width='250px' align='right'>gkoo-{this.props.customerStatusData.userid}</td>
                 <td width='300px'>보유예치금</td>
-                <td width='250px' align='right'>{this.props.userBaseInfo.insuranceAmount}원</td>
+                <td width='250px' align='right'>{this.props.customerStatusData.insuranceAmount}원</td>
               </tr>
               <tr>
                 <td>보유적립금</td>
-                <td align='right'>{this.props.userBaseInfo.depositeAmount}원</td>
+                <td align='right'>{this.props.customerStatusData.depositeAmount}원</td>
                 <td >보유포인트</td>
-                <td align='right'>{this.props.userBaseInfo.pointAmount}p</td>
-              </tr>
-              <tr>
-                <td>성함</td>
-                <td align='right'>조상훈</td>    
-                <td>연락처</td>
-                <td align='right'>010 - 7173- 1193</td>    
-              </tr>
-              <tr>
-                <td>주소</td>
-                <td colSpan="3" align='right'>대구광역시..</td>    
+                <td align='right'>{this.props.customerStatusData.pointAmount}p</td>
               </tr>
             </tbody>
           </Table>
@@ -157,7 +172,7 @@ export class UserBaseInfoEditor extends React.Component{
         };
         this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
         this.doShowUserBaseInfo = this.doShowUserBaseInfo.bind(this)
-      }
+    }
 
     handleMoveToBaseInfo(update){
         window.scrollTo(0, 0);
@@ -179,17 +194,23 @@ export class UserBaseInfoEditor extends React.Component{
     render() {
       let userBaseInfoDisplayer
       if(this.state.showUserBaseInfoDisplayer) {
+        /* read mode */
         userBaseInfoDisplayer = <UserBaseInfoDisplayer
           handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
           doEditUserBaseInfo={this.doEditUserBaseInfo}
           displaySaveButton={false}
-          accessToken={this.props.accessToken} />
-      } else {
-        userBaseInfoDisplayer = <UserBaseInfoDisplayer
-          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
-          displaySaveButton={true}
-          doShowUserBaseInfo={this.doShowUserBaseInfo}
-          accessToken={this.props.accessToken} />
+          accessToken={this.props.accessToken}
+          userBaseInfo={this.props.userBaseInfo}
+          />
+      } 
+      /* edit mode */
+      else {
+        // userBaseInfoDisplayer = <UserBaseInfoDisplayer
+        //   handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
+        //   displaySaveButton={true}
+        //   doShowUserBaseInfo={this.doShowUserBaseInfo}
+        //   accessToken={this.props.accessToken}
+        //   userBaseInfo={this.state.userBaseInfo} />
       }
       return (
           <div>
@@ -206,26 +227,12 @@ export class UserBaseInfoDisplayer extends React.Component{
         userBaseInfo:null
       };
       //this.handleCancel = this.handleCancel.bind(this)
+      this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
     }
 
-    componentDidMount () {
-      this.fetchUserBaseInfo(this.props.accessToken)
-    }
+    
 
-    fetchUserBaseInfo(token){
-      setTokenHeader(token)
-      fetch(basePort + '/fetchuserbaseinfo', {headers})
-        .then((result) => { 
-          return result.json();
-        }).then((data) => {
-          console.log(data);
-          this.setState( { userBaseInfo: data} )
-        }).catch(function() {
-          console.log("error fetching userbaseinfo");
-      });
-    }
-
-    /* 기번정보란으로 이동 */
+    /* 기본정보란으로 이동 */
     handleCancel(){
       window.scrollTo(0, 0);
       this.props.handleMoveToBaseInfo()
@@ -247,6 +254,12 @@ export class UserBaseInfoDisplayer extends React.Component{
       fetch(basePort + '/updateuserbaseinfo', 
                 {method:'post', headers, 
                   body:JSON.stringify(editedUserBaseInfo)})
+    }
+
+    changeHandlerNameKor(event){
+      // const nameKorRef = this.props.recipientInfo.nameKor
+      // this.changeHandlerCommonState(nameKorRef, event)
+      this.setState({firstName:event.target.value}) 
     }
 
     render() {
@@ -275,6 +288,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                               onClick={(e) => this.props.doEditUserBaseInfo()} 
                               style={{ marginRight: '10px', float:"right"}}>개인정보 수정</Button></div>
       }
+      
       return (
         <div>
         <Card border="dark" style={{ width: '80%', height:'40rem', marginTop:'1rem' }}>
@@ -299,9 +313,9 @@ export class UserBaseInfoDisplayer extends React.Component{
                   </InputGroup.Text>
                   </InputGroup.Prepend>
                   <FormControl id="basic-url" aria-describedby="basic-addon3"
-                    //onChange = { this.changeHandlerNameKor }
-                    // readOnly={"readonly"}
-                    //defaultValue={this.props.recipientInfo.nameKor}
+                    onChange = { this.changeHandlerNameKor }
+                    readOnly={"readonly"}
+                    defaultValue={this.props.userBaseInfo.lastName + this.props.userBaseInfo.firstName}
                     style={{backgroundColor: '#FFFFFF'}}
                   />
                   </InputGroup >
