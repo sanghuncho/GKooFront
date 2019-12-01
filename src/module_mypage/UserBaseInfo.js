@@ -201,6 +201,7 @@ export class UserBaseInfoEditor extends React.Component{
           displaySaveButton={false}
           accessToken={this.props.accessToken}
           userBaseInfo={this.props.userBaseInfo}
+          readOnly={true}
           />
       } 
       /* edit mode */
@@ -314,7 +315,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                   </InputGroup.Prepend>
                   <FormControl id="basic-url" aria-describedby="basic-addon3"
                     onChange = { this.changeHandlerNameKor }
-                    readOnly={"readonly"}
+                    readOnly={this.props.readOnly}
                     defaultValue={this.props.userBaseInfo.lastName + this.props.userBaseInfo.firstName}
                     style={{backgroundColor: '#FFFFFF'}}
                   />
@@ -327,7 +328,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       style={{ width: '50px'}}
-                      //defaultValue={this.props.recipientInfo.nameEng}
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.userBaseInfo.nameEng}
                       //onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
@@ -339,7 +341,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       style={{ width: '50px'}}
-                      //defaultValue={this.props.recipientInfo.nameEng}
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.userBaseInfo.email}
                       //onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
@@ -351,7 +354,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       style={{ width: '50px'}}
-                      //defaultValue={this.props.recipientInfo.nameEng}
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.userBaseInfo.transitNr}
                       //onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
@@ -375,18 +379,21 @@ export class UserBaseInfoDisplayer extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           style={{ width: '50px', marginRight:'1px'}}
+                          readOnly={this.props.readOnly}
+                          defaultValue={this.props.userBaseInfo.phonePrefic}
                           //onChange={this.changeHandlerPhonePrefic}
-                          //defaultValue={this.props.recipientInfo.phonePrefic}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           style={{ width: '50px', marginRight:'1px'}}
+                          readOnly={this.props.readOnly}
+                          defaultValue={this.props.userBaseInfo.phoneInterfix}
                           //onChange={this.changeHandlerPhoneInterfix}
-                          //defaultValue={this.props.recipientInfo.phoneInterfix}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           style={{ width: '50px'}}
+                          readOnly={this.props.readOnly}
+                          defaultValue={this.props.userBaseInfo.phoneSuffix}
                           //onChange={this.changeHandlerPhoneSuffix}
-                          //defaultValue={this.props.recipientInfo.phoneSuffix}
                         />
                   </InputGroup>
                   <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
@@ -397,7 +404,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                           style={{ marginRight:'10px'}}
-                          //defaultValue={this.props.recipientInfo.zipCode}
+                          readOnly={this.props.readOnly}
+                          defaultValue={this.props.userBaseInfo.zipCode}
                           //onChange={this.changeHandlerZipCode}
                         />
                         {/* <Button size='sm' variant='secondary' >우편번호 찾기</Button> */}
@@ -410,7 +418,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                           </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          //defaultValue={this.props.recipientInfo.address}
+                          readOnly={this.props.readOnly}
+                          defaultValue={this.props.userBaseInfo.address}
                           //onChange={this.changeHandlerAddress} 
                         />
                         </InputGroup >
@@ -423,7 +432,8 @@ export class UserBaseInfoDisplayer extends React.Component{
                           </InputGroup.Prepend>
                           <FormControl id="basic-url" aria-describedby="basic-addon3"
                             as="textarea" rows="2"
-                            //defaultValue={this.props.recipientInfo.addressDetails}
+                            readOnly={this.props.readOnly}
+                            defaultValue={this.props.userBaseInfo.detailAddress}
                             //onChange={this.changeHandlerAddressDetails}
                           />
                   </InputGroup >
