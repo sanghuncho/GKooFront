@@ -206,12 +206,13 @@ export class UserBaseInfoEditor extends React.Component{
       } 
       /* edit mode */
       else {
-        // userBaseInfoDisplayer = <UserBaseInfoDisplayer
-        //   handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
-        //   displaySaveButton={true}
-        //   doShowUserBaseInfo={this.doShowUserBaseInfo}
-        //   accessToken={this.props.accessToken}
-        //   userBaseInfo={this.state.userBaseInfo} />
+        userBaseInfoDisplayer = <UserBaseInfoDisplayer
+          handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
+          displaySaveButton={true}
+          doShowUserBaseInfo={this.doShowUserBaseInfo}
+          accessToken={this.props.accessToken}
+          userBaseInfo={this.props.userBaseInfo}
+          readOnly={false} />
       }
       return (
           <div>
@@ -225,18 +226,19 @@ export class UserBaseInfoDisplayer extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-        userBaseInfo:null
+        lastName:null,
+        firstName:null,
+
       };
       //this.handleCancel = this.handleCancel.bind(this)
-      this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
+      this.changeHandlerLastName = this.changeHandlerLastName.bind(this)
+      this.changeHandlerFirstName = this.changeHandlerFirstName.bind(this)
     }
-
-    
 
     /* 기본정보란으로 이동 */
     handleCancel(){
       window.scrollTo(0, 0);
-      this.props.handleMoveToBaseInfo()
+      this.props.doShowUserBaseInfo()
     }
 
     handleSave(){
@@ -257,9 +259,11 @@ export class UserBaseInfoDisplayer extends React.Component{
                   body:JSON.stringify(editedUserBaseInfo)})
     }
 
-    changeHandlerNameKor(event){
-      // const nameKorRef = this.props.recipientInfo.nameKor
-      // this.changeHandlerCommonState(nameKorRef, event)
+    changeHandlerLastName(event){
+      this.setState({lastName:event.target.value}) 
+    }
+
+    changeHandlerFirstName(event){
       this.setState({firstName:event.target.value}) 
     }
 
@@ -268,7 +272,7 @@ export class UserBaseInfoDisplayer extends React.Component{
       let headerLine;
       if(this.props.displaySaveButton){
         /* 개인정보수정 편집가능 및 저장,취소버튼 노출 */
-        headerLine = '개인정보 수정'
+        headerLine = <div>개인정보 수정</div>
         saveButton = <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
                           <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
                               onClick={(e) => this.handleSave(e)}
@@ -313,12 +317,20 @@ export class UserBaseInfoDisplayer extends React.Component{
                     이름(국문)
                   </InputGroup.Text>
                   </InputGroup.Prepend>
-                  <FormControl id="basic-url" aria-describedby="basic-addon3"
-                    onChange = { this.changeHandlerNameKor }
-                    readOnly={this.props.readOnly}
-                    defaultValue={this.props.userBaseInfo.lastName + this.props.userBaseInfo.firstName}
-                    style={{backgroundColor: '#FFFFFF'}}
-                  />
+                    {/* 성 */}
+                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                      onChange = { this.changeHandlerLastName }
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.userBaseInfo.lastName}
+                      style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                    />
+                    {/* 이름 */}
+                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.userBaseInfo.firstName}
+                      style={{ width: '50px', backgroundColor: '#FFFFFF'}}
+                      onChange={this.changeHandlerFirstName}
+                    />
                   </InputGroup >
                   <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
                     <InputGroup.Prepend>
@@ -327,9 +339,9 @@ export class UserBaseInfoDisplayer extends React.Component{
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      style={{ width: '50px'}}
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.nameEng}
+                      style={{ width: '50px',backgroundColor: '#FFFFFF'}}
                       //onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
@@ -340,9 +352,9 @@ export class UserBaseInfoDisplayer extends React.Component{
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      style={{ width: '50px'}}
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.email}
+                      style={{ width: '50px',backgroundColor: '#FFFFFF'}}
                       //onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
@@ -353,11 +365,11 @@ export class UserBaseInfoDisplayer extends React.Component{
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      style={{ width: '50px'}}
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.transitNr}
+                      style={{ width: '50px', backgroundColor: '#FFFFFF'}}
                       //onChange = { this.changeHandlerNameEng }
-                    />
+                      />
                   </InputGroup>
                 </Card.Body> 
               </Card> 
@@ -378,21 +390,21 @@ export class UserBaseInfoDisplayer extends React.Component{
                           </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          style={{ width: '50px', marginRight:'1px'}}
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phonePrefic}
+                          style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
                           //onChange={this.changeHandlerPhonePrefic}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          style={{ width: '50px', marginRight:'1px'}}
+                          style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phoneInterfix}
                           //onChange={this.changeHandlerPhoneInterfix}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          style={{ width: '50px'}}
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phoneSuffix}
+                          style={{ width: '50px', backgroundColor: '#FFFFFF'}}
                           //onChange={this.changeHandlerPhoneSuffix}
                         />
                   </InputGroup>
@@ -403,9 +415,9 @@ export class UserBaseInfoDisplayer extends React.Component{
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                          style={{ marginRight:'10px'}}
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.zipCode}
+                          style={{ marginRight:'10px', backgroundColor: '#FFFFFF'}}
                           //onChange={this.changeHandlerZipCode}
                         />
                         {/* <Button size='sm' variant='secondary' >우편번호 찾기</Button> */}
@@ -420,6 +432,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.address}
+                          style={{backgroundColor: '#FFFFFF'}}
                           //onChange={this.changeHandlerAddress} 
                         />
                         </InputGroup >
@@ -434,6 +447,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                             as="textarea" rows="2"
                             readOnly={this.props.readOnly}
                             defaultValue={this.props.userBaseInfo.detailAddress}
+                            style={{backgroundColor: '#FFFFFF'}}
                             //onChange={this.changeHandlerAddressDetails}
                           />
                   </InputGroup >
