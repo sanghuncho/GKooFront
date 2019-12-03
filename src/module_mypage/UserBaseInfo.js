@@ -228,11 +228,28 @@ export class UserBaseInfoDisplayer extends React.Component{
       this.state = {
         lastName:null,
         firstName:null,
-
+        nameEng:null,
+        email:null,
+        transitNr:null,
+        phonePrefic:null,
+        phoneInterfix:null,
+        phoneSuffix:null,
+        zipCode:null,
+        address:null, 
+        detailAddress:null,
       };
       //this.handleCancel = this.handleCancel.bind(this)
       this.changeHandlerLastName = this.changeHandlerLastName.bind(this)
       this.changeHandlerFirstName = this.changeHandlerFirstName.bind(this)
+      this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
+      this.changeHandlerEmail = this.changeHandlerEmail.bind(this)
+      this.changeHandlerTransitNr = this.changeHandlerTransitNr.bind(this)
+      this.changeHandlerPhonePrefic = this.changeHandlerPhonePrefic.bind(this)
+      this.changeHandlerPhoneInterfix = this.changeHandlerPhoneInterfix.bind(this)
+      this.changeHandlerPhoneSuffix = this.changeHandlerPhoneSuffix.bind(this)
+      this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
+      this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
+      this.changeHandlerAddressDetails = this.changeHandlerAddressDetails.bind(this)
     }
 
     /* 기본정보란으로 이동 */
@@ -265,6 +282,42 @@ export class UserBaseInfoDisplayer extends React.Component{
 
     changeHandlerFirstName(event){
       this.setState({firstName:event.target.value}) 
+    }
+
+    changeHandlerNameEng(){
+      this.setState({nameEng:event.target.value})
+    }
+
+    changeHandlerEmail(){
+      this.setState({email:event.target.value})
+    }
+
+    changeHandlerTransitNr(){
+      this.setState({transitNr:event.target.value})
+    }
+
+    changeHandlerPhonePrefic(){
+      this.setState({phonePrefic:event.target.value})
+    }
+
+    changeHandlerPhoneInterfix(){
+      this.setState({phoneInterfix:event.target.value})
+    }
+
+    changeHandlerPhoneSuffix(){
+      this.setState({phoneSuffix:event.target.value})
+    }
+
+    changeHandlerZipCode(){
+      this.setState({zipCode:event.target.value})
+    }
+
+    changeHandlerAddress(){
+      this.setState({address:event.target.value})
+    }
+
+    changeHandlerAddressDetails(){
+      this.setState({detailAddress:event.target.value})
     }
 
     render() {
@@ -342,7 +395,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.nameEng}
                       style={{ width: '50px',backgroundColor: '#FFFFFF'}}
-                      //onChange = { this.changeHandlerNameEng }
+                      onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
                   <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
@@ -355,7 +408,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.email}
                       style={{ width: '50px',backgroundColor: '#FFFFFF'}}
-                      //onChange = { this.changeHandlerNameEng }
+                      onChange = { this.changeHandlerEmail }
                     />
                   </InputGroup>
                   <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
@@ -368,7 +421,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.transitNr}
                       style={{ width: '50px', backgroundColor: '#FFFFFF'}}
-                      //onChange = { this.changeHandlerNameEng }
+                      onChange = { this.changeHandlerTransitNr }
                       />
                   </InputGroup>
                 </Card.Body> 
@@ -393,19 +446,19 @@ export class UserBaseInfoDisplayer extends React.Component{
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phonePrefic}
                           style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
-                          //onChange={this.changeHandlerPhonePrefic}
+                          onChange={this.changeHandlerPhonePrefic}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phoneInterfix}
-                          //onChange={this.changeHandlerPhoneInterfix}
+                          onChange={this.changeHandlerPhoneInterfix}
                         />
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.phoneSuffix}
                           style={{ width: '50px', backgroundColor: '#FFFFFF'}}
-                          //onChange={this.changeHandlerPhoneSuffix}
+                          onChange={this.changeHandlerPhoneSuffix}
                         />
                   </InputGroup>
                   <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
@@ -418,7 +471,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.zipCode}
                           style={{ marginRight:'10px', backgroundColor: '#FFFFFF'}}
-                          //onChange={this.changeHandlerZipCode}
+                          onChange={this.changeHandlerZipCode}
                         />
                         {/* <Button size='sm' variant='secondary' >우편번호 찾기</Button> */}
                   </InputGroup >
@@ -433,7 +486,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.address}
                           style={{backgroundColor: '#FFFFFF'}}
-                          //onChange={this.changeHandlerAddress} 
+                          onChange={this.changeHandlerAddress} 
                         />
                         </InputGroup >
 
@@ -448,7 +501,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                             readOnly={this.props.readOnly}
                             defaultValue={this.props.userBaseInfo.detailAddress}
                             style={{backgroundColor: '#FFFFFF'}}
-                            //onChange={this.changeHandlerAddressDetails}
+                            onChange={this.changeHandlerAddressDetails}
                           />
                   </InputGroup >
                 </Card.Body> 
