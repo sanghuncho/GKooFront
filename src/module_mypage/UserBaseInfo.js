@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import React from 'react';
 import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
-import { keycloakConfigLocal, basePort, headers, localPort, setTokenHeader } from "./AuthService"
+import { Link } from "react-router-dom";
+import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "./AuthService"
+import { Redirect } from 'react-router';
 
 export class UserBaseInfo extends React.Component{
     constructor(props) {
@@ -11,7 +13,8 @@ export class UserBaseInfo extends React.Component{
             doOpenAddressManager:false,
             showBaseInfoButtons:true,
             showUserBaseInfoButtons:false,
-            userBaseInfo:null
+            userBaseInfo:null,
+            redirect:false,
         };
 
         this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
@@ -48,7 +51,12 @@ export class UserBaseInfo extends React.Component{
       }
       
       doOpenAddressManager(){
-        this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
+        //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
+        // <NavLink to="/favoriteAddressManager/">
+        // </NavLink>
+        // <Link to={{pathname:"favoriteAddressManager/"}}>
+        // </Link>
+        this.setState({redirect: true});
       }
 
       handleMoveToBaseInfo(){
@@ -60,8 +68,11 @@ export class UserBaseInfo extends React.Component{
         this.setState({doOpenAddressManager:false, showBaseInfoButtons:true}) 
       }
     
-      
       render() {
+        if (this.state.redirect) {
+          return <Redirect push to="/favoriteAddressManager"/>;
+        }
+
         const showBaseInfoButtons = this.state.showBaseInfoButtons
         let editButton;
         let addressManagerButton;
@@ -226,17 +237,17 @@ export class UserBaseInfoDisplayer extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-        lastName:null,
-        firstName:null,
-        nameEng:null,
-        email:null,
-        transitNr:null,
-        phonePrefic:null,
-        phoneInterfix:null,
-        phoneSuffix:null,
-        zipCode:null,
-        address:null, 
-        detailAddress:null,
+        lastName:this.props.userBaseInfo.lastName,
+        firstName:this.props.userBaseInfo.firstName,
+        nameEng:this.props.userBaseInfo.nameEng,
+        email:this.props.userBaseInfo.email,
+        transitNr:this.props.userBaseInfo.transitNr,
+        phonePrefic:this.props.userBaseInfo.phonePrefic,
+        phoneInterfix:this.props.userBaseInfo.phoneInterfix,
+        phoneSuffix:this.props.userBaseInfo.phoneSuffix,
+        zipCode:this.props.userBaseInfo.zipCode,
+        address:this.props.userBaseInfo.address, 
+        detailAddress:this.props.userBaseInfo.detailAddress,
       };
       //this.handleCancel = this.handleCancel.bind(this)
       this.changeHandlerLastName = this.changeHandlerLastName.bind(this)
@@ -264,9 +275,21 @@ export class UserBaseInfoDisplayer extends React.Component{
     }
 
     updateUserBaseInfo(accessToken){
-
+      var userBaseInfoData = {
+          lastName: this.state.lastName,
+          firstName: this.state.firstName,
+          nameEng: this.state.nameEng,
+          email: this.state.email,
+          transitNr: this.state.transitNr,
+          phonePrefic: this.state.phonePrefic,
+          phoneInterfix: this.state.phoneInterfix,
+          phoneSuffix: this.state.phoneSuffix,
+          zipCode: this.state.zipCode,
+          address: this.state.address,
+          detailAddress: this.state.detailAddress
+      }
       const editedUserBaseInfo =  [
-          {username: "Sanghun"},
+          {userBaseInfoData: JSON.stringify(userBaseInfoData)}
       ]
 
       setTokenHeader(accessToken)
@@ -277,47 +300,58 @@ export class UserBaseInfoDisplayer extends React.Component{
     }
 
     changeHandlerLastName(event){
-      this.setState({lastName:event.target.value}) 
+      this.setState({lastName:event.target.value})
+      this.props.userBaseInfo.lastName = event.target.value
     }
 
     changeHandlerFirstName(event){
-      this.setState({firstName:event.target.value}) 
+      this.setState({firstName:event.target.value})
+      this.props.userBaseInfo.firstName = event.target.value
     }
 
-    changeHandlerNameEng(){
+    changeHandlerNameEng(event){
       this.setState({nameEng:event.target.value})
+      this.props.userBaseInfo.nameEng = event.target.value
     }
 
-    changeHandlerEmail(){
+    changeHandlerEmail(event){
       this.setState({email:event.target.value})
+      this.props.userBaseInfo.email = event.target.value
     }
 
-    changeHandlerTransitNr(){
+    changeHandlerTransitNr(event){
       this.setState({transitNr:event.target.value})
+      this.props.userBaseInfo.transitNr = event.target.value
     }
 
-    changeHandlerPhonePrefic(){
+    changeHandlerPhonePrefic(event){
       this.setState({phonePrefic:event.target.value})
+      this.props.userBaseInfo.phonePrefic = event.target.value
     }
 
-    changeHandlerPhoneInterfix(){
+    changeHandlerPhoneInterfix(event){
       this.setState({phoneInterfix:event.target.value})
+      this.props.userBaseInfo.phoneInterfix = event.target.value
     }
 
-    changeHandlerPhoneSuffix(){
+    changeHandlerPhoneSuffix(event){
       this.setState({phoneSuffix:event.target.value})
+      this.props.userBaseInfo.phoneSuffix = event.target.value
     }
 
-    changeHandlerZipCode(){
+    changeHandlerZipCode(event){
       this.setState({zipCode:event.target.value})
+      this.props.userBaseInfo.zipCode = event.target.value
     }
 
-    changeHandlerAddress(){
+    changeHandlerAddress(event){
       this.setState({address:event.target.value})
+      this.props.userBaseInfo.address = event.target.value
     }
 
-    changeHandlerAddressDetails(){
+    changeHandlerAddressDetails(event){
       this.setState({detailAddress:event.target.value})
+      this.props.userBaseInfo.detailAddress = event.target.value
     }
 
     render() {
