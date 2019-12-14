@@ -392,7 +392,7 @@ class MyPageDetailRecipient extends React.Component{
           displayHeight = '67rem'
         } else {
           recipientFormDisplay = <CompleteRecipientDisplay recipientInfo={this.props.recipientInfo}/>
-          displayHeight = '29rem'
+          displayHeight = '20rem'
         }
         return (
           <div>
@@ -417,45 +417,51 @@ export class CompleteRecipientDisplay extends React.Component{
     }
     
     render() {
+
+      {/* refactoring */}
+      const nameKor = this.props.recipientInfo.nameKor
+      const nameEng = this.props.recipientInfo.nameEng
+      let name
+      if(nameKor != null && nameEng != null){
+        name = nameKor +  "(" + nameEng + ")"
+      } else {
+        name = ""
+      }
       return (
         <div>
-          <Table bordered condensed responsive striped size="sm">
+          <Table bordered condensed responsive size="sm">
                     <thead>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td width='400px' >이름(국문)</td>
-                        <td width='400px' >{this.props.recipientInfo.nameKor}</td>
-                    </tr>
-                    <tr>
-                        <td width='400px'>이름(영문)</td>
-                        <td width='400px'>{this.props.recipientInfo.nameEng}</td>
-                    </tr>
-                    <tr>
-                        <td >개인통관고유번호</td>
-                        <td >{this.props.recipientInfo.transitNr}</td>
-                    </tr>
-                    <tr>
-                        <td>연락처</td>
-                        <td>{this.props.recipientInfo.phoneNr}</td>
-                    </tr>
-                    <tr>
-                        <td >우편번호</td>
-                        <td >{this.props.recipientInfo.zipCode}</td>
-                    </tr>
-                    <tr height="60">
-                        <td>주소</td>
-                        <td>{this.props.recipientInfo.address}</td>
-                    </tr>
-                    <tr height="60">
-                        <td>상세 주소</td>
-                        <td>{this.props.recipientInfo.addressDetails}</td>
-                    </tr>
-                    <tr height="80">
-                        <td >배송요청사항</td>
-                        <td >{this.props.recipientInfo.usercomment}</td>
-                    </tr>
-                    </tbody>
+                      <tr>
+                          <td width='150px' > 받는분 </td>
+                          <td width='250px' > {name} </td>
+                          <td width='150px' > 연락처1 </td>
+                          <td width='250px' > {this.props.recipientInfo.phoneNr} </td>
+                      </tr>
+                      <tr>
+                          <td width='150px' > 개인통관고유번호 </td>
+                          <td width='250px' > {this.props.recipientInfo.transitNr} </td>
+                          <td width='150px' > 연락처2 </td>
+                          <td width='250px' > {this.props.recipientInfo.phoneNr} </td>
+                      </tr>
+                      <tr height="60">
+                          <td>주소</td>
+                          <td colSpan="3">{this.props.recipientInfo.zipCode} {this.props.recipientInfo.address} {this.props.recipientInfo.addressDetails}</td>
+                      </tr>
+                      {/* <tr>
+                          <td>주소</td>
+                          <td colSpan="3">{this.props.recipientInfo.address}</td>
+                      </tr>
+                      <tr>
+                          <td>상세 주소</td>
+                          <td colSpan="3">{this.props.recipientInfo.addressDetails} {this.props.recipientInfo.zipCode}</td>
+                      </tr> */}
+                      <tr height="80">
+                          <td>배송요청사항</td>
+                          <td colSpan="3">{this.props.recipientInfo.usercomment}</td>
+                      </tr>
+                    </tbody> 
           </Table>
         </div>
       );

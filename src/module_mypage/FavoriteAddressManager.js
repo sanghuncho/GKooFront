@@ -2,7 +2,6 @@ import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
-import { UserAccount } from "./UserAccount";
 import {
   AppContainer as BaseAppContainer,
   ExampleNavigation as BaseNavigation,
@@ -10,7 +9,7 @@ import {
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, localPort, INITIAL_PAGE } from "./AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
-import { Breadcrumb } from "react-bootstrap"
+import { Breadcrumb, Card, Button, Form, Table, Row, Col } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -116,8 +115,7 @@ export class FavoriteAddressManager extends React.Component{
 
         if(this.validToken(token)){
             addressManagerController = <AddressManagerController 
-                     
-                      accessToken = { this.state.accessToken }/>
+            accessToken = { this.state.accessToken }/>
         } else {
             addressManagerController = this.getEmptyPage
         }
@@ -151,14 +149,170 @@ export class AddressManagerController extends React.Component{
               <Breadcrumb.Item active>마이페이지 / 배송지관리</Breadcrumb.Item>
             </Breadcrumb>
 
-          {/* ToDo : userAccount name as mypagebody */}
-          {/* <UserAccount 
-           
-            /> */}
+            {/* ToDo : userAccount name as mypagebody */}
+            <AddressManagerWrapper/>
+
         </BodyContainer>
         
         </AppContainer>
       </div>
+      );
+    }    
+}
+
+class AddressManagerWrapper extends React.Component{
+  constructor(props) {
+      super(props);
+      this.state = {
+        doEdit:false,
+        doAddAddress:false,
+        showAddingAddressButton:true,
+        showAddingAddressPanel:false,
+        favoriteAddressList:[],
+      }
+      this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
+      this.handleOpenAddingAddressPanel = this.handleOpenAddingAddressPanel.bind(this);
+    }
+
+  handleAddFavoriteAddressOnList(event){
+      this.setState({
+        favoriteAddressList:[...this.state.favoriteAddressList, ""],
+      })
+  }
+
+  handleOpenAddingAddressPanel(event){
+    this.setState({showAddingAddressPanel:true})
+  }
+
+  handleRemoveFavoriteAddressOnList(index){
+    console.log("remove:" + index)
+    this.state.favoriteAddressList.splice(index, 1)
+    this.setState({favoriteAddressList:this.state.favoriteAddressList})
+  }
+    
+    render() {
+      const showAddingAddressButton = this.state.showAddingAddressButton
+      let addAddressButton;
+        if(showAddingAddressButton) {
+          addAddressButton = <Button variant="secondary" size="sm" 
+            onClick={(e) => this.handleOpenAddingAddressPanel(e)} 
+            style={{ marginRight: '10px', float:"right"}}>배송지 추가</Button>
+        }
+      
+      const sizeOnList = this.state.favoriteAddressList.length
+      const showAddingAddressPanel = this.state.showAddingAddressPanel
+      let intro
+      let heightAddressManager
+        if(sizeOnList == 0 & showAddingAddressPanel == false) {
+          intro = <div>배송지 추가버튼으로 자주 이용하는 주소를 등록하실수 있습니다.</div>
+          heightAddressManager = '10rem'
+          console.log(sizeOnList)
+        } else {
+          heightAddressManager = 6 + 14*sizeOnList + 'rem'
+        }
+      
+      let addingAddressPanel
+        if(showAddingAddressPanel){
+          addingAddressPanel = <AddingAddressPanel/>
+          heightAddressManager = 30 + 14*sizeOnList + 'rem'
+        }
+      return (
+        <div>
+          <Card border="dark" style={{ width: '80%', height:heightAddressManager, marginTop:'1rem' }}>
+                <Card.Header>배송지 관리
+                  {addAddressButton}
+                </Card.Header>
+                <Card.Body >
+                  
+                  {intro}
+
+                  {addingAddressPanel}
+
+                  {this.state.favoriteAddressList.map((itemName, index) => { return (
+                    <div key={index}>
+                      <FavoriteAddress
+                        index={index}
+                        handleRemoveFavoriteAddressOnList={this.handleRemoveFavoriteAddressOnList}
+                      />
+                    </div>
+                  )})}
+
+                </Card.Body>
+              </Card>
+        </div>
+      );
+    }    
+}
+
+class FavoriteAddress extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+
+  componentDidMount() {
+     console.log(this.props.index)
+  }
+    
+  render() {
+      const index = this.props.index
+      return (
+        <div>
+          <Card border="dark" style={{ width: '60%', marginBottom:'1rem'}}>
+          {/* <Card.Header></Card.Header> */}
+            <Card.Body >
+              <Card.Title style={{ fontSize:'1rem'}} >조상훈</Card.Title>
+              <Card.Title style={{ fontSize:'1rem'}} >010 5460 8998 </Card.Title>
+              <Card.Title style={{ fontSize:'1rem'}} >DE123465678 </Card.Title>
+              <Card.Subtitle></Card.Subtitle>
+              <Card.Text>
+                주소
+              </Card.Text>
+              <Button variant="outline-secondary" size="sm" 
+                      style={{ marginRight: '10px', float:"right"}}
+                      //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
+                      >수정
+              </Button>
+              <Button variant="outline-secondary" size="sm" 
+                      style={{ marginRight: '10px', float:"right"}}
+                      onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
+                      >삭제
+              </Button>
+            </Card.Body>
+          </Card>
+        </div>
+      );
+    }    
+}
+
+class AddingAddressPanel extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div><Card border="dark" style={{ width: '80%', marginBottom:'1rem'}}>
+        <Card.Header>새로운 배송지</Card.Header>
+          <Card.Body >
+            <Card.Title style={{ fontSize:'1rem'}} >조상훈</Card.Title>
+            <Card.Title style={{ fontSize:'1rem'}} >010 5460 8998 </Card.Title>
+            <Card.Title style={{ fontSize:'1rem'}} >DE123465678 </Card.Title>
+            <Card.Subtitle></Card.Subtitle>
+            <Card.Text>
+              주소
+            </Card.Text>
+            <Button variant="outline-secondary" size="sm" 
+                    style={{ marginRight: '10px', float:"right"}}
+                    //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
+                    >저장
+            </Button>
+            <Button variant="outline-secondary" size="sm" 
+                    style={{ marginRight: '10px', float:"right"}}
+                    //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
+                    >취소
+            </Button>
+          </Card.Body>
+        </Card></div>
       );
     }    
 }
