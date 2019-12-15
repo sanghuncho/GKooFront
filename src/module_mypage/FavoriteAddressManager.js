@@ -1,16 +1,17 @@
-import { SideNav, Nav as BaseNav} from "react-sidenav";
-import styled from "styled-components";
-import React, { Component } from 'react';
-import { Icon as BaseIcon } from "react-icons-kit";
+import { SideNav, Nav as BaseNav} from "react-sidenav"
+import styled from "styled-components"
+import React, { Component } from 'react'
+import { Icon as BaseIcon } from "react-icons-kit"
 import {
   AppContainer as BaseAppContainer,
   ExampleNavigation as BaseNavigation,
-} from "../container";
+} from "../container"
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, localPort, INITIAL_PAGE } from "./AuthService"
-import { MyPageSideNav } from "./MyPageSideNav";
-import { Breadcrumb, Card, Button, Form, Table, Row, Col } from "react-bootstrap"
+import { MyPageSideNav } from "./MyPageSideNav"
+import { Breadcrumb, Card, Button, Form, Table, Row, Col, InputGroup, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
+import { FavoriteAddressInputForm } from './FavoriteAddressInputForm'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -150,7 +151,7 @@ export class AddressManagerController extends React.Component{
             </Breadcrumb>
 
             {/* ToDo : userAccount name as mypagebody */}
-            <AddressManagerWrapper/>
+            <AddressManagerWrapper accessToken={this.props.accessToken}/>
 
         </BodyContainer>
         
@@ -172,7 +173,8 @@ class AddressManagerWrapper extends React.Component{
       }
       this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
       this.handleOpenAddingAddressPanel = this.handleOpenAddingAddressPanel.bind(this);
-    }
+      this.handleCloseAddingAddressPanel = this.handleCloseAddingAddressPanel.bind(this);
+  }
 
   handleAddFavoriteAddressOnList(event){
       this.setState({
@@ -182,6 +184,10 @@ class AddressManagerWrapper extends React.Component{
 
   handleOpenAddingAddressPanel(event){
     this.setState({showAddingAddressPanel:true})
+  }
+
+  handleCloseAddingAddressPanel(event){
+    this.setState({showAddingAddressPanel:false})
   }
 
   handleRemoveFavoriteAddressOnList(index){
@@ -213,8 +219,10 @@ class AddressManagerWrapper extends React.Component{
       
       let addingAddressPanel
         if(showAddingAddressPanel){
-          addingAddressPanel = <AddingAddressPanel/>
-          heightAddressManager = 30 + 14*sizeOnList + 'rem'
+          heightAddressManager = 35 + 14*sizeOnList + 'rem'
+          addingAddressPanel = 
+            <AddingAddressPanel 
+              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}/>
         }
       return (
         <div>
@@ -291,28 +299,13 @@ class AddingAddressPanel extends React.Component{
     
     render() {
       return (
-        <div><Card border="dark" style={{ width: '80%', marginBottom:'1rem'}}>
-        <Card.Header>새로운 배송지</Card.Header>
-          <Card.Body >
-            <Card.Title style={{ fontSize:'1rem'}} >조상훈</Card.Title>
-            <Card.Title style={{ fontSize:'1rem'}} >010 5460 8998 </Card.Title>
-            <Card.Title style={{ fontSize:'1rem'}} >DE123465678 </Card.Title>
-            <Card.Subtitle></Card.Subtitle>
-            <Card.Text>
-              주소
-            </Card.Text>
-            <Button variant="outline-secondary" size="sm" 
-                    style={{ marginRight: '10px', float:"right"}}
-                    //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
-                    >저장
-            </Button>
-            <Button variant="outline-secondary" size="sm" 
-                    style={{ marginRight: '10px', float:"right"}}
-                    //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
-                    >취소
-            </Button>
-          </Card.Body>
-        </Card></div>
+        <div>
+          <FavoriteAddressInputForm
+            handleCancel={this.props.handleCloseAddingAddressPanel}
+            saveType={"CREATE"}
+            //handleSave={this.props.}
+            />
+        </div>
       );
     }    
 }
