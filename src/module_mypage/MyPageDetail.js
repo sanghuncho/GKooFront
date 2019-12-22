@@ -72,7 +72,7 @@ export class MyPageDetail extends React.Component{
 
       fetchOrderingPersonInforamtion(token){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/orderingpersoninfo', {headers})
+        fetch(basePort + '/orderingpersoninfo', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -82,7 +82,7 @@ export class MyPageDetail extends React.Component{
 
       fetchRecipientInforamtion(token, id){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/recipientinfo/'+ id, {headers})
+        fetch(basePort + '/recipientinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -96,7 +96,7 @@ export class MyPageDetail extends React.Component{
 
       fetchProductsInforamtion(token, id){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/productslistinfo/'+ id, {headers})
+        fetch(basePort + '/productslistinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -106,7 +106,7 @@ export class MyPageDetail extends React.Component{
 
       fetchProductsCommonInforamtion(token, id){
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/productscommoninfo/'+ id, {headers})
+        fetch(basePort + '/productscommoninfo/'+ id, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -118,7 +118,7 @@ export class MyPageDetail extends React.Component{
         const orderNumber = this.state.orderNumber
         const contents =  [{orderNumber: orderNumber}, {ownerName:ownerName}]
         this.setTokenHeader(this.state.accessToken)
-        fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
+        fetch(basePort + '/willpaydeleveryfeeupdate', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();}).then((data) => {

@@ -7,7 +7,7 @@ import {
   ExampleNavigation as BaseNavigation,
 } from "../container"
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, localPort, INITIAL_PAGE } from "./AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "./AuthService"
 import { MyPageSideNav } from "./MyPageSideNav"
 import { Breadcrumb, Card, Button, Form, Table, Row, Col, InputGroup, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
@@ -170,10 +170,37 @@ class AddressManagerWrapper extends React.Component{
         showAddingAddressButton:true,
         showAddingAddressPanel:false,
         favoriteAddressList:[],
+        disableButtonAddingAddress:false
       }
       this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
       this.handleOpenAddingAddressPanel = this.handleOpenAddingAddressPanel.bind(this);
       this.handleCloseAddingAddressPanel = this.handleCloseAddingAddressPanel.bind(this);
+  }
+
+  componentDidMount() {
+    //fetch list
+    this.fetchFavoriteAddressList(this.props.accessToken)
+  }
+
+  fetchFavoriteAddressList(accessToken){
+    setTokenHeader(accessToken)
+    fetch(basePort + '/getFavoriteAddressList', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState( { favoriteAddressList: data} )
+          console.log(data)
+        })
+  }
+
+  deleteFavoriteAddress(accessToken, favoriteAddressId){
+    const deletedAddressData =  [{favoriteAddressId: favoriteAddressId}]
+    setTokenHeader(accessToken)
+    fetch(basePort + '/deleteFavoriteAddress', 
+      {method:'post', headers, 
+        body:JSON.stringify(deletedAddressData)})
+    
+    window.location.reload();
   }
 
   handleAddFavoriteAddressOnList(event){
@@ -183,24 +210,28 @@ class AddressManagerWrapper extends React.Component{
   }
 
   handleOpenAddingAddressPanel(event){
-    this.setState({showAddingAddressPanel:true})
+    this.setState({showAddingAddressPanel:true, disableButtonAddingAddress:true})
   }
 
   handleCloseAddingAddressPanel(event){
-    this.setState({showAddingAddressPanel:false})
+    this.setState({showAddingAddressPanel:false, disableButtonAddingAddress:false})
   }
 
   handleRemoveFavoriteAddressOnList(index){
     console.log("remove:" + index)
-    this.state.favoriteAddressList.splice(index, 1)
-    this.setState({favoriteAddressList:this.state.favoriteAddressList})
+    var favoriteAddressId = this.state.favoriteAddressList[index].id
+    this.deleteFavoriteAddress(this.props.accessToken, favoriteAddressId)
+    // this.state.favoriteAddressList.splice(index, 1)
+    // this.setState({favoriteAddressList:this.state.favoriteAddressList})
   }
     
-    render() {
+  render() {
       const showAddingAddressButton = this.state.showAddingAddressButton
       let addAddressButton;
         if(showAddingAddressButton) {
-          addAddressButton = <Button variant="secondary" size="sm" 
+          addAddressButton = 
+          <Button variant="secondary" size="sm" 
+            disabled = {this.state.disableButtonAddingAddress}
             onClick={(e) => this.handleOpenAddingAddressPanel(e)} 
             style={{ marginRight: '10px', float:"right"}}>배송지 추가</Button>
         }
@@ -222,7 +253,9 @@ class AddressManagerWrapper extends React.Component{
           heightAddressManager = 35 + 14*sizeOnList + 'rem'
           addingAddressPanel = 
             <AddingAddressPanel 
-              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}/>
+              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}
+              accessToken={this.props.accessToken}
+              />
         }
       return (
         <div>
@@ -240,6 +273,7 @@ class AddressManagerWrapper extends React.Component{
                     <div key={index}>
                       <FavoriteAddress
                         index={index}
+                        favoriteAddressData = {this.state.favoriteAddressList[index]}
                         handleRemoveFavoriteAddressOnList={this.handleRemoveFavoriteAddressOnList}
                       />
                     </div>
@@ -268,12 +302,12 @@ class FavoriteAddress extends React.Component{
           <Card border="dark" style={{ width: '60%', marginBottom:'1rem'}}>
           {/* <Card.Header></Card.Header> */}
             <Card.Body >
-              <Card.Title style={{ fontSize:'1rem'}} >조상훈</Card.Title>
-              <Card.Title style={{ fontSize:'1rem'}} >010 5460 8998 </Card.Title>
-              <Card.Title style={{ fontSize:'1rem'}} >DE123465678 </Card.Title>
+              <Card.Title style={{ fontSize:'1rem'}} >이름: {this.props.favoriteAddressData.nameKor} {this.props.favoriteAddressData.nameEng}</Card.Title>
+              <Card.Title style={{ fontSize:'1rem'}} >전화번호: {this.props.favoriteAddressData.phonenumberFirst} {this.props.favoriteAddressData.phonenumberSecond}</Card.Title>
+              <Card.Title style={{ fontSize:'1rem'}} >개인통관고유번호: {this.props.favoriteAddressData.transitNr} </Card.Title>
               <Card.Subtitle></Card.Subtitle>
               <Card.Text>
-                주소
+                주소: {this.props.favoriteAddressData.zipCode} {this.props.favoriteAddressData.address}
               </Card.Text>
               <Button variant="outline-secondary" size="sm" 
                       style={{ marginRight: '10px', float:"right"}}
@@ -303,6 +337,7 @@ class AddingAddressPanel extends React.Component{
           <FavoriteAddressInputForm
             handleCancel={this.props.handleCloseAddingAddressPanel}
             saveType={"CREATE"}
+            accessToken={this.props.accessToken}
             //handleSave={this.props.}
             />
         </div>

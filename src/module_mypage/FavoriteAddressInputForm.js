@@ -1,33 +1,77 @@
 import styled from "styled-components";
 import React from 'react';
 import { Card, Button, InputGroup, FormControl } from "react-bootstrap"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "./AuthService"
 
 export class FavoriteAddressInputForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
           nameKor:null,
+          nameEng:null,
+          transitNr:null,
+          phonenumberFirst:null,
+          phonenumberSecond:null,
+          zipCode:null,
+          address:null,
         };
         this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
+        this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
+        this.changeHandlerTransitNr = this.changeHandlerTransitNr.bind(this)
+        this.changeHandlerPhonenumberFirst = this.changeHandlerPhonenumberFirst.bind(this)
+        this.changeHandlerPhonenumberSecond = this.changeHandlerPhonenumberSecond.bind(this)
+        this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
+        this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
+      }
+
+      componentDidMount() {
+        
       }
 
       changeHandlerNameKor(event){
         this.setState({nameKor:event.target.value})
         console.log(this.state.nameKor)
-       
-        
-        //this.props.userBaseInfo.lastName = event.target.value
+      }
+
+      changeHandlerNameEng(event){
+        this.setState({nameEng:event.target.value})
+        console.log(this.state.nameEng)
+      }
+
+      changeHandlerTransitNr(event){
+        this.setState({transitNr:event.target.value})
+        console.log(this.state.transitNr)
+      }
+
+      changeHandlerPhonenumberFirst(event){
+        this.setState({phonenumberFirst:event.target.value})
+      }
+
+      changeHandlerPhonenumberSecond(event){
+        this.setState({phonenumberSecond:event.target.value})
+      }
+
+      changeHandlerZipCode(event){
+        this.setState({zipCode:event.target.value})
+      }
+
+      changeHandlerAddress(event){
+        this.setState({address:event.target.value})
       }
 
       handleCancel(){
         //window.scrollTo(0, 0);
-        //this.props.handleCancel()
+        this.props.handleCancel()
+      }
+
+      handleRefresch(){
+        window.location.reload();
       }
   
       handleSave(){
         let saveType = this.props.saveType
         if(saveType == "CREATE"){
-          this.handleCreate()
+          this.handleCreate(this.props.accessToken)
         } else if(saveType == "UPDATE"){
           this.handleUpdate()
         }
@@ -35,9 +79,25 @@ export class FavoriteAddressInputForm extends React.Component{
         //this.props.doShowUserBaseInfo()
       }
 
-      handleCreate(){
-        //this.updateUserBaseInfo(this.props.accessToken)
-        //this.props.doShowUserBaseInfo()
+      handleCreate(accessToken){
+        var favoriteAddressObject = {
+          nameKor:this.state.nameKor,
+          nameEng:this.state.nameEng,
+          transitNr:this.state.transitNr,
+          phonenumberFirst:this.state.phonenumberFirst,
+          phonenumberSecond:this.state.phonenumberSecond,
+          zipCode:this.state.zipCode,
+          address:this.state.address
+        }
+        const favoriteAddressData =  [
+          {favoriteAddressData: JSON.stringify(favoriteAddressObject)}
+        ]
+        setTokenHeader(accessToken)
+        fetch(basePort + '/createFavoriteAddress', 
+                {method:'post', headers, 
+                  body:JSON.stringify(favoriteAddressData)})
+        this.handleCancel()
+        this.handleRefresch()
       }
 
       handleUpdate(){
@@ -48,7 +108,7 @@ export class FavoriteAddressInputForm extends React.Component{
       render() {
         return (
           <div>
-          <Card border="dark" style={{ width: '80%'}}>
+          <Card border="dark" style={{ width: '80%', marginBottom:'10px'}}>
           <Card.Header>새로운 배송지</Card.Header>
             <Card.Body >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -60,7 +120,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerNameKor }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
                 <InputGroup.Prepend >
                 <InputGroup.Text id="basic-addon3" >
@@ -68,9 +128,9 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
-                  //onChange = { this.changeHandlerNameKor }
+                  onChange = { this.changeHandlerNameEng }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -80,9 +140,9 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
-                  //onChange = { this.changeHandlerNameKor }
+                  onChange = { this.changeHandlerTransitNr }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -92,9 +152,9 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
-                  //onChange = { this.changeHandlerNameKor }
+                  onChange = { this.changeHandlerPhonenumberFirst }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
                 <InputGroup.Prepend >
                 <InputGroup.Text id="basic-addon3" >
@@ -102,9 +162,9 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
-                  //onChange = { this.changeHandlerNameKor }
+                  onChange = { this.changeHandlerPhonenumberSecond }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -114,33 +174,34 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
-                  //onChange = { this.changeHandlerNameKor }
+                  onChange = { this.changeHandlerZipCode }
                   //defaultValue={this.props.userBaseInfo}
-                style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                  style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
               <InputGroup size='sm' className="mb-3" style={{ width: '80%'}}>
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                              주소
-                            </InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl id="basic-url" aria-describedby="basic-addon3"
-                              as="textarea" rows="2"
-                              //readOnly={this.props.readOnly}
-                              //defaultValue={this.props.userBaseInfo.detailAddress}
-                              style={{backgroundColor: '#FFFFFF'}}
-                              //onChange={this.changeHandlerAddressDetails}
-                            />
+                <InputGroup.Prepend>
+                <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                  주소
+                </InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl id="basic-url" aria-describedby="basic-addon3"
+                  as="textarea" rows="2"
+                  onChange={this.changeHandlerAddress}
+                  //defaultValue={this.props.userBaseInfo.detailAddress}
+                  style={{backgroundColor: '#FFFFFF'}}
+                />
               </InputGroup >
               <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                            <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                                onClick={(e) => this.handleSave(e)}
-                            >저장
-                            </Button>
-                            <Button size="sm" variant='secondary' 
-                                onClick={(e) => this.handleCancel(e)}
-                            >취소</Button>
+                <Button size="sm" variant='secondary' 
+                  style={{ marginRight:'10px'}}
+                  onClick={(e) => this.handleSave(e)}
+                  >저장
+                </Button>
+                <Button size="sm" variant='secondary' 
+                  onClick={(e) => this.handleCancel(e)}
+                  >취소
+                </Button>
               </InputGroup >
             </Card.Body>
           </Card>
