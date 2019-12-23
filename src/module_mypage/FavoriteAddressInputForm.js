@@ -69,17 +69,6 @@ export class FavoriteAddressInputForm extends React.Component{
       }
   
       handleSave(){
-        let saveType = this.props.saveType
-        if(saveType == "CREATE"){
-          this.handleCreate(this.props.accessToken)
-        } else if(saveType == "UPDATE"){
-          this.handleUpdate()
-        }
-        //this.updateUserBaseInfo(this.props.accessToken)
-        //this.props.doShowUserBaseInfo()
-      }
-
-      handleCreate(accessToken){
         var favoriteAddressObject = {
           nameKor:this.state.nameKor,
           nameEng:this.state.nameEng,
@@ -89,10 +78,21 @@ export class FavoriteAddressInputForm extends React.Component{
           zipCode:this.state.zipCode,
           address:this.state.address
         }
+        
         const favoriteAddressData =  [
           {favoriteAddressData: JSON.stringify(favoriteAddressObject)}
         ]
-        setTokenHeader(accessToken)
+        
+        let saveType = this.props.saveType
+        if(saveType == "CREATE"){
+          this.handleCreate(this.props.accessToken, favoriteAddressData)
+        } else if(saveType == "UPDATE"){
+          this.handleUpdate(this.props.accessToken, favoriteAddressData)
+        }
+      }
+
+      handleCreate(accessToken, favoriteAddressData){
+        setTokenHeader(accessToken, favoriteAddressData)
         fetch(basePort + '/createFavoriteAddress', 
                 {method:'post', headers, 
                   body:JSON.stringify(favoriteAddressData)})
@@ -100,16 +100,26 @@ export class FavoriteAddressInputForm extends React.Component{
         this.handleRefresch()
       }
 
-      handleUpdate(){
-        //this.updateUserBaseInfo(this.props.accessToken)
-        //this.props.doShowUserBaseInfo()
+      handleUpdate(accessToken, favoriteAddressData){
+        setTokenHeader(accessToken, favoriteAddressData)
+        fetch(basePort + '/updateFavoriteAddress', 
+                {method:'post', headers, 
+                  body:JSON.stringify(favoriteAddressData)})
+        this.handleCancel()
+        this.handleRefresch()
       }
       
       render() {
+        let title
+        if(this.props.saveType == "CREATE"){
+          title = "새로운 배송지"
+        } else if(this.props.saveType == "UPDATE"){
+          title = "배송지 수정"
+        }
         return (
           <div>
           <Card border="dark" style={{ width: '80%', marginBottom:'10px'}}>
-          <Card.Header>새로운 배송지</Card.Header>
+          <Card.Header>{title}</Card.Header>
             <Card.Body >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
                 <InputGroup.Prepend >
@@ -119,7 +129,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerNameKor }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.nameKor}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
                 <InputGroup.Prepend >
@@ -129,7 +139,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerNameEng }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.nameEng}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
@@ -141,7 +151,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerTransitNr }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.transitNr}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
@@ -153,7 +163,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerPhonenumberFirst }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.phonenumberFirst}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
                 <InputGroup.Prepend >
@@ -163,7 +173,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerPhonenumberSecond }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.phonenumberSecond}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
@@ -175,7 +185,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerZipCode }
-                  //defaultValue={this.props.userBaseInfo}
+                  defaultValue={this.props.favoriteAddressData.zipCode}
                   style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                 />
               </InputGroup >
@@ -188,7 +198,7 @@ export class FavoriteAddressInputForm extends React.Component{
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   as="textarea" rows="2"
                   onChange={this.changeHandlerAddress}
-                  //defaultValue={this.props.userBaseInfo.detailAddress}
+                  defaultValue={this.props.favoriteAddressData.address}
                   style={{backgroundColor: '#FFFFFF'}}
                 />
               </InputGroup >

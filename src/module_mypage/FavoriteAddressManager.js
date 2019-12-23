@@ -168,13 +168,16 @@ class AddressManagerWrapper extends React.Component{
         doEdit:false,
         doAddAddress:false,
         showAddingAddressButton:true,
-        showAddingAddressPanel:false,
+        showFavoriteAddressInputPanel:false,
+        doLoadingFavoriteAddressInputPanel:false,
         favoriteAddressList:[],
-        disableButtonAddingAddress:false
+        disableButtonAddingAddress:false,
+        indexEditedFavoriteAddress:"",
       }
       this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
-      this.handleOpenAddingAddressPanel = this.handleOpenAddingAddressPanel.bind(this);
+      this.handleOpenFavoriteAddressInputPanel = this.handleOpenFavoriteAddressInputPanel.bind(this);
       this.handleCloseAddingAddressPanel = this.handleCloseAddingAddressPanel.bind(this);
+      this.handleEditingFavoriteAddressInputPanel = this.handleEditingFavoriteAddressInputPanel.bind(this)
   }
 
   componentDidMount() {
@@ -209,38 +212,44 @@ class AddressManagerWrapper extends React.Component{
       })
   }
 
-  handleOpenAddingAddressPanel(event){
-    this.setState({showAddingAddressPanel:true, disableButtonAddingAddress:true})
+  handleOpenFavoriteAddressInputPanel(event){
+    this.setState({showFavoriteAddressInputPanel:true, disableButtonAddingAddress:true})
+  }
+
+  handleEditingFavoriteAddressInputPanel(index){
+    this.setState({disableButtonAddingAddress:true, doLoadingFavoriteAddressInputPanel:true,
+      indexEditedFavoriteAddress:index})
   }
 
   handleCloseAddingAddressPanel(event){
-    this.setState({showAddingAddressPanel:false, disableButtonAddingAddress:false})
+    this.setState({showFavoriteAddressInputPanel:false, 
+        disableButtonAddingAddress:false, 
+        doLoadingFavoriteAddressInputPanel:false})
   }
 
   handleRemoveFavoriteAddressOnList(index){
     console.log("remove:" + index)
     var favoriteAddressId = this.state.favoriteAddressList[index].id
     this.deleteFavoriteAddress(this.props.accessToken, favoriteAddressId)
-    // this.state.favoriteAddressList.splice(index, 1)
-    // this.setState({favoriteAddressList:this.state.favoriteAddressList})
   }
     
   render() {
       const showAddingAddressButton = this.state.showAddingAddressButton
       let addAddressButton;
-        if(showAddingAddressButton) {
-          addAddressButton = 
-          <Button variant="secondary" size="sm" 
-            disabled = {this.state.disableButtonAddingAddress}
-            onClick={(e) => this.handleOpenAddingAddressPanel(e)} 
-            style={{ marginRight: '10px', float:"right"}}>배송지 추가</Button>
-        }
+      if(showAddingAddressButton) {
+        addAddressButton = 
+        <Button variant="secondary" size="sm" 
+        disabled = {this.state.disableButtonAddingAddress}
+        onClick={(e) => this.handleOpenFavoriteAddressInputPanel(e)} 
+        style={{ marginRight: '10px', float:"right"}}>배송지 추가</Button>
+      }
       
       const sizeOnList = this.state.favoriteAddressList.length
-      const showAddingAddressPanel = this.state.showAddingAddressPanel
+      const showFavoriteAddressInputPanel = this.state.showFavoriteAddressInputPanel
+      const doLoadingFavoriteAddressInputPanel = this.state.doLoadingFavoriteAddressInputPanel
       let intro
       let heightAddressManager
-        if(sizeOnList == 0 & showAddingAddressPanel == false) {
+        if(sizeOnList == 0 & showFavoriteAddressInputPanel == false) {
           intro = <div>배송지 추가버튼으로 자주 이용하는 주소를 등록하실수 있습니다.</div>
           heightAddressManager = '10rem'
           console.log(sizeOnList)
@@ -249,11 +258,21 @@ class AddressManagerWrapper extends React.Component{
         }
       
       let addingAddressPanel
-        if(showAddingAddressPanel){
+        if(showFavoriteAddressInputPanel){
           heightAddressManager = 35 + 14*sizeOnList + 'rem'
           addingAddressPanel = 
             <AddingAddressPanel 
-              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}
+              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}    
+              accessToken={this.props.accessToken}
+              favoriteAddressData = {""}
+              />
+        } else if(doLoadingFavoriteAddressInputPanel){
+          const indexEdited = this.state.indexEditedFavoriteAddress
+          heightAddressManager = 35 + 14*sizeOnList + 'rem'
+          addingAddressPanel = 
+            <EditingAddressPanel 
+              handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel} 
+              favoriteAddressData = {this.state.favoriteAddressList[indexEdited]}
               accessToken={this.props.accessToken}
               />
         }
@@ -275,6 +294,7 @@ class AddressManagerWrapper extends React.Component{
                         index={index}
                         favoriteAddressData = {this.state.favoriteAddressList[index]}
                         handleRemoveFavoriteAddressOnList={this.handleRemoveFavoriteAddressOnList}
+                        handleEditingFavoriteAddressInputPanel={this.handleEditingFavoriteAddressInputPanel}
                       />
                     </div>
                   )})}
@@ -311,7 +331,7 @@ class FavoriteAddress extends React.Component{
               </Card.Text>
               <Button variant="outline-secondary" size="sm" 
                       style={{ marginRight: '10px', float:"right"}}
-                      //onClick={() => this.props.handleRemoveFavoriteAddressOnList(index)}
+                      onClick={() => this.props.handleEditingFavoriteAddressInputPanel(index)}
                       >수정
               </Button>
               <Button variant="outline-secondary" size="sm" 
@@ -336,8 +356,31 @@ class AddingAddressPanel extends React.Component{
         <div>
           <FavoriteAddressInputForm
             handleCancel={this.props.handleCloseAddingAddressPanel}
+            handleOpenFavoriteAddressInputPanel={this.props.handleOpenFavoriteAddressInputPanel}
             saveType={"CREATE"}
             accessToken={this.props.accessToken}
+            favoriteAddressData={this.props.favoriteAddressData}
+            //handleSave={this.props.}
+            />
+        </div>
+      );
+    }    
+}
+
+class EditingAddressPanel extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <FavoriteAddressInputForm
+            handleCancel={this.props.handleCloseAddingAddressPanel}
+            handleOpenFavoriteAddressInputPanel={this.props.handleOpenFavoriteAddressInputPanel}
+            saveType={"UPDATE"}
+            accessToken={this.props.accessToken}
+            favoriteAddressData={this.props.favoriteAddressData}
             //handleSave={this.props.}
             />
         </div>
