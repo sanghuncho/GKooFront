@@ -7,13 +7,14 @@ export class FavoriteAddressInputForm extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-          nameKor:null,
-          nameEng:null,
-          transitNr:null,
-          phonenumberFirst:null,
-          phonenumberSecond:null,
-          zipCode:null,
-          address:null,
+          nameKor:this.props.favoriteAddressData.nameKor,
+          nameEng:this.props.favoriteAddressData.nameEng,
+          transitNr:this.props.favoriteAddressData.transitNr,
+          phonenumberFirst:this.props.favoriteAddressData.phonenumberFirst,
+          phonenumberSecond:this.props.favoriteAddressData.phonenumberSecond,
+          zipCode:this.props.favoriteAddressData.zipCode,
+          address:this.props.favoriteAddressData.address,
+          id:this.props.favoriteAddressData.id,
         };
         this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
         this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
@@ -76,7 +77,8 @@ export class FavoriteAddressInputForm extends React.Component{
           phonenumberFirst:this.state.phonenumberFirst,
           phonenumberSecond:this.state.phonenumberSecond,
           zipCode:this.state.zipCode,
-          address:this.state.address
+          address:this.state.address,
+          id:this.state.id
         }
         
         const favoriteAddressData =  [

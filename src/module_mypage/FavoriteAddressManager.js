@@ -228,7 +228,6 @@ class AddressManagerWrapper extends React.Component{
   }
 
   handleRemoveFavoriteAddressOnList(index){
-    console.log("remove:" + index)
     var favoriteAddressId = this.state.favoriteAddressList[index].id
     this.deleteFavoriteAddress(this.props.accessToken, favoriteAddressId)
   }
@@ -360,7 +359,6 @@ class AddingAddressPanel extends React.Component{
             saveType={"CREATE"}
             accessToken={this.props.accessToken}
             favoriteAddressData={this.props.favoriteAddressData}
-            //handleSave={this.props.}
             />
         </div>
       );
@@ -381,7 +379,6 @@ class EditingAddressPanel extends React.Component{
             saveType={"UPDATE"}
             accessToken={this.props.accessToken}
             favoriteAddressData={this.props.favoriteAddressData}
-            //handleSave={this.props.}
             />
         </div>
       );

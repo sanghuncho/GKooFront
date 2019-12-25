@@ -154,7 +154,7 @@ export class CompleteUserBaseInfo extends React.Component{
             <thead>
             </thead>
             <tbody>
-              <tr>
+              <tr>  
                 <td width='300px'>개인사서함주소</td>
                 <td width='250px' align='right'>gkoo-{this.props.customerStatusData.userid}</td>
                 <td width='300px'>보유예치금</td>
