@@ -159,9 +159,9 @@ export class FavoriteAddressInputForm extends React.Component{
               </InputGroup >
               <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
                 <InputGroup.Prepend >
-                <InputGroup.Text id="basic-addon3" >
-                  연락처1
-                </InputGroup.Text>
+                  <InputGroup.Text id="basic-addon3" >
+                    연락처1
+                  </InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                   onChange = { this.changeHandlerPhonenumberFirst }

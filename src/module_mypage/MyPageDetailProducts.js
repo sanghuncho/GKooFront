@@ -54,7 +54,7 @@ export class MyPageDetailProducts extends React.Component{
                 handleShowStoredProductsList={this.handleShowStoredProductsList}
                 productsInfo={this.props.productsInfo}
                 productsCommonInfo={this.props.productsCommonInfo}
-                orderNumber={this.props.orderNumber}
+                orderid={this.props.orderid}
                 accessToken={this.props.accessToken}
                />
             //displayHeight = '67rem'
@@ -91,7 +91,7 @@ export class EditorProductsList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            orderNumber:this.props.orderNumber,
+            orderid:this.props.orderid,
             shopUrl:this.props.productsCommonInfo.shopUrl,
             trackingTitle:this.props.productsCommonInfo.trackingCompany,
             trackingNumber:this.props.productsCommonInfo.trackingNr,
@@ -147,7 +147,7 @@ export class EditorProductsList extends React.Component{
     updateDataEditorProductsList(accessToken){
 
         const editedProductsData =  [
-            {orderNumber: this.state.orderNumber},
+            {orderid: this.state.orderid},
             {deliveryDataObject: JSON.stringify(this.state.deliveryObject)},
             {shippingProductList: JSON.stringify(this.state.shippingProductList)}
         ]

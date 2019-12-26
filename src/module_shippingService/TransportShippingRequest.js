@@ -1,5 +1,5 @@
 import * as React from "react";
-import { headers, localPort } from "../module_mypage/AuthService"
+import { headers, basePort } from "../module_mypage/AuthService"
 
 
 export class TransportShippingRequest extends React.Component {
@@ -10,7 +10,7 @@ export class TransportShippingRequest extends React.Component {
       createShippingService(contents){
         const token = this.props.accessToken
         this.setTokenHeader(token)
-        fetch('http://localhost:8888/createshippingservice', 
+        fetch(basePort + '/createshippingservice', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result;}).then((contents) => {
@@ -80,13 +80,11 @@ export class TransportShippingRequest extends React.Component {
                           {transitNumber:this.props.transitNumber},
                           {agreeWithCollection:this.props.agreeWithCollection},
 
-                          {callNumberFront:this.props.callNumberFront},
-                          {callNumberMiddle:this.props.callNumberMiddle},
-                          {callNumberRear:this.props.callNumberRear},
+                          {phonenumberFirst:this.props.phonenumberFirst},
+                          {phonenumberSecond:this.props.phonenumberSecond},
 
                           {postCode:this.props.postCode},
                           {deliveryAddress:this.props.deliveryAddress},
-                          {detailAddress:this.props.detailAddress},
                           {deliveryMessage:this.props.deliveryMessage},
                           //{shopUrlList: this.props.shopUrlList}     
                           {shopUrlList: JSON.stringify(this.props.shopUrlList)}     
@@ -106,13 +104,11 @@ export class TransportShippingRequest extends React.Component {
                           {transitNumber:this.props.transitNumber},
                           {agreeWithCollection:this.props.agreeWithCollection},
 
-                          {callNumberFront:this.props.callNumberFront},
-                          {callNumberMiddle:this.props.callNumberMiddle},
-                          {callNumberRear:this.props.callNumberRear},
+                          {phonenumberFirst:this.props.phonenumberFirst},
+                          {phonenumberSecond:this.props.phonenumberSecond},
 
                           {postCode:this.props.postCode},
                           {deliveryAddress:this.props.deliveryAddress},
-                          {detailAddress:this.props.detailAddress},
                           {deliveryMessage:this.props.deliveryMessage},
                         ]
         

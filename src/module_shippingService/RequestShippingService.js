@@ -5,14 +5,14 @@ import {
     AppContainer as BaseAppContainer,
   } from "../container";
 import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
-    OverlayTrigger, Modal, Tooltip } from 'react-bootstrap';
+    OverlayTrigger, Modal } from 'react-bootstrap';
 import { NavLink } from "react-router-dom";
 import { times, exchange, signOut } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_mypage/AuthService"
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 
@@ -222,13 +222,11 @@ class ShippingCenter extends React.Component{
 
             agreeWithCollection:false,
 
-            callNumberFront:"",
-            callNumberMiddle:"",
-            callNumberRear:"",
-
+            phonenumberFirst:"",
+            phonenumberSecond:"",
+           
             postCode:"",
             deliveryAddress:"",
-            detailAddress:"",
             deliveryMessage:"",
 
             applyDeliveryService:false,
@@ -237,6 +235,7 @@ class ShippingCenter extends React.Component{
             show: false,
             shippingProductList:[],
             deliveryObject: null,
+            customerBaseData:null
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -250,7 +249,8 @@ class ShippingCenter extends React.Component{
         this.inputItemName              = this.inputItemName.bind(this);
 
         this.inputReceiverNameByKorea   = this.inputReceiverNameByKorea.bind(this);
-        this.setOwnerContentCheckbox    = this.setOwnerContentCheckbox.bind(this);  
+        this.handleGetCustomerAddressData = this.handleGetCustomerAddressData.bind(this);
+        this.handleRegisterFavoriteAddress = this.handleRegisterFavoriteAddress.bind(this);  
         this.inputReceiverNameByEnglish = this.inputReceiverNameByEnglish.bind(this); 
 
         this.inputProductPrice  = this.inputProductPrice.bind(this);
@@ -263,13 +263,11 @@ class ShippingCenter extends React.Component{
         this.agreeWithCollectionCheckbox = this.agreeWithCollectionCheckbox.bind(this);
 
 
-        this.inputCallNumberFront    = this.inputCallNumberFront.bind(this);
-        this.inputCallNumberMiddle   = this.inputCallNumberMiddle.bind(this);
-        this.inputCallNumberRear     = this.inputCallNumberRear.bind(this);
+        this.changeHandlerPhonenumberFirst    = this.changeHandlerPhonenumberFirst.bind(this);
+        this.changeHandlerPhonenumberSecond   = this.changeHandlerPhonenumberSecond.bind(this);
 
         this.inputPostCode              = this.inputPostCode.bind(this);
         this.inputDeliveryAddress       = this.inputDeliveryAddress.bind(this);
-        this.inputDetailAddress         = this.inputDetailAddress.bind(this);
         this.inputDeliveryMessage       = this.inputDeliveryMessage.bind(this);
         
         this.applyDeliveryService  = this.applyDeliveryService.bind(this);
@@ -279,6 +277,7 @@ class ShippingCenter extends React.Component{
 
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.fetchCustomerBaseData = this.fetchCustomerBaseData.bind(this)
     }
 
     componentDidMount() {
@@ -300,9 +299,54 @@ class ShippingCenter extends React.Component{
             trackingNumber:""
         }
         this.setState({deliveryObject:deliveryObject})
+
+
+        //this.fetchCustomerBaseData(this.props.accessToken)
     }
 
-    setOwnerContentCheckbox(event){        
+    /* 회원배송정보 불러오기 */
+    fetchCustomerBaseData(token){
+        console.log("fetchCustomerBaseData");
+        setTokenHeader(token)
+        fetch(basePort + '/fetchcustomerbaseinfo', {headers})
+          .then((result) => { 
+            return result.json();
+          }).then((data) => {           
+            this.setState({customerBaseData:data})
+            this.setState({
+                receiverNameByKorea:data.nameKor,
+                receiverNameByEnglish:data.nameEng,
+                transitNumber:data.transitNr,
+                phonenumberFirst:data.phonenumberFirst,
+                phonenumberSecond:data.phonenumberSecond,
+                postCode:data.zipCode,
+                deliveryAddress:data.address,
+            })
+            console.log(data.nameKor);
+          }).catch(function() {
+            console.log("error fetching userbaseinfo");
+        });
+      }
+
+    handleGetCustomerAddressData(event){
+        const setCustomerBaseData = event.target.checked   
+        this.setState({setOwnerContent:setCustomerBaseData})
+        if (setCustomerBaseData){
+            this.fetchCustomerBaseData(this.props.accessToken)
+        } else {
+            this.setState({
+                receiverNameByKorea:null,
+                receiverNameByEnglish:null,
+                transitNumber:null,
+                phonenumberFirst:null,
+                phonenumberSecond:null,
+                postCode:null,
+                deliveryAddress:null,
+            })
+        }
+    }
+
+    handleRegisterFavoriteAddress(event){        
         this.setState({setOwnerContent:event.target.checked})
     }
 
@@ -402,16 +446,12 @@ class ShippingCenter extends React.Component{
         this.setState({agreeWithCollection:event.target.checked})
     }
 
-    inputCallNumberFront(event){
-        this.setState({callNumberFront:event.target.value})
+    changeHandlerPhonenumberFirst(event){
+        this.setState({phonenumberFirst:event.target.value})
     }
 
-    inputCallNumberMiddle(event){
-        this.setState({callNumberMiddle:event.target.value})
-    }
-
-    inputCallNumberRear(event){
-        this.setState({callNumberRear:event.target.value})
+    changeHandlerPhonenumberSecond(event){
+        this.setState({phonenumberSecond:event.target.value})
     }
 
     // applyDeliveryService(e, allowToApply, itemNameLength){
@@ -443,12 +483,6 @@ class ShippingCenter extends React.Component{
     inputDeliveryAddress(event){
         this.setState({
             deliveryAddress:event.target.value
-        })
-    }
-
-    inputDetailAddress(event){
-        this.setState({
-            detailAddress:event.target.value
         })
     }
 
@@ -504,8 +538,9 @@ class ShippingCenter extends React.Component{
 
         const transitNumber = this.state.transitNumber
         //const isValidTransitNumber = this.state.isValidTransitNumber
-        const isValidTransitNumber = transitNumber.length == 8 ? true : false
-
+        //const isValidTransitNumber = transitNumber.length == 8 ? true : false
+        const isValidTransitNumber = true
+        
         const isValidItemName = this.state.isValidItemName
         const itemNameLength = this.state.itemName.length
         //const warningItemName = isValidItemName == true ? "" : true
@@ -716,7 +751,7 @@ class ShippingCenter extends React.Component{
             {/* 받는분정보 박스
             ToDo : Component
             */}
-            <Card border="dark" style={{ width:'80%', height:'65rem', marginTop:'1rem', marginBottom:'1rem' }}>
+            <Card border="dark" style={{ width:'80%', height:'62rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보</Card.Header>
                     <Card.Body >
                         
@@ -728,26 +763,32 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
-                                        <InputGroup.Prepend >
-                                            <InputGroup.Text id="basic-addon3">
-                                                이름(국문)
-                                            </InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                    
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        onChange = { this.inputReceiverNameByKorea }
-                                    />
-                                </InputGroup >
                                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-4" >
                                     <Form.Check type='checkbox'
-                                        onChange={e => this.setOwnerContentCheckbox(e)} label='회원정보와 동일'
-                                        checked={this.state.setOwnerContent}
+                                        onChange={e => this.handleGetCustomerAddressData(e)} label='회원정보와 동일'
+                                        checked={this.state.customerDeliveryData}
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                                     />
- 
+                                    <Form.Check type='checkbox'
+                                        //onChange={e => this.handleRegisterFavoriteAddress(e)} 
+                                        label='배송지 관리 등록하기'
+                                        //checked={this.state.setOwnerContent}
+                                        style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
+                                    />
                                     <Button size='sm' variant="secondary">배송지 정보 불러오기</Button>
                                 </InputGroup>
+
+                                <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
+                                    <InputGroup.Prepend >
+                                        <InputGroup.Text id="basic-addon3">
+                                            이름(국문)
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                        onChange={this.inputReceiverNameByKorea}
+                                        defaultValue={this.state.receiverNameByKorea}
+                                    />
+                                </InputGroup >
                                 
                                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
                                     <InputGroup.Prepend>
@@ -757,7 +798,9 @@ class ShippingCenter extends React.Component{
                                         </InputGroup.Prepend>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                                             style={{ width: '50px'}}
-                                            onChange = { this.inputReceiverNameByEnglish }/>
+                                            onChange = { this.inputReceiverNameByEnglish }
+                                            defaultValue={this.state.receiverNameByEnglish}
+                                            />
                                     </InputGroup>
                                     <InfoBadge infoText={"상품을 수취하실 분의 성함/사업자 상호를 적어주세요. 상품도착후 변경은 불가능합니다"} />
                                     <InfoBadge infoText={"통관시 받는분을 기준으로 수입신고 합니다."} />
@@ -781,6 +824,7 @@ class ShippingCenter extends React.Component{
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                             placeholder="8자리 고유번호" 
                                             onChange = { this.inputTransitNumber }
+                                            defaultValue={this.state.transitNumber}
                                             style={{ marginRight:'10px'}}/>
                                         <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
                                         <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button>
@@ -803,27 +847,27 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <InputGroup size="sm" className="mb-3" style={{width: '50%'}}>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3" style={{width: '100px'}}>
-                                            연락처
-                                        </InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{width: '50px', marginRight:'1px'}}
-                                                onChange={e => this.inputCallNumberFront(e)} />
-                                        {/* <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
-                                            <Icon icon={ minus } />
-                                        </IconCnt> */}
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{width: '50px', marginRight:'1px'}}
-                                                onChange={e => this.inputCallNumberMiddle(e)} />
-                                        {/* <IconCnt style={{ marginRight:"5px", marginLeft:"5px", marginTop:"5px" }}>
-                                            <Icon icon={ minus } />
-                                        </IconCnt> */}
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{width: '50px', marginRight:'1px'}}
-                                                onChange={e => this.inputCallNumberRear(e)} />
+                                <InputGroup size="sm" className="mb-3" style={{width: '80%'}}>
+                                <InputGroup.Prepend >
+                                    <InputGroup.Text id="basic-addon3" >
+                                        연락처1
+                                    </InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                    onChange = { this.changeHandlerPhonenumberFirst }
+                                    style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                                    defaultValue={this.state.phonenumberFirst}
+                                />
+                                <InputGroup.Prepend >
+                                <InputGroup.Text id="basic-addon3" >
+                                    연락처2
+                                </InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                    onChange = { this.changeHandlerPhonenumberSecond }
+                                    style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
+                                    defaultValue={this.state.phonenumberSecond}
+                                />
                                 </InputGroup>
 
                                 <InputGroup size="sm" className="mb-3" style={{ width: '50%'}}>
@@ -834,8 +878,11 @@ class ShippingCenter extends React.Component{
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                         style={{ marginRight:'10px'}}
-                                        onChange={e => this.inputPostCode(e)}/>
-                                    <Button size="sm" variant='secondary' >우편번호 찾기</Button>
+                                        onChange={e => this.inputPostCode(e)}
+                                        defaultValue={this.state.postCode}
+                                        />
+                                    {/* 추후 개발 
+                                    <Button size="sm" variant='secondary' >우편번호 찾기</Button> */}
                                 </InputGroup >
                                 <InputGroup size="sm" className="mb-3" style={{ width: '80%'}}>
                                     <InputGroup.Prepend>
@@ -844,17 +891,10 @@ class ShippingCenter extends React.Component{
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        onChange={e => this.inputDeliveryAddress(e)} />
-                                </InputGroup >
-                                <InputGroup size="sm" className="mb-3" style={{ width: '80%'}}>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                                            상세주소
-                                        </InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        as="textarea" rows="2"
-                                        onChange={e => this.inputDetailAddress(e)}/>
+                                         as="textarea" rows="2"
+                                        onChange={e => this.inputDeliveryAddress(e)}
+                                        defaultValue={this.state.address}
+                                        />
                                 </InputGroup >
                             </Card.Body> 
                             </Card> 
@@ -883,14 +923,14 @@ class ShippingCenter extends React.Component{
 
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
                             <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
-                                <Button size="lg" variant='secondary' style={{ marginRight:'10px'}}
+                                <Button size="sm" variant='secondary' style={{ marginRight:'10px', fontSize:'14px'}}
                                     onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
                                     //확인 창 떠서 예 클리하면 DB 전달
                                     //onClick={this.handleModalShow}
                                     >배송대행 신청하기
                                 </Button>
                             </OverlayTrigger>
-                            <Button size="lg" variant='secondary'>임시 저장하기</Button>
+                            <Button size="sm" variant='secondary'>임시 저장하기</Button>
                         </InputGroup >
 
                         {/* if success after validation, then it shows the dialog*/}
@@ -933,13 +973,11 @@ class ShippingCenter extends React.Component{
                         transitNumber={this.state.transitNumber}
                         agreeWithCollection={this.state.agreeWithCollection}
                         
-                        callNumberFront={this.state.callNumberFront}
-                        callNumberMiddle={this.state.callNumberMiddle}
-                        callNumberRear={this.state.callNumberRear}
-
+                        phonenumberFirst={this.state.phonenumberFirst}
+                        phonenumberSecond={this.state.phonenumberSecond}
+                        
                         postCode={this.state.postCode}
                         deliveryAddress={this.state.deliveryAddress}
-                        detailAddress={this.state.detailAddress}
                         deliveryMessage={this.state.deliveryMessage}
 
                         accessToken={this.props.accessToken}

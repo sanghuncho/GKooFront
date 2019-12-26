@@ -40,10 +40,7 @@ export class UserBaseInfo extends React.Component{
         fetch(basePort + '/fetchuserbaseinfo', {headers})
           .then((result) => { 
             return result.json();
-          }).then((data) => {
-            console.log("UserBaseInfoDisplayer:" + data);
-           
-            //console.log(data);
+          }).then((data) => {           
             this.setState( { userBaseInfo: data} )
           }).catch(function() {
             console.log("error fetching userbaseinfo");
@@ -237,30 +234,24 @@ export class UserBaseInfoDisplayer extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-        lastName:this.props.userBaseInfo.lastName,
-        firstName:this.props.userBaseInfo.firstName,
+        nameKor:this.props.userBaseInfo.nameKor,
         nameEng:this.props.userBaseInfo.nameEng,
         email:this.props.userBaseInfo.email,
         transitNr:this.props.userBaseInfo.transitNr,
-        phonePrefic:this.props.userBaseInfo.phonePrefic,
-        phoneInterfix:this.props.userBaseInfo.phoneInterfix,
-        phoneSuffix:this.props.userBaseInfo.phoneSuffix,
+        phonenumberFirst:this.props.userBaseInfo.phonenumberFirst,
+        phonenumberSecond:this.props.userBaseInfo.phonenumberSecond,
         zipCode:this.props.userBaseInfo.zipCode,
-        address:this.props.userBaseInfo.address, 
-        detailAddress:this.props.userBaseInfo.detailAddress,
+        address:this.props.userBaseInfo.address,
       };
-      //this.handleCancel = this.handleCancel.bind(this)
-      this.changeHandlerLastName = this.changeHandlerLastName.bind(this)
-      this.changeHandlerFirstName = this.changeHandlerFirstName.bind(this)
+
+      this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
       this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
       this.changeHandlerEmail = this.changeHandlerEmail.bind(this)
       this.changeHandlerTransitNr = this.changeHandlerTransitNr.bind(this)
-      this.changeHandlerPhonePrefic = this.changeHandlerPhonePrefic.bind(this)
-      this.changeHandlerPhoneInterfix = this.changeHandlerPhoneInterfix.bind(this)
-      this.changeHandlerPhoneSuffix = this.changeHandlerPhoneSuffix.bind(this)
+      this.changeHandlerPhonenumberFirst = this.changeHandlerPhonenumberFirst.bind(this)
+      this.changeHandlerPhonenumberSecond = this.changeHandlerPhonenumberSecond.bind(this)
       this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
       this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
-      this.changeHandlerAddressDetails = this.changeHandlerAddressDetails.bind(this)
     }
 
     /* 기본정보란으로 이동 */
@@ -276,18 +267,16 @@ export class UserBaseInfoDisplayer extends React.Component{
 
     updateUserBaseInfo(accessToken){
       var userBaseInfoData = {
-          lastName: this.state.lastName,
-          firstName: this.state.firstName,
+          nameKor: this.state.nameKor,
           nameEng: this.state.nameEng,
           email: this.state.email,
           transitNr: this.state.transitNr,
-          phonePrefic: this.state.phonePrefic,
-          phoneInterfix: this.state.phoneInterfix,
-          phoneSuffix: this.state.phoneSuffix,
+          phonenumberFirst: this.state.phonenumberFirst,
+          phonenumberSecond: this.state.phonenumberSecond,
           zipCode: this.state.zipCode,
           address: this.state.address,
-          detailAddress: this.state.detailAddress
       }
+
       const editedUserBaseInfo =  [
           {userBaseInfoData: JSON.stringify(userBaseInfoData)}
       ]
@@ -299,21 +288,16 @@ export class UserBaseInfoDisplayer extends React.Component{
                   body:JSON.stringify(editedUserBaseInfo)})
     }
 
-    changeHandlerLastName(event){
-      this.setState({lastName:event.target.value})
-      this.props.userBaseInfo.lastName = event.target.value
-    }
-
-    changeHandlerFirstName(event){
-      this.setState({firstName:event.target.value})
-      this.props.userBaseInfo.firstName = event.target.value
+    changeHandlerNameKor(event){
+      this.setState({nameKor:event.target.value})
+      this.props.userBaseInfo.nameKor = event.target.value
     }
 
     changeHandlerNameEng(event){
       this.setState({nameEng:event.target.value})
       this.props.userBaseInfo.nameEng = event.target.value
     }
-
+    
     changeHandlerEmail(event){
       this.setState({email:event.target.value})
       this.props.userBaseInfo.email = event.target.value
@@ -324,19 +308,14 @@ export class UserBaseInfoDisplayer extends React.Component{
       this.props.userBaseInfo.transitNr = event.target.value
     }
 
-    changeHandlerPhonePrefic(event){
-      this.setState({phonePrefic:event.target.value})
-      this.props.userBaseInfo.phonePrefic = event.target.value
+    changeHandlerPhonenumberFirst(event){
+      this.setState({phonenumberFirst:event.target.value})
+      this.props.userBaseInfo.phonenumberFirst = event.target.value
     }
 
-    changeHandlerPhoneInterfix(event){
-      this.setState({phoneInterfix:event.target.value})
-      this.props.userBaseInfo.phoneInterfix = event.target.value
-    }
-
-    changeHandlerPhoneSuffix(event){
-      this.setState({phoneSuffix:event.target.value})
-      this.props.userBaseInfo.phoneSuffix = event.target.value
+    changeHandlerPhonenumberSecond(event){
+      this.setState({phonenumberSecond:event.target.value})
+      this.props.userBaseInfo.phonenumberSecond = event.target.value
     }
 
     changeHandlerZipCode(event){
@@ -347,11 +326,6 @@ export class UserBaseInfoDisplayer extends React.Component{
     changeHandlerAddress(event){
       this.setState({address:event.target.value})
       this.props.userBaseInfo.address = event.target.value
-    }
-
-    changeHandlerAddressDetails(event){
-      this.setState({detailAddress:event.target.value})
-      this.props.userBaseInfo.detailAddress = event.target.value
     }
 
     render() {
@@ -383,48 +357,33 @@ export class UserBaseInfoDisplayer extends React.Component{
       
       return (
         <div>
-        <Card border="dark" style={{ width: '80%', height:'40rem', marginTop:'1rem' }}>
+        <Card border="dark" style={{ width: '80%', height:'35rem', marginTop:'1rem' }}>
             <Card.Header>
               
               {headerLine}
               
             </Card.Header>
             <Card.Body >
-            <InputGroup className="mb-3" >
-              <InputGroup.Prepend>
-                  <InputGroup.Text id="basic-addon3">
-                    기본
-                  </InputGroup.Text>
-              </InputGroup.Prepend>
-              <Card style={{ width: '90%', height:'15rem'}}>
-              <Card.Body>
-                <InputGroup size="sm" className="mb-4" style={{ width:'70%'}}>
+            <Card border="dark" style={{ width: '80%', marginBottom:'10px'}}>
+            <Card.Header>기본정보</Card.Header>
+            <Card.Body >
+                <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
                   <InputGroup.Prepend >
                   <InputGroup.Text id="basic-addon3" >
                     이름(국문)
                   </InputGroup.Text>
                   </InputGroup.Prepend>
-                    {/* 성 */}
-                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      onChange = { this.changeHandlerLastName }
+                  <FormControl id="basic-url" aria-describedby="basic-addon3"
+                      onChange = { this.changeHandlerNameKor }
                       readOnly={this.props.readOnly}
-                      defaultValue={this.props.userBaseInfo.lastName}
+                      defaultValue={this.props.userBaseInfo.nameKor}
                       style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
-                    />
-                    {/* 이름 */}
-                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      readOnly={this.props.readOnly}
-                      defaultValue={this.props.userBaseInfo.firstName}
-                      style={{ width: '50px', backgroundColor: '#FFFFFF'}}
-                      onChange={this.changeHandlerFirstName}
-                    />
-                  </InputGroup >
-                  <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text id="basic-addon3">
+                  />
+                  <InputGroup.Prepend >
+                  <InputGroup.Text id="basic-addon3">
                         이름(영문)
-                      </InputGroup.Text>
-                    </InputGroup.Prepend>
+                  </InputGroup.Text>
+                  </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       readOnly={this.props.readOnly}
                       defaultValue={this.props.userBaseInfo.nameEng}
@@ -432,7 +391,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                       onChange = { this.changeHandlerNameEng }
                     />
                   </InputGroup>
-                  <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
+                  <InputGroup size="sm" className="mb-4" style={{ width: '80%'}}>
                     <InputGroup.Prepend>
                       <InputGroup.Text id="basic-addon3">
                         이메일
@@ -445,7 +404,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                       onChange = { this.changeHandlerEmail }
                     />
                   </InputGroup>
-                  <InputGroup size="sm" className="mb-4" style={{ width: '70%'}}>
+                  <InputGroup size="sm" className="mb-4" style={{ width: '80%'}}>
                     <InputGroup.Prepend>
                       <InputGroup.Text id="basic-addon3">
                         개인통관고유번호
@@ -458,89 +417,61 @@ export class UserBaseInfoDisplayer extends React.Component{
                       onChange = { this.changeHandlerTransitNr }
                       />
                   </InputGroup>
-                </Card.Body> 
-              </Card> 
-            </InputGroup>
-
-            <InputGroup className="mb-3">
-              <InputGroup.Prepend>
-                <InputGroup.Text id="basic-addon3" >
-                  연락처
-                </InputGroup.Text>
-                </InputGroup.Prepend>
-                <Card style={{ width: '90%'}}>
-                <Card.Body>
-                  <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
+                  <InputGroup size='sm' className="mb-3" style={{ width: '80%'}}>
                         <InputGroup.Prepend>
-                          <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                            연락처
+                          <InputGroup.Text id="basic-addon3">
+                            연락처1
                           </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                           readOnly={this.props.readOnly}
-                          defaultValue={this.props.userBaseInfo.phonePrefic}
+                          defaultValue={this.props.userBaseInfo.phonenumberFirst}
                           style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
-                          onChange={this.changeHandlerPhonePrefic}
+                          onChange={this.changeHandlerPhonenumberFirst}
                         />
+                        <InputGroup.Prepend >
+                        <InputGroup.Text id="basic-addon3" >
+                          연락처2
+                        </InputGroup.Text>
+                        </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          style={{ width: '50px', marginRight:'1px', backgroundColor: '#FFFFFF'}}
                           readOnly={this.props.readOnly}
-                          defaultValue={this.props.userBaseInfo.phoneInterfix}
-                          onChange={this.changeHandlerPhoneInterfix}
-                        />
-                        <FormControl id="basic-url" aria-describedby="basic-addon3"
-                          readOnly={this.props.readOnly}
-                          defaultValue={this.props.userBaseInfo.phoneSuffix}
+                          defaultValue={this.props.userBaseInfo.phonenumberSecond}
                           style={{ width: '50px', backgroundColor: '#FFFFFF'}}
-                          onChange={this.changeHandlerPhoneSuffix}
+                          onChange={this.changeHandlerPhonenumberSecond}
                         />
                   </InputGroup>
-                  <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
+                  <InputGroup size='sm' className="mb-3" style={{ width: '80%'}}>
                         <InputGroup.Prepend>
-                          <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                          <InputGroup.Text id="basic-addon3">
                             우편번호
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.zipCode}
-                          style={{ marginRight:'10px', backgroundColor: '#FFFFFF'}}
+                          style={{ marginRight:'1px', backgroundColor: '#FFFFFF'}}
                           onChange={this.changeHandlerZipCode}
                         />
                         {/* <Button size='sm' variant='secondary' >우편번호 찾기</Button> */}
                   </InputGroup >
 
-                  <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
+                  <InputGroup size='sm' className="mb-3" style={{ width: '80%'}}>
                         <InputGroup.Prepend>
-                          <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
+                          <InputGroup.Text id="basic-addon3" style={{ width: '50px'}}>
                             주소
                           </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
+                          as="textarea" rows="2"
                           readOnly={this.props.readOnly}
                           defaultValue={this.props.userBaseInfo.address}
                           style={{backgroundColor: '#FFFFFF'}}
                           onChange={this.changeHandlerAddress} 
                         />
-                        </InputGroup >
-
-                        <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
-                          <InputGroup.Prepend>
-                          <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                            상세주소
-                          </InputGroup.Text>
-                          </InputGroup.Prepend>
-                          <FormControl id="basic-url" aria-describedby="basic-addon3"
-                            as="textarea" rows="2"
-                            readOnly={this.props.readOnly}
-                            defaultValue={this.props.userBaseInfo.detailAddress}
-                            style={{backgroundColor: '#FFFFFF'}}
-                            onChange={this.changeHandlerAddressDetails}
-                          />
                   </InputGroup >
-                </Card.Body> 
-              </Card> 
-            </InputGroup>
+                </Card.Body>
+              </Card>
 
             {/* 완료 및 저장버튼 */}
             {saveButton}

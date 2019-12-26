@@ -25,7 +25,7 @@ const TabsStyle = styled.div`
 
 function orderNumberFormatter(cell, row) {        
   return (
-    <OrderNumberLink orderNumber={cell}/>
+    <OrderNumberLink orderid={cell}/>
   );
 }
 
@@ -42,7 +42,7 @@ function deliveryStateFormatter(cell, row) {
 }
 
 const columnsUserAccount = [{
-  dataField: 'orderNumber',
+  dataField: 'orderid',
   text: '신청번호',
   formatter:orderNumberFormatter
   }, {
@@ -61,14 +61,14 @@ const columnsUserAccount = [{
 ];
 
 const data = [
-              {"orderNumber":"1234",
+              {"orderid":"1234",
                 "productInfo":"독일",
                 "recipient":"상훈",
                 "deliveryPayment":"39500원",
                 "deliveryState":"배송완료",
                 "deliveryTracking":"송장번호조회"
               },
-              {"orderNumber":"4567",
+              {"orderid":"4567",
                 "productInfo":"portable",
                 "recipient":"성준",
                 "deliveryPayment":"45800원",
@@ -129,10 +129,10 @@ export class OrderNumberLink extends React.Component {
   }
 
   render() {
-    const orderNumber = this.props.orderNumber
+    const orderid = this.props.orderid
     return(
-      <Link to={{pathname:"detailsmypage/"+ orderNumber}}>
-        {orderNumber}</Link>
+      <Link to={{pathname:"detailsmypage/"+ orderid}}>
+        {orderid}</Link>
     );}
  
 }

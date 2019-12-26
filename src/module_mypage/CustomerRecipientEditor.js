@@ -25,18 +25,16 @@ export class CustomerRecipientEditor extends React.Component {
         super(props);
         
         this.state = {
-            orderNumber:this.props.orderNumber,
+            orderid:this.props.orderid,
             recipient:this.props.recipientInfo,
             edited:false,     
             nameKor:this.props.recipientInfo.nameKor,
             nameEng:this.props.recipientInfo.nameEng,
             transitNr:this.props.recipientInfo.transitNr,
-            phonePrefic:this.props.recipientInfo.phonePrefic,
-            phoneInterfix:this.props.recipientInfo.phoneInterfix,
-            phoneSuffix:this.props.recipientInfo.phoneSuffix,
+            phonenumberFirst:this.props.recipientInfo.phonenumberFirst,
+            phonenumberSecond:this.props.recipientInfo.phonenumberSecond,
             zipCode:this.props.recipientInfo.zipCode,
             address:this.props.recipientInfo.address,
-            addressDetails:this.props.recipientInfo.addressDetails,
             usercomment:this.props.recipientInfo.usercomment,
         }
 
@@ -45,12 +43,10 @@ export class CustomerRecipientEditor extends React.Component {
         this.changeHandlerNameKor = this.changeHandlerNameKor.bind(this)
         this.changeHandlerNameEng = this.changeHandlerNameEng.bind(this)
         this.changeHandlerTransitNr = this.changeHandlerTransitNr.bind(this)
-        this.changeHandlerPhonePrefic = this.changeHandlerPhonePrefic.bind(this)
-        this.changeHandlerPhoneInterfix = this.changeHandlerPhoneInterfix.bind(this)
-        this.changeHandlerPhoneSuffix = this.changeHandlerPhoneSuffix.bind(this)
+        this.changeHandlerPhonenumberFirst = this.changeHandlerPhonenumberFirst.bind(this)
+        this.changeHandlerPhonenumberSecond = this.changeHandlerPhonenumberSecond.bind(this)
         this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
         this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
-        this.changeHandlerAddressDetails = this.changeHandlerAddressDetails.bind(this)
         this.changeHandlerUsercomment = this.changeHandlerUsercomment.bind(this)
     }
 
@@ -72,9 +68,8 @@ export class CustomerRecipientEditor extends React.Component {
         if(this.state.edited){
             this.updateRecipient(this.props.accessToken)
         }
-        window.scrollTo(0, 340);
-        window.location.reload();
         this.props.showStoredRecipient()
+        window.scrollTo(0, 340);
       }
 
       changeHandlerNameKor(event){
@@ -95,22 +90,16 @@ export class CustomerRecipientEditor extends React.Component {
         this.setState({transitNr:event.target.value}) 
       }
 
-      changeHandlerPhonePrefic(event){
-        const phonePreficRef = this.props.recipientInfo.phonePrefic
-        this.changeHandlerCommonState(phonePreficRef, event)
-        this.setState({phonePrefic:event.target.value}) 
+      changeHandlerPhonenumberFirst(event){
+        const phonenumberFirstRef = this.props.recipientInfo.phonenumberFirst
+        this.changeHandlerCommonState(phonenumberFirstRef, event)
+        this.setState({phonenumberFirst:event.target.value}) 
       }
 
-      changeHandlerPhoneInterfix(event){
-        const phoneInterfixRef = this.props.recipientInfo.phoneInterfix
-        this.changeHandlerCommonState(phoneInterfixRef, event)
-        this.setState({phoneInterfix:event.target.value}) 
-      }
-
-      changeHandlerPhoneSuffix(event){
-        const phoneSuffixRef = this.props.recipientInfo.phoneSuffix
-        this.changeHandlerCommonState(phoneSuffixRef, event)
-        this.setState({phoneSuffix:event.target.value}) 
+      changeHandlerPhonenumberSecond(event){
+        const phonenumberSecondRef = this.props.recipientInfo.phonenumberSecond
+        this.changeHandlerCommonState(phonenumberSecondRef, event)
+        this.setState({phonenumberSecond:event.target.value}) 
       }
 
       changeHandlerZipCode(event){
@@ -120,21 +109,15 @@ export class CustomerRecipientEditor extends React.Component {
       }
 
       changeHandlerAddress(event){
-        const adressRef = this.props.recipientInfo.adress
-        this.changeHandlerCommonState(adressRef, event)
-        this.setState({adress:event.target.value}) 
-      }
-
-      changeHandlerAddressDetails(event){
-        const adressDetailsRef = this.props.recipientInfo.adressDetails
-        this.changeHandlerCommonState(adressDetailsRef, event)
-        this.setState({adressDetails:event.target.value}) 
+        const addressRef = this.props.recipientInfo.address
+        this.changeHandlerCommonState(addressRef, event)
+        this.setState({address:event.target.value}) 
       }
 
       changeHandlerUsercomment(event){
         const usercommentRef = this.props.recipientInfo.usercomment
         this.changeHandlerCommonState(usercommentRef, event)
-        this.setState({Usercomment:event.target.value}) 
+        this.setState({usercomment:event.target.value})
       }
 
       changeHandlerCommonState(refState, event){
@@ -148,24 +131,24 @@ export class CustomerRecipientEditor extends React.Component {
       updateRecipient(accessToken){
 
         const editedRecipientData =  [
-            {orderNumber: this.state.orderNumber},
+            {orderid: this.state.orderid},
             {nameKor: this.state.nameKor}, 
             {nameEng: this.state.nameEng},
             {transitNr: this.state.transitNr},
-            {phonePrefic: this.state.phonePrefic},
-            {phoneInterfix: this.state.phoneInterfix},
-            {phoneSuffix: this.state.phoneSuffix},
+            {phonenumberFirst: this.state.phonenumberFirst},
+            {phonenumberSecond: this.state.phonenumberSecond},
             {zipCode: this.state.zipCode},
             {address: this.state.address},
-            {addressDetails: this.state.addressDetails},
             {usercomment: this.state.usercomment}
         ]
 
         this.setTokenHeader(accessToken)
-        console.log(editedRecipientData)
         fetch(basePort + '/updaterecipientdata', 
                   {method:'post', headers, 
                     body:JSON.stringify(editedRecipientData)})
+                    .then((result) => {
+                        return console.log(result.status);
+                     })
       }
       
       setTokenHeader(token){
@@ -176,7 +159,7 @@ export class CustomerRecipientEditor extends React.Component {
         
         return (
         <div>
-            <Card border="dark" style={{ width:'100%', height:'61rem', marginTop:'1rem', marginBottom:'5px' }}>
+            <Card border="dark" style={{ width:'100%', height:'58rem', marginTop:'1rem', marginBottom:'5px' }}>
                 <Card.Header>
                     받는분 정보
                 </Card.Header>
@@ -286,29 +269,27 @@ export class CustomerRecipientEditor extends React.Component {
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
+                                <InputGroup size='sm' className="mb-3" style={{ width: '80%'}}>
                                     <InputGroup.Prepend>
                                         <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                                            연락처
+                                            연락처1
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px', marginRight:'1px'}}
-                                                onChange={this.changeHandlerPhonePrefic}
-                                                defaultValue={this.props.recipientInfo.phonePrefic}
-                                                />
-                                            
+                                        style={{ width: '50px', marginRight:'1px'}}
+                                        onChange={this.changeHandlerPhonenumberFirst}
+                                        defaultValue={this.props.recipientInfo.phonenumberFirst}
+                                    />
+                                    <InputGroup.Prepend >
+                                        <InputGroup.Text id="basic-addon3" >
+                                            연락처2
+                                        </InputGroup.Text>
+                                    </InputGroup.Prepend>       
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px', marginRight:'1px'}}
-                                                onChange={this.changeHandlerPhoneInterfix}
-                                                defaultValue={this.props.recipientInfo.phoneInterfix}
-                                                />
-                                       
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                                style={{ width: '50px'}}
-                                                onChange={this.changeHandlerPhoneSuffix}
-                                                defaultValue={this.props.recipientInfo.phoneSuffix}
-                                                />
+                                        style={{ width: '50px', marginRight:'1px'}}
+                                        onChange={this.changeHandlerPhonenumberSecond}
+                                        defaultValue={this.props.recipientInfo.phonenumberSecond}
+                                    />
                                 </InputGroup>
 
                                 <InputGroup size='sm' className="mb-3" style={{ width: '50%'}}>
@@ -322,7 +303,9 @@ export class CustomerRecipientEditor extends React.Component {
                                         defaultValue={this.props.recipientInfo.zipCode}
                                         onChange={this.changeHandlerZipCode}
                                         />
-                                    <Button size='sm' variant='secondary' >우편번호 찾기</Button>
+
+                                    {/* 추후개발 
+                                        <Button size='sm' variant='secondary' >우편번호 찾기</Button> */}
                                 </InputGroup >
 
                                 <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
@@ -332,21 +315,9 @@ export class CustomerRecipientEditor extends React.Component {
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
+                                         as="textarea" rows="2"
                                         defaultValue={this.props.recipientInfo.address}
                                         onChange={this.changeHandlerAddress} 
-                                        />
-                                </InputGroup >
-
-                                <InputGroup size='sm' className="mb-3" style={{ width: '90%'}}>
-                                    <InputGroup.Prepend>
-                                        <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                                            상세주소
-                                        </InputGroup.Text>
-                                    </InputGroup.Prepend>
-                                    <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                        as="textarea" rows="2"
-                                        defaultValue={this.props.recipientInfo.addressDetails}
-                                        onChange={this.changeHandlerAddressDetails}
                                         />
                                 </InputGroup >
                             </Card.Body> 

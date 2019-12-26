@@ -7,7 +7,7 @@ import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageDetailProducts } from "./MyPageDetailProducts"
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_mypage/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 
 var keycloak = Keycloak(keycloakConfigLocal);
@@ -37,7 +37,7 @@ export class MyPageDetail extends React.Component{
         super(props);
 
         this.state = {
-          orderNumber:'',
+          orderid:'',
           keycloakAuth:null,
           accessToken:"",
           orderingPersonInfo:"",
@@ -50,12 +50,13 @@ export class MyPageDetail extends React.Component{
 
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
-        //this.fetchProductsCommonInforamtion = this.fetchProductsCommonInforamtion.bind(this)
+        this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
+        this.fetchRecipientInforamtion = this.fetchRecipientInforamtion.bind(this)
       }
 
       componentDidMount () {
           const {id} = this.props.match.params
-          this.setState({orderNumber:id})
+          this.setState({orderid:id})
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
               accessToken:keycloak.token})
@@ -81,7 +82,7 @@ export class MyPageDetail extends React.Component{
       }
 
       fetchRecipientInforamtion(token, id){
-        this.setTokenHeader(token)
+        setTokenHeader(token)
         fetch(basePort + '/recipientinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
@@ -90,8 +91,8 @@ export class MyPageDetail extends React.Component{
         })  
       }
 
-      updateRecipient(){
-        console.log("update recipient!")
+      handleUpdateRecipientData(accessToken, orderid){
+        this.fetchRecipientInforamtion(accessToken, orderid)
       }
 
       fetchProductsInforamtion(token, id){
@@ -115,8 +116,8 @@ export class MyPageDetail extends React.Component{
       }
 
       sendPaymentOwnername(ownerName){
-        const orderNumber = this.state.orderNumber
-        const contents =  [{orderNumber: orderNumber}, {ownerName:ownerName}]
+        const orderid = this.state.orderid
+        const contents =  [{orderid: orderid}, {ownerName:ownerName}]
         this.setTokenHeader(this.state.accessToken)
         fetch(basePort + '/willpaydeleveryfeeupdate', 
                 {method:'post', headers, 
@@ -144,9 +145,10 @@ export class MyPageDetail extends React.Component{
             <BodyContainer>
 
               <MyPageDetailWrapper 
-                orderNumber={this.state.orderNumber}
+                orderid={this.state.orderid}
                 orderingPersonInfo={this.state.orderingPersonInfo}
                 recipientInfo={this.state.recipientInfo}
+                handleUpdateRecipientData={this.handleUpdateRecipientData}
                 shipstate={this.state.shipstate}
                 productsInfo={this.state.productsInfo}
                 productsCommonInfo={this.state.productsCommonInfo}
@@ -176,13 +178,14 @@ class MyPageDetailWrapper extends React.Component{
                 
                 {/* 주문자정보 */}
                 <MyPageDetailPerson 
-                  orderNumber={this.props.orderNumber}
+                  orderid={this.props.orderid}
                   orderingPersonInfo={this.props.orderingPersonInfo}/>
 
                 {/* 수취인정보 */}
                 <MyPageDetailRecipient
                   recipientInfo={this.props.recipientInfo}
-                  orderNumber={this.props.orderNumber}
+                  handleUpdateRecipientData={this.props.handleUpdateRecipientData}
+                  orderid={this.props.orderid}
                   accessToken={this.props.accessToken}
                 />
 
@@ -190,7 +193,7 @@ class MyPageDetailWrapper extends React.Component{
                 <MyPageDetailState 
                   productsCommonInfo={this.props.productsCommonInfo}
                   accessToken={this.props.accessToken}
-                  orderNumber={this.props.orderNumber}
+                  orderid={this.props.orderid}
                 />
 
                 {/* 배송료 결제정보 */}
@@ -203,7 +206,7 @@ class MyPageDetailWrapper extends React.Component{
                   productsInfo={this.props.productsInfo}
                   productsCommonInfo={this.props.productsCommonInfo}
                   accessToken={this.props.accessToken}
-                  orderNumber={this.props.orderNumber}
+                  orderid={this.props.orderid}
                   />
 
                 {/* 총액정보 */}
@@ -223,7 +226,7 @@ class MyPageDetailState extends React.Component{
 
       handleDeleteShippingService(){
         const deleteShippingServceData =  [
-          {orderNumber: this.props.orderNumber}
+          {orderid: this.props.orderid}
         ]
 
         this.setTokenHeader(this.props.accessToken)
@@ -323,7 +326,7 @@ class MyPageDetailPerson extends React.Component{
                     </tr>
                     <tr>
                         <td>서비스신청번호</td>
-                        <td>{this.props.orderNumber}</td>
+                        <td>{this.props.orderid}</td>
                     </tr>
                     </tbody>
                 </Table>
@@ -367,7 +370,8 @@ class MyPageDetailRecipient extends React.Component{
       //move the page position 
       showStoredRecipient(){
         this.setState({doEdit:false}) 
-        this.setState({setButton:true}) 
+        this.setState({setButton:true})
+        this.props.handleUpdateRecipientData(this.props.accessToken, this.props.orderid)
       }
       
       render() {
@@ -386,7 +390,7 @@ class MyPageDetailRecipient extends React.Component{
             <CustomerRecipientEditor 
               showStoredRecipient={this.showStoredRecipient}
               recipientInfo={this.props.recipientInfo}
-              orderNumber={this.props.orderNumber}
+              orderid={this.props.orderid}
               accessToken={this.props.accessToken}
              />
           displayHeight = '67rem'
@@ -435,28 +439,20 @@ export class CompleteRecipientDisplay extends React.Component{
                     <tbody>
                       <tr>
                           <td width='150px' > 받는분 </td>
-                          <td width='250px' > {name} </td>
+                          <td width='250px' > {this.props.recipientInfo.nameKor} </td>
                           <td width='150px' > 연락처1 </td>
-                          <td width='250px' > {this.props.recipientInfo.phoneNr} </td>
+                          <td width='250px' > {this.props.recipientInfo.phonenumberFirst} </td>
                       </tr>
                       <tr>
                           <td width='150px' > 개인통관고유번호 </td>
                           <td width='250px' > {this.props.recipientInfo.transitNr} </td>
                           <td width='150px' > 연락처2 </td>
-                          <td width='250px' > {this.props.recipientInfo.phoneNr} </td>
+                          <td width='250px' > {this.props.recipientInfo.phonenumberSecond} </td>
                       </tr>
                       <tr height="60">
                           <td>주소</td>
-                          <td colSpan="3">{this.props.recipientInfo.zipCode} {this.props.recipientInfo.address} {this.props.recipientInfo.addressDetails}</td>
+                          <td colSpan="3">{this.props.recipientInfo.zipCode} {this.props.recipientInfo.address} </td>
                       </tr>
-                      {/* <tr>
-                          <td>주소</td>
-                          <td colSpan="3">{this.props.recipientInfo.address}</td>
-                      </tr>
-                      <tr>
-                          <td>상세 주소</td>
-                          <td colSpan="3">{this.props.recipientInfo.addressDetails} {this.props.recipientInfo.zipCode}</td>
-                      </tr> */}
                       <tr height="80">
                           <td>배송요청사항</td>
                           <td colSpan="3">{this.props.recipientInfo.usercomment}</td>
