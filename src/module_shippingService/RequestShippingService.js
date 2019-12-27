@@ -210,8 +210,11 @@ class ShippingCenter extends React.Component{
             totalPriceList:[],
             isValidTotalPrice:false,
 
-            receiverNameByKorea:"",
+            disableButtonFavoriteAddressList:false,
             setOwnerContent:false,
+            registerFavoriteAddress:false,
+
+            receiverNameByKorea:"",
             receiverNameByEnglish:"",
 
             privateTransit:true,
@@ -346,8 +349,9 @@ class ShippingCenter extends React.Component{
         }
     }
 
-    handleRegisterFavoriteAddress(event){        
-        this.setState({setOwnerContent:event.target.checked})
+    handleRegisterFavoriteAddress(event){    
+        this.setState({registerFavoriteAddress:event.target.checked})
+        console.log(this.state.registerFavoriteAddress)
     }
 
     inputShopUrl(event){
@@ -517,6 +521,10 @@ class ShippingCenter extends React.Component{
     
     handleModalShow() {
         this.setState({ show: true });
+    }
+
+    handleOpenFavoriteAddressListPanel(){
+
     }
 
     render(){
@@ -752,9 +760,14 @@ class ShippingCenter extends React.Component{
             ToDo : Component
             */}
             <Card border="dark" style={{ width:'80%', height:'62rem', marginTop:'1rem', marginBottom:'1rem' }}>
-                    <Card.Header>받는분 정보</Card.Header>
+                    <Card.Header>받는분 정보
+                    <Button variant="secondary" size="sm" 
+                        disabled = {this.state.disableButtonFavoriteAddressList}
+                        onClick={(e) => this.handleOpenFavoriteAddressListPanel(e)} 
+                        style={{ marginRight: '10px', float:"right"}}>배송지 불러오기</Button>
+                    </Card.Header>
                     <Card.Body >
-                        
+                    
                         <InputGroup size="sm" style={{ width:'90%'}} className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3">
@@ -766,16 +779,15 @@ class ShippingCenter extends React.Component{
                                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-4" >
                                     <Form.Check type='checkbox'
                                         onChange={e => this.handleGetCustomerAddressData(e)} label='회원정보와 동일'
-                                        checked={this.state.customerDeliveryData}
+                                        defaultChecked={this.state.customerDeliveryData}
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                                     />
                                     <Form.Check type='checkbox'
-                                        //onChange={e => this.handleRegisterFavoriteAddress(e)} 
+                                        onChange={e => this.handleRegisterFavoriteAddress(e)} 
                                         label='배송지 관리 등록하기'
-                                        //checked={this.state.setOwnerContent}
+                                        defaultChecked={this.state.registerFavoriteAddress}
                                         style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                                     />
-                                    <Button size='sm' variant="secondary">배송지 정보 불러오기</Button>
                                 </InputGroup>
 
                                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-4">
@@ -965,8 +977,10 @@ class ShippingCenter extends React.Component{
                         shippingProductList={this.state.shippingProductList}
                         deliveryObject={this.state.deliveryObject}
 
-                        receiverNameByKorea={this.state.receiverNameByKorea}
                         setOwnerContent={this.state.setOwnerContent}
+                        registerFavoriteAddress={this.state.registerFavoriteAddress}
+
+                        receiverNameByKorea={this.state.receiverNameByKorea}
                         receiverNameByEnglish={this.state.receiverNameByEnglish}
                         
                         privateTransit={this.state.privateTransit}

@@ -161,7 +161,7 @@ export class AddressManagerController extends React.Component{
     }    
 }
 
-class AddressManagerWrapper extends React.Component{
+export class AddressManagerWrapper extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
