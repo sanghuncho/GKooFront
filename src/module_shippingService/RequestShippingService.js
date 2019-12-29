@@ -15,7 +15,8 @@ import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_mypage/AuthService"
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { AppNavbar, LogoutButton } from '../AppNavbar'
-
+import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
+import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './ShippingServiceConfig'
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
@@ -173,19 +174,19 @@ class ShippingCenter extends React.Component{
             //shopUrlList:[],
 
             trackingTitle:"운송사선택",
-            trackingTitleList:[],
+            deliveryCompanies:DELIVERY_COMPANY_LIST,
 
             trackingNumber:"",
             trackingNumberList:[],
 
             categoryTitle:"선택",
-            categoryTitleList:[],
+            categoryTitleList:CATEGORY_LIST,
             isValidCategory:false,
             //categoryVariant:"danger",
             categoryVariant:"outline-secondary",
 
             itemTitle:"선택",
-            itemTitleList:[],
+            itemTitleList:ITEM_TITLE_LIST,
             isValidItemTitle:false,
             //itemTitleVariant:"danger",
             itemTitleVariant:"outline-secondary",
@@ -238,7 +239,9 @@ class ShippingCenter extends React.Component{
             show: false,
             shippingProductList:[],
             deliveryObject: null,
-            customerBaseData:null
+            customerBaseData:null,
+            favoriteAddressList:[],
+            openFavoriteAddressListPanel:false
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -281,6 +284,10 @@ class ShippingCenter extends React.Component{
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.fetchCustomerBaseData = this.fetchCustomerBaseData.bind(this)
+        this.fetchFavoriteAddressList = this.fetchFavoriteAddressList.bind(this)
+        this.handleOpenFavoriteAddressListPanel = this.handleOpenFavoriteAddressListPanel.bind(this)
+        this.handleCloseFavoriteAddressListPanel = this.handleCloseFavoriteAddressListPanel.bind(this)
+        this.handleLoadSelectedAddress = this.handleLoadSelectedAddress.bind(this)
     }
 
     componentDidMount() {
@@ -347,6 +354,19 @@ class ShippingCenter extends React.Component{
                 deliveryAddress:null,
             })
         }
+    }
+
+    handleLoadSelectedAddress(index){
+        var addressData = this.state.favoriteAddressList[index]
+        this.setState({
+            receiverNameByKorea:addressData.nameKor,
+            receiverNameByEnglish:addressData.nameEng,
+            transitNumber:addressData.transitNr,
+            phonenumberFirst:addressData.phonenumberFirst,
+            phonenumberSecond:addressData.phonenumberSecond,
+            postCode:addressData.zipCode,
+            deliveryAddress:addressData.address,
+        })
     }
 
     handleRegisterFavoriteAddress(event){    
@@ -524,7 +544,24 @@ class ShippingCenter extends React.Component{
     }
 
     handleOpenFavoriteAddressListPanel(){
+        this.fetchFavoriteAddressList(this.props.accessToken)
+    }
 
+    handleCloseFavoriteAddressListPanel(){
+        this.setState({openFavoriteAddressListPanel:false})
+    }
+
+    fetchFavoriteAddressList(accessToken){
+        setTokenHeader(accessToken)
+        fetch(basePort + '/retrieveFavoriteAddressList', {headers})
+            .then((result) => {
+               return result.json();
+            }).then((data) => {
+              this.setState({
+                favoriteAddressList:data,
+                openFavoriteAddressListPanel:true})
+              console.log(data)
+        })
     }
 
     render(){
@@ -584,6 +621,16 @@ class ShippingCenter extends React.Component{
                       </Popover>
         }
 
+        let favoriteAddressListPanel
+        if(this.state.openFavoriteAddressListPanel){
+            favoriteAddressListPanel = <FavoriteAddressListPanel 
+                favoriteAddressList={this.state.favoriteAddressList}
+                handleCloseFavoriteAddressListPanel={this.handleCloseFavoriteAddressListPanel}
+                handleLoadSelectedAddress={this.handleLoadSelectedAddress} />
+        } else {
+            favoriteAddressListPanel = ""
+        }
+
         return(
             <div>
             {/* 상품입력 박스*/}
@@ -617,9 +664,7 @@ class ShippingCenter extends React.Component{
                             title={this.state.trackingTitle}
                             id="input-group-dropdown-1"
                             >
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.inputTrackingTitle(e, "기타")}>기타</Dropdown.Item>
+                            {this.state.deliveryCompanies.map((comapany) => { return (<div><Dropdown.Item onSelect={e => this.inputTrackingTitle(e, comapany)}>{comapany}</Dropdown.Item></div> )})}
                         </DropdownButton>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             style={{ width: '200px'}} 
@@ -644,9 +689,8 @@ class ShippingCenter extends React.Component{
                             title={this.state.categoryTitle}
                             id="input-group-dropdown-category"
                             >
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "전자제품")}>전자제품</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
+                            {this.state.categoryTitleList.map((category) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
                         </DropdownButton>
                     </InputGroup> 
                     <InputGroup size="sm" className="mb-3">   
@@ -662,9 +706,9 @@ class ShippingCenter extends React.Component{
                             title={this.state.itemTitle}
                             id="input-group-dropdown-category"
                             >
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "오디오")}>오디오</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "쌀")}>쌀</Dropdown.Item>
-                            <Dropdown.Item onSelect={e => this.handleSelectItem(e, "강아지")}>강아지</Dropdown.Item>
+                            {this.state.itemTitleList.map((item) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
+
                         </DropdownButton>
                        
                     </InputGroup>
@@ -733,17 +777,13 @@ class ShippingCenter extends React.Component{
                     <div key={index}>
 
                     <AdditionalProduct index={index} 
-                        trackingTitleList = {this.state.trackingTitleList}
                         shippingProductList = {this.state.shippingProductList}
                         trackingNumberList = {this.state.trackingNumberList}
-                        categoryTitleList = {this.state.categoryTitleList}
-                        itemTitleList = {this.state.itemTitleList}
                         brandNameList = {this.state.brandNameList}
                         itemNameList = {this.state.itemNameList}
                         productPriceList = {this.state.productPriceList}
                         productAmountList = {this.state.productAmountList}
                         totalPriceList = {this.state.totalPriceList}
-
                         handleRemoveItemOnList={this.handleRemoveItemOnList}
                         />
                     </div>
@@ -767,7 +807,9 @@ class ShippingCenter extends React.Component{
                         style={{ marginRight: '10px', float:"right"}}>배송지 불러오기</Button>
                     </Card.Header>
                     <Card.Body >
-                    
+
+                        {favoriteAddressListPanel}
+
                         <InputGroup size="sm" style={{ width:'90%'}} className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3">

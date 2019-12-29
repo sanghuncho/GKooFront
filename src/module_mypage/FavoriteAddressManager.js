@@ -305,7 +305,7 @@ export class AddressManagerWrapper extends React.Component{
     }    
 }
 
-class FavoriteAddress extends React.Component{
+export class FavoriteAddress extends React.Component{
   constructor(props) {
       super(props);
     }
