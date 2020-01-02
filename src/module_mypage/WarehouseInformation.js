@@ -14,10 +14,8 @@ function CaptionMypageTable(props) {
 
 const MyPageBodyTableStyle = styled.div`
   margin-top: 25px;
-  margin-left:1%; 
-  margin-right:15%;
   margin-bottom:25px;
-  width: 1100px;
+  width: 400px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
@@ -54,15 +52,17 @@ export class WarehouseInformation extends React.Component{
       render() {
         
         const columnsWarehouse = [{
-            dataField: 'orderNumber',
-            text: '신청번호',}, {
-            dataField: 'productInfo',
-            text: '상품정보'}, {
-            dataField: 'recipient',
-            text: '받는분'}, {
-            dataField: 'deliveryState',
-            text: '진행상태',
-            formatter:deliveryStateFormatter}, {
+            dataField: 'orderid',
+            text: '신청번호'}, 
+            // {
+            // dataField: 'productInfo',
+            // text: '상품정보'}, {
+            // dataField: 'recipient',
+            // text: '받는분'}, {
+            // dataField: 'deliveryState',
+            // text: '진행상태',
+            // formatter:deliveryStateFormatter}, 
+            {
             dataField: 'deliveryTracking',
             text: '독일내 트랙킹번호',
             formatter:trackingFormatter,

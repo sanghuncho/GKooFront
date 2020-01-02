@@ -32,7 +32,7 @@ export class PaymentRequest extends React.Component{
             <Card border="dark" style={{ width: '100%', height:'22rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>운송료 결제요청</Card.Header>
                 <Card.Body >
-                <InputGroup className="mb-3">
+                <InputGroup size="sm" className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3">
                                     결제<br/>정보
@@ -40,7 +40,7 @@ export class PaymentRequest extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                              <InputGroup className="mb-3">
+                              <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
                                 <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon3">
                                     결제수단

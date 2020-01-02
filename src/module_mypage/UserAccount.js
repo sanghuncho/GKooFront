@@ -5,7 +5,7 @@ import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css
 import styled from "styled-components";
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
-import { Table, Image, Button, Card } from "react-bootstrap"
+import { Table, Image, Button, Card, CardGroup } from "react-bootstrap"
 import { OrderInformation } from "./OrderInformation";
 import { WarehouseInformation } from "./WarehouseInformation";
 import { PaymentInformation } from "./PaymentInformation";
@@ -154,15 +154,25 @@ export class UserAccount extends React.Component{
         {/* 전체메뉴 */}
         <OrderInformation orderInformation={this.props.orderInformation}/>
 
-        {/* 입고 현황 */}
-        <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
-                              accessToken={this.props.accessToken}/>
+        <CardGroup style={{ width:'80%'}}>
+        <Card >
+          <Card.Body>
+          {/* 입고 현황 */}
+          <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
+                                accessToken={this.props.accessToken}/>
+          {/* 결제 현황 */}  
+          <PaymentInformation orderInformation={this.props.orderInformation}/>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body>
+          {/* 배송 현황 */}
+          <DeliveryInformation orderInformation={this.props.orderInformation}/>
+          </Card.Body>
+        </Card>
+        </CardGroup>
 
-        {/* 결제 현황 */}  
-        <PaymentInformation orderInformation={this.props.orderInformation}/>
 
-        {/* 배송 현황 */}
-        <DeliveryInformation orderInformation={this.props.orderInformation}/>
 
         {/* 결제내역 -- 나중에 코딩 */}
         {/* <PaymentHistory userAccount={ this.props.userAccount }/> */}

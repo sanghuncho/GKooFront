@@ -230,7 +230,7 @@ export class MypageController extends React.Component{
           <MyPageSideNav/>
       
           <BodyContainer>
-            <Breadcrumb style={{ width: '105%'}}>
+            <Breadcrumb style={{ width: '100%'}}>
               <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
             </Breadcrumb>
 

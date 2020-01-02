@@ -1,14 +1,15 @@
 import * as React from "react";
 import styled from "styled-components";
-import { Tabs, Tab, Button, Modal } from "react-bootstrap"
+import { Tabs, Tab, Button, Modal, Card } from "react-bootstrap"
 import { Link, NavLink } from "react-router-dom";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { Redirect } from 'react-router';
 
 const OrderInfoTableStyle = styled.div`
-  margin-top: 25px;
-  width: 1090px;
+  margin-top: 20px;
+  width: 100%;
   font-size: 13px;
 `;
 
@@ -16,7 +17,7 @@ const TabsStyle = styled.div`
   margin-top: 25px;
   margin-left:1%; 
   margin-right:15%;
-  width: 1100px;
+  width: 100%;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
@@ -35,29 +36,55 @@ function trackingFormatter(cell, row) {
   );
 }
 
+function detailPageLinkFormatter(cell, row) {        
+  return (
+    <DetailPageLinkButton orderid={cell}/>
+  );
+}
+
 function deliveryStateFormatter(cell, row) {        
   return (
     <DeliveryState cell={cell}/>
   );
 }
 
-const columnsUserAccount = [{
-  dataField: 'orderid',
-  text: '신청번호',
-  formatter:orderNumberFormatter
+const columnsUserAccount = [
+  {
+    dataField: 'orderid',
+    text: '신청번호',
+    // formatter:orderNumberFormatter
+  },{
+    dataField: 'productInfo',
+    text: '상품정보'
+  },{
+    dataField: 'recipient',
+    text: '받는분'
   }, {
-  dataField: 'productInfo',
-  text: '상품정보'}, {
-  dataField: 'recipient',
-  text: '받는분'}, {
-  dataField: 'deliveryPayment',
-  text: '운송료'}, {
-  dataField: 'deliveryState',
-  text: '진행상태',
-  formatter:deliveryStateFormatter}, {
-  dataField: 'deliveryTracking',
-  text: '배송조회',
-  formatter:trackingFormatter}
+    dataField: 'deliveryPayment',
+    text: '운송료'
+  }, {
+    dataField: 'deliveryState',
+    text: '진행상태',
+    formatter:deliveryStateFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
+  },{
+    dataField: 'orderDate',
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'center' };
+    }
+  }, {
+    dataField: 'orderid',
+    text: '상세페이지',
+    formatter:detailPageLinkFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '120px', textAlign: 'center' };
+    }
+  // text: '배송조회',
+  // formatter:trackingFormatter
+  }
 ];
 
 const data = [
@@ -80,6 +107,24 @@ const data = [
 const CaptionBaseInfo = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
   padding: '0.5em', fontWeight:'bold' }}>이용현황</h6>;
 
+const expandRowA = {
+    renderer: row => (
+      <div>
+        <p>A</p>
+      </div>
+    ),
+    
+    onlyOneExpanding: true,
+  };
+const expandRowB = {
+    renderer: row => (
+      <div>
+        <p>B</p>
+      </div>
+    ),
+    
+    onlyOneExpanding: true,
+  };
 export class OrderInformation extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -93,25 +138,38 @@ export class OrderInformation extends React.Component {
 
   render() {
     //console.log(this.props.orderInformation)
+    const expand = expandRowA
     return(
       <div>
-        <TabsStyle>
+        <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
+        <Card.Header>
+          이용 현황
+        </Card.Header>
+        {/* <TabsStyle> */}
+        <Card.Body >
         <Tabs
-        id="controlled-tab-example"
-        defaultActiveKey="total"
-        activeKey={this.state.key}
-        onSelect={key => this.setState({ key })}
+          id="controlled-tab-example"
+          defaultActiveKey="total"
+          activeKey={this.state.key}
+          onSelect={key => this.setState({ key })}
+          style={{marginLeft:'2px'}}
         >
-            <Tab eventKey="total" title="전체">
-             {/*ToDo: contents located in center */}
-            <OrderInfoTableStyle>
-                <BootstrapTable keyField='objectId'  data={ this.props.orderInformation } columns={ columnsUserAccount } 
-                    bordered={ true }  noDataIndication="Table is empty"  />
-            </OrderInfoTableStyle>
-            </Tab>
+        <Tab eventKey="total" title="전체">
+              <OrderInfoTableStyle>
+              {/*ToDo: contents located in center */}
+                  <BootstrapTable keyField='objectId'  
+                      data={ this.props.orderInformation } 
+                      columns={ columnsUserAccount } 
+                      bordered={ true }  
+                      noDataIndication="주문하신 물품이 없습니다"
+                      expandRow={ "" }  />
+              </OrderInfoTableStyle>
+        </Tab>
             {/* <Tab eventKey="germnay" title="독일"> </Tab> */}
       </Tabs>
-      </TabsStyle>
+      </Card.Body>
+      {/* </TabsStyle> */}
+      </Card> 
       </div>
     );}
 }
@@ -184,6 +242,40 @@ export class TrackingButton extends React.Component {
     );}
 }
 
+export class DetailPageLinkButton extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      redirect:false,
+    };
+    this.handleLinkDetailPage = this.handleLinkDetailPage.bind(this);
+    
+  }
+  
+  componentDidMount() {
+   
+  }
+
+  handleLinkDetailPage(){
+    this.setState({redirect: true});
+  }
+
+  render() {
+    const orderid = this.props.orderid
+    const link = "/detailsmypage/" + orderid
+    console.log(link)
+    if (this.state.redirect) {
+      return <Redirect push to={link}/>
+    }
+
+    return(
+      <div>
+        <Button variant="outline-secondary" size="sm" 
+          onClick={this.handleLinkDetailPage}>상세페이지</Button>
+      </div>
+    );}
+}
+
 class DeliveryState extends React.Component{
   constructor(props) {
       super(props);
@@ -223,7 +315,9 @@ class DeliveryState extends React.Component{
       }
 
       return (
-        <div>{deliveryState}</div>
+        <div>
+          {deliveryState}
+       </div>
       );
     }    
 }

@@ -5,10 +5,8 @@ import { Button, Modal } from "react-bootstrap"
 
 const MyPageBodyTableStyle = styled.div`
   margin-top: 25px;
-  margin-left:1%; 
-  margin-right:15%;
   margin-bottom:25px;
-  width: 1100px;
+  width: 400px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
@@ -58,15 +56,17 @@ export class DeliveryInformation extends React.Component{
   
         const columnsDelivery = [{
           dataField: 'orderNumber',
-          text: '신청번호',}, {
-          dataField: 'productInfo',
-          text: '상품정보'}, {
-          dataField: 'recipient',
-          text: '받는분'},{
-          dataField: 'deliveryPayment',
-          text: '운송료'}, {
-          dataField: 'deliveryState',
-          text: '진행상태'}, {
+          text: '신청번호',}, 
+          // {
+          // dataField: 'productInfo',
+          // text: '상품정보'}, {
+          // dataField: 'recipient',
+          // text: '받는분'},{
+          // dataField: 'deliveryPayment',
+          // text: '운송료'}, {
+          // dataField: 'deliveryState',
+          // text: '진행상태'}, 
+          {
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
           formatter:trackingFormatter}

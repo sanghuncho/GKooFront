@@ -52,6 +52,7 @@ export class MyPageDetail extends React.Component{
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
         this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
         this.fetchRecipientInforamtion = this.fetchRecipientInforamtion.bind(this)
+        this.fetchMypageDetailData = this.fetchMypageDetailData.bind(this)
       }
 
       componentDidMount () {
@@ -61,9 +62,12 @@ export class MyPageDetail extends React.Component{
             this.setState({ keycloakAuth: keycloak, 
               accessToken:keycloak.token})
               this.fetchOrderingPersonInforamtion(keycloak.token)
-              this.fetchRecipientInforamtion(keycloak.token, id)
+              // this.fetchRecipientInforamtion(keycloak.token, id)
+              //this.fetchProductsCommonInforamtion(keycloak.token, id)
+              this.fetchMypageDetailData(keycloak.token, id)
+              
               this.fetchProductsInforamtion(keycloak.token, id)
-              this.fetchProductsCommonInforamtion(keycloak.token, id)
+
             })
       }
 
@@ -78,6 +82,18 @@ export class MyPageDetail extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState( { orderingPersonInfo: data} )
+        })  
+      }
+
+      fetchMypageDetailData(token, id){
+        setTokenHeader(token)
+        fetch(basePort + '/mypageDetailData/'+ id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState({recipientInfo: data.recipientData, 
+              productsCommonInfo: data.productsCommonInformation})
+          console.log(data)
         })  
       }
 
