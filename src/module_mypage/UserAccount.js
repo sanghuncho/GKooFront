@@ -140,7 +140,6 @@ export class UserAccount extends React.Component{
 
       const CaptionPurchaing = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
        padding: '0.5em', fontWeight:'bold' }}>결제 현황</h6>;
-      
      
       return(
       <div>
@@ -160,14 +159,18 @@ export class UserAccount extends React.Component{
           {/* 입고 현황 */}
           <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
                                 accessToken={this.props.accessToken}/>
+          </Card.Body>
+        </Card>
+        <Card>
+          <Card.Body>
           {/* 결제 현황 */}  
-          <PaymentInformation orderInformation={this.props.orderInformation}/>
+          <PaymentInformation paymentData={this.props.paymentData}/>
           </Card.Body>
         </Card>
         <Card>
           <Card.Body>
           {/* 배송 현황 */}
-          <DeliveryInformation orderInformation={this.props.orderInformation}/>
+          <DeliveryInformation deliveryKoreaData={this.props.deliveryKoreaData}/>
           </Card.Body>
         </Card>
         </CardGroup>

@@ -3,12 +3,14 @@ import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
     ExampleNavigation as BaseNavigation,
-  } from "./container";
+  } from "../container";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
 import { connectdevelop, cube, bullseye } from 'react-icons-kit/fa/'
-import { AppNavbar } from './AppNavbar'
+import { AppNavbar } from '../AppNavbar'
+import { Image } from 'react-bootstrap';
+import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
 
 const AppContainer = styled(BaseAppContainer)`
   height: calc(180vh);
@@ -29,6 +31,11 @@ const theme = {
 
 const NavLinkStyle = styled(BaseNav)`
     flex-direction: column;
+`;
+
+const BodyContainer = styled(BaseAppContainer)`
+  height:auto;
+  flex-direction: column;
 `;
 
 const IconCnt = styled.div`
@@ -79,6 +86,10 @@ export class ShippingService extends React.Component{
             <AppNavbar/>
             <AppContainer>
                 <ShippingServiceNavbar/>
+                <BodyContainer>
+                    {/* <Image src={Img} /> */}
+                    <Image src={GKoo_Service_Info} style={{ width: '500px'}}/>
+                </BodyContainer>
             </AppContainer>
             </div>
         );}           
@@ -137,6 +148,7 @@ export class ShippingServiceNavbar extends React.Component{
                     </div>
                 </SideNav>
             </Navigation>
+
           </div>
         );
       }    

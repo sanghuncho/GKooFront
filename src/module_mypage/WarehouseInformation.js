@@ -15,7 +15,7 @@ function CaptionMypageTable(props) {
 const MyPageBodyTableStyle = styled.div`
   margin-top: 25px;
   margin-bottom:25px;
-  width: 400px;
+  width: 290px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
@@ -98,7 +98,7 @@ export class TrackingView extends React.Component {
       let trackingContent;
 
       if (trackingStatus == "default") {
-        trackingContent = <EditTracking orderNumber = {this.props.row.orderNumber}
+        trackingContent = <EditTracking orderid = {this.props.row.orderid}
                               accessToken={this.props.accessToken}/>
          
       } else {

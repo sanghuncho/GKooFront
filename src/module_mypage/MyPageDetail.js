@@ -93,7 +93,7 @@ export class MyPageDetail extends React.Component{
         }).then((data) => {
           this.setState({recipientInfo: data.recipientData, 
               productsCommonInfo: data.productsCommonInformation})
-          console.log(data)
+          //console.log(data)
         })  
       }
 

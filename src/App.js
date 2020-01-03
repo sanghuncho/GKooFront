@@ -16,7 +16,7 @@ import { pagelines } from 'react-icons-kit/fa/pagelines'
 import { Navbar, Nav, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import { BuyingService } from './BuyingService'
-import { ShippingService } from './ShippingService'
+import { ShippingService } from './module_shippingService_intro/ShippingService'
 import { MyPage } from './module_mypage/MyPage';
 import { FavoriteAddressManager } from './module_mypage/FavoriteAddressManager';
 import { CustomerCenter } from './CustomerCenter'
@@ -48,6 +48,8 @@ const Main = () => (
     <Route exact path='/customercenter' component={ CustomerCenter }></Route> 
     <Route exact path='/detailsmypage/:id' component={ MyPageDetail }></Route>
     <Route exact path='/favoriteAddressManager' component={ FavoriteAddressManager }></Route>
+    
+    
     <Route exact path='/management' component={ ManagementController }></Route>
 
     {/* <Route exact path='/shippingService/requestShipping' component={ RequestShippingService }></Route>  */}

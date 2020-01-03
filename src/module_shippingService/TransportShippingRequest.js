@@ -1,10 +1,14 @@
 import * as React from "react";
 import { headers, basePort, setTokenHeader } from "../module_mypage/AuthService"
-
+import { Redirect } from 'react-router';
 
 export class TransportShippingRequest extends React.Component {
     constructor(props, context) {
         super(props, context);
+        this.state = {
+          redirect:false,
+        };
+        this.handleMoveToMypage = this.handleMoveToMypage.bind(this);
     }
 
     createShippingService(contents){
@@ -72,6 +76,10 @@ export class TransportShippingRequest extends React.Component {
       return shippingServiceData
     }
 
+    handleMoveToMypage(){
+      this.setState({redirect: true});
+    }
+
     render() {
       if (this.props.applyDeliveryService){
         const shippingServiceData = this.buildShippingServiceData()
@@ -81,7 +89,14 @@ export class TransportShippingRequest extends React.Component {
           const favoriteAddress = this.buildFavoriteAddressData()
           this.registerFavoriteAddress(favoriteAddress)
         }
+
+        this.handleMoveToMypage()
       }
+
+      const link = "/mypage"
+        if (this.state.redirect) {
+            return <Redirect push to={link}/>
+        }
       return(
         //without GUI
           <div>

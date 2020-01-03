@@ -72,7 +72,8 @@ export class MyPage extends React.Component{
       purchaseOrder:'',
       orderInformation:'',
       warehouseInformation:'',
-      trackingNumber:'1234',
+      paymentData:'',
+      deliveryKoreaData:''
    };
   
     toggle(position) {
@@ -101,6 +102,8 @@ export class MyPage extends React.Component{
           this.fetchCustomerStatusData(keycloak.token)
           this.fetchOrderInformation(keycloak.token)
           this.fetchWarehouseInformation(keycloak.token)
+          this.fetchPaymentData(keycloak.token)
+          this.fetchDeliveryKoreaData(keycloak.token)
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
@@ -108,7 +111,6 @@ export class MyPage extends React.Component{
 
     fetchOrderInformation(token){
       this.setTokenHeader(token)
-      //console.log(token)
       fetch(localPort + '/orderinformation', {headers})
         .then((result) => {
            return result.json();
@@ -117,15 +119,27 @@ export class MyPage extends React.Component{
         })   
     }
 
-    // updateTranckingNumber(orderNumber, trackingCompany, trackingNumber){
-    //   const contents =  [{orderNumber: orderNumber}, 
-    //       {trackingCompany:trackingCompany},
-    //       {trackingNumber:trackingNumber}]
-    //   this.setTokenHeader(this.state.accessToken)
-    //   fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
-    //             {method:'post', headers, 
-    //               body:JSON.stringify(contents)})
-    // }
+    fetchPaymentData(token){
+      this.setTokenHeader(token)
+      fetch(localPort + '/paymentData', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          console.log(data)
+          this.setState({paymentData: data})
+        })   
+    }
+
+    fetchDeliveryKoreaData(token){
+      this.setTokenHeader(token)
+      fetch(localPort + '/deliveryKoreaData', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          console.log(data)
+          this.setState({deliveryKoreaData: data})
+        })   
+    }
 
     fetchWarehouseInformation(token){
       this.setTokenHeader(token)
@@ -174,7 +188,7 @@ export class MyPage extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log(data)
+          //console.log(data)
           this.setState( { customerStatusData: data} )
         })   
     }
@@ -202,6 +216,8 @@ export class MyPage extends React.Component{
                       customerStatusData = { this.state.customerStatusData}
                       orderInformation = { this.state.orderInformation }
                       warehouseInformation = { this.state.warehouseInformation }
+                      paymentData = {this.state.paymentData}
+                      deliveryKoreaData = {this.state.deliveryKoreaData}
                       accessToken = { this.state.accessToken }/>
         } else {
           mypage = this.getEmptyPage
@@ -241,8 +257,9 @@ export class MypageController extends React.Component{
             customerStatusData={ this.props.customerStatusData}
             orderInformation={ this.props.orderInformation }
             warehouseInformation={ this.props.warehouseInformation }
+            paymentData = {this.props.paymentData}
+            deliveryKoreaData = {this.props.deliveryKoreaData}
             accessToken = { this.props.accessToken }
-
             />
         </BodyContainer>
         

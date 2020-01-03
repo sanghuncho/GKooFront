@@ -7,7 +7,7 @@ export class EditTracking extends React.Component{
         super(props);
         this.state = {
           showModal:false,
-          orderNumber:this.props.orderNumber,
+          orderid:this.props.orderid,
           trackingTitle:"운송사선택",
           trackingNumber:"",
         };
@@ -30,7 +30,7 @@ export class EditTracking extends React.Component{
       }
 
       updateTrackingNumber(accessToken){
-        const contents =  [{orderNumber: this.state.orderNumber}, 
+        const contents =  [{orderid: this.state.orderid}, 
             {trackingCompany:this.state.trackingTitle},
             {trackingNumber:this.state.trackingNumber}]
         this.setTokenHeader(accessToken)
@@ -58,7 +58,7 @@ export class EditTracking extends React.Component{
       render() {
         return (
           <div>
-          <Button variant="secondary" size="sm" onClick={this.handleModalShow}>트랙킹번호 입력</Button>
+          <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>번호입력</Button>
           <Modal show={this.state.showModal} onHide={this.handleModalClose}>
           <Modal.Header closeButton>
             <Modal.Title>트랙킹 정보</Modal.Title>

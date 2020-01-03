@@ -6,7 +6,7 @@ import { Button, Modal } from "react-bootstrap"
 const MyPageBodyTableStyle = styled.div`
   margin-top: 25px;
   margin-bottom:25px;
-  width: 400px;
+  width: 290px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   box-shadow: 2px 2px 3px 3px #888; 
@@ -55,8 +55,8 @@ export class DeliveryInformation extends React.Component{
         // };
   
         const columnsDelivery = [{
-          dataField: 'orderNumber',
-          text: '신청번호',}, 
+          dataField: 'orderid',
+          text: '신청번호'},
           // {
           // dataField: 'productInfo',
           // text: '상품정보'}, {
@@ -71,14 +71,14 @@ export class DeliveryInformation extends React.Component{
           text: '국내 배송조회',
           formatter:trackingFormatter}
         ];
-  
+
         return (
           <div>
             <MyPageBodyTableStyle>
               <CaptionMypageTable title="배송 현황"/>
               <BootstrapTable keyField='objectId'  
-                // data={ this.props.userAccount } 
-                data={ data } 
+                data={ this.props.deliveryKoreaData } 
+                //data={ data } 
                 columns={ columnsDelivery } 
                 hover bordered={ false } 
                 // rowEvents={ rowEvents } 
@@ -114,12 +114,15 @@ export class DeliveryInformation extends React.Component{
     render() {
       return(
         <div>
-        <Button variant="secondary" size="sm" onClick={this.handleModalShow}>배송조회</Button>
+        <Button  variant="outline-secondary" size="sm" onClick={this.handleModalShow}>배송조회</Button>
           <Modal show={this.state.showModal} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>배송조회</Modal.Title>
             </Modal.Header>
-            <Modal.Body>독일내 배송중</Modal.Body>
+            <Modal.Body>
+              배송중
+              {/* 배송조회 api 연동 */}
+            </Modal.Body>
             <Modal.Footer>
               {/* <NavLink to="/">
               <Button variant="success" onClick={this.handleModalClose}>

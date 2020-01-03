@@ -1,13 +1,12 @@
 import * as React from "react";
-import { ShippingServiceNavbar } from "../ShippingService";
+import { ShippingServiceNavbar } from "../module_shippingService_intro/ShippingService";
 import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
   } from "../container";
 import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
     OverlayTrigger, Modal } from 'react-bootstrap';
-import { NavLink } from "react-router-dom";
-import { times, exchange, signOut } from 'react-icons-kit/fa/'
+import { times, exchange } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
@@ -330,9 +329,9 @@ class ShippingCenter extends React.Component{
                 phonenumberFirst:data.phonenumberFirst,
                 phonenumberSecond:data.phonenumberSecond,
                 postCode:data.zipCode,
-                deliveryAddress:data.address,
+                deliveryAddress:data.address
             })
-            console.log(data.nameKor);
+            console.log(data.address);
           }).catch(function() {
             console.log("error fetching userbaseinfo");
         });
@@ -582,6 +581,7 @@ class ShippingCenter extends React.Component{
         const isValidItemTitle = this.state.isValidItemTitle
 
         const transitNumber = this.state.transitNumber
+        const deliveryAddress = this.state.deliveryAddress
         //const isValidTransitNumber = this.state.isValidTransitNumber
         //const isValidTransitNumber = transitNumber.length == 8 ? true : false
         const isValidTransitNumber = true
@@ -874,14 +874,14 @@ class ShippingCenter extends React.Component{
                                 <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
                                 <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/>
                                         
-                                    <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
+                                    <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                             placeholder="8자리 고유번호" 
                                             onChange = { this.inputTransitNumber }
                                             defaultValue={this.state.transitNumber}
                                             style={{ marginRight:'10px'}}/>
                                         <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
-                                        <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button>
+                                        {/* <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button> */}
                                     </InputGroup >
                                     
                                     <Form.Check type='checkbox' 
@@ -945,9 +945,10 @@ class ShippingCenter extends React.Component{
                                         </InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                                         as="textarea" rows="2"
+                                        as="textarea" rows="2"
                                         onChange={e => this.inputDeliveryAddress(e)}
-                                        defaultValue={this.state.address}
+                                        value={this.state.deliveryAddress}
+                                       
                                         />
                                 </InputGroup >
                             </Card.Body> 
@@ -975,16 +976,17 @@ class ShippingCenter extends React.Component{
                             </Card> 
                         </InputGroup>
 
-                        <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'25%', marginRight:'25%'}}>
+                        <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'35%', marginRight:'25%'}}>
                             <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
                                 <Button size="sm" variant='secondary' style={{ marginRight:'10px', fontSize:'14px'}}
-                                    onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                    //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
                                     //확인 창 떠서 예 클리하면 DB 전달
-                                    //onClick={this.handleModalShow}
+                                    onClick={this.handleModalShow}
                                     >배송대행 신청하기
                                 </Button>
                             </OverlayTrigger>
-                            <Button size="sm" variant='secondary'>임시 저장하기</Button>
+                            {/* 추후 개발
+                            <Button size="sm" variant='secondary'>임시 저장하기</Button> */}
                         </InputGroup >
 
                         {/* if success after validation, then it shows the dialog*/}
@@ -995,14 +997,14 @@ class ShippingCenter extends React.Component{
                             <Modal.Body>배송대행을 신청하시겠습니까?</Modal.Body>
                             <Modal.Footer>
                                 {/* not automtic link */}
-                                <NavLink to="/mypage">
+                                {/* <NavLink to="/mypage"> */}
                                     <Button variant="success" 
-                                        //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
-                                        onClick={this.handleModalClose}
+                                        onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
+                                        //onClick={this.handleModalClose}
                                         >
                                     예
                                     </Button>
-                                </NavLink>
+                                {/* </NavLink> */}
                                 <Button variant="dark" onClick={this.handleModalClose}>
                                 취소
                                 </Button>
