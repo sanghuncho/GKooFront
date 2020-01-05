@@ -37,7 +37,13 @@ export const ExampleContainer = styled.div`
   height: calc(100vh - 40px);
 `;
 
-export const ExampleNavigation = styled(Navigation)`
+// export const ExampleNavigation = styled(Navigation)`
+//   height: 100%;
+//   margin-right: 4px;
+//   border: 0px solid rgba(0, 0, 0, 0.125); 
+// `;
+
+export const BaseNavigation = styled(Navigation)`
   height: 100%;
   margin-right: 4px;
   border: 0px solid rgba(0, 0, 0, 0.125); 

@@ -29,16 +29,16 @@ export class AppNavbar extends React.Component{
                     </NavLink>      
                 </Navbar.Brand>
                 <Nav className="mr-auto">
-                    <NavLink style={{ textDecoration: 'none', color: 'white', marginLeft:'10px', marginRight:'10px' }} to='/information'>
+                    <NavLink style={{ textDecoration: 'none', color: 'white', marginLeft:'10px', marginRight:'10px' }} to='/infodeskIntro'>
                         <Text>이용안내</Text>
                     </NavLink>
-                    <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/buyingservice'>
+                    <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/buyingserviceIntro'>
                         <Text>구매대행</Text>
                     </NavLink>
                     <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/shippingservice'>
                         <Text>배송대행</Text>
                     </NavLink>
-                    <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/customercenter'>
+                    <NavLink style={{ textDecoration: 'none', color: 'white', marginRight:'10px' }} to='/customerCenterIntro'>
                         <Text>고객센터</Text>
                     </NavLink>
                     <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/mypage'>

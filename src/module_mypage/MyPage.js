@@ -5,7 +5,7 @@ import { Icon as BaseIcon } from "react-icons-kit";
 import { UserAccount } from "./UserAccount";
 import {
   AppContainer as BaseAppContainer,
-  ExampleNavigation as BaseNavigation,
+  BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, localPort, INITIAL_PAGE } from "./AuthService"

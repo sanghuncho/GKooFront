@@ -7,40 +7,37 @@ import {
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
-import { connectdevelop, cube, bullseye } from 'react-icons-kit/fa/'
 import { AppNavbar } from '../AppNavbar'
+import { connectdevelop, cube, bullseye, pagelines } from 'react-icons-kit/fa/'
 import { Image } from 'react-bootstrap';
 import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
 
-var naviGreen = '#80b13e'
-
-
-{/* ShippingService CSS */}
+{/* BuyingServiceIntro CSS */}
 export const BodyContainer = styled(BaseAppContainer)`
   height:auto;
   flex-direction: column;
 `;
-const ShippingServiceContainer = styled(BaseAppContainer)`
+const BuyingServiceIntroContainer = styled(BaseAppContainer)`
   height: calc(250vh);
 `;
 
-export class ShippingService extends React.Component{
+export class BuyingServiceIntro extends React.Component{
 
     render() {
         return (
             <div>
             <AppNavbar/>
-            <ShippingServiceContainer>
-                <ShippingServiceNavbar/>
+            <BuyingServiceIntroContainer>
+                <BuyingServiceNavbar/>
                 <BodyContainer>
                     <Image src={GKoo_Service_Info} style={{ width: '600px', marginLeft:'20%', marginTop:'20px'}}/>
                 </BodyContainer>
-            </ShippingServiceContainer>
+            </BuyingServiceIntroContainer>
             </div>
         );}           
 }
 
-{/* ShippingServiceNavbar CSS */}
+{/* BuyingServiceNavbar CSS */}
 const NavigationStyle = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
@@ -54,7 +51,7 @@ const NavLinkStyle = styled(BaseNav)`
 `;
 const TextStyle = styled.div`
   padding-left: 0px;
-  font-size: 12px;
+  font-size: 10px;
 `;
 const IconCnt = styled.div`
   color: #FFF;
@@ -67,11 +64,9 @@ const Theme = {
 };
 const Icon = props => <BaseIcon size={32} icon={props.icon} />;
 var grey = '#727676';
-export class ShippingServiceNavbar extends React.Component{
-    constructor(props) {
-        super(props);
-      }
-      
+
+export class BuyingServiceNavbar extends React.Component{
+
     state = { active: null };
   
     toggle(position) {
@@ -81,45 +76,55 @@ export class ShippingServiceNavbar extends React.Component{
         this.setState({active : position})
       }
     }
-    
+  
+    myColor (position) {
+      if (this.state.active === position) {
+        return grey;
+      }
+      return "";
+    }
+  
+    onItemSelection = arg => {
+      this.setState({ selectedPath: arg.path });
+    };
+
     render() {
         return (
-          <div>
-              <NavigationStyle> 
-                <SideNav theme={Theme} onItemSelection={this.onItemSelection}>
+            <div>
+                <NavigationStyle> 
+                    <SideNav theme={Theme} onItemSelection={this.onItemSelection}>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/requestshipping' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/buyingService' >
                             <IconCnt>
                                 <Icon icon={bullseye} />
                             </IconCnt>
-                            <TextStyle>배송대행 신청</TextStyle>
+                            <TextStyle>구매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingServiceInfo' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/buyingServiceEbay' >
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
-                            <TextStyle>배송대행 안내</TextStyle>
+                            <TextStyle>이베이 구매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingServiceAddressPane' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/autionService' >
                             <IconCnt>
                                 <Icon icon={connectdevelop} />
                             </IconCnt>
-                            <TextStyle>배송주소 안내</TextStyle>
+                            <TextStyle>이베이 경매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                </SideNav>
+            </SideNav>
             </NavigationStyle>
-          </div>
-        );
-      }    
-}
+            </div>
+        );}           
+} 

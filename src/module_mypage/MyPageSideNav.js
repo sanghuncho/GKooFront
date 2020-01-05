@@ -4,7 +4,7 @@ import { Route, Switch, NavLink } from "react-router-dom";
 import { SideNav, Nav as BaseNav} from "react-sidenav";
 import {
     NaviContainer as BaseAppContainer,
-    ExampleNavigation as BaseNavigation,
+    BaseNavigation,
   } from "../container";
 import { Icon as BaseIcon } from "react-icons-kit";
 import { calendar, pagelines } from 'react-icons-kit/fa/'

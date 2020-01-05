@@ -2,31 +2,34 @@ import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import {
     AppContainer as BaseAppContainer,
-    ExampleNavigation as BaseNavigation,
+    BaseNavigation,
   } from "./container";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
 import { AppNavbar } from './AppNavbar'
+import { connectdevelop, cube, bullseye } from 'react-icons-kit/fa/'
 
-
+const AppContainer = styled(BaseAppContainer)`
+  height: calc(250vh);
+`;
 const Navigation = styled(BaseNavigation)`
-    background: #FFFFFF;
+    background: #80b13e;
     color: #FFFFFF;
-    font-size: 1em;
-    letter-spacing: 2px;
-    width: 200px;
+    letter-spacing: 1px;
+    width: 110px;
     line-height: 22px;
     border-radius: 0px;
-    margin-left:10px;
-    margin-top:10px;  
 `;
-
 const theme = {
-    selectionBgColor: '#80b13e',
+    selectionBgColor: '#727676',
   };
-
 const NavLinkStyle = styled(BaseNav)`
+    flex-direction: column;
+`;
+const Text = styled.div`
+  padding-left: 0px;
+  font-size:12px;
 `;
 
 const IconCnt = styled.div`
@@ -36,11 +39,7 @@ const IconCnt = styled.div`
   aligh-items: center;
 `;
 
-const Text = styled.div`
-  padding-left: 5px;
-  text-align: left;
-  font-size:14px;
-`;
+
 
 var naviGreen = '#80b13e'
 var grey = '#727676';
@@ -74,40 +73,32 @@ export class CustomerCenter extends React.Component{
         return (
             <div>
                 <AppNavbar/>
-                <Navigation> 
-                    <SideNav theme={theme} onItemSelection={this.onItemSelection}>
-                        <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'40px'}} onClick={() => {this.toggle(0)}} >
-                        <NavLinkStyle>
-                            <NavLink style={{ textDecoration:'none', color:'black'}} to='/' >
-                                {/* <IconCnt>
-                                    <Icon icon={pagelines} />
-                                </IconCnt> */}
-                                <Text>공지사항</Text>
-                            </NavLink>
-                        </NavLinkStyle>
-                        </div>
-
-                        <div style={{background: this.myColor(1), borderBottom:'1px solid #4D8444', height:'40px'}} onClick={() => {this.toggle(1)}} >
-                        <NavLinkStyle>
-                            <NavLink style={{ textDecoration:'none', color:'black'}} to='/verwalter'>
-                                <Text>문의게시판</Text>
-                            </NavLink>
-                        </NavLinkStyle>
-                        </div>
-
-                {/* <div style={{background: this.myColor(2), borderBottom:'1px solid #4D8444', height:'40px'}} onClick={() => {this.toggle(2)}} >
-                <NavLinkStyle>
-                    <NavLink style={{ textDecoration:'none', color:'black' }} to='/wirtschaftseinheit'>
-                        <IconCnt>
-                        <Icon icon={buildingO} />
-                        </IconCnt>
-                        <Text>배송대행 문의게시판</Text>        
-                    </NavLink>          
-                </NavLinkStyle>
-                </div> */}
-
-            </SideNav>
+                <AppContainer>
+                <Navigation>
+                <SideNav theme={theme} onItemSelection={this.onItemSelection}>
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <NavLinkStyle>
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                            <IconCnt>
+                                <Icon icon={bullseye} />
+                            </IconCnt>
+                            <Text>공지사항</Text>
+                        </NavLink>
+                    </NavLinkStyle>
+                    </div>
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
+                    <NavLinkStyle>
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                            <IconCnt>
+                                <Icon icon={cube} />
+                            </IconCnt>
+                            <Text>문의게시판</Text>
+                        </NavLink>
+                    </NavLinkStyle>
+                    </div>
+                </SideNav>
             </Navigation>
+            </AppContainer>
             </div>
         );}           
 } 
