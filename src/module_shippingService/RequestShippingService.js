@@ -11,7 +11,7 @@ import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'

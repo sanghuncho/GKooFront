@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from 'react';
 import { Card, Button, InputGroup, FormControl } from "react-bootstrap"
-import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "./AuthService"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 
 export class FavoriteAddressInputForm extends React.Component{
     constructor(props) {

@@ -7,7 +7,7 @@ import {
   ExampleNavigation as BaseNavigation,
 } from "../container"
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "./AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav"
 import { Breadcrumb, Card, Button, Form, Table, Row, Col, InputGroup, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'

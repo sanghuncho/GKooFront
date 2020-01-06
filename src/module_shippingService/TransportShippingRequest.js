@@ -1,5 +1,5 @@
 import * as React from "react";
-import { headers, basePort, setTokenHeader } from "../module_mypage/AuthService"
+import { headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { Redirect } from 'react-router';
 
 export class TransportShippingRequest extends React.Component {

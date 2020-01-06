@@ -13,6 +13,7 @@ import { InfodeskInspectRefundService } from './module_infodesk/InfodeskInspectR
 
 import { BuyingServiceIntro } from './module_buyingService/BuyingServiceIntro'
 import { BuyingService } from './module_buyingService/BuyingService'
+import { BuyingServiceRegistration } from './module_buyingService/BuyingServiceRegistration'
 import { BuyingServiceEbay } from './module_buyingService/BuyingServiceEbay'
 import { AutionService } from './module_buyingService/AutionService'
 
@@ -23,7 +24,7 @@ import { ShippingServiceAddressPane } from './module_shippingService_intro/Shipp
 
 import { CustomerCenterIntro } from './module_customerCenter/CustomerCenterIntro'
 import { NoticePane } from './module_customerCenter/NoticePane'
-import { QuestionPane } from './module_customerCenter/QuestionPane'
+import { QuestionBoard } from './module_customerCenter/QuestionBoard'
 
 import { MyPage } from './module_mypage/MyPage';
 import { FavoriteAddressManager } from './module_mypage/FavoriteAddressManager';
@@ -55,6 +56,7 @@ const Main = () => (
     {/* 구매대행 모둘 */}
     <Route exact path='/buyingServiceIntro' component={ BuyingServiceIntro }></Route>
     <Route exact path='/buyingService' component={ BuyingService }></Route> 
+    <Route exact path='/buyingServiceRegistration' component={ BuyingServiceRegistration }></Route> 
     <Route exact path='/buyingServiceEbay' component={ BuyingServiceEbay }></Route> 
     <Route exact path='/autionService' component={ AutionService }></Route>  
 
@@ -67,7 +69,7 @@ const Main = () => (
     {/* 고객센터 모둘 */}
     <Route exact path='/customercenterIntro' component={ CustomerCenterIntro }></Route> 
     <Route exact path='/noticePane' component={ NoticePane }></Route> 
-    <Route exact path='/questionPane' component={ QuestionPane }></Route> 
+    <Route exact path='/questionBoard' component={ QuestionBoard }></Route> 
     
     {/* 마이페이지 모둘 */} 
     <Route exact path='/mypage' component={ MyPage }></Route> 

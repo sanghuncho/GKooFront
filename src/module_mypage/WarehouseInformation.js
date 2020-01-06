@@ -3,8 +3,6 @@ import React from 'react';
 import { NavLink } from "react-router-dom";
 import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl, Form } from "react-bootstrap"
 import BootstrapTable from 'react-bootstrap-table-next';
-import { keycloakConfigLocal, headers, localPort } from "./AuthService"
-import * as Keycloak from 'keycloak-js';
 import { EditTracking } from "./EditTracking";
 
 function CaptionMypageTable(props) {

@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Form, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { signOut } from 'react-icons-kit/fa/'
-import { INITIAL_PAGE } from "./module_mypage/AuthService"
+import { INITIAL_PAGE } from "./module_base_component/AuthService"
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 

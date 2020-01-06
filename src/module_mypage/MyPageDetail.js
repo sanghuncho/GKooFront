@@ -7,7 +7,7 @@ import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageDetailProducts } from "./MyPageDetailProducts"
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 
 var keycloak = Keycloak(keycloakConfigLocal);

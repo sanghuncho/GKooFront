@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import React from 'react'
 import { Card, Button } from 'react-bootstrap';
-import { headers, basePort, setTokenHeader } from "../module_mypage/AuthService"
+import { headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 
 export class FavoriteAddressListPanel extends React.Component{
     constructor(props) {

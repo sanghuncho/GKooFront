@@ -105,7 +105,7 @@ export class CustomerCenterNavbar extends React.Component{
                     </div>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/questionPane' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/questionBoard' >
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
