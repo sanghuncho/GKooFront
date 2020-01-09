@@ -8,6 +8,8 @@ import { AppNavbar } from '../AppNavbar'
 import { CustomerCenterNavbar } from './CustomerCenterIntro'
 import { Table, Image, Button, Card, CardGroup, Container, Row, Col } from "react-bootstrap"
 import GKoo_Intro_Banner_Org  from '../assets/Gkoo_Intro_Banner_Org.jpg'
+import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 /** NoticePane Style */
 export const BodyContainer = styled(BaseAppContainer)`
@@ -43,13 +45,62 @@ export class NoticePane extends React.Component {
 
 /** NoticePaneWrapper Style  */
 const noticePaneWrapperStyle = {
-    width: '80%',
+    width: '70%',
     paddingTop: '20px',
     marginLeft: '20px'
 }
+
+const columnsNoticeBoard = [
+    {
+      dataField: 'noticeNr',
+      text: '번호',
+      headerStyle: (colum, colIndex) => {
+        return { width: '60px', textAlign: 'center' };
+      }
+    },{
+      dataField: 'noticeTitle',
+      text: '제목',
+    },{
+      dataField: 'noticeDate',
+      text: '날짜',
+      headerStyle: (colum, colIndex) => {
+        return { width: '100px', textAlign: 'center' };
+      }
+    }
+  ];
+const data = [
+    {
+      "noticeNr":"1",
+      "noticeTitle":"신년배송안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-06",
+    },
+    {
+    "noticeNr":"2",
+    "noticeTitle":"배송비 안내",
+    "noticeContent":"새해에는 ..",
+    "noticeDate":"2019-01-09",
+    },
+]
+
+const NoticeBoardTableStyle = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 13px;
+`;
+
 export class NoticePaneWrapper extends React.Component {
 
     render() {
+        const expandRow = {
+            onlyOneExpanding: true,
+            renderer: row => (
+              <div>
+                <NoticeContent noticeTitle={row.noticeTitle}
+                    noticeContent={row.noticeContent}/>
+              </div>
+            )
+        };
         return (
             <div>
                 <Container style={noticePaneWrapperStyle} >
@@ -59,6 +110,23 @@ export class NoticePaneWrapper extends React.Component {
                         <Col><NoticeUnit_3/></Col>
                     </Row>
                 </Container>
+
+                <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
+                <Card.Header>공지사항 리스트
+                </Card.Header>
+                <Card.Body>
+                    <NoticeBoardTableStyle>
+                    <BootstrapTable keyField='noticeNr'  
+                        data={ data } 
+                        columns={ columnsNoticeBoard } 
+                        bordered={ true }  
+                        //noDataIndication="주문하신 물품이 없습니다"
+                        expandRow={ expandRow } 
+                        pagination={ paginationFactory() }
+                        />
+                    </NoticeBoardTableStyle>
+                </Card.Body>
+            </Card>
             </div>
         );
     }
@@ -136,4 +204,22 @@ export class NoticeUnit_3 extends React.Component {
         </div>
         );
     }
+}
+
+export class NoticeContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          state_name:null,
+        }
+    }
+      
+    render() {
+        return (
+          <div>
+            질문: {this.props.noticeTitle}<br/><br/>
+            답변: {this.props.noticeContent}
+          </div>
+        );
+      }    
 }

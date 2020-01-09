@@ -10,6 +10,7 @@ import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, setTokenHeader, basePort } from "../module_base_component/AuthService"
 import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
     } from 'react-bootstrap';
+import BootstrapTable from 'react-bootstrap-table-next';
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -19,7 +20,7 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const QuestionBoardContainer = styled(BaseAppContainer)`
-  height: calc(100vh);
+  height: calc(150vh);
 `;
 
 export class QuestionBoard extends React.Component{
@@ -156,6 +157,50 @@ export class CompleteSendEmail extends React.Component{
       }    
 }
 
+const columnsQuestionBoard = [
+    {
+      dataField: 'questionNr',
+      text: '번호',
+      headerStyle: (colum, colIndex) => {
+        return { width: '60px', textAlign: 'center' };
+      }
+    },{
+      dataField: 'questionTitle',
+      text: '제목',
+    },{
+      dataField: 'questionDate',
+      text: '날짜',
+      headerStyle: (colum, colIndex) => {
+        return { width: '100px', textAlign: 'center' };
+      }
+    }, {
+      dataField: 'questionState',
+      text: '답변상태',
+      headerStyle: (colum, colIndex) => {
+        return { width: '100px', textAlign: 'center' };
+      }
+    },
+  ];
+const data = [
+    {"questionNr":"1",
+      "questionTitle":"배송문의",
+      "answer":"배송함",
+      "questionDate":"2019-01-06",
+      "questionState":"미답변",
+    },
+    {"questionNr":"2",
+    "questionTitle":"구매문의",
+    "answer":"구매함",
+    "questionDate":"2019-01-09",
+    "questionState":"답변완료",
+  },
+]
+
+const QuestionBoardTableStyle = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 13px;
+`;
 
 export class SendEmail extends React.Component{
     constructor(props) {
@@ -200,6 +245,15 @@ export class SendEmail extends React.Component{
     }
       
       render() {
+        const expandRow = {
+            onlyOneExpanding: true,
+            renderer: row => (
+              <div>
+                <QuestionContent questionTitle={row.questionTitle}
+                    answer={row.answer}/>
+              </div>
+            )
+        };
         return (
           <div>
             <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
@@ -248,6 +302,40 @@ export class SendEmail extends React.Component{
             </Button>
             </Card.Body>
             </Card>
+
+
+            <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
+                <Card.Header>문의리스트
+                </Card.Header>
+                <Card.Body>
+                    <QuestionBoardTableStyle>
+                    <BootstrapTable keyField='questionNr'  
+                        data={ data } 
+                        columns={ columnsQuestionBoard } 
+                        bordered={ true }  
+                        //noDataIndication="주문하신 물품이 없습니다"
+                        expandRow={ expandRow }  />
+                    </QuestionBoardTableStyle>
+                </Card.Body>
+            </Card>
+          </div>
+        );
+      }    
+}
+
+export class QuestionContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          state_name:null,
+        }
+    }
+      
+    render() {
+        return (
+          <div>
+            질문: {this.props.questionTitle}<br/><br/>
+            답변: {this.props.answer}
           </div>
         );
       }    
