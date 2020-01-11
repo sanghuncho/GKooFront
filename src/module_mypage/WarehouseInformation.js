@@ -10,13 +10,21 @@ function CaptionMypageTable(props) {
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
 }
 
+// const MyPageBodyTableStyle = styled.div`
+//   margin-top: 25px;
+//   margin-bottom:25px;
+//   width: 290px;
+//   background: #FFFFFF;
+//   padding: 0px 5px 5px 5px;
+//   box-shadow: 2px 2px 3px 3px #888; 
+//   font-size: 13px;
+// `;
 const MyPageBodyTableStyle = styled.div`
-  margin-top: 25px;
-  margin-bottom:25px;
+  margin-top: 10px;
+  margin-bottom:10px;
   width: 290px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
-  box-shadow: 2px 2px 3px 3px #888; 
   font-size: 13px;
 `;
 
@@ -71,7 +79,7 @@ export class WarehouseInformation extends React.Component{
         return (
           <div>
             <MyPageBodyTableStyle>
-                <CaptionMypageTable title="입고 현황"/>
+                {/* <CaptionMypageTable title="입고 현황"/> */}
                 <BootstrapTable keyField='objectId'  
                     // data={ this.props.userAccount } 
                     data={ this.props.warehouseInformation } 

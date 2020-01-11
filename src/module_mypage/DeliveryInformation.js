@@ -4,12 +4,11 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, Modal } from "react-bootstrap"
 
 const MyPageBodyTableStyle = styled.div`
-  margin-top: 25px;
-  margin-bottom:25px;
+  margin-top: 10px;
+  margin-bottom:10px;
   width: 290px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
-  box-shadow: 2px 2px 3px 3px #888; 
   font-size: 13px;
 `;
 
@@ -75,12 +74,12 @@ export class DeliveryInformation extends React.Component{
         return (
           <div>
             <MyPageBodyTableStyle>
-              <CaptionMypageTable title="배송 현황"/>
+              {/* <CaptionMypageTable title="배송 현황"/> */}
               <BootstrapTable keyField='objectId'  
                 data={ this.props.deliveryKoreaData } 
                 //data={ data } 
                 columns={ columnsDelivery } 
-                hover bordered={ false } 
+                hover bordered={ true } 
                 // rowEvents={ rowEvents } 
                 noDataIndication="Table is empty"  />
             </MyPageBodyTableStyle></div>

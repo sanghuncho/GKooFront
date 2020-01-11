@@ -105,7 +105,7 @@ const data = [
             ]
 
 const CaptionBaseInfo = () => <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
-  padding: '0.5em', fontWeight:'bold' }}>이용현황</h6>;
+  padding: '0.5em', fontWeight:'bold' }}>배송대행 이용현황</h6>;
 
 const expandRowA = {
     renderer: row => (
@@ -143,7 +143,7 @@ export class OrderInformation extends React.Component {
       <div>
         <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
         <Card.Header>
-          이용 현황
+          배송대행 이용현황
         </Card.Header>
         {/* <TabsStyle> */}
         <Card.Body >

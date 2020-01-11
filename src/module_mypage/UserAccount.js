@@ -153,21 +153,30 @@ export class UserAccount extends React.Component{
         {/* 전체메뉴 */}
         <OrderInformation orderInformation={this.props.orderInformation}/>
 
-        <CardGroup style={{ width:'80%'}}>
-        <Card >
+        <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
+        <Card border="dark">
+          <Card.Header>
+            입고 현황
+          </Card.Header>
           <Card.Body>
           {/* 입고 현황 */}
-          <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
+            <WarehouseInformation warehouseInformation={this.props.warehouseInformation}
                                 accessToken={this.props.accessToken}/>
           </Card.Body>
         </Card>
-        <Card>
+        <Card border="dark">
+          <Card.Header>
+            결제 현황
+          </Card.Header>
           <Card.Body>
           {/* 결제 현황 */}  
           <PaymentInformation paymentData={this.props.paymentData}/>
           </Card.Body>
         </Card>
-        <Card>
+        <Card border="dark">
+          <Card.Header>
+            배송 현황
+          </Card.Header>
           <Card.Body>
           {/* 배송 현황 */}
           <DeliveryInformation deliveryKoreaData={this.props.deliveryKoreaData}/>

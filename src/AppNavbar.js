@@ -44,6 +44,7 @@ export class AppNavbar extends React.Component{
                     <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/mypage'>
                         <Text>마이페이지</Text>
                     </NavLink>
+                    
                 </Nav>
                 {this.props.children}
             </Navbar>
