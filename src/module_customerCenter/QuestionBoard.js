@@ -11,6 +11,7 @@ import { keycloakConfigLocal, headers, setTokenHeader, basePort } from "../modul
 import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
     } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -20,7 +21,7 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const QuestionBoardContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  height: calc(180vh);
 `;
 
 export class QuestionBoard extends React.Component{
@@ -39,12 +40,12 @@ export class QuestionBoard extends React.Component{
         keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
             accessToken:keycloak.token})
-            //this.fetchQuestionReplyData(keycloak.token)
+            //this.fetchQuestionAnswerData(keycloak.token)
          
         })
     }
 
-    fetchQuestionReplyData(token){
+    fetchQuestionAnswer(token){
 
     }
 
@@ -90,41 +91,45 @@ export class QuestionBoardWrapper extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            dispatchedEmail:false,
+            dispatchedQuestion:false,
         }
-        this.handleDispatchEmail = this.handleDispatchEmail.bind(this)
+        this.handleDispatchQuestion = this.handleDispatchQuestion.bind(this)
         this.handleCompleted = this.handleCompleted.bind(this)
       }
 
-    handleDispatchEmail(event){
-        this.setState({dispatchedEmail:true})
+    handleDispatchQuestion(event){
+        this.setState({dispatchedQuestion:true})
     }
 
     handleCompleted(){
-        this.setState({dispatchedEmail:false})
+        this.setState({dispatchedQuestion:false})
     }
       
     render() {
-        const dispatchedEmail = this.state.dispatchedEmail
-        let questionBoardWrapper;
+        const dispatchedQuestion = this.state.dispatchedQuestion
+        let questionRegisterFormWrapper;
 
-        if(dispatchedEmail){
-            questionBoardWrapper = <CompleteSendEmail handleCompleted={this.handleCompleted}/>
+        if(dispatchedQuestion){
+            questionRegisterFormWrapper = <CompleteRegisterQuestion handleCompleted={this.handleCompleted}/>
         } else {
-            questionBoardWrapper = <SendEmail keycloak ={this.props.keycloakAuth}
-                handleDispatchEmail={this.handleDispatchEmail}
+            questionRegisterFormWrapper = <RegisterQuestion keycloak ={this.props.keycloakAuth}
+                handleDispatchQuestion={this.handleDispatchQuestion}
                 />
         }
 
         return (
           <div>
-              {questionBoardWrapper}
+              {/* 질문 등록 */}
+              {questionRegisterFormWrapper}
+
+                {/* 질문 답변 게시판 */}
+              <QuestionAnswerBoard/>
           </div>
         );
       }    
 }
 
-export class CompleteSendEmail extends React.Component{
+export class CompleteRegisterQuestion extends React.Component{
     constructor(props) {
         super(props);
         this.handleCompleted = this.handleCompleted.bind(this)
@@ -184,13 +189,15 @@ const columnsQuestionBoard = [
 const data = [
     {"questionNr":"1",
       "questionTitle":"배송문의",
-      "answer":"배송함",
+      "questionContent":"배송이 언제 오나요?",
+      "answerContent":"배송함",
       "questionDate":"2019-01-06",
       "questionState":"미답변",
     },
     {"questionNr":"2",
     "questionTitle":"구매문의",
-    "answer":"구매함",
+    "questionContent":"구매물품이 언제 오나요?",
+    "answerContent":"구매함",
     "questionDate":"2019-01-09",
     "questionState":"답변완료",
   },
@@ -202,11 +209,11 @@ const QuestionBoardTableStyle = styled.div`
   font-size: 13px;
 `;
 
-export class SendEmail extends React.Component{
+export class RegisterQuestion extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            sendEmail:false,
+            registerdQuestion:false,
             questionTitle:'',
             questionContent:'',
         }
@@ -225,13 +232,13 @@ export class SendEmail extends React.Component{
 
     handleCreate(accessToken, questionBoardData){
         setTokenHeader(accessToken)
-        fetch(basePort + '/createFavoriteAddress', 
+        fetch(basePort + '/registerQuestion', 
                 {method:'post', headers, 
                   body:JSON.stringify(questionBoardData)})
-        this.props.handleDispatchEmail()
+        this.props.handleDispatchQuestion()
     }
 
-    handleSendEmnail(event){
+    handleRegisterQuestion(event){
         var questionBoardObject = {
             questionTitle:this.state.questionTitle,
             questionContent:this.state.questionContent,
@@ -245,15 +252,7 @@ export class SendEmail extends React.Component{
     }
       
       render() {
-        const expandRow = {
-            onlyOneExpanding: true,
-            renderer: row => (
-              <div>
-                <QuestionContent questionTitle={row.questionTitle}
-                    answer={row.answer}/>
-              </div>
-            )
-        };
+       
         return (
           <div>
             <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
@@ -297,25 +296,90 @@ export class SendEmail extends React.Component{
             <Button size="sm" 
                 variant='secondary' 
                 style={{  marginLeft:'45%', fontSize:'14px'}}
-                onClick={(e) => this.handleSendEmnail(e)}
+                onClick={(e) => this.handleRegisterQuestion(e)}
             >문의하기
             </Button>
             </Card.Body>
             </Card>
 
+           
+          </div>
+        );
+      }    
+}
 
-            <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
+const QuestionAnswerBoardTableStyle = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 13px;
+`;
+export class QuestionAnswerBoard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showContent:false,
+            questionTitle:'', 
+            questionContent:'',
+            answerContent:'',
+            questionDate:'',
+            questionState:''
+        }
+        this.handleCompleted = this.handleCompleted.bind(this)
+    }
+
+    handleCompleted(){
+        this.setState({showContent:false})
+    }
+      
+    render() {
+
+        const selectRow = {
+            mode: 'checkbox',
+            clickToSelect: true,
+            hideSelectColumn: true,
+            onSelect: (row, isSelect, rowIndex, e) => {
+                this.setState({showContent:true, 
+                    questionTitle:row.questionTitle, 
+                    questionContent:row.questionContent,
+                    answerContent:row.answerContent,
+                    questionDate:row.questionDate,
+                    questionState:row.questionState
+                })
+                console.log(rowIndex)
+                console.log(row.questionContent)
+            },
+        };
+
+        let questionAnswerBoardWrapper;
+
+        if(this.state.showContent){
+            questionAnswerBoardWrapper = <QuestionAnswerContent 
+                questionTitle={this.state.questionTitle} 
+                questionContent={this.state.questionContent}
+                answerContent={this.state.answerContent}
+                questionDate={this.state.questionDate}
+                questionState={this.state.questionState}
+                handleCompleted={this.handleCompleted}
+                />
+        } else {
+            questionAnswerBoardWrapper = <BootstrapTable keyField='questionNr'  
+            data={ data } 
+            columns={ columnsQuestionBoard } 
+            bordered={ true }   
+            selectRow={ selectRow }
+            pagination={paginationFactory()}
+            />
+        }
+
+        return (
+          <div>
+             <Card border="dark" style={{ width:'70%', marginTop:'1rem', marginLeft:'1rem' }}>
                 <Card.Header>문의리스트
                 </Card.Header>
                 <Card.Body>
-                    <QuestionBoardTableStyle>
-                    <BootstrapTable keyField='questionNr'  
-                        data={ data } 
-                        columns={ columnsQuestionBoard } 
-                        bordered={ true }  
-                        //noDataIndication="주문하신 물품이 없습니다"
-                        expandRow={ expandRow }  />
-                    </QuestionBoardTableStyle>
+                    <QuestionAnswerBoardTableStyle>
+                       {questionAnswerBoardWrapper}
+                    </QuestionAnswerBoardTableStyle>
                 </Card.Body>
             </Card>
           </div>
@@ -323,20 +387,74 @@ export class SendEmail extends React.Component{
       }    
 }
 
-export class QuestionContent extends React.Component {
+{/* QuestionContent Style */}
+const QuestionContentStyle = {
+    width:'90%', height:'15rem', marginTop:'1rem', marginLeft:'1rem', marginRight:'1rem', marginBottom:'2rem'
+};
+
+const COMPLETE_ANSWER = "답변완료"
+export class QuestionAnswerContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          state_name:null,
         }
+        this.handleCompleted = this.handleCompleted.bind(this)
+    }
+
+    handleCompleted(){
+        this.props.handleCompleted()
     }
       
     render() {
+        const questionState = this.props.questionState
+        let answerContent
+
+        if(questionState == COMPLETE_ANSWER){
+            answerContent = <AnswerContent answerContent={this.props.answerContent} 
+                />
+        } else {
+            answerContent = ''
+        }
+
         return (
           <div>
-            질문: {this.props.questionTitle}<br/><br/>
-            답변: {this.props.answer}
+            <Card style={QuestionContentStyle}>
+            <Card.Body>
+                <Card.Title style={{fontSize:'16px'}}>문의사항: {this.props.questionTitle} </Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">{this.props.questionDate}</Card.Subtitle>
+                <Card.Text style={{marginTop:'2rem'}}>
+                    {this.props.questionContent}
+                </Card.Text>
+                {/* <Card.Link href="#">Card Link</Card.Link> */}
+            </Card.Body>
+            </Card>
+            
+            {/* show the content of answer, if it has answered form the manager */}
+            {answerContent}
+
+            <Button size="sm" 
+                        variant='secondary' 
+                        style={{position:'absolute', marginTop:'5px', bottom:10, left:'45%', fontSize:'14px'}}
+                        onClick={(e) => this.handleCompleted(e)}
+                    >닫기
+            </Button>
           </div>
         );
       }    
 }
+
+function AnswerContent(props) {
+  
+    return (
+      <div>
+        <Card style={QuestionContentStyle}>
+        <Card.Body>
+        <Card.Subtitle className="mb-2 text-muted">답변내용</Card.Subtitle>    
+        <Card.Text style={{marginTop:'2rem'}}>
+            {props.answerContent}
+        </Card.Text>
+        </Card.Body>
+        </Card>
+      </div>
+    );
+  }

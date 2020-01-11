@@ -17,7 +17,7 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const NoticePaneContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+  height: calc(200vh);
 `;
 
 /** 공지사항  */
@@ -72,19 +72,19 @@ const data = [
     {
       "noticeNr":"1",
       "noticeTitle":"신년배송안내",
-      "noticeContent":"새해에는 ..",
+      "noticeContent":"새해에는 1",
       "noticeDate":"2019-01-06",
     },
     {
     "noticeNr":"2",
     "noticeTitle":"배송비 안내",
-    "noticeContent":"새해에는 ..",
+    "noticeContent":"새해에는 2",
     "noticeDate":"2019-01-09",
     },
     {
         "noticeNr":"3",
         "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ..",
+        "noticeContent":"새해에는 ",
         "noticeDate":"2019-01-06",
       },
       {
@@ -150,53 +150,53 @@ const NoticeBoardTableStyle = styled.div`
 `;
 
 export class NoticePaneWrapper extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showContent:false,
+            noticeTitle:'',
+            noticeContent:'',
+            noticeDate:'',
+        }
+        this.handleCompleted = this.handleCompleted.bind(this)
+      }
+
+    handleCompleted(){
+        this.setState({showContent:false})
+    }
     
     render() {
-        const expandRow = {
-            onlyOneExpanding: true,
-            renderer: row => (
-                <div>
-                <NoticeContent noticeTitle={row.noticeTitle}
-                    noticeContent={row.noticeContent}/>
-              </div>
-            )
-        };
-        
-        const [showContent, setShowContent] = useState(false);
         
         const selectRow = {
             mode: 'checkbox',
             clickToSelect: true,
             hideSelectColumn: true,
             onSelect: (row, isSelect, rowIndex, e) => {
-              console.log(row.noticeNr);
-              console.log(isSelect);
-              console.log(rowIndex);
-              //console.log(e);
+                this.setState({showContent:true, 
+                    noticeTitle:row.noticeTitle, 
+                    noticeContent:row.noticeContent,
+                    noticeDate:row.noticeDate,
+                })
             },
-            // onSelectAll: (isSelect, rows, e) => {
-            //   console.log(isSelect);
-            //   console.log(rows);
-            //   console.log(e);
-            // }
         };
 
-        // const doShowContent = this.state.showContent
-        // let noticeBoardWrapper;
+        let noticeBoardWrapper;
 
-        // if(doShowContent){
-        //     noticeBoardWrapper = <NoticeContent />
-        // } else {
-        //     noticeBoardWrapper = 
-        //     <BootstrapTable keyField='noticeNr'  
-        //         data={ data } 
-        //         columns={ columnsNoticeBoard } 
-        //         bordered={ true }  
-                
-        //         selectRow={ selectRow }
-        //         pagination={paginationFactory()}
-        //     />
-        // }
+        if(this.state.showContent){
+            noticeBoardWrapper = <NoticeContent noticeTitle={this.state.noticeTitle} 
+                noticeContent={this.state.noticeContent}
+                noticeDate={this.state.noticeDate}
+                handleCompleted={this.handleCompleted}
+                />
+        } else {
+            noticeBoardWrapper = <BootstrapTable keyField='noticeNr'  
+            data={ data } 
+            columns={ columnsNoticeBoard } 
+            bordered={ true }   
+            selectRow={ selectRow }
+            pagination={paginationFactory()}
+            />
+        }
 
         return (
             <div>
@@ -208,12 +208,12 @@ export class NoticePaneWrapper extends React.Component {
                     </Row>
                 </Container>
 
-                <Card border="dark" style={{ width:'70%', height:'40rem', marginTop:'1rem', marginLeft:'1rem' }}>
+                <Card border="dark" style={{ width:'70%', marginTop:'1rem', marginLeft:'1rem' }}>
                 <Card.Header>공지사항 리스트
                 </Card.Header>
                 <Card.Body>
                     <NoticeBoardTableStyle>
-                        <noticeBoardWrapper/>
+                        {noticeBoardWrapper}
                     </NoticeBoardTableStyle>
                 </Card.Body>
             </Card>
@@ -222,19 +222,43 @@ export class NoticePaneWrapper extends React.Component {
     }
 }
 
+{/* NoticeContent Style */}
+const noticeContentStyle = {
+    width:'90%', marginTop:'1rem', marginLeft:'1rem', marginRight:'1rem', marginBottom:'2rem'
+};
 export class NoticeContent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
           state_name:null,
         }
+        this.handleCompleted = this.handleCompleted.bind(this)
+    }
+
+    handleCompleted(){
+        this.props.handleCompleted()
     }
       
     render() {
         return (
           <div>
-            질문: {this.props.noticeTitle}<br/><br/>
-            답변: {this.props.noticeContent}
+            <Card style={noticeContentStyle}>
+            <Card.Body>
+                <Card.Title>공지사항: {this.props.noticeTitle} </Card.Title>
+                <Card.Subtitle className="mb-2 text-muted">{this.props.noticeDate}</Card.Subtitle>
+                <Card.Text style={{marginTop:'2rem'}}>
+                    {this.props.noticeContent}
+                </Card.Text>
+                {/* <Card.Link href="#">Card Link</Card.Link> */}
+            </Card.Body>
+            </Card>
+            
+            <Button size="sm" 
+                        variant='secondary' 
+                        style={{  position:'absolute',bottom:5, left:'45%', fontSize:'14px', }}
+                        onClick={(e) => this.handleCompleted(e)}
+                    >닫기
+            </Button>
           </div>
         );
       }    
@@ -290,7 +314,7 @@ export class NoticeUnit_3 extends React.Component {
           
         };
     
-        this.handleMoveToLink    = this.handleMoveToLink.bind(this);
+        this.handleMoveToLink = this.handleMoveToLink.bind(this);
     }
 
     handleMoveToLink(){
