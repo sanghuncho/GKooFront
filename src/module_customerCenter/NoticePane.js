@@ -3,7 +3,7 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
 } from "../container";
-import React, { Component } from 'react';
+import React, {useState} from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { CustomerCenterNavbar } from './CustomerCenterIntro'
 import { Table, Image, Button, Card, CardGroup, Container, Row, Col } from "react-bootstrap"
@@ -81,6 +81,66 @@ const data = [
     "noticeContent":"새해에는 ..",
     "noticeDate":"2019-01-09",
     },
+    {
+        "noticeNr":"3",
+        "noticeTitle":"신년배송안내",
+        "noticeContent":"새해에는 ..",
+        "noticeDate":"2019-01-06",
+      },
+      {
+      "noticeNr":"4",
+      "noticeTitle":"배송비 안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-09",
+      },
+      {
+        "noticeNr":"5",
+        "noticeTitle":"신년배송안내",
+        "noticeContent":"새해에는 ..",
+        "noticeDate":"2019-01-06",
+      },
+      {
+      "noticeNr":"6",
+      "noticeTitle":"배송비 안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-09",
+      },
+      {
+        "noticeNr":"7",
+        "noticeTitle":"신년배송안내",
+        "noticeContent":"새해에는 ..",
+        "noticeDate":"2019-01-06",
+      },
+      {
+      "noticeNr":"8",
+      "noticeTitle":"배송비 안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-09",
+      },
+      {
+        "noticeNr":"9",
+        "noticeTitle":"신년배송안내",
+        "noticeContent":"새해에는 ..",
+        "noticeDate":"2019-01-06",
+      },
+      {
+      "noticeNr":"10",
+      "noticeTitle":"배송비 안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-09",
+      },
+      {
+        "noticeNr":"11",
+        "noticeTitle":"신년배송안내",
+        "noticeContent":"새해에는 ..",
+        "noticeDate":"2019-01-06",
+      },
+      {
+      "noticeNr":"12",
+      "noticeTitle":"배송비 안내",
+      "noticeContent":"새해에는 ..",
+      "noticeDate":"2019-01-09",
+      },
 ]
 
 const NoticeBoardTableStyle = styled.div`
@@ -90,17 +150,36 @@ const NoticeBoardTableStyle = styled.div`
 `;
 
 export class NoticePaneWrapper extends React.Component {
-
+    
     render() {
         const expandRow = {
             onlyOneExpanding: true,
             renderer: row => (
-              <div>
+                <div>
                 <NoticeContent noticeTitle={row.noticeTitle}
                     noticeContent={row.noticeContent}/>
               </div>
             )
         };
+        
+        const [show, setShow] = useState(false);
+        
+        const selectRow = {
+            mode: 'checkbox',
+            clickToSelect: true,
+            hideSelectColumn: true,
+            onSelect: (row, isSelect, rowIndex, e) => {
+              console.log(row.id);
+              console.log(isSelect);
+              console.log(rowIndex);
+              //console.log(e);
+            },
+            // onSelectAll: (isSelect, rows, e) => {
+            //   console.log(isSelect);
+            //   console.log(rows);
+            //   console.log(e);
+            // }
+          };
         return (
             <div>
                 <Container style={noticePaneWrapperStyle} >
@@ -111,7 +190,7 @@ export class NoticePaneWrapper extends React.Component {
                     </Row>
                 </Container>
 
-                <Card border="dark" style={{ width:'70%', height:'28rem', marginTop:'1rem', marginLeft:'1rem' }}>
+                <Card border="dark" style={{ width:'70%', height:'40rem', marginTop:'1rem', marginLeft:'1rem' }}>
                 <Card.Header>공지사항 리스트
                 </Card.Header>
                 <Card.Body>
@@ -122,7 +201,8 @@ export class NoticePaneWrapper extends React.Component {
                         bordered={ true }  
                         //noDataIndication="주문하신 물품이 없습니다"
                         expandRow={ expandRow } 
-                        pagination={ paginationFactory() }
+                        selectRow={ selectRow }
+                        pagination={paginationFactory()}
                         />
                     </NoticeBoardTableStyle>
                 </Card.Body>
