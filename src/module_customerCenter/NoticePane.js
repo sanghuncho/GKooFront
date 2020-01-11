@@ -162,14 +162,14 @@ export class NoticePaneWrapper extends React.Component {
             )
         };
         
-        const [show, setShow] = useState(false);
+        const [showContent, setShowContent] = useState(false);
         
         const selectRow = {
             mode: 'checkbox',
             clickToSelect: true,
             hideSelectColumn: true,
             onSelect: (row, isSelect, rowIndex, e) => {
-              console.log(row.id);
+              console.log(row.noticeNr);
               console.log(isSelect);
               console.log(rowIndex);
               //console.log(e);
@@ -179,7 +179,25 @@ export class NoticePaneWrapper extends React.Component {
             //   console.log(rows);
             //   console.log(e);
             // }
-          };
+        };
+
+        // const doShowContent = this.state.showContent
+        // let noticeBoardWrapper;
+
+        // if(doShowContent){
+        //     noticeBoardWrapper = <NoticeContent />
+        // } else {
+        //     noticeBoardWrapper = 
+        //     <BootstrapTable keyField='noticeNr'  
+        //         data={ data } 
+        //         columns={ columnsNoticeBoard } 
+        //         bordered={ true }  
+                
+        //         selectRow={ selectRow }
+        //         pagination={paginationFactory()}
+        //     />
+        // }
+
         return (
             <div>
                 <Container style={noticePaneWrapperStyle} >
@@ -195,21 +213,31 @@ export class NoticePaneWrapper extends React.Component {
                 </Card.Header>
                 <Card.Body>
                     <NoticeBoardTableStyle>
-                    <BootstrapTable keyField='noticeNr'  
-                        data={ data } 
-                        columns={ columnsNoticeBoard } 
-                        bordered={ true }  
-                        //noDataIndication="주문하신 물품이 없습니다"
-                        expandRow={ expandRow } 
-                        selectRow={ selectRow }
-                        pagination={paginationFactory()}
-                        />
+                        <noticeBoardWrapper/>
                     </NoticeBoardTableStyle>
                 </Card.Body>
             </Card>
             </div>
         );
     }
+}
+
+export class NoticeContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          state_name:null,
+        }
+    }
+      
+    render() {
+        return (
+          <div>
+            질문: {this.props.noticeTitle}<br/><br/>
+            답변: {this.props.noticeContent}
+          </div>
+        );
+      }    
 }
 
 export class NoticeUnit_1 extends React.Component {
@@ -286,20 +314,3 @@ export class NoticeUnit_3 extends React.Component {
     }
 }
 
-export class NoticeContent extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-          state_name:null,
-        }
-    }
-      
-    render() {
-        return (
-          <div>
-            질문: {this.props.noticeTitle}<br/><br/>
-            답변: {this.props.noticeContent}
-          </div>
-        );
-      }    
-}
