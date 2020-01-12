@@ -12,11 +12,18 @@ export const headers = {
     'Content-Type': 'application/json'
 }
 
+export const openHeaders = {
+  'Accept': 'application/json',
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*',
+  'enable-cors':'false'
+}
+
 export function setTokenHeader(token){
   headers ['Authorization'] = 'Bearer ' + token;
 }
 
-export const localPort = 'http://localhost:8888'
 export const basePort = 'http://localhost:8888'
+export const openBasePort = 'http://localhost:8889'
 
 export const INITIAL_PAGE = 'http://localhost:3000/'

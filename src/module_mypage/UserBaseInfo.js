@@ -2,7 +2,7 @@ import styled from "styled-components";
 import React from 'react';
 import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
 import { Link } from "react-router-dom";
-import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "./AuthService"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { Redirect } from 'react-router';
 
 export class UserBaseInfo extends React.Component{
@@ -23,17 +23,13 @@ export class UserBaseInfo extends React.Component{
         this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
       }
 
-      doEditUserBaseInfo(){
-        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
-      }
-      
-      componentDidMount() {
+      componentDidMount () {
         this.fetchUserBaseInfo(this.props.accessToken)
       }
 
-      // componentDidMount () {
-      //   this.fetchUserBaseInfo(this.props.accessToken)
-      // }
+      doEditUserBaseInfo(){
+        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
+      }
   
       fetchUserBaseInfo(token){
         setTokenHeader(token)

@@ -23,7 +23,7 @@ import { ShippingServiceInfo } from './module_shippingService_intro/ShippingServ
 import { ShippingServiceAddressPane } from './module_shippingService_intro/ShippingServiceAddressPane'
 
 import { CustomerCenterIntro } from './module_customerCenter/CustomerCenterIntro'
-import { NoticePane } from './module_customerCenter/NoticePane'
+import { NoticeBoard } from './module_customerCenter/NoticeBoard'
 import { QuestionBoard } from './module_customerCenter/QuestionBoard'
 
 import { MyPage } from './module_mypage/MyPage';
@@ -68,7 +68,7 @@ const Main = () => (
     
     {/* 고객센터 모둘 */}
     <Route exact path='/customercenterIntro' component={ CustomerCenterIntro }></Route> 
-    <Route exact path='/noticePane' component={ NoticePane }></Route> 
+    <Route exact path='/noticeBoard' component={ NoticeBoard }></Route> 
     <Route exact path='/questionBoard' component={ QuestionBoard }></Route> 
     
     {/* 마이페이지 모둘 */} 

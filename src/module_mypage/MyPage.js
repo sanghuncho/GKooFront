@@ -8,7 +8,7 @@ import {
   BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, localPort, setTokenHeader } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
@@ -111,7 +111,7 @@ export class MyPage extends React.Component{
 
     fetchOrderInformation(token){
       setTokenHeader(token)
-      fetch(localPort + '/orderinformation', {headers})
+      fetch(basePort + '/orderinformation', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -121,7 +121,7 @@ export class MyPage extends React.Component{
 
     fetchPaymentData(token){
       setTokenHeader(token)
-      fetch(localPort + '/paymentData', {headers})
+      fetch(basePort + '/paymentData', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -132,7 +132,7 @@ export class MyPage extends React.Component{
 
     fetchDeliveryKoreaData(token){
       setTokenHeader(token)
-      fetch(localPort + '/deliveryKoreaData', {headers})
+      fetch(basePort + '/deliveryKoreaData', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -143,7 +143,7 @@ export class MyPage extends React.Component{
 
     fetchWarehouseInformation(token){
       setTokenHeader(token)
-      fetch(localPort + '/warehouseinformation', {headers})
+      fetch(basePort + '/warehouseinformation', {headers})
         .then((result) => { 
            return result.json();
         }).then((data) => {
@@ -153,7 +153,7 @@ export class MyPage extends React.Component{
 
     fetchPurchaseOrderList(token){
       setTokenHeader(token)
-      fetch(localPort + '/purchaseOderList', {headers})
+      fetch(basePort + '/purchaseOderList', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -164,7 +164,7 @@ export class MyPage extends React.Component{
 
     fetchEndSettlementList(token){
       setTokenHeader(token)
-      fetch(localPort + '/endSettlementList', {headers})
+      fetch(basePort + '/endSettlementList', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -173,7 +173,7 @@ export class MyPage extends React.Component{
     }
 
     fetchPurchasedImage(){
-      fetch(localPort + '/getItemImage')
+      fetch(basePort + '/getItemImage')
         .then((response) => {
            return response.blob();
         }).then((data) => {
@@ -184,7 +184,7 @@ export class MyPage extends React.Component{
 
     fetchCustomerStatusData(token){
       setTokenHeader(token)
-      fetch('http://localhost:8888/customerstatus', {headers})
+      fetch(basePort + '/customerstatus', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {

@@ -39,9 +39,8 @@ export class QuestionBoard extends React.Component{
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
-            accessToken:keycloak.token})
+                accessToken:keycloak.token})
             //this.fetchQuestionAnswerData(keycloak.token)
-         
         })
     }
 
@@ -63,7 +62,8 @@ export class QuestionBoard extends React.Component{
         let questionBoard;
 
         if(this.validToken(token)){
-            questionBoard = <QuestionBoardWrapper keycloak ={this.state.keycloakAuth} />
+            questionBoard = <QuestionBoardWrapper keycloak ={this.state.keycloakAuth}
+                accessToken={this.state.accessToken} />
         } else {
             questionBoard = this.getEmptyPage
         }
@@ -95,7 +95,7 @@ export class QuestionBoardWrapper extends React.Component{
         }
         this.handleDispatchQuestion = this.handleDispatchQuestion.bind(this)
         this.handleCompleted = this.handleCompleted.bind(this)
-      }
+    }
 
     handleDispatchQuestion(event){
         this.setState({dispatchedQuestion:true})
@@ -114,6 +114,7 @@ export class QuestionBoardWrapper extends React.Component{
         } else {
             questionRegisterFormWrapper = <RegisterQuestion keycloak ={this.props.keycloakAuth}
                 handleDispatchQuestion={this.handleDispatchQuestion}
+                accessToken={this.props.accessToken}
                 />
         }
 
@@ -219,6 +220,7 @@ export class RegisterQuestion extends React.Component{
         }
         this.handleInputQuestionTitle = this.handleInputQuestionTitle.bind(this)
         this.handleInputQuestionContent = this.handleInputQuestionContent.bind(this)
+        this.handleRegisterQuestion = this.handleRegisterQuestion.bind(this)
     }
 
 
@@ -230,28 +232,40 @@ export class RegisterQuestion extends React.Component{
         this.setState({questionContent:event.target.value})
     }
 
-    handleCreate(accessToken, questionBoardData){
-        setTokenHeader(accessToken)
-        fetch(basePort + '/registerQuestion', 
-                {method:'post', headers, 
-                  body:JSON.stringify(questionBoardData)})
-        this.props.handleDispatchQuestion()
-    }
-
     handleRegisterQuestion(event){
+        {/* 질문 등록전 곱하기 계산 결과 넣기  */}
         var questionBoardObject = {
             questionTitle:this.state.questionTitle,
             questionContent:this.state.questionContent,
-          }
-          
+        }
+        
         const questionBoardData =  [
             {questionBoardData: JSON.stringify(questionBoardObject)}
         ]
 
-        this.handleCreate(this.props.accessToken, questionBoardData)
+        {/* 질문 제목, 내용 체크 */}
+        if(questionBoardObject.questionTitle && questionBoardObject.questionContent){
+            this.handleCreateQuestion(this.props.accessToken, questionBoardData)
+        } else {
+            console.log("bad")
+        }
     }
-      
-      render() {
+    
+    handleCreateQuestion(accessToken, questionBoardData){
+        this.setTokenHeader(accessToken)
+        fetch(basePort + '/registerQuestion', 
+                {method:'post', headers, 
+                  body:JSON.stringify(questionBoardData)})
+        
+        {/* 질문 창 닫기 */}
+        this.props.handleDispatchQuestion()
+    }
+    
+    setTokenHeader(token){
+        headers ['Authorization'] = 'Bearer ' + token;
+    }
+
+    render() {
        
         return (
           <div>

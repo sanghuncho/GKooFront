@@ -3,13 +3,14 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
 } from "../container";
-import React, {useState} from 'react';
+import React from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { CustomerCenterNavbar } from './CustomerCenterIntro'
 import { Table, Image, Button, Card, CardGroup, Container, Row, Col } from "react-bootstrap"
 import GKoo_Intro_Banner_Org  from '../assets/Gkoo_Intro_Banner_Org.jpg'
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { openHeaders, openBasePort } from "../module_base_component/AuthService"
 
 /** NoticePane Style */
 export const BodyContainer = styled(BaseAppContainer)`
@@ -21,7 +22,7 @@ const NoticePaneContainer = styled(BaseAppContainer)`
 `;
 
 /** 공지사항  */
-export class NoticePane extends React.Component {
+export class NoticeBoard extends React.Component {
 
     render() {
         return (
@@ -52,7 +53,7 @@ const noticePaneWrapperStyle = {
 
 const columnsNoticeBoard = [
     {
-      dataField: 'noticeNr',
+      dataField: 'noticeid',
       text: '번호',
       headerStyle: (colum, colIndex) => {
         return { width: '60px', textAlign: 'center' };
@@ -67,7 +68,8 @@ const columnsNoticeBoard = [
         return { width: '100px', textAlign: 'center' };
       }
     }
-  ];
+];
+
 const data = [
     {
       "noticeNr":"1",
@@ -81,66 +83,6 @@ const data = [
     "noticeContent":"새해에는 2",
     "noticeDate":"2019-01-09",
     },
-    {
-        "noticeNr":"3",
-        "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ",
-        "noticeDate":"2019-01-06",
-      },
-      {
-      "noticeNr":"4",
-      "noticeTitle":"배송비 안내",
-      "noticeContent":"새해에는 ..",
-      "noticeDate":"2019-01-09",
-      },
-      {
-        "noticeNr":"5",
-        "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ..",
-        "noticeDate":"2019-01-06",
-      },
-      {
-      "noticeNr":"6",
-      "noticeTitle":"배송비 안내",
-      "noticeContent":"새해에는 ..",
-      "noticeDate":"2019-01-09",
-      },
-      {
-        "noticeNr":"7",
-        "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ..",
-        "noticeDate":"2019-01-06",
-      },
-      {
-      "noticeNr":"8",
-      "noticeTitle":"배송비 안내",
-      "noticeContent":"새해에는 ..",
-      "noticeDate":"2019-01-09",
-      },
-      {
-        "noticeNr":"9",
-        "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ..",
-        "noticeDate":"2019-01-06",
-      },
-      {
-      "noticeNr":"10",
-      "noticeTitle":"배송비 안내",
-      "noticeContent":"새해에는 ..",
-      "noticeDate":"2019-01-09",
-      },
-      {
-        "noticeNr":"11",
-        "noticeTitle":"신년배송안내",
-        "noticeContent":"새해에는 ..",
-        "noticeDate":"2019-01-06",
-      },
-      {
-      "noticeNr":"12",
-      "noticeTitle":"배송비 안내",
-      "noticeContent":"새해에는 ..",
-      "noticeDate":"2019-01-09",
-      },
 ]
 
 const NoticeBoardTableStyle = styled.div`
@@ -153,13 +95,31 @@ export class NoticePaneWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            keycloakAuth:null,
+            accessToken:"",
+            notices:'',
             showContent:false,
             noticeTitle:'',
             noticeContent:'',
             noticeDate:'',
         }
         this.handleCompleted = this.handleCompleted.bind(this)
-      }
+        //this.fetchNotices = this.fetchNotices.bind(this)
+    }
+
+    componentDidMount() {
+        this.fetchNotices()
+    }
+
+    fetchNotices(){
+        fetch(openBasePort + '/getNoticeList', {openHeaders})
+          .then((result) => { 
+             return result.json();
+          }).then((data) => {
+            console.log(data)
+            this.setState( { notices: data } )
+          })   
+    }
 
     handleCompleted(){
         this.setState({showContent:false})
@@ -189,8 +149,8 @@ export class NoticePaneWrapper extends React.Component {
                 handleCompleted={this.handleCompleted}
                 />
         } else {
-            noticeBoardWrapper = <BootstrapTable keyField='noticeNr'  
-            data={ data } 
+            noticeBoardWrapper = <BootstrapTable keyField='noticeid'  
+            data={ this.state.notices } 
             columns={ columnsNoticeBoard } 
             bordered={ true }   
             selectRow={ selectRow }

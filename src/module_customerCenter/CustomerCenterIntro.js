@@ -95,7 +95,7 @@ export class CustomerCenterNavbar extends React.Component{
                     <SideNav theme={Theme} onItemSelection={this.onItemSelection}>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/noticePane' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/noticeBoard' >
                             <IconCnt>
                                 <Icon icon={bullseye} />
                             </IconCnt>
