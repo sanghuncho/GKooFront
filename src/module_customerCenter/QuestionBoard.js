@@ -21,7 +21,7 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const QuestionBoardContainer = styled(BaseAppContainer)`
-  height: calc(180vh);
+  height: calc(150vh);
 `;
 
 export class QuestionBoard extends React.Component{
@@ -32,20 +32,27 @@ export class QuestionBoard extends React.Component{
             accessToken:"",
             questionTitle:'',
             questionContent:'',
+            questionAnswerList:[],
         }
-        //this.handleCancel = this.handleCancel.bind(this)
+        //this.fetchQuestionAnswer = this.fetchQuestionAnswer.bind(this)
     }
 
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, 
-                accessToken:keycloak.token})
-            //this.fetchQuestionAnswerData(keycloak.token)
+            this.setState({ keycloakAuth: keycloak, accessToken:keycloak.token}) 
+        this.fetchQuestionAnswerData(keycloak.token)
         })
     }
 
-    fetchQuestionAnswer(token){
-
+    fetchQuestionAnswerData(accessToken){
+        setTokenHeader(accessToken)
+        fetch(basePort + '/getQuestionAnswerList', {headers})
+            .then((result) => {
+               return result.json();
+            }).then((data) => {
+              this.setState( { questionAnswerList: data} )
+              console.log(data)
+        })
     }
 
     validToken(token){
@@ -63,7 +70,8 @@ export class QuestionBoard extends React.Component{
 
         if(this.validToken(token)){
             questionBoard = <QuestionBoardWrapper keycloak ={this.state.keycloakAuth}
-                accessToken={this.state.accessToken} />
+                accessToken={this.state.accessToken}
+                questionAnswerList={this.state.questionAnswerList} />
         } else {
             questionBoard = this.getEmptyPage
         }
@@ -99,6 +107,7 @@ export class QuestionBoardWrapper extends React.Component{
 
     handleDispatchQuestion(event){
         this.setState({dispatchedQuestion:true})
+        setTimeout(() => { window.location.reload()  }, 3000);
     }
 
     handleCompleted(){
@@ -124,7 +133,7 @@ export class QuestionBoardWrapper extends React.Component{
               {questionRegisterFormWrapper}
 
                 {/* 질문 답변 게시판 */}
-              <QuestionAnswerBoard/>
+              <QuestionAnswerBoard questionAnswerList={this.props.questionAnswerList}/>
           </div>
         );
       }    
@@ -165,7 +174,7 @@ export class CompleteRegisterQuestion extends React.Component{
 
 const columnsQuestionBoard = [
     {
-      dataField: 'questionNr',
+      dataField: 'qnaid',
       text: '번호',
       headerStyle: (colum, colIndex) => {
         return { width: '60px', textAlign: 'center' };
@@ -180,13 +189,30 @@ const columnsQuestionBoard = [
         return { width: '100px', textAlign: 'center' };
       }
     }, {
-      dataField: 'questionState',
+      dataField: 'answerState',
       text: '답변상태',
+      formatter:answerStateFormatter,
       headerStyle: (colum, colIndex) => {
         return { width: '100px', textAlign: 'center' };
       }
     },
   ];
+
+function answerStateFormatter(cell, row) {
+    
+    let answerState
+    if (cell === "READY_TO_ANSWER"){
+        answerState = "답변예정"
+    } else {
+        answerState = "답변완료"
+    }    
+    return (
+        <div>
+            {answerState}
+        </div>
+    );
+}
+
 const data = [
     {"questionNr":"1",
       "questionTitle":"배송문의",
@@ -376,12 +402,12 @@ export class QuestionAnswerBoard extends React.Component {
                 handleCompleted={this.handleCompleted}
                 />
         } else {
-            questionAnswerBoardWrapper = <BootstrapTable keyField='questionNr'  
-            data={ data } 
-            columns={ columnsQuestionBoard } 
-            bordered={ true }   
-            selectRow={ selectRow }
-            pagination={paginationFactory()}
+            questionAnswerBoardWrapper = <BootstrapTable keyField='qnaid'  
+                data={ this.props.questionAnswerList } 
+                columns={ columnsQuestionBoard } 
+                bordered={ true }   
+                selectRow={ selectRow }
+                pagination={paginationFactory()}
             />
         }
 
