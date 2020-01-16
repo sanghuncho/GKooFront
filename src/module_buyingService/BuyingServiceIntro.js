@@ -105,6 +105,16 @@ export class BuyingServiceNavbar extends React.Component{
                     </div>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/buyingServiceRegistration' >
+                            <IconCnt>
+                                <Icon icon={cube} />
+                            </IconCnt>
+                            <TextStyle>구매대행 신청</TextStyle>
+                        </NavLink>
+                    </NavLinkStyle>
+                    </div>
+                    {/* <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
+                    <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/buyingServiceEbay' >
                             <IconCnt>
                                 <Icon icon={cube} />
@@ -112,7 +122,7 @@ export class BuyingServiceNavbar extends React.Component{
                             <TextStyle>이베이 구매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
-                    </div>
+                    </div> */}
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/autionService' >

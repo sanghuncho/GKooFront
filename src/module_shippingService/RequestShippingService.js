@@ -34,8 +34,6 @@ const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 
-const FITST_ELEMENT = 0;
-
 export class RequestShippingService extends React.Component {
     constructor(props, context) {
         super(props, context);
@@ -75,10 +73,12 @@ export class RequestShippingService extends React.Component {
                 <ShippingServiceNavbar/>
                 
                 <BodyContainer>
+                    
                     <Breadcrumb>
                         <Breadcrumb.Item active>배송대행</Breadcrumb.Item>
                         <Breadcrumb.Item active>배송대행 신청</Breadcrumb.Item>
-                    </Breadcrumb> 
+                    </Breadcrumb>
+
                     <Card border="dark" style={{ width: '80%', height:'20rem', marginTop:'1rem'}}>
                         <Card.Header>서비스 신청시 주의사항</Card.Header>
                         <Card.Body style={{'height': '210px','overflow-y': 'scroll', fontSize:'14px'}}>
@@ -96,7 +96,7 @@ export class RequestShippingService extends React.Component {
                             <Form.Check style={{fontSize:'15px'}} type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
                         </Card.Footer>
                     </Card>
-                    {didAgreeWith?<ShippingCenter accessToken={this.state.accessToken}/>:""}
+                    {didAgreeWith ? <ShippingCenter accessToken={this.state.accessToken}/>:""}
                 </BodyContainer>
             </AppContainer>
         </div>
