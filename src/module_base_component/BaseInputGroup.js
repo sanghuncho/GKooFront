@@ -5,10 +5,8 @@ export class BaseInputGroup extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          //state_name:null,
         }
 
-      //this.handleMethod = this.handleMethod.bind(this)
     }
       
     render() {

@@ -6,23 +6,26 @@ import {
 import React, { Component } from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Breadcrumb, Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
-    OverlayTrigger, Modal } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, Button } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
 import { BaseInputGroup } from '../module_base_component/BaseInputGroup'
+import { BaseDropdown } from '../module_base_component/BaseDropdown'
+import { BaseProductPriceCalc } from '../module_base_component/BaseReactBootstrap'
 import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../module_base_style/baseStyle'
+import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './BuyingServiceConfig'
 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
-    {/* BuyingServiceRegistration Style */}
+{/* BuyingServiceRegistration Style */}
 export const BodyContainer = styled(BaseAppContainer)`
   height:auto;
   flex-direction: column;
 `;
+
 const BuyingServiceRegistrationContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+    height: auto;
 `;
 
 export class BuyingServiceRegistration extends React.Component{
@@ -65,6 +68,7 @@ export class BuyingServiceRegistration extends React.Component{
                 {/* 좌측 내비 */}
                 <BuyingServiceNavbar/>
                 
+                 {/* Todo show the content after authentification of Keycloak */}
                 <BodyContainer>
                     <Breadcrumb>
                         <Breadcrumb.Item active>구매대행</Breadcrumb.Item>
@@ -129,17 +133,14 @@ class BuyingServiceContentWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          state_name:null,
-        }
 
-      //this.handleMethod = this.handleMethod.bind(this)
+        }
     }
-      
+
     render() {
         return (
-          <div>
+          <div> 
             <ProductContentForm/>
-
           </div>
         );
       }    
@@ -150,17 +151,38 @@ export class ProductContentForm extends React.Component {
         super(props);
         this.state = {
             shopUrl:'',
+            categoryTitle:"선택",
+            categoryTitleList:CATEGORY_LIST,
+            itemTitle:"선택",
+            itemTitleList:ITEM_TITLE_LIST,
+            brandName:'',
+            itemName:'',
+            productPrice:"",
+            productAmount:"",
+            productTotalPrice:"",
+            productContentList:[],
         }
 
       this.handleChangeShopUrl = this.handleChangeShopUrl.bind(this)
+      this.handleAddproductOnList = this.handleAddproductOnList.bind(this)
+    }
+
+    componentDidMount() {
+        this.setState({
+            productContentList:[...this.state.productContentList, ""],
+        })
+    }
+
+    handleAddproductOnList(event){
+        this.setState({
+            productContentList:[...this.state.productContentList, ""],
+        })
     }
 
     handleChangeShopUrl(event){
         this.setState({shopUrl:event.target.value})
-        //this.state.deliveryObject.shopUrl = event.target.value
-        console.log(event.target.value)
     }
-      
+
     render() {
         return (
           <div>
@@ -177,15 +199,128 @@ export class ProductContentForm extends React.Component {
                         </Card.Body>
                     </Card>
 
-                    <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
-                        <Card.Header>상품</Card.Header>
-                        <Card.Body >
-                        
-                        </Card.Body>
-                    </Card> 
+                    {this.state.productContentList.map((itemName, index) => { return (
+                        <div key={index}>
+                        <ProductContent
+                            index={index}
+                        />
+                        </div>
+                    )})}
 
+                 <Button variant="secondary" size="sm" 
+                        onClick={(e) => this.handleAddproductOnList(e)} 
+                        style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>상품 추가</Button> 
+                        
                 </Card.Body>
             </Card>
+          </div>
+        );
+    }
+}
+
+export class ProductContent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            shopUrl:'',
+            categoryTitle:"선택",
+            categoryTitleList:CATEGORY_LIST,
+            itemTitle:"선택",
+            itemTitleList:ITEM_TITLE_LIST,
+            brandName:'',
+            itemName:'',
+            productPrice:"",
+            productAmount:"",
+            productTotalPrice:"",
+            productContentList:[],
+        }
+
+      this.handleChangeShopUrl = this.handleChangeShopUrl.bind(this)
+      this.handleSelectCategory = this.handleSelectCategory.bind(this)
+      this.handleSelectItem = this.handleSelectItem.bind(this)
+      this.handleChangeBrandName = this.handleChangeBrandName.bind(this)
+      this.handleChangeItemName = this.handleChangeItemName.bind(this)
+      this.handleChangeProductPrice = this.handleChangeProductPrice.bind(this)
+      this.handleChangeProductAmount = this.handleChangeProductAmount.bind(this)
+    }
+
+    handleChangeShopUrl(event){
+        this.setState({shopUrl:event.target.value})
+    }
+
+    handleSelectCategory(event, title) {
+        this.setState({categoryTitle:title})
+    }
+
+    handleSelectItem(event, item) {
+        this.setState({itemTitle:item})
+    }
+
+    handleChangeBrandName(event){
+        this.setState({brandName:event.target.value})
+    }
+
+    handleChangeItemName(event){
+        this.setState({itemName:event.target.value})
+    }
+
+    handleChangeProductPrice(event){
+        this.setState({productPrice:event.target.value})
+        this.setProductTotalPrice()
+    }
+
+    handleChangeProductAmount(event){
+        this.setState({productAmount:event.target.value})
+        this.setProductTotalPrice()
+    }
+
+    setProductTotalPrice(){
+        var price = this.state.productPrice
+        var amount = this.state.productAmount
+        this.setState({productTotalPrice:price*amount})
+    }
+
+    render() {
+        return (
+          <div>
+            <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
+                <Card.Header>상품</Card.Header>
+                <Card.Body>
+                <BaseDropdown
+                    label="카테고리"
+                    title={this.state.categoryTitle}
+                    titleList={this.state.categoryTitleList}
+                    handleSelectTitle={this.handleSelectCategory}
+                />
+
+                <BaseDropdown
+                    label="품목"
+                    title={this.state.itemTitle}
+                    titleList={this.state.itemTitleList}
+                    handleSelectTitle={this.handleSelectItem}
+                />
+
+                <BaseInputGroup 
+                label="브랜드(영문)"
+                placeholder="정확한 브랜드이름을 입력해주세요"
+                handleChangeInput={this.handleChangeBrandName}
+                />
+
+                <BaseInputGroup 
+                    label="상품명(영문)"
+                    placeholder="정확한 영문 상품명을 입력해주세요"
+                    handleChangeInput={this.handleChangeItemName}
+                />
+                            
+                <BaseProductPriceCalc
+                    handleChangeProductPrice={this.handleChangeProductPrice}
+                    handleChangeProductAmount={this.handleChangeProductAmount}
+                    price = {this.state.productPrice}
+                    amount = {this.state.productAmount}
+                />
+
+                </Card.Body>
+            </Card> 
           </div>
         );
       }    
