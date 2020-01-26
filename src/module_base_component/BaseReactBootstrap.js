@@ -41,6 +41,7 @@ export class BaseProductPriceCalc extends React.Component {
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             value={ this.props.price*this.props.amount }
                             readOnly = "true"
+                            onChange = {this.props.handleProductTotalPrice}
                             />
                         <InputGroup.Append>
                             <InputGroup.Text>(Euro)</InputGroup.Text>

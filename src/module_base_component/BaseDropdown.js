@@ -7,8 +7,6 @@ export class BaseDropdown extends React.Component {
         this.state = {
             //categoryTitle:"선택",
         }
-
-      //this.handleMethod = this.handleMethod.bind(this)
     }
       
     render() {

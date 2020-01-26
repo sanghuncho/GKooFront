@@ -23,6 +23,14 @@ export function setTokenHeader(token){
   headers ['Authorization'] = 'Bearer ' + token;
 }
 
+export function validToken(token){
+  return token === "" ? false : true
+}
+
+export function getEmptyPage(){
+  return ""
+}
+
 export const basePort = 'http://localhost:8888'
 export const openBasePort = 'http://localhost:8889'
 
