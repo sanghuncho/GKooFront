@@ -6,17 +6,24 @@ import {
 import React, { Component } from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Card, Form, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { Card, Form, InputGroup, Row, Col, Container, Button } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange } from 'react-icons-kit/fa/'
+import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
+
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, openBasePort, openHeaders, headers, setTokenHeader } from "../module_base_component/AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 {/* BuyingService Style */}
 export const BodyContainer = styled(BaseAppContainer)`
-  height:auto;
-  flex-direction: column;
+    height: calc(100vh);
+    flex-direction: column;
 `;
 const BuyingServiceContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+    height:auto;
 `;
 
 export class BuyingService extends React.Component{
@@ -43,90 +50,124 @@ export class BuyingServiceWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            buyingBoxList:[],
             showCalculationResult:false,
-            calculationResult:null,
-            productsValue:null
+            fasrEstimationResult:'',
+            productsValue:'',
+            productsValueValid:false,
+            deliveryValue:'',
+            deliveryValueValid:false,
         }
 
-      this.handleRemoveBuyingBoxOnList = this.handleRemoveBuyingBoxOnList.bind(this)
+      this.handleProductsValue = this.handleProductsValue.bind(this)
+      this.handleDeliveryValue = this.handleDeliveryValue.bind(this)
     }
 
-    componentDidMount() {
-        this.setState({
-            buyingBoxList:[...this.state.buyingBoxList, ""],
-          })
+    handleProductsValue(event){
+        let productsValue = event.target.value
+        let productsValueValid = productsValue > 0
+        this.setState({productsValue:productsValue, productsValueValid:productsValueValid})
     }
 
-    handleAddBuyingBoxOnList(event){
-        this.setState({
-            buyingBoxList:[...this.state.buyingBoxList, ""],
-        })
+    handleDeliveryValue(event){
+        let deliveryValue = event.target.value
+        let deliveryValueValid = deliveryValue >= 0
+        this.setState({deliveryValue:deliveryValue, deliveryValueValid:deliveryValueValid})
     }
 
-    handleRemoveBuyingBoxOnList(index){
-        this.state.buyingBoxList.splice(index, 1)
-        this.setState({ buyingBoxList:this.state.buyingBoxList })
+    handleGetFastEstimation(contents){
+        console.log(contents)
+        fetch(openBasePort + '/fastEstimationBuyingService', 
+                {method:'post', headers, 
+                  body:JSON.stringify(contents)})
+                .then((result) => { return result.json();})
+                .then((data) => {
+                    this.setState( { fasrEstimationResult: data} )
+                }).catch(err => err);
     }
 
     handleCalculation(){
-        var box = this.state.buyingBoxList[0]
-        this.setState({ productsValue:box.productsValue })
-        console.log(box.productsValue)
+        let productsValue = this.state.productsValue 
+        let deliveryValue = this.state.deliveryValue 
+        
+        const fastEstimationObject = [
+            {productsValue:productsValue},
+            {deliveryValue:deliveryValue},
+        ]
+        if (this.state.deliveryValueValid && this.state.productsValueValid){
+            console.log("valid values")
+            this.handleGetFastEstimation(fastEstimationObject)  
+        } else {
+            this.setState({fasrEstimationResult:''})
+        }
     }
       
     render() {
-        const sizeOnList = this.state.buyingBoxList.length
-        let heightBuyingServiceWrapper
-        heightBuyingServiceWrapper = 20*sizeOnList + 'rem'
-
-        let calculationResult = this.state.calculationResult
+        let fasrEstimationResult = getKoreanCurrencyWithInfoBadge(this.state.fasrEstimationResult.resultPrice)
         return (
           <div>
-            <Card border="dark" style={{ width:'70%', height:{heightBuyingServiceWrapper}, marginTop:'1rem', marginLeft:'1rem' }}>
+            <Card border="dark" style={{ width:'70%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
                 <Card.Header>구매대행 물품목록 작성
                 </Card.Header>
                     <Card.Body>
 
-                        {this.state.buyingBoxList.map((itemName, index) => { return (
-                            <div key={index}>
-                            <BuyingBox
-                                index={index}
-                                handleRemoveBuyingBoxOnList={this.handleRemoveBuyingBoxOnList}
-                                buyingBoxList = {this.state.buyingBoxList}
-                            />
-                            </div>
-                  )})}
+                        <Card border="dark" style={{ width: '90%', marginBottom:'5px'}}>
+                            <Card.Header>상품</Card.Header>
+                            <Card.Body >
+                            <InputGroup size="sm" style={{ width:'80%'}} className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
+                                        상품 가격
+                                    </InputGroup.Text>
+                                </InputGroup.Prepend>
+                                
+                                <Form.Control id="basic-url" aria-describedby="basic-addon3" 
+                                    placeholder="배송되는 박스기준 물품 전체가격을 유로로 기입해주세요"
+                                    onChange={this.handleProductsValue}
+                                    //type="text"
+                                    //isInvalid={warningInvalidItemName}
+                                />
+                            </InputGroup>
 
-                    <Button size="sm" 
-                        variant='secondary' 
-                        style={{  marginTop:'10px', marginLeft:'45%', fontSize:'14px'}}
-                        onClick={(e) => this.handleAddBuyingBoxOnList(e)}
-                    >상품 추가
-                    </Button>
-
-                    {/* <Button size="sm" 
-                        variant='secondary' 
-                        style={{  marginLeft:'45%', fontSize:'14px'}}
-                        onClick={(e) => this.handleSendEmnail(e)}
-                    >문의하기
-                    </Button> */}
+                            <InputGroup size="sm" style={{ width:'80%'}} className="mb-3">
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text id="basic-addon3" style={{ width: '110px'}}>
+                                        독일내 배송비
+                                    </InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control id="basic-url" aria-describedby="basic-addon3" 
+                                    placeholder="결제하실때 판매자가 책정한 배송비를 유로로 기입해주세요"
+                                    onChange={this.handleDeliveryValue}
+                                    //type="text"
+                                    //isInvalid={warningInvalidItemName}
+                                />
+                            </InputGroup>
+                                
+                            </Card.Body>
+                        </Card>
+                      
                 </Card.Body>
             </Card>
 
-            <Card border="dark" style={{ width:'70%', height:{heightBuyingServiceWrapper}, marginTop:'1rem', marginLeft:'1rem' }}>
+            <Card border="dark" style={{ width:'70%', marginTop:'1rem', marginBottom:'5rem', marginLeft:'1rem' }}>
                 <Card.Header>구매대행 견적보기
                 </Card.Header>
                     <Card.Body>
-                        <Button size="sm" 
-                            variant='secondary' 
-                            style={{  marginTop:'10px', marginLeft:'45%', fontSize:'14px'}}
-                            onClick={(e) => this.handleCalculation(e)}
-                        >견적 계산
-                        </Button>
-
-                        {calculationResult}
-
+                    <Container>
+                        <Row>
+                            <Col xs={8}>{fasrEstimationResult}</Col>
+                            {/* <Col></Col> */}
+                            <Col>
+                                <Button size="sm" 
+                                    variant='secondary' 
+                                    style={{  marginRight: '10%', fontSize:'14px', float:"right"}}
+                                    onClick={(e) => this.handleCalculation(e)}
+                                >견적 계산
+                                </Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                        </Row>    
+                    </Container>
                     </Card.Body>
             </Card> 
           </div>
@@ -151,17 +192,14 @@ export class BuyingBox extends React.Component {
             productsValue: "",
             deliveryValue: "",
         };
-        this.props.buyingBoxList[this.props.index] = buyingBox
     }
 
     handleProductsValue(event){
         this.setState({productsValue:event.target.value})
-        this.props.buyingBoxList[this.props.index].productsValue = event.target.value
     }
 
     handleDeliveryValue(event){
         this.setState({deliveryValue:event.target.value})
-        this.props.buyingBoxList[this.props.index].deliveryValue = event.target.value
     }
       
     render() {

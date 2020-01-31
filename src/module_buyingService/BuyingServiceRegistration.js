@@ -6,18 +6,21 @@ import {
 import React, {useState} from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Breadcrumb, Card, Form, Button, OverlayTrigger, InputGroup } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
-import { BaseInputGroup } from '../module_base_component/BaseInputGroup'
+import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
 import { BaseDropdown } from '../module_base_component/BaseDropdown'
+import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
 import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm'
 import { BaseProductPriceCalc } from '../module_base_component/BaseReactBootstrap'
 import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../module_base_style/baseStyle'
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './BuyingServiceConfig'
 
+///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 {/* BuyingServiceRegistration Style */}
 export const BodyContainer = styled(BaseAppContainer)`
@@ -167,6 +170,7 @@ class BuyingServiceContentWrapper extends React.Component {
         this.state = {
             applyService:false,
             shopUrl:'',
+            shopDeliveryPrice:'',
             productContentObjectList:[],
             receiverNameByKorea:'',
             receiverNameByEnglish: "",
@@ -180,6 +184,7 @@ class BuyingServiceContentWrapper extends React.Component {
         
         this.handleApplyService = this.handleApplyService.bind(this)
         this.handleChangeShopUrl = this.handleChangeShopUrl.bind(this)
+        this.handleChangeShopDeliveryPrice = this.handleChangeShopDeliveryPrice.bind(this)
         this.handleChangeReceiverNameByKorea = this.handleChangeReceiverNameByKorea.bind(this)
         this.handleChangeReceiverNameByEnglish = this.handleChangeReceiverNameByEnglish.bind(this)
         this.handleChangeTransitNumber = this.handleChangeTransitNumber.bind(this)
@@ -236,6 +241,11 @@ class BuyingServiceContentWrapper extends React.Component {
         console.log(event.target.value)
     }
 
+    handleChangeShopDeliveryPrice(event){
+        this.setState({shopDeliveryPrice:event.target.value})
+        console.log(event.target.value)
+    }
+
     handleChangeReceiverNameByKorea(event){
         this.setState({receiverNameByKorea:event.target.value})
         console.log(event.target.value)
@@ -276,8 +286,13 @@ class BuyingServiceContentWrapper extends React.Component {
         console.log(event.target.value)
     }
 
+    handleCalculation(){
+        // var box = this.state.buyingBoxList[0]
+        // this.setState({ productsValue:box.productsValue })
+        //console.log(box.productsValue)
+    }
+
     render() {
-        
 
         let button = <ServiceApplyButton handleApplyService={this.handleApplyService}/>
         return (
@@ -285,7 +300,15 @@ class BuyingServiceContentWrapper extends React.Component {
             {/* 상품 입력 패널 */}
             <ProductContentForm accessToken={this.props.accessToken}
                 productContentObjectList={this.state.productContentObjectList}
-                handleChangeShopUrl={this.handleChangeShopUrl}/>
+                handleChangeShopUrl={this.handleChangeShopUrl}
+                handleChangeShopDeliveryPrice={this.handleChangeShopDeliveryPrice}
+                />
+
+             <ServiceEstimation
+                productContentObjectList={this.state.productContentObjectList}
+                shopDeliveryPrice={this.state.shopDeliveryPrice}
+                accessToken={this.props.accessToken}
+             />
 
             {/* 수취인 입력 패널 */}
             <BaseRecipientWrapper accessToken={this.props.accessToken}
@@ -301,6 +324,82 @@ class BuyingServiceContentWrapper extends React.Component {
                 />
 
           </div>
+        );
+      }    
+}
+
+class ServiceEstimation extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            estimationResult:'',
+        }
+        
+        this.handleCalculation = this.handleCalculation.bind(this)
+        this.handleGetEstimation = this.handleGetEstimation.bind(this)
+    }
+
+    handleCalculation(){
+        const estimationObject = [
+            {shopDeliveryPrice:this.props.shopDeliveryPrice},
+            {productContentObjectList: JSON.stringify(this.props.productContentObjectList)},
+        ]
+        //console.log(estimationObject)
+        this.handleGetEstimation(estimationObject)
+    }
+
+    handleGetEstimation(contents){
+        const token = this.props.accessToken
+        setTokenHeader(token)
+        fetch(basePort + '/estimationBuyingService', 
+                {method:'post', headers, 
+                  body:JSON.stringify(contents)})
+                .then((result) => { return result.json();})
+                .then((data) => {
+                    this.setState( { estimationResult: data} )
+                    //console.log(result.resultPrice)
+                }).catch(err => err);
+    }
+      
+    render() {
+
+        let estimationResult = getKoreanCurrencyWithInfoBadge(this.state.estimationResult.resultPrice)
+        return (
+        <div>
+             <Card border="dark" style={{ width: '80%', marginTop:'1rem', marginBottom:'1rem' }}>
+                <Card.Header>구매대행 견적보기
+                </Card.Header>
+                    <Card.Body>
+                    <Container>
+                        <Row>
+                            <Col xs={8}>{estimationResult}</Col>
+                            {/* <Col></Col> */}
+                            <Col>
+                                <Button size="sm" 
+                                    variant='secondary' 
+                                    style={{  marginRight: '10%', fontSize:'14px', float:"right"}}
+                                    onClick={(e) => this.handleCalculation(e)}
+                                >견적 계산
+                                </Button>
+                            </Col>
+                        </Row>
+                        <Row>
+                        </Row>    
+                    </Container>
+                    {/* <InputGroup style={{ width: '90%'}}>
+
+                        {estimationResult}
+
+                        <Button size="sm" 
+                            variant='secondary' 
+                            style={{  marginRight: '10%', fontSize:'14px', float:"right"}}
+                            onClick={(e) => this.handleCalculation(e)}
+                        >견적 계산
+                        </Button>
+                    </InputGroup > */}
+                    </Card.Body>
+            </Card>
+        </div>
         );
       }    
 }
@@ -342,6 +441,7 @@ export class ProductContentForm extends React.Component {
             productContentList:[],
         }
       this.handleAddproductOnList = this.handleAddproductOnList.bind(this)
+      this.handleRemoveItemOnList = this.handleRemoveItemOnList.bind(this)
     }
 
     componentDidMount() {
@@ -356,6 +456,14 @@ export class ProductContentForm extends React.Component {
         })
     }
 
+    handleRemoveItemOnList(index){
+        this.state.productContentList.splice(index, 1)
+        this.props.productContentObjectList.splice(index, 1)
+        this.setState({
+            productContentList:this.state.productContentList, 
+             })
+    }
+
     render() {
         return (
           <div>
@@ -365,11 +473,17 @@ export class ProductContentForm extends React.Component {
                     <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
                         <Card.Header>상품 구매 주소</Card.Header>
                         <Card.Body >
-                        <BaseInputGroup 
+                        <BaseInputGroupUrl 
                             label="쇼핑몰 URL"
                             placeholder="정확한 URL을 입력해주세요"
                             handleChangeInput={this.props.handleChangeShopUrl} />
+                         <BaseInputGroupEuro 
+                            label="독일내 배송비"
+                            placeholder="무료배송일 경우 0 으로 기입해주세요"
+                            handleChangeInput={this.props.handleChangeShopDeliveryPrice} 
+                            />
                         </Card.Body>
+                        
                     </Card>
 
                     {this.state.productContentList.map((itemName, index) => { return (
@@ -377,6 +491,8 @@ export class ProductContentForm extends React.Component {
                         <ProductContent
                             index={index}
                             productContentObjectList={this.props.productContentObjectList}
+                            productContentList={this.state.productContentList}
+                            handleRemoveItemOnList={this.handleRemoveItemOnList}
                         />
                         </div>
                     )})}
@@ -385,7 +501,7 @@ export class ProductContentForm extends React.Component {
                         onClick={(e) => this.handleAddproductOnList(e)} 
                         style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>
                         상품 추가
-                </Button> 
+                </Button>
 
                 </Card.Body>
             </Card>
@@ -471,13 +587,14 @@ export class ProductContent extends React.Component {
     }
 
     render() {
+        const index = this.props.index
         let buttonDeleteProduct
         if (this.props.index === 0){
             buttonDeleteProduct = EMPTY_PAGE
         } else {
             buttonDeleteProduct = 
                 <Button variant="secondary" size="sm" 
-                    //onClick={() => this.props.handleRemoveItemOnList(index)} 
+                    onClick={() => this.props.handleRemoveItemOnList(index)} 
                     style={{ marginRight: '10px', marginTop: '10px', float:"right"}}>
                     상품 삭제
                 </Button>
