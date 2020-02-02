@@ -3,10 +3,11 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
   } from "../container";
+import { NavLink } from "react-router-dom";
 import React, {useState} from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup, Modal } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
 import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
 import { BaseDropdown } from '../module_base_component/BaseDropdown'
@@ -180,6 +181,14 @@ class BuyingServiceContentWrapper extends React.Component {
             postCode: "",
             deliveryAddress: "",
             deliveryMessage:"",
+            favoriteAddressList:[],
+            openFavoriteAddressListPanel:false,
+            
+            /* 회원배송정보 불러오기 */
+            setOwnerContent:false,
+            registerFavoriteAddress:false,
+            customerBaseData:'',
+            modalShow:false,
         }
         
         this.handleApplyService = this.handleApplyService.bind(this)
@@ -193,6 +202,14 @@ class BuyingServiceContentWrapper extends React.Component {
         this.handleChangePostCode = this.handleChangePostCode.bind(this)
         this.handleChangeAddress = this.handleChangeAddress.bind(this)
         this.handleChangeMessage = this.handleChangeMessage.bind(this)
+        this.handleOpenFavoriteAddressListPanel = this.handleOpenFavoriteAddressListPanel.bind(this)
+        this.handleCloseFavoriteAddressListPanel = this.handleCloseFavoriteAddressListPanel.bind(this)
+        this.handleLoadSelectedAddress = this.handleLoadSelectedAddress.bind(this)
+        this.handleRegisterFavoriteAddress = this.handleRegisterFavoriteAddress.bind(this)
+        this.handleGetCustomerAddressData = this.handleGetCustomerAddressData.bind(this)
+        this.fetchCustomerBaseData=this.fetchCustomerBaseData.bind(this)
+        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
     }
 
     componentDidMount() {
@@ -209,7 +226,7 @@ class BuyingServiceContentWrapper extends React.Component {
             address: this.state.deliveryAddress,
             usercomment: this.state.deliveryMessage,
         }
-
+        
         const buyingServiceData = [
           {shopUrl:this.state.shopUrl},
           {productContentObjectList: JSON.stringify(this.state.productContentObjectList)},
@@ -218,11 +235,47 @@ class BuyingServiceContentWrapper extends React.Component {
         return buyingServiceData
     }
 
+    buildFavoriteAddressData(){
+        var favoriteAddressObject = {
+            nameKor:this.state.receiverNameByKorea,
+            nameEng: this.state.receiverNameByEnglish,
+            transitNr: this.state.transitNumber,
+            phonenumberFirst: this.state.phonenumberFirst,
+            phonenumberSecond: this.state.phonenumberSecond,
+            zipCode: this.state.postCode,
+            address: this.state.deliveryAddress,
+        }
+  
+        const favoriteAddressData =  [
+          {favoriteAddressData: JSON.stringify(favoriteAddressObject)}
+        ]
+        console.log(favoriteAddressData)
+        return favoriteAddressData
+      }
+
     handleApplyService(e){
-        this.setState({applyBuyingService:true})
+        console.log("Apply BuyingService!!")
+        this.setState({applyBuyingService:true, modalShow:false})
         const buyingServiceData = this.buildBuyingServiceData()
-        this.createBuyingService(buyingServiceData)
+        //this.createBuyingService(buyingServiceData)
+        if(this.state.registerFavoriteAddress){
+            const favoriteAddress = this.buildFavoriteAddressData()
+            console.log('favoriteAddressData:' + favoriteAddress)
+            //this.registerFavoriteAddress(favoriteAddress)
+          }
         console.log(buyingServiceData)
+
+    }
+
+    registerFavoriteAddress(contents){
+        const token = this.props.accessToken
+        setTokenHeader(token)
+        fetch(basePort + '/registerFavoriteAddressBuyingService', 
+                  {method:'post', headers, 
+                    body:JSON.stringify(contents)})
+                  .then((result) => { return result;}).then((contents) => {
+              console.log(contents)
+             }).catch(err => err);
     }
 
     createBuyingService(contents){
@@ -236,9 +289,45 @@ class BuyingServiceContentWrapper extends React.Component {
            }).catch(err => err);
     }
 
-    handleChangeShopUrl(event){
-        this.setState({shopUrl:event.target.value})
-        console.log(event.target.value)
+    fetchFavoriteAddressList(accessToken){
+        setTokenHeader(accessToken)
+        fetch(basePort + '/fetchFavoriteAddressList', {headers})
+            .then((result) => {
+               return result.json();
+            }).then((data) => {
+              this.setState({
+                favoriteAddressList:data,
+                openFavoriteAddressListPanel:true})
+              console.log(data)
+        }).catch(error => console.log(error) );
+    }
+
+    /* 회원배송정보 불러오기 */
+    fetchCustomerBaseData(token){
+        setTokenHeader(token)
+        fetch(basePort + '/fetchcustomerbaseinfoBuyingService', {headers})
+          .then((result) => { 
+            return result.json();
+          }).then((data) => {           
+            this.setState({customerBaseData:data})
+            this.setState({
+                receiverNameByKorea:data.nameKor,
+                receiverNameByEnglish:data.nameEng,
+                transitNumber:data.transitNr,
+                phonenumberFirst:data.phonenumberFirst,
+                phonenumberSecond:data.phonenumberSecond,
+                postCode:data.zipCode,
+                deliveryAddress:data.address
+            })
+            console.log(data.address);
+          }).catch(function() {
+            console.log("error fetching userbaseinfo");
+        });
+    }
+
+    handleChangeShopUrl(shopUrl){
+        this.setState({shopUrl})
+        console.log(shopUrl)
     }
 
     handleChangeShopDeliveryPrice(event){
@@ -292,9 +381,65 @@ class BuyingServiceContentWrapper extends React.Component {
         //console.log(box.productsValue)
     }
 
+    handleOpenFavoriteAddressListPanel(){
+        console.log("click open address")
+        this.fetchFavoriteAddressList(this.props.accessToken)
+    }
+
+    handleCloseFavoriteAddressListPanel(){
+        this.setState({openFavoriteAddressListPanel:false})
+    }
+
+    handleLoadSelectedAddress(index){
+        var addressData = this.state.favoriteAddressList[index]
+        this.setState({
+            receiverNameByKorea:addressData.nameKor,
+            receiverNameByEnglish:addressData.nameEng,
+            transitNumber:addressData.transitNr,
+            phonenumberFirst:addressData.phonenumberFirst,
+            phonenumberSecond:addressData.phonenumberSecond,
+            postCode:addressData.zipCode,
+            deliveryAddress:addressData.address,
+        })
+    }
+
+    handleGetCustomerAddressData(event){
+        const setCustomerBaseData = event.target.checked   
+        this.setState({setOwnerContent:setCustomerBaseData})
+        if (setCustomerBaseData){
+            this.fetchCustomerBaseData(this.props.accessToken)
+        } else {
+            this.setState({
+                receiverNameByKorea:'',
+                receiverNameByEnglish:'',
+                transitNumber:'',
+                phonenumberFirst:'',
+                phonenumberSecond:'',
+                postCode:'',
+                deliveryAddress:'',
+            })
+        }
+    }
+
+    handleRegisterFavoriteAddress(event){    
+        this.setState({registerFavoriteAddress:event.target.checked})
+    }
+
+    handleModalShow() {
+        this.setState({ modalShow: true });
+    }
+
+    handleModalClose() {
+        this.setState({ modalShow: false });
+    }
+
     render() {
 
-        let button = <ServiceApplyButton handleApplyService={this.handleApplyService}/>
+        let button = <ServiceApplyButton 
+                        handleApplyService={this.handleApplyService}
+                        handleModalShow={this.handleModalShow}
+                        handleModalClose={this.handleModalClose}
+                        modalShow={this.state.modalShow}/>
         return (
           <div>
             {/* 상품 입력 패널 */}
@@ -314,13 +459,27 @@ class BuyingServiceContentWrapper extends React.Component {
             <BaseRecipientWrapper accessToken={this.props.accessToken}
                 serviceApplyButton = {button}
                 handleChangeReceiverNameByKorea={this.handleChangeReceiverNameByKorea}
+                receiverNameByKorea={this.state.receiverNameByKorea}
                 handleChangeReceiverNameByEnglish={this.handleChangeReceiverNameByEnglish}
+                receiverNameByEnglish={this.state.receiverNameByEnglish}
                 handleChangeTransitNumber={this.handleChangeTransitNumber}
+                transitNumber={this.state.transitNumber}
                 handleChangePhonenumberFirst={this.handleChangePhonenumberFirst}
+                phonenumberFirst={this.state.phonenumberFirst}
                 handleChangePhonenumberSecond={this.handleChangePhonenumberSecond}
+                phonenumberSecond={this.state.phonenumberSecond}
                 handleChangePostCode={this.handleChangePostCode}
+                postCode={this.state.postCode}
                 handleChangeAddress={this.handleChangeAddress}
+                deliveryAddress={this.state.deliveryAddress}
                 handleChangeMessage={this.handleChangeMessage}
+                handleOpenFavoriteAddressListPanel={this.handleOpenFavoriteAddressListPanel}
+                handleCloseFavoriteAddressListPanel={this.handleCloseFavoriteAddressListPanel}
+                handleLoadSelectedAddress={this.handleLoadSelectedAddress}
+                favoriteAddressList={this.state.favoriteAddressList}
+                openFavoriteAddressListPanel={this.state.openFavoriteAddressListPanel}
+                handleGetCustomerAddressData={this.handleGetCustomerAddressData}
+                handleRegisterFavoriteAddress ={this.handleRegisterFavoriteAddress }
                 />
 
           </div>
@@ -418,14 +577,33 @@ export class ServiceApplyButton extends React.Component {
             <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'35%', marginRight:'25%'}}>
                 {/* <OverlayTrigger trigger="hover"  placement="left"> */}
                 <Button size="sm" variant='secondary' style={{ marginRight:'10px', fontSize:'14px'}}
-                    onClick={(e) => this.props.handleApplyService(e)}
+                    //onClick={(e) => this.props.handleApplyService(e)}
                     //확인 창 떠서 예 클리하면 DB 전달
-                    //onClick={this.handleModalShow}
+                    onClick={this.props.handleModalShow}
                     >구매대행 신청하기
                 </Button>
                 {/* </OverlayTrigger> */}
                     {/* 추후 개발
                     <Button size="sm" variant='secondary'>임시 저장하기</Button> */}
+                <Modal show={this.props.modalShow} onHide={this.props.handleModalClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>배송대행 신청</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>배송대행을 신청하시겠습니까?</Modal.Body>
+                            <Modal.Footer>
+                                {/* 마이페이지 이동 구현됨 */}
+                                {/* <NavLink to="/mypage"> */}
+                                <Button variant="success" 
+                                        onClick={(e) => this.props.handleApplyService(e)}
+                                        //onClick={this.handleModalClose}
+                                >예
+                                </Button>
+                                {/* </NavLink> */}
+                        <Button variant="dark" onClick={this.props.handleModalClose}>
+                            취소
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </InputGroup >
         </div>
         );
@@ -439,9 +617,17 @@ export class ProductContentForm extends React.Component {
             shopUrl:'',
             productTotalPrice:"",
             productContentList:[],
+            shopUrl:''
         }
-      this.handleAddproductOnList = this.handleAddproductOnList.bind(this)
-      this.handleRemoveItemOnList = this.handleRemoveItemOnList.bind(this)
+        this.handleAddproductOnList = this.handleAddproductOnList.bind(this)
+        this.handleRemoveItemOnList = this.handleRemoveItemOnList.bind(this)
+        this.handleChangeShopUrl = this.handleChangeShopUrl.bind(this)
+    }
+
+    //Lifting state up implementation
+    handleChangeShopUrl(event){
+        this.props.handleChangeShopUrl(event.target.value);
+        console.log(event.target.value)
     }
 
     componentDidMount() {
@@ -476,7 +662,7 @@ export class ProductContentForm extends React.Component {
                         <BaseInputGroupUrl 
                             label="쇼핑몰 URL"
                             placeholder="정확한 URL을 입력해주세요"
-                            handleChangeInput={this.props.handleChangeShopUrl} />
+                            handleChangeInput={this.handleChangeShopUrl} />
                          <BaseInputGroupEuro 
                             label="독일내 배송비"
                             placeholder="무료배송일 경우 0 으로 기입해주세요"
@@ -638,7 +824,6 @@ export class ProductContent extends React.Component {
                     amount = {this.state.productAmount}
                 />
 
-                    
                 {buttonDeleteProduct}
 
                 </Card.Body>

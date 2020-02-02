@@ -19,7 +19,7 @@ export function getKoreanCurrencyWithInfoBadge(rate){
                 <Row>
                     {rate}원
                 </Row>
-                <Row style={{  marginTop: '10px'}}>
+                <Row style={{ marginTop: '10px'}}>
                     <InfoBadge infoText={"국제배송비는 견적에 포함되어 있지 않습니다."} />
                     <InfoBadge infoText={"국제배송비는 상품이 도착후에 다시 결제해주셔야 합니다."} />
                 </Row>

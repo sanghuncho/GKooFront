@@ -243,7 +243,7 @@ export class MypageController extends React.Component{
       
           <BodyContainer>
             <Breadcrumb style={{ width: '100%'}}>
-              <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
+              <Breadcrumb.Item active>마이페이지 / 배송대행</Breadcrumb.Item>
             </Breadcrumb>
 
           {/* ToDo : userAccount name as mypagebody */}

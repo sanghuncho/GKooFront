@@ -1,45 +1,71 @@
 import * as React from "react";
 import { Card, Form, InputGroup, FormControl, Button, OverlayTrigger } from 'react-bootstrap';
 import { InfoBadge } from "../module_base_component/InfoBadge";
+import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
 
 export class BaseRecipientWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+           
         }
     }
 
     componentDidMount() {
         
-    } 
+    }
     
     render() {
+        let favoriteAddressListPanel
+        if(this.props.openFavoriteAddressListPanel){
+            favoriteAddressListPanel = <FavoriteAddressListPanel 
+                favoriteAddressList={this.props.favoriteAddressList}
+                handleCloseFavoriteAddressListPanel={this.props.handleCloseFavoriteAddressListPanel}
+                handleLoadSelectedAddress={this.props.handleLoadSelectedAddress} />
+        } else {
+            favoriteAddressListPanel = ""
+        }
         return (
           <div>
               <Card border="dark" style={{ width:'80%', height:'62rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보
                     <Button variant="secondary" size="sm" 
                         disabled = {this.state.disableButtonFavoriteAddressList}
-                        onClick={(e) => this.handleOpenFavoriteAddressListPanel(e)} 
+                        onClick={(e) => this.props.handleOpenFavoriteAddressListPanel(e)} 
                         style={{ marginRight: '10px', float:"right"}}>배송지 불러오기</Button>
                     </Card.Header>
                     <Card.Body >
+
+                        {favoriteAddressListPanel}
+
                         <BaseRecipientNameForm 
                             handleChangeReceiverNameByKorea={this.props.handleChangeReceiverNameByKorea}
-                            handleChangeReceiverNameByEnglish={this.props.handleChangeReceiverNameByEnglish}/>
+                            receiverNameByKorea={this.props.receiverNameByKorea}
+                            handleChangeReceiverNameByEnglish={this.props.handleChangeReceiverNameByEnglish}
+                            receiverNameByEnglish={this.props.receiverNameByEnglish}
+                            handleGetCustomerAddressData={this.props.handleGetCustomerAddressData}
+                            handleRegisterFavoriteAddress={this.props.handleRegisterFavoriteAddress}
+                        />
 
                         <BaseRecipientTransitNrForm
-                            handleChangeTransitNumber={this.props.handleChangeTransitNumber}/>
+                            handleChangeTransitNumber={this.props.handleChangeTransitNumber}
+                            transitNumber={this.props.transitNumber}
+                        />
 
                         <BaseRecipientAddressContactNrForm
                             handleChangePhonenumberFirst={this.props.handleChangePhonenumberFirst}
+                            phonenumberFirst={this.props.phonenumberFirst}
                             handleChangePhonenumberSecond={this.props.handleChangePhonenumberSecond}
+                            phonenumberSecond={this.props.phonenumberSecond}
                             handleChangePostCode={this.props.handleChangePostCode}
-                            handleChangeAddress={this.props.handleChangeAddress}/>
+                            postCode={this.props.postCode}
+                            handleChangeAddress={this.props.handleChangeAddress}
+                            deliveryAddress={this.props.deliveryAddress}
+                        />
 
                         <BaseRecipientMessageForm 
-                            handleChangeMessage={this.props.handleChangeMessage}/>
+                            handleChangeMessage={this.props.handleChangeMessage}
+                        />
 
                         {this.props.serviceApplyButton}
 
@@ -71,12 +97,12 @@ export class BaseRecipientNameForm extends React.Component {
                     <Card.Body>
                         <InputGroup size="sm" style={{ width:'70%'}} className="mb-4" >
                             <Form.Check type='checkbox'
-                                onChange={e => this.handleGetCustomerAddressData(e)} label='회원정보와 동일'
+                                onChange={e => this.props.handleGetCustomerAddressData(e)} label='회원정보와 동일'
                                 defaultChecked={this.state.customerDeliveryData}
                                 style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
                             />
                             <Form.Check type='checkbox'
-                                onChange={e => this.handleRegisterFavoriteAddress(e)} 
+                                onChange={e => this.props.handleRegisterFavoriteAddress(e)} 
                                 label='배송지 관리 등록하기'
                                 defaultChecked={this.state.registerFavoriteAddress}
                                 style={{marginLeft:'5px', marginTop:'5px', marginRight:'20px', fontSize:'14px'}}
@@ -91,7 +117,7 @@ export class BaseRecipientNameForm extends React.Component {
                         </InputGroup.Prepend>
                             <FormControl id="basic-url" aria-describedby="basic-addon3"
                                 onChange={this.props.handleChangeReceiverNameByKorea}
-                                defaultValue={this.state.receiverNameByKorea}
+                                defaultValue={this.props.receiverNameByKorea}
                             />
                         </InputGroup >
                                 
@@ -104,7 +130,7 @@ export class BaseRecipientNameForm extends React.Component {
                             <FormControl id="basic-url" aria-describedby="basic-addon3"
                                 style={{ width: '50px'}}
                                 onChange = { this.props.handleChangeReceiverNameByEnglish }
-                                defaultValue={this.state.receiverNameByEnglish}
+                                defaultValue={this.props.receiverNameByEnglish}
                             />
                         </InputGroup>
                         
@@ -145,7 +171,7 @@ export class BaseRecipientTransitNrForm extends React.Component {
                             <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                 placeholder="8자리 고유번호" 
                                 onChange = { this.props.handleChangeTransitNumber }
-                                defaultValue={this.state.transitNumber}
+                                defaultValue={this.props.transitNumber}
                                 style={{ marginRight:'10px'}}/>
                             <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
                         </InputGroup >
@@ -191,7 +217,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                             onChange = { this.props.handleChangePhonenumberFirst }
                             style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
-                            defaultValue={this.state.phonenumberFirst}
+                            defaultValue={this.props.phonenumberFirst}
                         />
                         <InputGroup.Prepend >
                         <InputGroup.Text id="basic-addon3" >
@@ -201,7 +227,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                             onChange = { this.props.handleChangePhonenumberSecond }
                             style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
-                            defaultValue={this.state.phonenumberSecond}
+                            defaultValue={this.props.phonenumberSecond}
                         />
                         </InputGroup>
 
@@ -214,7 +240,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             style={{ marginRight:'10px'}}
                             onChange={ this.props.handleChangePostCode}
-                            defaultValue={this.state.postCode}
+                            defaultValue={this.props.postCode}
                         />
                         {/* 추후 개발 
                             <Button size="sm" variant='secondary' >우편번호 찾기</Button> */}
@@ -228,7 +254,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                             as="textarea" rows="2"
                             onChange={this.props.handleChangeAddress}
-                            value={this.state.deliveryAddress}
+                            value={this.props.deliveryAddress}
                         />
                     </InputGroup >
                 </Card.Body> 

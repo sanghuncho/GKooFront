@@ -284,7 +284,7 @@ class ShippingCenter extends React.Component{
         this.handleModalClose = this.handleModalClose.bind(this);
         this.fetchCustomerBaseData = this.fetchCustomerBaseData.bind(this)
         this.fetchFavoriteAddressList = this.fetchFavoriteAddressList.bind(this)
-        this.handleOpenFavoriteAddressListPanel = this.handleOpenFavoriteAddressListPanel.bind(this)
+        this.handleOpenFavoriteAddressPanel = this.handleOpenFavoriteAddressPanel.bind(this)
         this.handleCloseFavoriteAddressListPanel = this.handleCloseFavoriteAddressListPanel.bind(this)
         this.handleLoadSelectedAddress = this.handleLoadSelectedAddress.bind(this)
     }
@@ -308,8 +308,6 @@ class ShippingCenter extends React.Component{
             trackingNumber:""
         }
         this.setState({deliveryObject:deliveryObject})
-
-
         //this.fetchCustomerBaseData(this.props.accessToken)
     }
 
@@ -542,7 +540,8 @@ class ShippingCenter extends React.Component{
         this.setState({ show: true });
     }
 
-    handleOpenFavoriteAddressListPanel(){
+    handleOpenFavoriteAddressPanel(){
+        console.log("click shipping open address")
         this.fetchFavoriteAddressList(this.props.accessToken)
     }
 
@@ -560,7 +559,7 @@ class ShippingCenter extends React.Component{
                 favoriteAddressList:data,
                 openFavoriteAddressListPanel:true})
               console.log(data)
-        })
+        }).catch(error => console.log(error) );
     }
 
     render(){
@@ -796,15 +795,13 @@ class ShippingCenter extends React.Component{
 
             </Card>
             
-            {/* 받는분정보 박스
-            ToDo : Component
-            */}
             <Card border="dark" style={{ width:'80%', height:'62rem', marginTop:'1rem', marginBottom:'1rem' }}>
                     <Card.Header>받는분 정보
                     <Button variant="secondary" size="sm" 
-                        disabled = {this.state.disableButtonFavoriteAddressList}
-                        onClick={(e) => this.handleOpenFavoriteAddressListPanel(e)} 
-                        style={{ marginRight: '10px', float:"right"}}>배송지 불러오기</Button>
+                        //disabled = {this.state.disableButtonFavoriteAddressList}
+                        style={{ marginRight: '10px', float:"right"}}
+                        onClick={(e) => this.handleOpenFavoriteAddressPanel(e)} 
+                        > 배송지 불러오기</Button>
                     </Card.Header>
                     <Card.Body >
 
