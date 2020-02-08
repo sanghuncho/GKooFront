@@ -143,7 +143,8 @@ export class OrderInformation extends React.Component {
       <div>
         <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
         <Card.Header>
-          배송대행 이용현황
+          {/* 배송대행 이용현황 */}
+          {this.props.serviceTitle}
         </Card.Header>
         {/* <TabsStyle> */}
         <Card.Body >
@@ -263,7 +264,7 @@ export class DetailPageLinkButton extends React.Component {
   render() {
     const orderid = this.props.orderid
     const link = "/detailsmypage/" + orderid
-    console.log(link)
+    //console.log(link)
     if (this.state.redirect) {
       return <Redirect push to={link}/>
     }

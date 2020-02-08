@@ -26,6 +26,15 @@ const MyPageBodyTableStyle = styled.div`
   font-size: 13px;
 `;
 
+const MyPageBuyingServiceBodyTableStyle = styled.div`
+  margin-top: 10px;
+  margin-bottom:10px;
+  width: 400px;
+  background: #FFFFFF;
+  padding: 0px 5px 5px 5px;
+  font-size: 13px;
+`;
+
 const data = [
     {"orderNumber":"1234",
       "productInfo":"저먼사탕",
@@ -51,13 +60,6 @@ export class PaymentInformation extends React.Component{
         const columnsPayment = [{
             dataField: 'orderid',
             text: '신청번호'},
-            //  {
-            // dataField: 'productInfo',
-            // text: '상품정보'}, {
-            // dataField: 'recipient',
-            // text: '받는분'},{
-            // dataField: 'deliveryPrice',
-            // text: '운송료'}, 
             {
             dataField: 'paymentState',
             text: '결제상태',
@@ -74,6 +76,37 @@ export class PaymentInformation extends React.Component{
                     columns={ columnsPayment } 
                     bordered={ true }  noDataIndication="Table is empty"  />
             </MyPageBodyTableStyle>
+          </div>
+        );
+      }    
+}
+
+export class PaymentInformationBuyingService extends React.Component{
+    constructor(props) {
+        super(props);
+      }
+      
+      render() {
+        
+        const columnsPayment = [{
+            dataField: 'orderid',
+            text: '신청번호'},
+            {
+            dataField: 'paymentState',
+            text: '결제상태',
+            formatter:paymentFormatter}, 
+          ];
+        
+        return (
+          <div>
+            <MyPageBuyingServiceBodyTableStyle>
+                {/* <CaptionMypageTable title="결제 현황"/> */}
+                <BootstrapTable keyField='objectId'  
+                    data={ this.props.paymentData } 
+                    //data={ data } 
+                    columns={ columnsPayment } 
+                    bordered={ true }  noDataIndication="Table is empty"  />
+            </MyPageBuyingServiceBodyTableStyle>
           </div>
         );
       }    

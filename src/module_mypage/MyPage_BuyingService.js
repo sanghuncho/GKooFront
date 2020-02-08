@@ -2,18 +2,24 @@ import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
-import { UserAccount } from "./UserAccount";
 import {
   AppContainer as BaseAppContainer,
   BaseNavigation,
 } from "../container";
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
-import { Breadcrumb } from "react-bootstrap"
+import { Breadcrumb, Button, CardGroup, Card } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
+import { OrderInformation } from './OrderInformation'
+import { PaymentInformationBuyingService } from './PaymentInformation'
+import { DeliveryInformationBuyingService } from './DeliveryInformation'
+import { UserBaseInfoEditor, AddressManager, CompleteUserBaseInfo } from './UserBaseInfo'
+import { Redirect } from 'react-router';
 
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
@@ -66,13 +72,13 @@ export class MyPage_BuyingService extends React.Component{
       active: null,
       keycloakAuth:null,
       accessToken:"",
-    //   customerStatusData:'',
+      customerStatusData:'',
+      orderInformation:'',
+      paymentData:'',
+      deliveryKoreaData:'',
     //   userAccount:'',
     //   purchaseOrder:'',
-    //   orderInformation:'',
-    //   warehouseInformation:'',
-    //   paymentData:'',
-    //   deliveryKoreaData:''
+    //warehouseInformation:'',
    };
   
     toggle(position) {
@@ -98,18 +104,18 @@ export class MyPage_BuyingService extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
-        //   this.fetchCustomerStatusData(keycloak.token)
-        //   this.fetchOrderInformation(keycloak.token)
+          this.fetchCustomerStatusData(keycloak.token)
+          this.fetchOrderInformation(keycloak.token)
+          this.fetchPaymentData(keycloak.token)
+          this.fetchDeliveryKoreaData(keycloak.token)
         //   this.fetchWarehouseInformation(keycloak.token)
-        //   this.fetchPaymentData(keycloak.token)
-        //   this.fetchDeliveryKoreaData(keycloak.token)
       
       })
     }
 
     fetchOrderInformation(token){
       setTokenHeader(token)
-      fetch(basePort + '/orderinformation', {headers})
+      fetch(basePort + '/orderdataBuyingService', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -119,7 +125,7 @@ export class MyPage_BuyingService extends React.Component{
 
     fetchPaymentData(token){
       setTokenHeader(token)
-      fetch(basePort + '/paymentData', {headers})
+      fetch(basePort + '/paymentDataBuyingService', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -130,54 +136,13 @@ export class MyPage_BuyingService extends React.Component{
 
     fetchDeliveryKoreaData(token){
       setTokenHeader(token)
-      fetch(basePort + '/deliveryKoreaData', {headers})
+      fetch(basePort + '/deliveryKoreaDataBuyingService', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
           console.log(data)
           this.setState({deliveryKoreaData: data})
         })   
-    }
-
-    fetchWarehouseInformation(token){
-      setTokenHeader(token)
-      fetch(basePort + '/warehouseinformation', {headers})
-        .then((result) => { 
-           return result.json();
-        }).then((data) => {
-          this.setState( { warehouseInformation: data } )
-        })   
-    }
-
-    fetchPurchaseOrderList(token){
-      setTokenHeader(token)
-      fetch(basePort + '/purchaseOderList', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { purchaseOrder: data} )
-          console.log(data)
-        })   
-    }
-
-    fetchEndSettlementList(token){
-      setTokenHeader(token)
-      fetch(basePort + '/endSettlementList', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { userAccount: data} )
-        })   
-    }
-
-    fetchPurchasedImage(){
-      fetch(basePort + '/getItemImage')
-        .then((response) => {
-           return response.blob();
-        }).then((data) => {
-          var objectURL = URL.createObjectURL(data);
-          this.setState({image: objectURL, loaded:true})
-        })
     }
 
     fetchCustomerStatusData(token){
@@ -206,13 +171,13 @@ export class MyPage_BuyingService extends React.Component{
         if(this.validToken(token)){
             mypage_buyingService = 
                 <MypageBuyingServiceController 
+                  customerStatusData = { this.state.customerStatusData}
+                  orderInformation = { this.state.orderInformation }
+                  warehouseInformation = { this.state.warehouseInformation }
+                  paymentData = {this.state.paymentData}
+                  deliveryKoreaData = {this.state.deliveryKoreaData}
                     //   purchaseOrder = { this.state.purchaseOrder } 
                     //   userAccount = { this.state.userAccount } 
-                    //   customerStatusData = { this.state.customerStatusData}
-                    //   orderInformation = { this.state.orderInformation }
-                    //   warehouseInformation = { this.state.warehouseInformation }
-                    //   paymentData = {this.state.paymentData}
-                    //   deliveryKoreaData = {this.state.deliveryKoreaData}
                     //   accessToken = { this.state.accessToken }
                     />
         } else {
@@ -225,7 +190,7 @@ export class MyPage_BuyingService extends React.Component{
               </AppNavbar>
 
               {mypage_buyingService}
-              
+
             </div>
            
         );}           
@@ -248,21 +213,144 @@ export class MypageBuyingServiceController extends React.Component{
               <Breadcrumb.Item active>마이페이지 / 구매대행</Breadcrumb.Item>
             </Breadcrumb>
 
-          {/* ToDo : userAccount name as mypagebody */}
-          {/* <UserAccount 
-            purchaseOrder={this.props.purchaseOrder} 
-            userAccount={this.props.userAccount} 
-            customerStatusData={ this.props.customerStatusData}
-            orderInformation={ this.props.orderInformation }
-            warehouseInformation={ this.props.warehouseInformation }
-            paymentData = {this.props.paymentData}
-            deliveryKoreaData = {this.props.deliveryKoreaData}
-            accessToken = { this.props.accessToken }
-            /> */}
+            <UserBaseInfo customerStatusData={this.props.customerStatusData}
+                      accessToken={this.props.accessToken}/>
+           
+           {/* 전체메뉴 */}
+            <OrderInformation orderInformation={this.props.orderInformation}
+              serviceTitle={"구매대행 이용현황"} />
+          
+          <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
+            <Card border="dark">
+              <Card.Header>
+                결제 현황
+              </Card.Header>
+              <Card.Body>
+                {/* 결제 현황 */}  
+                <PaymentInformationBuyingService paymentData={this.props.paymentData}/>
+              </Card.Body>
+            </Card>
+            <Card border="dark">
+              <Card.Header>
+                배송 현황
+              </Card.Header>
+              <Card.Body>
+                {/* 배송 현황 */}
+                <DeliveryInformationBuyingService deliveryKoreaData={this.props.deliveryKoreaData}/>
+              </Card.Body>
+            </Card>
+          </CardGroup>
         </BodyContainer>
         
         </AppContainer>
       </div>
       );
     }    
+}
+
+export class UserBaseInfo extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            // doEditUserBaseInfo:false,
+            // doOpenAddressManager:false,
+            // showBaseInfoButtons:true,
+            // showUserBaseInfoButtons:false,
+            // userBaseInfo:null,
+            // redirect:false,
+        };
+
+        // this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
+        // this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
+        // this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
+        // this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
+      }
+
+      componentDidMount () {
+        this.fetchUserBaseInfo(this.props.accessToken)
+      }
+
+      doEditUserBaseInfo(){
+        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
+      }
+  
+      fetchUserBaseInfo(token){
+        setTokenHeader(token)
+        fetch(basePort + '/fetchuserbaseinfo', {headers})
+          .then((result) => { 
+            return result.json();
+          }).then((data) => {           
+            this.setState( { userBaseInfo: data} )
+          }).catch(function() {
+            console.log("error fetching userbaseinfo");
+        });
+      }
+      
+      doOpenAddressManager(){
+        //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
+        // <NavLink to="/favoriteAddressManager/">
+        // </NavLink>
+        // <Link to={{pathname:"favoriteAddressManager/"}}>
+        // </Link>
+        this.setState({redirect: true});
+      }
+
+      handleMoveToBaseInfo(){
+        window.scrollTo(0, 0);
+        this.setState({doEditUserBaseInfo:false, showBaseInfoButtons:true}) 
+      }
+
+      handleShowStoredAddressManager(){
+        this.setState({doOpenAddressManager:false, showBaseInfoButtons:true}) 
+      }
+    
+      render() {
+        if (this.state.redirect) {
+          return <Redirect push to="/favoriteAddressManager"/>;
+        }
+
+        const showBaseInfoButtons = this.state.showBaseInfoButtons
+        let editButton;
+        let addressManagerButton;
+        if(showBaseInfoButtons) {
+          editButton = <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
+            style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
+
+          addressManagerButton =  <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
+            style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
+        }
+    
+        const doEditUserBaseInfo = this.state.doEditUserBaseInfo
+        const doOpenAddressManager = this.state.doOpenAddressManager
+        let userbaseInfoDisplay;
+        let displayHeight;
+        let headerTitle
+        if (doEditUserBaseInfo) {
+            userbaseInfoDisplay = 
+              <UserBaseInfoEditor 
+                handleMoveToBaseInfo={this.handleMoveToBaseInfo}
+                accessToken={this.props.accessToken}
+               // userBaseInfo={this.state.userBaseInfo}
+               
+               />
+            
+          } else if(doOpenAddressManager) {
+            userbaseInfoDisplay = <AddressManager
+                handleShowStoredAddressManager={this.handleShowStoredAddressManager}/>
+            displayHeight = '14rem'
+            headerTitle = '배송지 관리'
+
+          } else {
+            userbaseInfoDisplay = 
+              <CompleteUserBaseInfo 
+                customerStatusData={this.props.customerStatusData}
+                doEditUserBaseInfo={this.doEditUserBaseInfo}
+                doOpenAddressManager={this.doOpenAddressManager}/>
+          }
+        return (
+          <div>
+            {userbaseInfoDisplay}
+          </div>
+        );
+      }    
 }

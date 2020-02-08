@@ -4,6 +4,7 @@ import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
 import { Link } from "react-router-dom";
 import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { Redirect } from 'react-router';
+import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
 
 export class UserBaseInfo extends React.Component{
     constructor(props) {
@@ -130,6 +131,7 @@ export class CompleteUserBaseInfo extends React.Component{
       }
       
       render() {
+        let insuranceAmount = getFormatKoreanCurrency(this.props.customerStatusData.insuranceAmount)
         return (
           <div>
             <Card border="dark" style={{ width: '80%', height:'11rem', marginTop:'1rem' }}>
@@ -151,7 +153,7 @@ export class CompleteUserBaseInfo extends React.Component{
                 <td width='300px'>개인사서함주소</td>
                 <td width='250px' align='right'>gkoo-{this.props.customerStatusData.userid}</td>
                 <td width='300px'>보유예치금</td>
-                <td width='250px' align='right'>{this.props.customerStatusData.insuranceAmount}원</td>
+                <td width='250px' align='right'>{insuranceAmount}</td>
               </tr>
               <tr>
                 <td>보유적립금</td>

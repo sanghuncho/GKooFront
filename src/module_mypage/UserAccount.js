@@ -151,7 +151,8 @@ export class UserAccount extends React.Component{
         {/* <ServiceInformation/> */}
         
         {/* 전체메뉴 */}
-        <OrderInformation orderInformation={this.props.orderInformation}/>
+        <OrderInformation orderInformation={this.props.orderInformation}
+          serviceTitle={"배송대행 이용현황"} />
 
         <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
         <Card border="dark">

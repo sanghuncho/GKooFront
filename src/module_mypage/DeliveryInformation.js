@@ -12,6 +12,15 @@ const MyPageBodyTableStyle = styled.div`
   font-size: 13px;
 `;
 
+const MyPageBuyingServiceBodyTableStyle = styled.div`
+  margin-top: 10px;
+  margin-bottom:10px;
+  width: 400px;
+  background: #FFFFFF;
+  padding: 0px 5px 5px 5px;
+  font-size: 13px;
+`;
+
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
@@ -56,15 +65,6 @@ export class DeliveryInformation extends React.Component{
         const columnsDelivery = [{
           dataField: 'orderid',
           text: '신청번호'},
-          // {
-          // dataField: 'productInfo',
-          // text: '상품정보'}, {
-          // dataField: 'recipient',
-          // text: '받는분'},{
-          // dataField: 'deliveryPayment',
-          // text: '운송료'}, {
-          // dataField: 'deliveryState',
-          // text: '진행상태'}, 
           {
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
@@ -86,6 +86,44 @@ export class DeliveryInformation extends React.Component{
         );
       }    
   }
+
+  export class DeliveryInformationBuyingService extends React.Component{
+    constructor(props) {
+        super(props);
+      }
+      
+      render() {
+        // const rowEvents = {
+        //   onClick: (e, row, rowIndex) => {
+        //     console.log(`clicked on row with index: ${rowIndex}`);
+        //     this.setRedirect();
+        //   }
+        // };
+  
+        const columnsDelivery = [{
+          dataField: 'orderid',
+          text: '신청번호'},
+          {
+          dataField: 'deliveryTracking',
+          text: '국내 배송조회',
+          formatter:trackingFormatter}
+        ];
+
+        return (
+          <div>
+            <MyPageBuyingServiceBodyTableStyle>
+              {/* <CaptionMypageTable title="배송 현황"/> */}
+              <BootstrapTable keyField='objectId'  
+                data={ this.props.deliveryKoreaData } 
+                //data={ data } 
+                columns={ columnsDelivery } 
+                hover bordered={ true } 
+                // rowEvents={ rowEvents } 
+                noDataIndication="Table is empty"  />
+            </MyPageBuyingServiceBodyTableStyle></div>
+        );
+      }    
+}
 
   class TrackingButton extends React.Component {
     constructor(props, context) {

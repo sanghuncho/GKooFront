@@ -12,6 +12,14 @@ export function getKoreanCurrency(rate){
     }
 }
 
+export function getFormatKoreanCurrency(rate){
+    if(rate => 0){
+        return <div>{rate}원</div>
+    } else {
+        return EMPTY_STRING
+    }
+}
+
 export function getKoreanCurrencyWithInfoBadge(rate){
     if(rate > 0){
         return <div>
