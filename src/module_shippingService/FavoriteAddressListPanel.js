@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import React from 'react'
-import { Card, Button } from 'react-bootstrap';
+import { Card, Button, Modal } from 'react-bootstrap';
 import { headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 
 export class FavoriteAddressListPanel extends React.Component{
@@ -8,10 +8,21 @@ export class FavoriteAddressListPanel extends React.Component{
         super(props);
         this.state = {
             favoriteAddressList:[],
-            sizeOnList:null
+            sizeOnList:null,
+            modalShow:false,
         }
         this.handleSelectFavoriteAddress = this.handleSelectFavoriteAddress.bind(this)
+        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
       }
+
+    handleModalClose() {
+      this.setState({ modalShow: false });
+    }
+    
+    handleModalShow() {
+      this.setState({ modalShow: true });
+    }  
 
       fetchFavoriteAddressList(accessToken){
         setTokenHeader(accessToken)
@@ -43,7 +54,11 @@ export class FavoriteAddressListPanel extends React.Component{
         
         return (
           <div>
-              <Card border="dark" style={{ width: '80%', height:heightAddressManager, marginTop:'1rem', marginBottom:'10px' }}>
+            <Modal show={this.props.modalShow} onHide={this.handleModalClose} >
+              {/* <Modal.Header closeButton>
+                <Modal.Title>배송지 관리</Modal.Title>
+              </Modal.Header> */}
+              <Card border="dark" style={{ width: '100%'}}>
                 <Card.Header>배송지 관리
                  
                 </Card.Header>
@@ -70,6 +85,7 @@ export class FavoriteAddressListPanel extends React.Component{
 
                 </Card.Body>
               </Card>
+            </Modal>
           </div>
         );
       }    
@@ -95,7 +111,7 @@ class FavoriteAddress extends React.Component{
         const index = this.props.index
         return (
           <div>
-            <Card border="dark" style={{ width: '60%', marginBottom:'1rem'}}>
+            <Card border="dark" style={{ width: '100%', marginBottom:'1rem'}}>
               <Card.Body >
                 <Card.Title style={{ fontSize:'1rem'}} >이름: {this.props.favoriteAddressData.nameKor} {this.props.favoriteAddressData.nameEng}</Card.Title>
                 <Card.Title style={{ fontSize:'1rem'}} >전화번호: {this.props.favoriteAddressData.phonenumberFirst} {this.props.favoriteAddressData.phonenumberSecond}</Card.Title>

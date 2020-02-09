@@ -7,12 +7,22 @@ export class BaseRecipientWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-           
+           modalShow:false,
         }
+        this.handleModalShow = this.handleModalShow.bind(this);
+        this.handleModalClose = this.handleModalClose.bind(this);
     }
 
     componentDidMount() {
         
+    }
+
+    handleModalClose() {
+        this.setState({ modalShow: false });
+    }
+    
+    handleModalShow() {
+        this.setState({ modalShow: true });
     }
     
     render() {
@@ -21,7 +31,8 @@ export class BaseRecipientWrapper extends React.Component {
             favoriteAddressListPanel = <FavoriteAddressListPanel 
                 favoriteAddressList={this.props.favoriteAddressList}
                 handleCloseFavoriteAddressListPanel={this.props.handleCloseFavoriteAddressListPanel}
-                handleLoadSelectedAddress={this.props.handleLoadSelectedAddress} />
+                handleLoadSelectedAddress={this.props.handleLoadSelectedAddress}
+                modalShow={this.props.openFavoriteAddressListPanel} />
         } else {
             favoriteAddressListPanel = ""
         }

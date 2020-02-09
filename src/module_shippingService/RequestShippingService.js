@@ -625,7 +625,9 @@ class ShippingCenter extends React.Component{
             favoriteAddressListPanel = <FavoriteAddressListPanel 
                 favoriteAddressList={this.state.favoriteAddressList}
                 handleCloseFavoriteAddressListPanel={this.handleCloseFavoriteAddressListPanel}
-                handleLoadSelectedAddress={this.handleLoadSelectedAddress} />
+                handleLoadSelectedAddress={this.handleLoadSelectedAddress}
+                modalShow={this.state.openFavoriteAddressListPanel} />
+                
         } else {
             favoriteAddressListPanel = ""
         }
