@@ -183,6 +183,7 @@ class BuyingServiceContentWrapper extends React.Component {
             deliveryMessage:"",
             favoriteAddressList:[],
             openFavoriteAddressListPanel:false,
+            buyingPrice:'',
             
             /* 회원배송정보 불러오기 */
             setOwnerContent:false,
@@ -210,6 +211,7 @@ class BuyingServiceContentWrapper extends React.Component {
         this.fetchCustomerBaseData=this.fetchCustomerBaseData.bind(this)
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
+        this.handleBuyingPrice = this.handleBuyingPrice.bind(this);
     }
 
     componentDidMount() {
@@ -229,6 +231,7 @@ class BuyingServiceContentWrapper extends React.Component {
         
         const buyingServiceData = [
           {shopUrl:this.state.shopUrl},
+          {buyingPrice:this.state.buyingPrice.resultPrice},
           {productContentObjectList: JSON.stringify(this.state.productContentObjectList)},
           {recipientObjectData:JSON.stringify(recipientObjectData)}
         ]
@@ -433,6 +436,10 @@ class BuyingServiceContentWrapper extends React.Component {
         this.setState({ modalShow: false });
     }
 
+    handleBuyingPrice(estimationResult){
+        this.setState({ buyingPrice: estimationResult });
+    }
+
     render() {
 
         let button = <ServiceApplyButton 
@@ -453,6 +460,7 @@ class BuyingServiceContentWrapper extends React.Component {
                 productContentObjectList={this.state.productContentObjectList}
                 shopDeliveryPrice={this.state.shopDeliveryPrice}
                 accessToken={this.props.accessToken}
+                handleBuyingPrice={this.handleBuyingPrice}
              />
 
             {/* 수취인 입력 패널 */}
@@ -516,6 +524,7 @@ class ServiceEstimation extends React.Component {
                 .then((result) => { return result.json();})
                 .then((data) => {
                     this.setState( { estimationResult: data} )
+                    this.props.handleBuyingPrice(data)
                     //console.log(result.resultPrice)
                 }).catch(err => err);
     }
