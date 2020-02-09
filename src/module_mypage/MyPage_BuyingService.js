@@ -109,7 +109,6 @@ export class MyPage_BuyingService extends React.Component{
           this.fetchPaymentData(keycloak.token)
           this.fetchDeliveryKoreaData(keycloak.token)
         //   this.fetchWarehouseInformation(keycloak.token)
-      
       })
     }
 
@@ -176,9 +175,9 @@ export class MyPage_BuyingService extends React.Component{
                   warehouseInformation = { this.state.warehouseInformation }
                   paymentData = {this.state.paymentData}
                   deliveryKoreaData = {this.state.deliveryKoreaData}
+                  accessToken = { this.state.accessToken }
                     //   purchaseOrder = { this.state.purchaseOrder } 
                     //   userAccount = { this.state.userAccount } 
-                    //   accessToken = { this.state.accessToken }
                     />
         } else {
             mypage_buyingService = this.getEmptyPage
@@ -252,18 +251,18 @@ export class UserBaseInfo extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            // doEditUserBaseInfo:false,
-            // doOpenAddressManager:false,
-            // showBaseInfoButtons:true,
-            // showUserBaseInfoButtons:false,
-            // userBaseInfo:null,
-            // redirect:false,
+            doEditUserBaseInfo:false,
+            doOpenAddressManager:false,
+            showBaseInfoButtons:true,
+            showUserBaseInfoButtons:false,
+            userBaseInfo:null,
+            redirect:false,
         };
 
-        // this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
-        // this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
-        // this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
-        // this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
+        this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
+        this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
+        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
+        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
       }
 
       componentDidMount () {
@@ -281,6 +280,7 @@ export class UserBaseInfo extends React.Component{
             return result.json();
           }).then((data) => {           
             this.setState( { userBaseInfo: data} )
+            console.log(data);
           }).catch(function() {
             console.log("error fetching userbaseinfo");
         });
@@ -329,9 +329,8 @@ export class UserBaseInfo extends React.Component{
             userbaseInfoDisplay = 
               <UserBaseInfoEditor 
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
+                userBaseInfo={this.state.userBaseInfo}
                 accessToken={this.props.accessToken}
-               // userBaseInfo={this.state.userBaseInfo}
-               
                />
             
           } else if(doOpenAddressManager) {
