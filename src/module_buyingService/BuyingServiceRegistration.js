@@ -257,7 +257,7 @@ class BuyingServiceContentWrapper extends React.Component {
         console.log("Apply BuyingService!!")
         this.setState({applyBuyingService:true, modalShow:false})
         const buyingServiceData = this.buildBuyingServiceData()
-        //this.createBuyingService(buyingServiceData)
+        this.createBuyingService(buyingServiceData)
         if(this.state.registerFavoriteAddress){
             const favoriteAddress = this.buildFavoriteAddressData()
             console.log('favoriteAddressData:' + favoriteAddress)
@@ -587,9 +587,9 @@ export class ServiceApplyButton extends React.Component {
                     <Button size="sm" variant='secondary'>임시 저장하기</Button> */}
                 <Modal show={this.props.modalShow} onHide={this.props.handleModalClose}>
                             <Modal.Header closeButton>
-                                <Modal.Title>배송대행 신청</Modal.Title>
+                                <Modal.Title>구매대행 신청</Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>배송대행을 신청하시겠습니까?</Modal.Body>
+                            <Modal.Body>구매대행을 신청하시겠습니까?</Modal.Body>
                             <Modal.Footer>
                                 {/* 마이페이지 이동 구현됨 */}
                                 {/* <NavLink to="/mypage"> */}
