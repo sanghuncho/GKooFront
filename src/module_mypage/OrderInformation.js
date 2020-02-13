@@ -6,6 +6,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Redirect } from 'react-router';
+import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
 
 const OrderInfoTableStyle = styled.div`
   margin-top: 20px;
@@ -48,6 +49,12 @@ function deliveryStateFormatter(cell, row) {
   );
 }
 
+function currencyFormatter(cell, row) {        
+  return (
+    <KoreaCurrencyFormatter cell={cell}/>
+  );
+}
+
 const columnsUserAccount = [
   {
     dataField: 'orderid',
@@ -61,7 +68,8 @@ const columnsUserAccount = [
     text: '받는분'
   }, {
     dataField: 'deliveryPayment',
-    text: '운송료'
+    text: '운송료',
+    formatter:currencyFormatter,
   }, {
     dataField: 'deliveryState',
     text: '진행상태',
@@ -82,8 +90,6 @@ const columnsUserAccount = [
     headerStyle: (colum, colIndex) => {
       return { width: '120px', textAlign: 'center' };
     }
-  // text: '배송조회',
-  // formatter:trackingFormatter
   }
 ];
 
@@ -115,16 +121,17 @@ const expandRowA = {
     ),
     
     onlyOneExpanding: true,
-  };
+};
 const expandRowB = {
     renderer: row => (
       <div>
         <p>B</p>
       </div>
-    ),
-    
+    ),  
     onlyOneExpanding: true,
   };
+
+{/* 배송대행 이용현황 */}
 export class OrderInformation extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -318,6 +325,171 @@ class DeliveryState extends React.Component{
       return (
         <div>
           {deliveryState}
+       </div>
+      );
+    }    
+}
+
+class KoreaCurrencyFormatter extends React.Component {
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      let formattedPrice = getFormatKoreanCurrency(this.props.cell)
+
+      return (
+        <div>
+          {formattedPrice}
+       </div>
+      );
+    }    
+}
+
+{/* 구매대행 */}
+const columnsBuyingService = [
+  {
+    dataField: 'orderid',
+    text: '신청번호',
+    // formatter:orderNumberFormatter
+  },{
+    dataField: 'productInfo',
+    text: '상품정보'
+  },{
+    dataField: 'buyingPrice',
+    text: '구매대행 비용',
+    formatter:currencyFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
+  }, {
+    dataField: 'deliveryPayment',
+    text: '운송료',
+    formatter:currencyFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
+  }, {
+    dataField: 'buyingServiceState',
+    text: '진행상태',
+    formatter:buyingServiceStateFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
+  },{
+    dataField: 'orderDate',
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'center' };
+    }
+  }, {
+    dataField: 'orderid',
+    text: '상세페이지',
+    formatter:detailPageLinkFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '120px', textAlign: 'center' };
+    }
+  }
+];
+
+{/* 배송대행 이용현황 */}
+export class BuyingServiceOrderData extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+    };
+  }
+
+  componentDidMount() {
+  }
+
+  render() {
+    return(
+      <div>
+        <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
+        <Card.Header>
+          {/* 구매대행 이용현황 */}
+          {this.props.serviceTitle}
+        </Card.Header>
+        {/* <TabsStyle> */}
+        <Card.Body >
+        <Tabs
+          id="controlled-tab-example"
+          defaultActiveKey="total"
+          activeKey={this.state.key}
+          onSelect={key => this.setState({ key })}
+          style={{marginLeft:'2px'}}
+        >
+        <Tab eventKey="total" title="전체">
+              <OrderInfoTableStyle>
+              {/*ToDo: contents located in center */}
+                  <BootstrapTable keyField='objectId'  
+                      data={ this.props.buyingOrderData } 
+                      columns={ columnsBuyingService } 
+                      bordered={ true }  
+                      noDataIndication="주문하신 물품이 없습니다"
+                      expandRow={ "" }  />
+              </OrderInfoTableStyle>
+        </Tab>
+            {/* <Tab eventKey="germnay" title="독일"> </Tab> */}
+      </Tabs>
+      </Card.Body>
+      {/* </TabsStyle> */}
+      </Card> 
+      </div>
+    );}
+}
+
+function buyingServiceStateFormatter(cell, row) {        
+  return (
+    <BuyinServiceState cell={cell}/>
+  );
+}
+
+class BuyinServiceState extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      const state = this.props.cell;
+      let buyinServiceState;
+
+      // 입고대기 (1),
+      // 입고완료 (2),
+      // 결제요청 (3),
+      // 결제완료 (4),
+      // 해외배송중 (5),
+      // 통관진행 (6),
+      // 국내배송 (7),
+      // 배송완료 (8)
+
+      if (state==1) {
+        buyinServiceState = "물품 결제대기";
+      } else if(state==2){
+        buyinServiceState = "물품 결제완료";
+      } else if(state==3){
+        buyinServiceState = "입고대기";
+      } else if(state==4){
+        buyinServiceState = "배송비 결제대기";
+      } else if(state==5){
+        buyinServiceState = "배송비 결제완료";
+      } else if(state==6){
+        buyinServiceState = "해외배송중";
+      } else if(state==7){
+        buyinServiceState = "통관진행";
+      } else if(state==8){
+        buyinServiceState = "국내배송";
+      } else if(state==9){
+        buyinServiceState = "국내배송";
+      } else {
+        buyinServiceState = "";
+      }
+
+      return (
+        <div>
+          {buyinServiceState}
        </div>
       );
     }    

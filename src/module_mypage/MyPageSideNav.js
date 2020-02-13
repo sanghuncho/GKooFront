@@ -86,7 +86,7 @@ export class MyPageSideNav extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/mypage_buyingService' >
                             <IconCnt>
@@ -96,7 +96,7 @@ export class MyPageSideNav extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
+                    <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
                             <IconCnt>

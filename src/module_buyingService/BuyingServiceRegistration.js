@@ -232,7 +232,7 @@ class BuyingServiceContentWrapper extends React.Component {
         const buyingServiceData = [
           {shopUrl:this.state.shopUrl},
           {buyingPrice:this.state.buyingPrice.resultPrice},
-          {productContentObjectList: JSON.stringify(this.state.productContentObjectList)},
+          {productContentObjectList:JSON.stringify(this.state.productContentObjectList)},
           {recipientObjectData:JSON.stringify(recipientObjectData)}
         ]
         return buyingServiceData

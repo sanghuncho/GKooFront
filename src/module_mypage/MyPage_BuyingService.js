@@ -9,7 +9,7 @@ import {
 import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb, Button, CardGroup, Card } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
-import { OrderInformation } from './OrderInformation'
+import { OrderInformation, BuyingServiceOrderData } from './OrderInformation'
 import { PaymentInformationBuyingService } from './PaymentInformation'
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfoEditor, AddressManager, CompleteUserBaseInfo } from './UserBaseInfo'
@@ -73,7 +73,7 @@ export class MyPage_BuyingService extends React.Component{
       keycloakAuth:null,
       accessToken:"",
       customerStatusData:'',
-      orderInformation:'',
+      buyingOrderData:'',
       paymentData:'',
       deliveryKoreaData:'',
     //   userAccount:'',
@@ -118,7 +118,9 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({orderInformation: data})
+          console.log("orderData")
+          console.log(data)
+          this.setState({buyingOrderData: data})
         })   
     }
 
@@ -171,7 +173,7 @@ export class MyPage_BuyingService extends React.Component{
             mypage_buyingService = 
                 <MypageBuyingServiceController 
                   customerStatusData = { this.state.customerStatusData}
-                  orderInformation = { this.state.orderInformation }
+                  buyingOrderData = { this.state.buyingOrderData }
                   warehouseInformation = { this.state.warehouseInformation }
                   paymentData = {this.state.paymentData}
                   deliveryKoreaData = {this.state.deliveryKoreaData}
@@ -216,7 +218,7 @@ export class MypageBuyingServiceController extends React.Component{
                       accessToken={this.props.accessToken}/>
            
            {/* 전체메뉴 */}
-            <OrderInformation orderInformation={this.props.orderInformation}
+            <BuyingServiceOrderData buyingOrderData={this.props.buyingOrderData}
               serviceTitle={"구매대행 이용현황"} />
           
           <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
