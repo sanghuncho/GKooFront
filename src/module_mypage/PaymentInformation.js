@@ -5,7 +5,7 @@ import { Button, Modal } from "react-bootstrap"
 import BootstrapTable from 'react-bootstrap-table-next';
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { Redirect } from 'react-router';
-
+import { PaymentProductBooking } from '../module_payment/PaymentBuyingService'
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
@@ -14,6 +14,12 @@ function CaptionMypageTable(props) {
 function paymentFormatter(cell, row) {        
     return (
       <PaymentButton paymentState={cell} orderid={row.orderid}/>
+    );
+}
+
+function paymentBuyingServiceFormatter(cell, row) {        
+    return (
+      <PaymentBuyingServiceButton paymentState={cell} orderid={row.orderid}/>
     );
 }
 
@@ -26,10 +32,14 @@ const MyPageBodyTableStyle = styled.div`
   font-size: 13px;
 `;
 
+const ModalWidth = styled.div`
+  width: 500px;
+`;
+
 const MyPageBuyingServiceBodyTableStyle = styled.div`
   margin-top: 10px;
   margin-bottom:10px;
-  width: 400px;
+  width: 300px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   font-size: 13px;
@@ -94,7 +104,7 @@ export class PaymentInformationBuyingService extends React.Component{
             {
             dataField: 'paymentState',
             text: '결제상태',
-            formatter:paymentFormatter}, 
+            formatter:paymentBuyingServiceFormatter}, 
           ];
         
         return (
@@ -103,6 +113,37 @@ export class PaymentInformationBuyingService extends React.Component{
                 {/* <CaptionMypageTable title="결제 현황"/> */}
                 <BootstrapTable keyField='objectId'  
                     data={ this.props.paymentData } 
+                    //data={ data } 
+                    columns={ columnsPayment } 
+                    bordered={ true }  noDataIndication="Table is empty"  />
+            </MyPageBuyingServiceBodyTableStyle>
+          </div>
+        );
+      }    
+}
+
+export class PaymentDeliveryDataBuyingService extends React.Component{
+    constructor(props) {
+        super(props);
+      }
+      
+      render() {
+        
+        const columnsPayment = [{
+            dataField: 'orderid',
+            text: '신청번호'},
+            {
+            dataField: 'paymentState',
+            text: '결제상태',
+            formatter:paymentBuyingServiceFormatter}, 
+          ];
+        
+        return (
+          <div>
+            <MyPageBuyingServiceBodyTableStyle>
+                {/* <CaptionMypageTable title="결제 현황"/> */}
+                <BootstrapTable keyField='objectId'  
+                    data={ this.props.paymentDelivery } 
                     //data={ data } 
                     columns={ columnsPayment } 
                     bordered={ true }  noDataIndication="Table is empty"  />
@@ -152,7 +193,183 @@ class PaymentButton extends React.Component {
                 {paymentButton}
             </div>
         );}
-    }  
+}
+    
+class PaymentBuyingServiceButton extends React.Component {
+        constructor(props, context) {
+          super(props, context);
+          this.state = {
+            showModal:false
+          };
+      
+          this.handleModalShow = this.handleModalShow.bind(this);
+          this.handleModalClose = this.handleModalClose.bind(this);
+        }
+        
+        componentDidMount() {
+         
+        }
+      
+        handleModalClose() {
+          this.setState({ showModal: false });
+        }
+      
+        handleModalShow() {
+            this.setState({ showModal: true });
+        }
+      
+        render() {
+            const paymentState = this.props.paymentState
+            let paymentButton;
+    
+            if (paymentState === 1) {
+                paymentButton = <RequestPaymentProduct orderid={this.props.orderid} />;;
+            } else if(paymentState === 2) {
+                paymentButton = <ApprovalPayment orderid={this.props.orderid} />;
+            } else if(paymentState === 3) {
+                paymentButton = <div>결제완료</div>
+            }
+
+            // if (paymentState === 1) {
+            //     paymentButton = <RequestPayment orderid={this.props.orderid} />;
+            // } else if(paymentState === 2) {
+            //     paymentButton = <ApprovalPayment orderid={this.props.orderid} />;
+            // } else if(paymentState === 3) {
+            //     paymentButton = <div>결제완료</div>
+            // }
+    
+            return(
+                <div>
+                    {paymentButton}
+                </div>
+            );}
+}
+
+class BuyingProductPayment extends React.Component{
+            constructor(props) {
+                super(props);
+                this.state = {
+                    showModal:false,
+                    redirect:false,
+                  };
+              
+                  this.handleModalShow = this.handleModalShow.bind(this);
+                  this.handleModalClose = this.handleModalClose.bind(this);
+                  this.handleShowDetailPage = this.handleShowDetailPage.bind(this);
+            }
+        
+            componentDidMount() {
+             
+            }
+          
+            handleModalClose() {
+              this.setState({ showModal: false });
+            }
+          
+            handleModalShow() {
+                this.setState({ showModal: true });
+            }
+        
+            handleShowDetailPage(){
+                this.setState({redirect: true});
+            }
+        
+            render() {
+                const orderid = this.props.orderid
+                const link = "/detailsmypage/" + orderid
+                if (this.state.redirect) {
+                    return <Redirect push to={link}/>
+                }
+                return (
+                    <div>
+                        <Button variant="outline-secondary" size="sm" 
+                            onClick={this.handleShowDetailPage}>결제하기</Button>
+                        {/* <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>결제하기</Button>
+                        <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+                            <Modal.Header closeButton>
+                            <Modal.Title>결제</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>결제수단
+                               
+                            </Modal.Body>
+                            <Modal.Footer>
+                           
+                            <Button variant="success" onClick={this.handleModalClose}>
+                                OK
+                            </Button>
+                           
+                            <Button variant="dark" onClick={this.handleModalClose}>
+                                OK
+                            </Button>
+                            </Modal.Footer>
+                        </Modal> */}
+                      </div>
+                    );
+                  }    
+}
+
+class RequestPaymentProduct extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal:false,
+            redirect:false,
+          };
+      
+          this.handleModalShow = this.handleModalShow.bind(this);
+          this.handleModalClose = this.handleModalClose.bind(this);
+          this.handleShowDetailPage = this.handleShowDetailPage.bind(this);
+    }
+
+    componentDidMount() {
+     
+    }
+  
+    handleModalClose() {
+      this.setState({ showModal: false });
+    }
+  
+    handleModalShow() {
+        this.setState({ showModal: true });
+    }
+
+    handleShowDetailPage(){
+        this.setState({redirect: true});
+    }
+
+    render() {
+        const orderid = this.props.orderid
+        // const link = "/detailsmypage/" + orderid
+        // if (this.state.redirect) {
+        //     return <Redirect push to={link}/>
+        // }
+        return (
+            <div>
+                {/* <Button variant="outline-secondary" size="sm" 
+                    onClick={this.handleShowDetailPage}>결제하기</Button> */}
+                <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>결제하기</Button>
+                <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+                    {/* <Modal.Header closeButton>
+                        <Modal.Title style={{fontSize:'20px'}}>구매대행 결제</Modal.Title>
+                    </Modal.Header> */}
+                    <Modal.Body >
+                        <PaymentProductBooking/>
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        {/* <Button variant="success" onClick={this.handleModalClose}>
+                            OK
+                        </Button> */}
+                    
+                        <Button variant="dark" onClick={this.handleModalClose}>
+                            닫기
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+              </div>
+            );
+          }    
+}
 
 class RequestPayment extends React.Component{
     constructor(props) {
@@ -215,7 +432,7 @@ class RequestPayment extends React.Component{
               </div>
             );
           }    
-    }
+}
 
 class ApprovalPayment extends React.Component{
     constructor(props) {

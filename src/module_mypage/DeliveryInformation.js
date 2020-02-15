@@ -15,7 +15,7 @@ const MyPageBodyTableStyle = styled.div`
 const MyPageBuyingServiceBodyTableStyle = styled.div`
   margin-top: 10px;
   margin-bottom:10px;
-  width: 400px;
+  width: 300px;
   background: #FFFFFF;
   padding: 0px 5px 5px 5px;
   font-size: 13px;

@@ -10,7 +10,7 @@ import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb, Button, CardGroup, Card } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { OrderInformation, BuyingServiceOrderData } from './OrderInformation'
-import { PaymentInformationBuyingService } from './PaymentInformation'
+import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } from './PaymentInformation'
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfoEditor, AddressManager, CompleteUserBaseInfo } from './UserBaseInfo'
 import { Redirect } from 'react-router';
@@ -75,6 +75,7 @@ export class MyPage_BuyingService extends React.Component{
       customerStatusData:'',
       buyingOrderData:'',
       paymentData:'',
+      paymentDelivery:'',
       deliveryKoreaData:'',
     //   userAccount:'',
     //   purchaseOrder:'',
@@ -105,11 +106,23 @@ export class MyPage_BuyingService extends React.Component{
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
           this.fetchCustomerStatusData(keycloak.token)
-          this.fetchOrderInformation(keycloak.token)
-          this.fetchPaymentData(keycloak.token)
-          this.fetchDeliveryKoreaData(keycloak.token)
-        //   this.fetchWarehouseInformation(keycloak.token)
+          //this.fetchOrderInformation(keycloak.token)
+          //this.fetchPaymentData(keycloak.token)
+          //this.fetchPaymentDelivery(keycloak.token)
+          //this.fetchDeliveryKoreaData(keycloak.token)
       })
+    }
+
+    fetchCustomerStatusData(token){
+      setTokenHeader(token)
+      fetch(basePort + '/customerstatus', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          //console.log(data)
+          this.setState({customerStatusData: data})
+          this.fetchOrderInformation(token)
+        })   
     }
 
     fetchOrderInformation(token){
@@ -118,10 +131,11 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log("orderData")
-          console.log(data)
+          // console.log("orderData")
+          // console.log(data)
           this.setState({buyingOrderData: data})
-        })   
+          this.fetchPaymentData(token)
+        })
     }
 
     fetchPaymentData(token){
@@ -132,6 +146,19 @@ export class MyPage_BuyingService extends React.Component{
         }).then((data) => {
           console.log(data)
           this.setState({paymentData: data})
+          this.fetchPaymentDelivery(token)
+        })   
+    }
+
+    fetchPaymentDelivery(token){
+      setTokenHeader(token)
+      fetch(basePort + '/paymentDeliveryBuyingService', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          console.log(data)
+          this.setState({paymentDelivery: data})
+          this.fetchDeliveryKoreaData(token)
         })   
     }
 
@@ -143,17 +170,6 @@ export class MyPage_BuyingService extends React.Component{
         }).then((data) => {
           console.log(data)
           this.setState({deliveryKoreaData: data})
-        })   
-    }
-
-    fetchCustomerStatusData(token){
-      setTokenHeader(token)
-      fetch(basePort + '/customerstatus', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          //console.log(data)
-          this.setState( { customerStatusData: data} )
         })   
     }
 
@@ -176,6 +192,7 @@ export class MyPage_BuyingService extends React.Component{
                   buyingOrderData = { this.state.buyingOrderData }
                   warehouseInformation = { this.state.warehouseInformation }
                   paymentData = {this.state.paymentData}
+                  paymentDelivery = {this.state.paymentDelivery}
                   deliveryKoreaData = {this.state.deliveryKoreaData}
                   accessToken = { this.state.accessToken }
                     //   purchaseOrder = { this.state.purchaseOrder } 
@@ -224,11 +241,20 @@ export class MypageBuyingServiceController extends React.Component{
           <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
             <Card border="dark">
               <Card.Header>
-                결제 현황
+                구매대행 결제현황
               </Card.Header>
               <Card.Body>
                 {/* 결제 현황 */}  
                 <PaymentInformationBuyingService paymentData={this.props.paymentData}/>
+              </Card.Body>
+            </Card>
+            <Card border="dark">
+              <Card.Header>
+                배송비 결제현황
+              </Card.Header>
+              <Card.Body>
+                {/* 결제 현황 */}  
+                <PaymentDeliveryDataBuyingService paymentDelivery={this.props.paymentDelivery}/>
               </Card.Body>
             </Card>
             <Card border="dark">

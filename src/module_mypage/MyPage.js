@@ -100,13 +100,23 @@ export class MyPage extends React.Component{
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
           this.fetchCustomerStatusData(keycloak.token)
-          this.fetchOrderInformation(keycloak.token)
-          this.fetchWarehouseInformation(keycloak.token)
-          this.fetchPaymentData(keycloak.token)
-          this.fetchDeliveryKoreaData(keycloak.token)
+
+          //not used methods
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
+    }
+
+    fetchCustomerStatusData(token){
+      setTokenHeader(token)
+      fetch(basePort + '/customerstatus', {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          //console.log(data)
+          this.setState({customerStatusData:data})
+          this.fetchOrderInformation(token)
+        })   
     }
 
     fetchOrderInformation(token){
@@ -115,7 +125,19 @@ export class MyPage extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({orderInformation: data})
+          this.setState({orderInformation:data})
+          this.fetchWarehouseInformation(token)
+        })   
+    }
+
+    fetchWarehouseInformation(token){
+      setTokenHeader(token)
+      fetch(basePort + '/warehouseinformation', {headers})
+        .then((result) => { 
+           return result.json();
+        }).then((data) => {
+          this.setState({warehouseInformation:data})
+          this.fetchPaymentData(token)
         })   
     }
 
@@ -126,7 +148,8 @@ export class MyPage extends React.Component{
            return result.json();
         }).then((data) => {
           console.log(data)
-          this.setState({paymentData: data})
+          this.setState({paymentData:data})
+          this.fetchDeliveryKoreaData(token)
         })   
     }
 
@@ -138,16 +161,6 @@ export class MyPage extends React.Component{
         }).then((data) => {
           console.log(data)
           this.setState({deliveryKoreaData: data})
-        })   
-    }
-
-    fetchWarehouseInformation(token){
-      setTokenHeader(token)
-      fetch(basePort + '/warehouseinformation', {headers})
-        .then((result) => { 
-           return result.json();
-        }).then((data) => {
-          this.setState( { warehouseInformation: data } )
         })   
     }
 
@@ -180,17 +193,6 @@ export class MyPage extends React.Component{
           var objectURL = URL.createObjectURL(data);
           this.setState({image: objectURL, loaded:true})
         })
-    }
-
-    fetchCustomerStatusData(token){
-      setTokenHeader(token)
-      fetch(basePort + '/customerstatus', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          //console.log(data)
-          this.setState( { customerStatusData: data} )
-        })   
     }
 
     validToken(token){
