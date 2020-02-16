@@ -1,41 +1,66 @@
 import styled from "styled-components";
 import React from 'react';
 import { Table, Card, Form, InputGroup, FormControl, Button, Dropdown, DropdownButton } from "react-bootstrap"
-import { Icon as BaseIcon } from "react-icons-kit";
+import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
+import { PaymentArtToInt, PAYMENT_ART_LIST, PaymentArtToString } from './PaymentUtil'
+
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, basePort, openHeaders, headers, setTokenHeader } from "../module_base_component/AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 export class PaymentProductBooking extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          artPayment: "무통자입금",
-          paymentOwerName: "",
+          artPayment: this.props.paymentArt,
+          artPaymentList:PAYMENT_ART_LIST,
+          paymentOwnername: "",
+          keycloakAuth:null,
+          accessToken:"",
         }
         this.inputArtPayment = this.inputArtPayment.bind(this);
-        this.inputPaymentOwnerName = this.inputPaymentOwnerName.bind(this);
+        this.inputPaymentOwnername = this.inputPaymentOwnername.bind(this);
     }
 
     inputArtPayment(event, art) {
-        this.setState({ artPayment: art })
+        this.setState({artPayment:art})
+        //console.log(this.state.artPayment)
     }
     
-    inputPaymentOwnerName(event) {
-        this.setState({ paymentOwerName: event.target.value })
+    inputPaymentOwnername(event) {
+        this.setState({paymentOwnername:event.target.value})
+        //console.log(this.state.paymentOwnername)
     }
 
     handleClickPayment() {
-        //console.log(this.state.paymentOwerName)
-        this.props.setPaymentCompletion(false)
-        this.props.createPaymentOwnername(this.state.paymentOwerName)
+        this.updateOwnername(localStorage.getItem("react-token", keycloak.token))
+        console.log(this.state.paymentOwnername)
+        //console.log(localStorage.getItem("react-token", keycloak.token))
+        console.log(PaymentArtToInt(this.state.artPayment))
+    }
+
+    updateOwnername(token){
+        setTokenHeader(token)
+        const contents = [
+            {paymentid:this.props.paymentid},
+            {paymentOwnername:this.state.paymentOwnername},
+            {paymentArt:PaymentArtToInt(this.state.artPayment)},
+        ]
+
+        fetch(basePort + '/updatePaymentProductBuyingService', 
+                {method:'post', headers, 
+                  body:JSON.stringify(contents)})
+                .then((result) => { return result;}).then((contents) => {
+            console.log(contents)
+        }).catch(err => err);
     }
   
     render() {
-    //   const actualWeight = this.props.productsCommonInfo.actualWeight
-    //   const volumeWeight = this.props.productsCommonInfo.volumeWeight
-    //   const shipPrice = this.props.productsCommonInfo.shipPrice
-    //   const priceDiscount = 1000
-    //   const shouldDeposit = shipPrice - priceDiscount
-  
-      return (
+    // {this.props.paymentid}
+    let formattedPrice = getFormatKoreanCurrency(this.props.buyingPrice)
+    return (
         <div>
           <Card border="dark" style={{ height: '27rem', marginTop: '1rem', marginBottom: '1rem' }}>
             <Card.Header>구매대행 결제정보</Card.Header>
@@ -56,7 +81,7 @@ export class PaymentProductBooking extends React.Component {
                       <tbody>
                         <tr>
                           <td style={{textAlign:"center", width:'140px'}} >구매대행 견적</td>
-                          <td style={{textAlign:"center"}}> 18000원 </td>
+                          <td style={{textAlign:"center"}}> {formattedPrice} </td>
                         </tr>
                       </tbody>
                     </Table>
@@ -83,9 +108,15 @@ export class PaymentProductBooking extends React.Component {
                         variant="outline-secondary"
                         title={this.state.artPayment}
                         id="input-group-dropdown-1"
+                        disabled={this.props.readOnly}
                         >
-                        <Dropdown.Item onSelect={e => this.inputArtPayment(e, "무통장입금")}>
-                            무통장입금</Dropdown.Item>
+                        {this.state.artPaymentList.map((paymentArt) => 
+                                { return (<div><Dropdown.Item onSelect={e => 
+                                    this.inputArtPayment(e, paymentArt)}>{paymentArt}
+                                    </Dropdown.Item></div> )})}
+                        {/* <Dropdown.Item 
+                          onSelect={e => this.inputArtPayment(e, "무통장입금")}>
+                            무통장입금</Dropdown.Item> */}
                         </DropdownButton>
                     </InputGroup>
                     <InputGroup size="sm" className="mb-3" style={{ width: '80%' }}>
@@ -95,16 +126,19 @@ export class PaymentProductBooking extends React.Component {
                       </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
-                      onChange={this.inputPaymentOwnerName}
+                      onChange={this.inputPaymentOwnername}
+                      readOnly={this.props.readOnly}
+                      defaultValue={this.props.paymentOwnername}
                       style={{ marginRight: '10px' }}
                     />
                     {/*ToDo: 입금자명 Null Check */}
                     <Button variant="secondary"
-                      size="sm"
-                      //onClick={() => this.props.setPaymentCompletion(true)}>
-                      onClick={() => this.handleClickPayment()}>
-                      결제 하기
-                       </Button>
+                        size="sm"
+                        //onClick={() => this.props.setPaymentCompletion(true)}>
+                        onClick={() => this.handleClickPayment()}
+                        >
+                    결제하기
+                    </Button>
                     </InputGroup >
                     <Card.Body>
                         입금계좌: 우리은행 1002 044 635 530<br/> 예금주: 조상훈
@@ -140,4 +174,3 @@ export class PaymentProductBooking extends React.Component {
       );
     }
   }
-  

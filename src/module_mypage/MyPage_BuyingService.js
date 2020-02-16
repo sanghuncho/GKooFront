@@ -65,7 +65,6 @@ var naviGreen = '#80b13e'
 var grey = '#727676';
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
-
 export class MyPage_BuyingService extends React.Component{
 
     state = { 
@@ -105,6 +104,7 @@ export class MyPage_BuyingService extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
+          localStorage.setItem("react-token", keycloak.token);
           this.fetchCustomerStatusData(keycloak.token)
           //this.fetchOrderInformation(keycloak.token)
           //this.fetchPaymentData(keycloak.token)
