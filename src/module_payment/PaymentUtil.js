@@ -25,7 +25,7 @@ export function PaymentArtToString(paymentArt){
   let art
   switch (paymentArt) {
     case 0:
-      art = "";
+      art = "선택";
       break;
     case 1:
       art = "무통장입금";

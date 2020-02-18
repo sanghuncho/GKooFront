@@ -5,7 +5,7 @@ import { Button, Modal } from "react-bootstrap"
 import BootstrapTable from 'react-bootstrap-table-next';
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { Redirect } from 'react-router';
-import { PaymentProductBooking } from '../module_payment/PaymentBuyingService'
+import { PaymentProductBooking, PaymentDeliveryBooking } from '../module_payment/PaymentBuyingService'
 import { PaymentArtToString } from '../module_payment/PaymentUtil'
 
 function CaptionMypageTable(props) {
@@ -24,6 +24,21 @@ function paymentBuyingServiceFormatter(cell, row, rowIndex, formatExtraData) {
       <PaymentBuyingServiceButton paymentState={cell} 
         orderid={row.orderid} 
         buyingPrice={row.buyingPrice}
+        paymentid={row.paymentid}
+        paymentOwnername={row.paymentOwnername}
+        paymentArt={row.paymentArt}
+        />
+    );
+}
+
+function paymentDeliveryBuyingServiceFormatter(cell, row, rowIndex, formatExtraData) {
+    return (
+      <PaymentDeliveryBuyingServiceButton 
+        paymentState={cell} 
+        orderid={row.orderid} 
+        shipPrice={row.shipPrice}
+        boxActualPrice={row.boxActualPrice}
+        boxVolumePrice={row.boxVolumePrice}
         paymentid={row.paymentid}
         paymentOwnername={row.paymentOwnername}
         paymentArt={row.paymentArt}
@@ -143,7 +158,7 @@ export class PaymentDeliveryDataBuyingService extends React.Component{
             {
             dataField: 'paymentState',
             text: '결제상태',
-            formatter:paymentBuyingServiceFormatter}, 
+            formatter:paymentDeliveryBuyingServiceFormatter}, 
           ];
         
         return (
@@ -246,25 +261,91 @@ class PaymentBuyingServiceButton extends React.Component {
                                     paymentOwnername={this.props.paymentOwnername}
                                     paymentArt={this.props.paymentArt}
                                     readOnly={true} />
-            } else if (paymentState === 2) {
-                paymentButton = <ApprovalPayment orderid={this.props.orderid} />;
-            } else if (paymentState === 3) {
-                paymentButton = <div>결제완료</div>
+            } else if (paymentState === 2 && paymentOwnername != "") {
+                paymentButton = <RequestPaymentProduct 
+                                    orderid={this.props.orderid} 
+                                    buyingPrice={this.props.buyingPrice}
+                                    buttonLabel={"결제완료"}
+                                    paymentOwnername={this.props.paymentOwnername}
+                                    paymentArt={this.props.paymentArt}
+                                    readOnly={true} />
+            } else {
+                new Error("paymentState is error", paymentState)
             }
-
-            // if (paymentState === 1) {
-            //     paymentButton = <RequestPayment orderid={this.props.orderid} />;
-            // } else if(paymentState === 2) {
-            //     paymentButton = <ApprovalPayment orderid={this.props.orderid} />;
-            // } else if(paymentState === 3) {
-            //     paymentButton = <div>결제완료</div>
-            // }
     
             return(
                 <div>
                     {paymentButton}
                 </div>
             );}
+}
+
+class PaymentDeliveryBuyingServiceButton extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+      this.state = {
+        showModal:false,
+      };
+  
+      this.handleModalShow = this.handleModalShow.bind(this);
+      this.handleModalClose = this.handleModalClose.bind(this);
+    }
+
+    handleModalClose() {
+      this.setState({ showModal: false });
+    }
+  
+    handleModalShow() {
+        this.setState({ showModal: true });
+    }
+  
+    render() {
+        const paymentState = this.props.paymentState
+        const paymentOwnername = this.props.paymentOwnername
+        let paymentButton;
+        console.log("paymentOwnername: " + paymentOwnername )
+        console.log("paymentState: " + paymentState )
+        if (paymentState === 3 && paymentOwnername === "") {
+            paymentButton = <RequestPaymentDelivery 
+                                orderid={this.props.orderid} 
+                                shipPrice={this.props.shipPrice}
+                                boxActualPrice={this.props.boxActualPrice}
+                                boxVolumePrice={this.props.boxVolumePrice}
+                                paymentid={this.props.paymentid}
+                                buttonLabel={"결제하기"}
+                                paymentOwnername={this.props.paymentOwnername}
+                                readOnly={false}
+                                paymentArt={this.props.paymentArt}/>
+
+        } else if (paymentState === 3 && paymentOwnername != "") {
+            paymentButton = <RequestPaymentDelivery 
+                                orderid={this.props.orderid} 
+                                shipPrice={this.props.shipPrice}
+                                boxActualPrice={this.props.boxActualPrice}
+                                boxVolumePrice={this.props.boxVolumePrice}
+                                buttonLabel={"결제확인중"}
+                                paymentOwnername={this.props.paymentOwnername}
+                                paymentArt={this.props.paymentArt}
+                                readOnly={true} />
+        } else if (paymentState === 4 && paymentOwnername != "") {
+            paymentButton = <RequestPaymentDelivery 
+                                orderid={this.props.orderid} 
+                                shipPrice={this.props.shipPrice}
+                                boxActualPrice={this.props.boxActualPrice}
+                                boxVolumePrice={this.props.boxVolumePrice}
+                                buttonLabel={"결제완료"}
+                                paymentOwnername={this.props.paymentOwnername}
+                                paymentArt={this.props.paymentArt}
+                                readOnly={true} />
+        } else {
+            new Error("paymentState is error", paymentState)
+        }
+
+        return(
+            <div>
+                {paymentButton}
+            </div>
+        );}
 }
 
 class RequestPaymentProduct extends React.Component{
@@ -296,7 +377,6 @@ class RequestPaymentProduct extends React.Component{
     }
 
     render() {
-        const orderid = this.props.orderid
         return (
             <div>
                
@@ -306,6 +386,62 @@ class RequestPaymentProduct extends React.Component{
                     <Modal.Body >
                         <PaymentProductBooking 
                             buyingPrice={this.props.buyingPrice} 
+                            paymentid={this.props.paymentid}
+                            paymentOwnername={this.props.paymentOwnername}
+                            paymentArt={PaymentArtToString(this.props.paymentArt)}
+                            readOnly={this.props.readOnly}
+                            />
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="dark" size="sm" onClick={this.handleModalClose}>
+                            닫기
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+              </div>
+            );
+          }    
+}
+
+class RequestPaymentDelivery extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal:false,
+            redirect:false,
+          };
+      
+          this.handleModalShow = this.handleModalShow.bind(this);
+          this.handleModalClose = this.handleModalClose.bind(this);
+          this.handleShowDetailPage = this.handleShowDetailPage.bind(this);
+    }
+
+    componentDidMount() {
+    }
+  
+    handleModalClose() {
+      this.setState({ showModal: false });
+    }
+  
+    handleModalShow() {
+        this.setState({ showModal: true });
+    }
+
+    handleShowDetailPage(){
+        this.setState({redirect: true});
+    }
+
+    render() {
+        return (
+            <div>
+               
+                <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>{this.props.buttonLabel}</Button>
+                <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+                   
+                    <Modal.Body >
+                        <PaymentDeliveryBooking 
+                            shipPrice={this.props.shipPrice}
                             paymentid={this.props.paymentid}
                             paymentOwnername={this.props.paymentOwnername}
                             paymentArt={PaymentArtToString(this.props.paymentArt)}
