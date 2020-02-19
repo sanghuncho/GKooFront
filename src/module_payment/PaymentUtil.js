@@ -24,7 +24,7 @@ export const PAYMENT_ART_LIST = [
 export function PaymentArtToString(paymentArt){
   let art
   switch (paymentArt) {
-    case 0:
+    case -1:
       art = "선택";
       break;
     case 1:

@@ -37,3 +37,11 @@ export function getKoreanCurrencyWithInfoBadge(rate){
         return EMPTY_STRING
     }
 }
+
+export function getFormattedWeight(weight){
+    if(weight > 0){
+        return weight+"kg"
+    } else {
+        return EMPTY_STRING
+    }
+}

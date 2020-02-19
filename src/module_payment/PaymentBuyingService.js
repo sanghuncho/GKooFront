@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import React from 'react';
 import { Table, Card, Form, InputGroup, FormControl, Button, Dropdown, DropdownButton } from "react-bootstrap"
-import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
+import { getFormatKoreanCurrency, getFormattedWeight } from '../module_base_component/BaseUtil'
 import { PaymentArtToInt, PAYMENT_ART_LIST, PaymentArtToString } from './PaymentUtil'
 
 ///// keycloak -> /////
@@ -140,6 +140,9 @@ export class PaymentProductBooking extends React.Component {
       );
     }
   }
+  export function getWeight(a, v){
+    return a+'/'+v
+  }
 
   export class PaymentDeliveryBooking extends React.Component {
     constructor(props) {
@@ -197,9 +200,11 @@ export class PaymentProductBooking extends React.Component {
       }
     
     let formattedPrice = getFormatKoreanCurrency(this.props.shipPrice)
+    var formattedActualWeight = getFormattedWeight(this.props.boxActualWeight)
+    var formattedVolumeWeight = getFormattedWeight(this.props.boxVolumeWeight)
     return (
         <div>
-          <Card border="dark" style={{ height: '27rem', marginTop: '1rem', marginBottom: '1rem' }}>
+          <Card border="dark" style={{ height: '28rem', marginTop: '1rem', marginBottom: '1rem' }}>
             <Card.Header>구매대행 결제정보</Card.Header>
             <Card.Body >
               <InputGroup className="mb-3">
@@ -212,6 +217,10 @@ export class PaymentProductBooking extends React.Component {
                         <tr>
                           <td style={{textAlign:"center", width:'140px'}} >배송비 견적</td>
                           <td style={{textAlign:"center"}}> {formattedPrice} </td>
+                        </tr>
+                        <tr>
+                          <td style={{textAlign:"center", width:'140px'}} >실무게/부피무게</td>
+                          <td style={{textAlign:"center"}}> {formattedActualWeight} / {formattedVolumeWeight} </td>
                         </tr>
                       </tbody>
                     </Table>

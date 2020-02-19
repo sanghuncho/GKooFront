@@ -37,8 +37,8 @@ function paymentDeliveryBuyingServiceFormatter(cell, row, rowIndex, formatExtraD
         paymentState={cell} 
         orderid={row.orderid} 
         shipPrice={row.shipPrice}
-        boxActualPrice={row.boxActualPrice}
-        boxVolumePrice={row.boxVolumePrice}
+        boxActualWeight={row.boxActualWeight}
+        boxVolumeWeight={row.boxVolumeWeight}
         paymentid={row.paymentid}
         paymentOwnername={row.paymentOwnername}
         paymentArt={row.paymentArt}
@@ -309,8 +309,8 @@ class PaymentDeliveryBuyingServiceButton extends React.Component {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
                                 shipPrice={this.props.shipPrice}
-                                boxActualPrice={this.props.boxActualPrice}
-                                boxVolumePrice={this.props.boxVolumePrice}
+                                boxActualWeight={this.props.boxActualWeight}
+                                boxVolumeWeight={this.props.boxVolumeWeight}
                                 paymentid={this.props.paymentid}
                                 buttonLabel={"결제하기"}
                                 paymentOwnername={this.props.paymentOwnername}
@@ -321,8 +321,8 @@ class PaymentDeliveryBuyingServiceButton extends React.Component {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
                                 shipPrice={this.props.shipPrice}
-                                boxActualPrice={this.props.boxActualPrice}
-                                boxVolumePrice={this.props.boxVolumePrice}
+                                boxActualWeight={this.props.boxActualWeight}
+                                boxVolumeWeight={this.props.boxVolumeWeight}
                                 buttonLabel={"결제확인중"}
                                 paymentOwnername={this.props.paymentOwnername}
                                 paymentArt={this.props.paymentArt}
@@ -331,8 +331,8 @@ class PaymentDeliveryBuyingServiceButton extends React.Component {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
                                 shipPrice={this.props.shipPrice}
-                                boxActualPrice={this.props.boxActualPrice}
-                                boxVolumePrice={this.props.boxVolumePrice}
+                                boxActualWeight={this.props.boxActualWeight}
+                                boxVolumeWeight={this.props.boxVolumeWeight}
                                 buttonLabel={"결제완료"}
                                 paymentOwnername={this.props.paymentOwnername}
                                 paymentArt={this.props.paymentArt}
@@ -443,6 +443,8 @@ class RequestPaymentDelivery extends React.Component{
                         <PaymentDeliveryBooking 
                             shipPrice={this.props.shipPrice}
                             paymentid={this.props.paymentid}
+                            boxActualWeight={this.props.boxActualWeight}
+                            boxVolumeWeight={this.props.boxVolumeWeight}
                             paymentOwnername={this.props.paymentOwnername}
                             paymentArt={PaymentArtToString(this.props.paymentArt)}
                             readOnly={this.props.readOnly}
@@ -558,11 +560,7 @@ class ApprovalPayment extends React.Component{
                         <MyPageDetailDeliveryPrice/>
                     </Modal.Body>
                     <Modal.Footer>
-                    {/* <NavLink to="/">
-                    <Button variant="success" onClick={this.handleModalClose}>
-                        OK
-                    </Button>
-                    </NavLink> */}
+                   
                     <Button variant="dark" size="sm" onClick={this.handleModalClose}>
                         닫음
                     </Button>
