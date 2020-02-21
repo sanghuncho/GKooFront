@@ -2,7 +2,7 @@ export function PaymentArtToInt(paymentArt){
     let art
     switch (paymentArt) {
       case "선택":
-        art = -1;
+        art = 0;
         break;
       case "무통장입금":
         art = 1;
@@ -24,7 +24,7 @@ export const PAYMENT_ART_LIST = [
 export function PaymentArtToString(paymentArt){
   let art
   switch (paymentArt) {
-    case -1:
+    case 0:
       art = "선택";
       break;
     case 1:

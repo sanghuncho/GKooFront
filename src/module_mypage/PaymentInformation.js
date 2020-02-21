@@ -19,7 +19,7 @@ function paymentFormatter(cell, row) {
     );
 }
 
-function paymentBuyingServiceFormatter(cell, row, rowIndex, formatExtraData) {
+function paymentBuyingServiceFormatter(cell, row) {
     return (
       <PaymentBuyingServiceButton paymentState={cell} 
         orderid={row.orderid} 
@@ -261,7 +261,7 @@ class PaymentBuyingServiceButton extends React.Component {
                                     paymentOwnername={this.props.paymentOwnername}
                                     paymentArt={this.props.paymentArt}
                                     readOnly={true} />
-            } else if (paymentState === 2 && paymentOwnername != "") {
+            } else if ((paymentState === 2 || paymentState === 3 || paymentState === 4) && paymentOwnername != "") {
                 paymentButton = <RequestPaymentProduct 
                                     orderid={this.props.orderid} 
                                     buyingPrice={this.props.buyingPrice}
@@ -433,6 +433,7 @@ class RequestPaymentDelivery extends React.Component{
     }
 
     render() {
+        console.log("paymentArt:" + this.props.paymentArt)
         return (
             <div>
                

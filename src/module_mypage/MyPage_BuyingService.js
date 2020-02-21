@@ -76,9 +76,7 @@ export class MyPage_BuyingService extends React.Component{
       paymentData:'',
       paymentDelivery:'',
       deliveryKoreaData:'',
-    //   userAccount:'',
-    //   purchaseOrder:'',
-    //warehouseInformation:'',
+      userBaseInfo:'',
    };
   
     toggle(position) {
@@ -106,10 +104,6 @@ export class MyPage_BuyingService extends React.Component{
           accessToken:keycloak.token})
           localStorage.setItem("react-token", keycloak.token);
           this.fetchCustomerStatusData(keycloak.token)
-          //this.fetchOrderInformation(keycloak.token)
-          //this.fetchPaymentData(keycloak.token)
-          //this.fetchPaymentDelivery(keycloak.token)
-          //this.fetchDeliveryKoreaData(keycloak.token)
       })
     }
 
@@ -119,7 +113,6 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          //console.log(data)
           this.setState({customerStatusData: data})
           this.fetchOrderInformation(token)
         })   
@@ -131,8 +124,6 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          // console.log("orderData")
-          // console.log(data)
           this.setState({buyingOrderData: data})
           this.fetchPaymentData(token)
         })
@@ -144,7 +135,6 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log(data)
           this.setState({paymentData: data})
           this.fetchPaymentDelivery(token)
         })   
@@ -156,7 +146,6 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log(data)
           this.setState({paymentDelivery: data})
           this.fetchDeliveryKoreaData(token)
         })   
@@ -168,9 +157,20 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log(data)
           this.setState({deliveryKoreaData: data})
+          this.fetchUserBaseInfo(token)
         })   
+    }
+
+    fetchUserBaseInfo(token){
+      setTokenHeader(token)
+      fetch(basePort + '/fetchuserbaseinfo', {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {           
+          this.setState( { userBaseInfo: data} )
+        }).catch(function() {
+      });
     }
 
     validToken(token){
@@ -194,10 +194,9 @@ export class MyPage_BuyingService extends React.Component{
                   paymentData = {this.state.paymentData}
                   paymentDelivery = {this.state.paymentDelivery}
                   deliveryKoreaData = {this.state.deliveryKoreaData}
+                  userBaseInfo = {this.state.userBaseInfo}
                   accessToken = { this.state.accessToken }
-                    //   purchaseOrder = { this.state.purchaseOrder } 
-                    //   userAccount = { this.state.userAccount } 
-                    />
+                />
         } else {
             mypage_buyingService = this.getEmptyPage
         }
@@ -283,7 +282,7 @@ export class UserBaseInfo extends React.Component{
             doOpenAddressManager:false,
             showBaseInfoButtons:true,
             showUserBaseInfoButtons:false,
-            userBaseInfo:null,
+            userBaseInfo:this.props.userBaseInfo,
             redirect:false,
         };
 
@@ -294,26 +293,12 @@ export class UserBaseInfo extends React.Component{
       }
 
       componentDidMount () {
-        this.fetchUserBaseInfo(this.props.accessToken)
       }
 
       doEditUserBaseInfo(){
         this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
       }
   
-      fetchUserBaseInfo(token){
-        setTokenHeader(token)
-        fetch(basePort + '/fetchuserbaseinfo', {headers})
-          .then((result) => { 
-            return result.json();
-          }).then((data) => {           
-            this.setState( { userBaseInfo: data} )
-            console.log(data);
-          }).catch(function() {
-            console.log("error fetching userbaseinfo");
-        });
-      }
-      
       doOpenAddressManager(){
         //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
         // <NavLink to="/favoriteAddressManager/">

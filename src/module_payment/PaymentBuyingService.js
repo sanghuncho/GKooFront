@@ -139,12 +139,9 @@ export class PaymentProductBooking extends React.Component {
         </div>
       );
     }
-  }
-  export function getWeight(a, v){
-    return a+'/'+v
-  }
+}
 
-  export class PaymentDeliveryBooking extends React.Component {
+export class PaymentDeliveryBooking extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -181,7 +178,7 @@ export class PaymentProductBooking extends React.Component {
             {paymentArt:PaymentArtToInt(this.state.artPayment)},
         ]
 
-        fetch(basePort + '/updatePaymentProductBuyingService', 
+        fetch(basePort + '/updatePaymentDeliveryBuyingService', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result;}).then((contents) => {

@@ -21,6 +21,10 @@ const MyPageBuyingServiceBodyTableStyle = styled.div`
   font-size: 13px;
 `;
 
+const TrackingButtonStyle = styled.div`
+    text-align:center;
+`;
+
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
@@ -28,7 +32,11 @@ function CaptionMypageTable(props) {
 
 function trackingFormatter(cell, row) {        
     return (
-      <TrackingButton/>
+      <TrackingButtonStyle>
+        <TrackingButton
+          orderid={row.orderid}
+          deliveryTracking={row.deliveryTracking}/>
+       </TrackingButtonStyle>
     );
 }
 
@@ -55,20 +63,15 @@ export class DeliveryInformation extends React.Component{
       }
       
       render() {
-        // const rowEvents = {
-        //   onClick: (e, row, rowIndex) => {
-        //     console.log(`clicked on row with index: ${rowIndex}`);
-        //     this.setRedirect();
-        //   }
-        // };
-  
         const columnsDelivery = [{
           dataField: 'orderid',
           text: '신청번호'},
           {
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
-          formatter:trackingFormatter}
+          formatter:trackingFormatter,
+         
+          }
         ];
 
         return (
@@ -77,10 +80,8 @@ export class DeliveryInformation extends React.Component{
               {/* <CaptionMypageTable title="배송 현황"/> */}
               <BootstrapTable keyField='objectId'  
                 data={ this.props.deliveryKoreaData } 
-                //data={ data } 
                 columns={ columnsDelivery } 
                 hover bordered={ true } 
-                // rowEvents={ rowEvents } 
                 noDataIndication="Table is empty"  />
             </MyPageBodyTableStyle></div>
         );
@@ -93,20 +94,16 @@ export class DeliveryInformation extends React.Component{
       }
       
       render() {
-        // const rowEvents = {
-        //   onClick: (e, row, rowIndex) => {
-        //     console.log(`clicked on row with index: ${rowIndex}`);
-        //     this.setRedirect();
-        //   }
-        // };
-  
         const columnsDelivery = [{
           dataField: 'orderid',
           text: '신청번호'},
           {
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
-          formatter:trackingFormatter}
+          formatter:trackingFormatter,
+          headerStyle: (colum, colIndex) => {
+            return { textAlign: 'center' };
+          }}
         ];
 
         return (
@@ -115,7 +112,6 @@ export class DeliveryInformation extends React.Component{
               {/* <CaptionMypageTable title="배송 현황"/> */}
               <BootstrapTable keyField='objectId'  
                 data={ this.props.deliveryKoreaData } 
-                //data={ data } 
                 columns={ columnsDelivery } 
                 hover bordered={ true } 
                 // rowEvents={ rowEvents } 
@@ -157,8 +153,9 @@ export class DeliveryInformation extends React.Component{
               <Modal.Title>배송조회</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              배송중
+              
               {/* 배송조회 api 연동 */}
+              {this.props.deliveryTracking}
             </Modal.Body>
             <Modal.Footer>
               {/* <NavLink to="/">

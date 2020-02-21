@@ -59,7 +59,9 @@ const columnsUserAccount = [
   {
     dataField: 'orderid',
     text: '신청번호',
-    // formatter:orderNumberFormatter
+    headerStyle: (colum, colIndex) => {
+      return { width: '130px', textAlign: 'center' };
+    }
   },{
     dataField: 'productInfo',
     text: '상품정보'
@@ -351,7 +353,9 @@ const columnsBuyingService = [
   {
     dataField: 'orderid',
     text: '신청번호',
-    // formatter:orderNumberFormatter
+    headerStyle: (colum, colIndex) => {
+      return { width: '130px', textAlign: 'center' };
+    }
   },{
     dataField: 'productInfo',
     text: '상품정보'
@@ -374,7 +378,7 @@ const columnsBuyingService = [
     text: '진행상태',
     formatter:buyingServiceStateFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '110px', textAlign: 'center' };
+      return { width: '120px', textAlign: 'center' };
     }
   },{
     dataField: 'orderDate',
@@ -470,21 +474,19 @@ class BuyinServiceState extends React.Component{
       } else if(state==2){
         buyinServiceState = "물품 결제완료";
       } else if(state==3){
-        buyinServiceState = "입고대기";
-      } else if(state==4){
         buyinServiceState = "배송비 결제대기";
-      } else if(state==5){
+      } else if(state==4){
         buyinServiceState = "배송비 결제완료";
-      } else if(state==6){
+      } else if(state==5){
         buyinServiceState = "해외배송중";
-      } else if(state==7){
+      } else if(state==6){
         buyinServiceState = "통관진행";
+      } else if(state==7){
+        buyinServiceState = "국내배송";
       } else if(state==8){
-        buyinServiceState = "국내배송";
-      } else if(state==9){
-        buyinServiceState = "국내배송";
-      } else {
-        buyinServiceState = "";
+        buyinServiceState = "배송완료";
+      }  else {
+        
       }
 
       return (
