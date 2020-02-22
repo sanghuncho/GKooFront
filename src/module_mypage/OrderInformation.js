@@ -43,6 +43,12 @@ function detailPageLinkFormatter(cell, row) {
   );
 }
 
+function detailBuyingServiceFormatter(cell, row) {        
+  return (
+    <DetailBuyingServiceButton orderid={cell}/>
+  );
+}
+
 function deliveryStateFormatter(cell, row) {        
   return (
     <DeliveryState cell={cell}/>
@@ -286,6 +292,40 @@ export class DetailPageLinkButton extends React.Component {
     );}
 }
 
+export class DetailBuyingServiceButton extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      redirect:false,
+    };
+    this.handleLinkDetailPage = this.handleLinkDetailPage.bind(this);
+    
+  }
+  
+  componentDidMount() {
+   
+  }
+
+  handleLinkDetailPage(){
+    this.setState({redirect: true});
+  }
+
+  render() {
+    const orderid = this.props.orderid
+    const link = "/detailsbuyingService/" + orderid
+    //console.log(link)
+    if (this.state.redirect) {
+      return <Redirect push to={link}/>
+    }
+
+    return(
+      <div>
+        <Button variant="outline-secondary" size="sm" 
+          onClick={this.handleLinkDetailPage}>상세페이지</Button>
+      </div>
+    );}
+}
+
 class DeliveryState extends React.Component{
   constructor(props) {
       super(props);
@@ -389,7 +429,7 @@ const columnsBuyingService = [
   }, {
     dataField: 'orderid',
     text: '상세페이지',
-    formatter:detailPageLinkFormatter,
+    formatter:detailBuyingServiceFormatter,
     headerStyle: (colum, colIndex) => {
       return { width: '120px', textAlign: 'center' };
     }
@@ -400,7 +440,6 @@ const columnsBuyingService = [
 export class BuyingServiceOrderData extends React.Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
     };
   }
@@ -416,7 +455,6 @@ export class BuyingServiceOrderData extends React.Component {
           {/* 구매대행 이용현황 */}
           {this.props.serviceTitle}
         </Card.Header>
-        {/* <TabsStyle> */}
         <Card.Body >
         <Tabs
           id="controlled-tab-example"

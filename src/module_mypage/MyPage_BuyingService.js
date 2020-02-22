@@ -113,6 +113,7 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
+          
           this.setState({customerStatusData: data})
           this.fetchOrderInformation(token)
         })   
@@ -131,7 +132,7 @@ export class MyPage_BuyingService extends React.Component{
 
     fetchPaymentData(token){
       setTokenHeader(token)
-      fetch(basePort + '/paymentDataBuyingService', {headers})
+      fetch(basePort + '/paymentProductBuyingService', {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -168,7 +169,8 @@ export class MyPage_BuyingService extends React.Component{
         .then((result) => { 
           return result.json();
         }).then((data) => {           
-          this.setState( { userBaseInfo: data} )
+          this.setState({userBaseInfo:data})
+          console.log(data)
         }).catch(function() {
       });
     }
@@ -231,6 +233,7 @@ export class MypageBuyingServiceController extends React.Component{
             </Breadcrumb>
 
             <UserBaseInfo customerStatusData={this.props.customerStatusData}
+                      userBaseInfo = {this.props.userBaseInfo}
                       accessToken={this.props.accessToken}/>
            
            {/* 전체메뉴 */}
@@ -342,7 +345,7 @@ export class UserBaseInfo extends React.Component{
             userbaseInfoDisplay = 
               <UserBaseInfoEditor 
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
-                userBaseInfo={this.state.userBaseInfo}
+                userBaseInfo={this.props.userBaseInfo}
                 accessToken={this.props.accessToken}
                />
             
