@@ -5,7 +5,7 @@ import { Card, Button, InputGroup, FormControl, Form, Badge } from "react-bootst
 import { Icon as BaseIcon } from "react-icons-kit";
 import { check, minus, circle } from 'react-icons-kit/fa/'
 import { InfoBadge } from "../module_base_component/InfoBadge";
-import { headers, basePort } from "../module_mypage/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 
 /*
  *
@@ -49,7 +49,6 @@ export class CustomerRecipientEditor extends React.Component {
         this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
         this.changeHandlerUsercomment = this.changeHandlerUsercomment.bind(this)
     }
-
 
        /*
         * state 비교 하는 방법
@@ -142,8 +141,9 @@ export class CustomerRecipientEditor extends React.Component {
             {usercomment: this.state.usercomment}
         ]
 
-        this.setTokenHeader(accessToken)
-        fetch(basePort + '/updaterecipientdata', 
+        setTokenHeader(accessToken)
+        let updateUrl = this.props.updateUrl
+        fetch(basePort + '/' + updateUrl, 
                   {method:'post', headers, 
                     body:JSON.stringify(editedRecipientData)})
                     .then((result) => {

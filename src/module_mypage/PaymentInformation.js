@@ -218,7 +218,7 @@ class PaymentButton extends React.Component {
         );}
 }
     
-class PaymentBuyingServiceButton extends React.Component {
+export class PaymentBuyingServiceButton extends React.Component {
         constructor(props, context) {
           super(props, context);
           this.state = {
@@ -261,7 +261,7 @@ class PaymentBuyingServiceButton extends React.Component {
                                     paymentOwnername={this.props.paymentOwnername}
                                     paymentArt={this.props.paymentArt}
                                     readOnly={true} />
-            } else if ((paymentState === 2 || paymentState === 3 || paymentState === 4) && paymentOwnername != "") {
+            } else if ((paymentState === 2 || paymentState === 3 || paymentState === 4 || paymentState === 5) && paymentOwnername != "") {
                 paymentButton = <RequestPaymentProduct 
                                     orderid={this.props.orderid} 
                                     buyingPrice={this.props.buyingPrice}
@@ -280,7 +280,7 @@ class PaymentBuyingServiceButton extends React.Component {
             );}
 }
 
-class PaymentDeliveryBuyingServiceButton extends React.Component {
+export class PaymentDeliveryBuyingServiceButton extends React.Component {
     constructor(props, context) {
       super(props, context);
       this.state = {
@@ -303,8 +303,8 @@ class PaymentDeliveryBuyingServiceButton extends React.Component {
         const paymentState = this.props.paymentState
         const paymentOwnername = this.props.paymentOwnername
         let paymentButton;
-        console.log("paymentOwnername: " + paymentOwnername )
-        console.log("paymentState: " + paymentState )
+        // console.log("paymentOwnername: " + paymentOwnername )
+        // console.log("paymentState: " + paymentState )
         if (paymentState === 3 && paymentOwnername === "") {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
@@ -327,7 +327,7 @@ class PaymentDeliveryBuyingServiceButton extends React.Component {
                                 paymentOwnername={this.props.paymentOwnername}
                                 paymentArt={this.props.paymentArt}
                                 readOnly={true} />
-        } else if (paymentState === 4 && paymentOwnername != "") {
+        } else if ((paymentState === 4 || paymentState === 5) && paymentOwnername != "") {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
                                 shipPrice={this.props.shipPrice}

@@ -12,65 +12,67 @@ const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
 `;
 
-export class MyPageDetailProducts extends React.Component{
+export class MyPageBuyingServiceDetailProducts extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-          doEdit:false,
-          setButton:true,
+        //   doEdit:false,
+        //   setButton:true,
         }
-        this.handleShowStoredProductsList = this.handleShowStoredProductsList.bind(this)
+
+        //this.handleShowStoredProductsList = this.handleShowStoredProductsList.bind(this)
       }
 
-      handleEditProductsList(){
-        this.setState({doEdit:true}) 
-        this.setState({setButton:false}) 
-      }
+    //   handleEditProductsList(){
+    //     this.setState({doEdit:true}) 
+    //     this.setState({setButton:false}) 
+    //   }
 
-      handleShowStoredProductsList(){
-        this.setState({doEdit:false}) 
-        this.setState({setButton:true}) 
-      }
+    //   handleShowStoredProductsList(){
+    //     this.setState({doEdit:false}) 
+    //     this.setState({setButton:true}) 
+    //   }
 
       componentDidMount () {
       }
       
       render() {
-        const setButton = this.state.setButton
-        let editButton;
-        if(setButton) {
-          editButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleEditProductsList(e)} 
-                            style={{ marginRight: '10px', float:"right"}}>수정</Button>
-        }
+        // const setButton = this.state.setButton
+        // let editButton;
+        // if(setButton) {
+        //   editButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleEditProductsList(e)} 
+        //                     style={{ marginRight: '10px', float:"right"}}>수정</Button>
+        // }
 
-        const doEdit = this.state.doEdit
+        // const doEdit = this.state.doEdit
         let displayHeight;
 
         let productsListDisplay;
-        if (doEdit) {
+        // remove unnecessary code
+        if (false) {
             productsListDisplay = 
               <EditorProductsList 
                 handleShowStoredProductsList={this.handleShowStoredProductsList}
                 productsInfo={this.props.productsInfo}
-                productsCommonInfo={this.props.productsCommonInfo}
                 orderid={this.props.orderid}
+                shopUrl={this.props.shopUrl}
                 accessToken={this.props.accessToken}
                />
-            //displayHeight = '67rem'
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
           } else {
-            const dynamicHeight = (14 + 17*(this.props.productsInfo.length))
+            const dynamicHeight = (14 + 13*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
             productsListDisplay = <CompleteProductsListDisplay 
                 productsInfo={this.props.productsInfo}
-                productsCommonInfo={this.props.productsCommonInfo}/>
+                shopUrl={this.props.shopUrl}
+                />
           }
         return (
           <div>
             <Card border="dark" style={{ width: '80%', height:displayHeight, marginTop:'1rem' }}>
                 <Card.Header>상품 정보
-                  {editButton}
+                  {/* {editButton} */}
                 </Card.Header>
                 <Card.Body >
                   
@@ -86,21 +88,17 @@ export class MyPageDetailProducts extends React.Component{
       }    
 }
 
-export class EditorProductsList extends React.Component{
+class EditorProductsList extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
             orderid:this.props.orderid,
-            shopUrl:this.props.productsCommonInfo.shopUrl,
-            trackingTitle:this.props.productsCommonInfo.trackingCompany,
-            trackingNumber:this.props.productsCommonInfo.trackingNr,
+            shopUrl:this.props.productsInfo.shopUrl,
             shippingProductList:[],
             deliveryObject: null,
         }
 
         this.handleShopUrl = this.handleShopUrl.bind(this);
-        this.handleTrackingTitle = this.handleTrackingTitle.bind(this);
-        this.handleTrackingNumber  = this.handleTrackingNumber.bind(this);
         this.handleSave = this.handleSave.bind(this)
         this.handleCancel = this.handleCancel.bind(this)
     }
@@ -114,9 +112,7 @@ export class EditorProductsList extends React.Component{
         //this.state.shippingProductList[0] = shippingProduct
 
         var deliveryObject = {
-            shopUrl:this.props.productsCommonInfo.shopUrl,
-            trackingTitle:this.props.productsCommonInfo.trackingCompany,
-            trackingNumber:this.props.productsCommonInfo.trackingNr
+            shopUrl:this.props.productsInfo.shopUrl,
         }
         this.setState({deliveryObject:deliveryObject})
     }
@@ -124,16 +120,6 @@ export class EditorProductsList extends React.Component{
     handleShopUrl(event){
         this.setState({shopUrl:event.target.value})
         this.state.deliveryObject.shopUrl = event.target.value
-    }
-
-    handleTrackingTitle(event, company) {
-        this.setState({trackingTitle:company})
-        this.state.deliveryObject.trackingTitle=company
-    }
-
-    handleTrackingNumber(event){
-        this.setState({trackingNumber:event.target.value})
-        this.state.deliveryObject.trackingNumber = event.target.value 
     }
 
     handleCancel(update){
@@ -180,7 +166,7 @@ export class EditorProductsList extends React.Component{
                 <Card.Header>상품입력</Card.Header>          
                 <Card.Body> */}
                     <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
-                        <Card.Header>상품 배송 정보</Card.Header>
+                        <Card.Header>상품 구매 정보</Card.Header>
                         <Card.Body >
                         <InputGroup size="sm" style={{ width:'90%'}} className="mb-3" >
                             <InputGroup.Prepend>
@@ -191,34 +177,8 @@ export class EditorProductsList extends React.Component{
                             <FormControl id="basic-url" aria-describedby="basic-addon3"
                                 onChange = {this.handleShopUrl} 
                                 placeholder="정확한 URL을 입력해주세요"
-                                defaultValue={this.state.shopUrl}
+                                defaultValue={this.props.shopUrl}
                             />
-                        </InputGroup>
-
-                        <InputGroup size="sm" style={{ width:'90%'}} className="mb-3">
-                            <InputGroup.Prepend>
-                            <InputGroup.Text id="basic-addon3" style={{ width: '100px'}}>
-                                트랙킹번호
-                            </InputGroup.Text>
-                            </InputGroup.Prepend>
-                        
-                            <DropdownButton
-                                as={InputGroup.Prepend}
-                                variant="outline-secondary"
-                                title={this.state.trackingTitle}
-                                id="input-group-dropdown-1"
-                                >
-                                <Dropdown.Item onSelect={e => this.handleTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>
-                                <Dropdown.Item onSelect={e => this.handleTrackingTitle(e, "헤르메스")}>헤르메스</Dropdown.Item>
-                                <Dropdown.Item onSelect={e => this.handleTrackingTitle(e, "기타")}>기타</Dropdown.Item>
-                            </DropdownButton>
-                            <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                                style={{ width: '200px'}} 
-                                placeholder="트랙킹번호"
-                                onChange = {this.handleTrackingNumber}
-                                defaultValue={this.state.trackingNumber}
-                                />
-                            <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
                         </InputGroup>
                         </Card.Body>
                     </Card>
@@ -249,7 +209,7 @@ export class EditorProductsList extends React.Component{
       }    
 }
 
-export class CompleteProductsListDisplay extends React.Component{
+class CompleteProductsListDisplay extends React.Component{
     constructor(props) {
         super(props);
         
@@ -268,16 +228,8 @@ export class CompleteProductsListDisplay extends React.Component{
                 </thead>
                 <tbody>
                 <tr>
-                  <td>쇼핑몰 URL</td>
-                  <td>{this.props.productsCommonInfo.shopUrl}</td>
-                </tr>
-                <tr>
-                  <td width='300px'>운송사</td>
-                  <td width='300px'>{this.props.productsCommonInfo.trackingCompany}</td>
-                </tr>
-                <tr>
-                  <td width='300px'>트래킹번호</td>
-                  <td width='300px'>{this.props.productsCommonInfo.trackingNr}</td>
+                  <td width='300px'>쇼핑몰 URL</td>
+                  <td width='300px'>{this.props.shopUrl}</td>
                 </tr>
                 </tbody>
                 </Table>

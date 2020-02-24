@@ -91,8 +91,8 @@ export class MyPageDetail extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({recipientInfo: data.recipientData, 
-              productsCommonInfo: data.productsCommonInformation})
+          this.setState({recipientInfo:data.recipientData, 
+              productsCommonInfo:data.productsCommonInformation})
           //console.log(data)
         })  
       }
@@ -337,7 +337,7 @@ class MyPageDetailPerson extends React.Component{
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>
-                        <td >물류센터</td>
+                        <td>물류센터</td>
                         <td>독일</td>
                     </tr>
                     <tr>
@@ -408,6 +408,7 @@ class MyPageDetailRecipient extends React.Component{
               recipientInfo={this.props.recipientInfo}
               orderid={this.props.orderid}
               accessToken={this.props.accessToken}
+              updateUrl={'updaterecipientdata'}
              />
           displayHeight = '67rem'
         } else {

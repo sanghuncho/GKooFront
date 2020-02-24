@@ -3,12 +3,14 @@ import React from 'react';
 import { MyPageSideNav } from "./MyPageSideNav";
 import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-bootstrap"
-import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
-import { MyPageDetailProducts } from "./MyPageDetailProducts"
+import { MyPageBuyingServiceDetailProducts } from "./MyPageBuyingServiceDetailProduct"
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
+import { PaymentBuyingServiceButton, PaymentDeliveryBuyingServiceButton } from '../module_mypage/PaymentInformation'
+import { TrackingButton } from '../module_mypage/DeliveryInformation'
+import { getKoreanCurrency } from '../module_base_component/BaseUtil'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -45,14 +47,13 @@ export class MyPageBuyingServiceDetail extends React.Component{
           buyingServiceState:'',
           productPayment:'',
           deliveryPayment:'',
+          deliveryKoreaData:'',
           productsInfo:"",
+          shopUrl:'',
+          productListTotalPrice:'',
         }
-
-        this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
-        this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
-        this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
-        this.fetchRecipientInforamtion = this.fetchRecipientInforamtion.bind(this)
         this.mypageBuyingServiceDetailData = this.mypageBuyingServiceDetailData.bind(this)
+        this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
       }
 
       componentDidMount () {
@@ -62,23 +63,22 @@ export class MyPageBuyingServiceDetail extends React.Component{
             this.setState({ keycloakAuth: keycloak, 
               accessToken:keycloak.token})
               this.fetchOrderingPersonInforamtion(keycloak.token, id)
-              
-              //detailData 로 통합함
-              // this.fetchRecipientInforamtion(keycloak.token, id)
-              //this.fetchProductsCommonInforamtion(keycloak.token, id)
-              
-              
-              //this.fetchMypageDetailData(keycloak.token, id)
-              //this.fetchProductsInforamtion(keycloak.token, id)
             })
       }
 
-      setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
+      handleUpdateRecipientData(token, id){
+        setTokenHeader(token)
+        fetch(basePort + '/getRecipientDataBuyingService/'+ id, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState({recipientInfo:data})
+          console.log(data)
+        })  
       }
 
       fetchOrderingPersonInforamtion(token, id){
-        this.setTokenHeader(token)
+        setTokenHeader(token)
         fetch(basePort + '/orderingpersoninfo', {headers})
         .then((result) => {
            return result.json();
@@ -94,48 +94,18 @@ export class MyPageBuyingServiceDetail extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({recipientInfo:data.recipientData, 
+          this.setState({
+            recipientInfo:data.recipientData, 
             buyingServiceState:data.buyingServiceState,
             productPayment:data.productPayment,
             deliveryPayment:data.deliveryPayment,
-            productsInfo:data.productsInfo
+            deliveryKoreaData:data.deliveryKoreaData,
+            productsInfo:data.productsInfo,
+            shopUrl:data.buyingServiceCommonData.shopUrl,
+            productListTotalPrice:data.buyingServiceCommonData.productListTotalPrice
           })
-          console.log(data)
+          console.log(data.productsInfo)
         })
-      }
-
-      fetchRecipientInforamtion(token, id){
-        setTokenHeader(token)
-        fetch(basePort + '/recipientinfo/'+ id, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( {recipientInfo:data} )
-        })  
-      }
-
-      handleUpdateRecipientData(accessToken, orderid){
-        this.fetchRecipientInforamtion(accessToken, orderid)
-      }
-
-      fetchProductsInforamtion(token, id){
-        this.setTokenHeader(token)
-        fetch(basePort + '/productslistinfo/'+ id, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { productsInfo: data} )
-        })  
-      }
-
-      fetchProductsCommonInforamtion(token, id){
-        this.setTokenHeader(token)
-        fetch(basePort + '/productscommoninfo/'+ id, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { productsCommonInfo: data} )
-        })  
       }
 
       sendPaymentOwnername(ownerName){
@@ -172,10 +142,14 @@ export class MyPageBuyingServiceDetail extends React.Component{
                 orderingPersonInfo={this.state.orderingPersonInfo}
                 recipientInfo={this.state.recipientInfo}
                 handleUpdateRecipientData={this.handleUpdateRecipientData}
-                shipstate={this.state.shipstate}
+                buyingServiceState={this.state.buyingServiceState}
+                productPayment={this.state.productPayment}
+                deliveryPayment={this.state.deliveryPayment}
+                deliveryKoreaData={this.state.deliveryKoreaData}
+                // createPaymentOwnername={this.createPaymentOwnername}
                 productsInfo={this.state.productsInfo}
-                productsCommonInfo={this.state.productsCommonInfo}
-                createPaymentOwnername={this.createPaymentOwnername}
+                shopUrl={this.state.shopUrl}
+                productListTotalPrice={this.state.productListTotalPrice}
                 accessToken={this.state.accessToken}
               />
             
@@ -212,81 +186,148 @@ class MyPageDetailWrapper extends React.Component{
                   accessToken={this.props.accessToken}
                 />
 
-                {/* 서비스현황 */}
-                {/* <MyPageDetailState 
-                  productsCommonInfo={this.props.productsCommonInfo}
+                {/* 서비스현황, 구매대행-, 배송비 결제현황 포함 */}
+                <MyPageDetailBuyingServiceState 
+                  buyingServiceState={this.props.buyingServiceState}
                   accessToken={this.props.accessToken}
                   orderid={this.props.orderid}
-                /> */}
-
-                {/* 배송료 결제정보 */}
-                {/* <MyPageDetailDeliveryPrice 
-                  productsCommonInfo={this.props.productsCommonInfo}
-                  createPaymentOwnername={this.props.createPaymentOwnername}/> */}
+                  productPayment={this.props.productPayment}
+                  deliveryPayment={this.props.deliveryPayment}
+                  deliveryKoreaData={this.props.deliveryKoreaData}
+                />
 
                 {/* 상품정보 */}
-                {/* <MyPageDetailProducts
+                <MyPageBuyingServiceDetailProducts
                   productsInfo={this.props.productsInfo}
-                  productsCommonInfo={this.props.productsCommonInfo}
                   accessToken={this.props.accessToken}
+                  shopUrl={this.props.shopUrl}
                   orderid={this.props.orderid}
-                  /> */}
+                  />
 
                 {/* 총액정보 */}
-                {/* <MyPageDetailProductPrice 
-                  productsCommonInfo={this.props.productsCommonInfo}
-                  /> */}
+                <MyPageDetailProductPrice 
+                  productListTotalPrice={this.props.productListTotalPrice}
+                  />
           </div>
         );
       }    
 }
 
-class MyPageDetailState extends React.Component{
-    constructor(props) {
-        super(props);
+export function BuyingServiceStateToString(state){
+  let stateString
+  switch (state) {
+    case 1:
+      stateString = "구매대행 결제대기";
+      break;
+    case 2:
+      stateString = "구매대행 결제완료";
+      break;
+    case 3:
+      stateString = "배송비 결제대기";
+      break
+    case 4:
+      stateString = "배송비 결제완료";
+      break;
+    case 5:
+      stateString = "해외배송중";
+      break;
+    case 6:
+      stateString = "국내배송중";
+      break;
+    case 7:
+      stateString = "배송완료";
+      break;
+  }
 
-        this.handleDeleteShippingService = this.handleDeleteShippingService.bind(this)
-      }
+  return stateString
+}
 
-      handleDeleteShippingService(){
-        const deleteShippingServceData =  [
-          {orderid: this.props.orderid}
-        ]
+class MyPageDetailBuyingServiceState extends React.Component{
+  constructor(props) {
+      super(props);
 
-        this.setTokenHeader(this.props.accessToken)
-        fetch(basePort + '/deleteShipingServiceData', 
-                  {method:'post', headers, 
-                    body:JSON.stringify(deleteShippingServceData)})
-        window.location.replace("/mypage");
-      }
-
-      setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
+      this.handleDeleteShippingService = this.handleDeleteShippingService.bind(this)
     }
-      
-      render() {
-        let shipState = this.props.productsCommonInfo.shipState
-        /*refactoring : return only value backend, and rendering value to string in frontend*/
-        let notArrived = "입고대기"
-        let deleteButton;
-        if(shipState === notArrived) {
-          deleteButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleDeleteShippingService(e)} 
-                            style={{ marginRight: '10px', float:"right"}}>서비스 삭제</Button>
-        }
-        return (
-          <div>
-              <Card border="dark" style={{ width: '80%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
-                <Card.Header>서비스현황</Card.Header>
-                <Card.Body>
-                    <Card.Text>
-                        {this.props.productsCommonInfo.shipState}
-                        {deleteButton}
-                    </Card.Text> 
-                </Card.Body>
-                </Card>
-          </div>
-        );
-      }    
+
+    handleDeleteShippingService(){
+      const deleteShippingServceData =  [
+        {orderid: this.props.orderid}
+      ]
+
+      this.setTokenHeader(this.props.accessToken)
+      fetch(basePort + '/deleteShipingServiceData', 
+                {method:'post', headers, 
+                  body:JSON.stringify(deleteShippingServceData)})
+      window.location.replace("/mypage");
+    }
+
+    setTokenHeader(token){
+      headers ['Authorization'] = 'Bearer ' + token;
+  }
+    
+    render() {
+      let buyingServiceState = this.props.buyingServiceState
+      let productPaymentReady = 1
+      let deleteButton;
+      if(productPaymentReady === buyingServiceState) {
+        deleteButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleDeleteShippingService(e)} 
+                          style={{ marginRight: '10px', float:"right"}}>서비스 삭제</Button>
+      }
+      let serviceState = BuyingServiceStateToString(buyingServiceState)
+      return (
+        <div>
+            <Card border="dark" style={{ width: '80%', height:'15rem', marginTop:'1rem', marginBottom:'1rem' }}>
+              <Card.Header>서비스현황</Card.Header>
+              <Card.Body>
+              <div>
+                <Table bordered condensed responsive size="sm">
+                  <thead>
+                  </thead>
+                  <tbody>
+                      <tr>
+                        <td width='150px'>구매대행 결제현황</td>
+                        <td width='250px' align='center'>  <PaymentBuyingServiceButton 
+                                                paymentState={this.props.buyingServiceState} 
+                                                orderid={this.props.productPayment.orderid} 
+                                                buyingPrice={this.props.productPayment.buyingPrice}
+                                                paymentid={this.props.productPayment.paymentid}
+                                                paymentOwnername={this.props.productPayment.paymentOwnername}
+                                                paymentArt={this.props.productPayment.paymentArt}/>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width='150px'>배송비 결제현황</td>
+                        <td width='250px' align='center'><PaymentDeliveryBuyingServiceButton 
+                                                paymentState={this.props.buyingServiceState} 
+                                                orderid={this.props.deliveryPayment.orderid} 
+                                                shipPrice={this.props.deliveryPayment.shipPrice}
+                                                boxActualWeight={this.props.deliveryPayment.boxActualWeight}
+                                                boxVolumeWeight={this.props.deliveryPayment.boxVolumeWeight}
+                                                paymentid={this.props.deliveryPayment.paymentid}
+                                                paymentOwnername={this.props.deliveryPayment.paymentOwnername}
+                                                paymentArt={this.props.deliveryPayment.paymentArt}/> 
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width='150px'>배송현황</td>
+                        <td width='250px' align='center'>
+                          <TrackingButton 
+                            deliveryTracking={this.props.deliveryKoreaData.deliveryTracking}
+                          />
+                        </td>
+                      </tr>
+                      <tr>
+                          <td>전체 현황</td>
+                          <td colSpan="3" align='center'>{serviceState} {deleteButton}</td>
+                      </tr>
+                    </tbody> 
+                </Table>
+                </div>
+              </Card.Body>
+            </Card>
+        </div>
+      );
+    }    
 }
 
 class MyPageDetailProductPrice extends React.Component{
@@ -295,6 +336,7 @@ class MyPageDetailProductPrice extends React.Component{
       }
       
       render() {
+        let totalPrice = getKoreanCurrency(this.props.productListTotalPrice)
         return (
           <div>
                <Card border="dark" style={{ width: '80%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>
@@ -311,7 +353,7 @@ class MyPageDetailProductPrice extends React.Component{
                       </tr> */}
                       <tr>
                           <td width='300px'>총 구매금액</td>
-                          <td width='300px'>{this.props.productsCommonInfo.totalPrice}원</td>
+                          <td width='300px'>{totalPrice}</td>
                       </tr>
                       </tbody>
                   </Table>
@@ -382,7 +424,6 @@ class MyPageDetailRecipient extends React.Component{
           doEdit:false,
           setButton:true,
         }
-
         this.showStoredRecipient = this.showStoredRecipient.bind(this)
       }
 
@@ -395,6 +436,7 @@ class MyPageDetailRecipient extends React.Component{
       showStoredRecipient(){
         this.setState({doEdit:false}) 
         this.setState({setButton:true})
+        // new recipient holen, oder
         this.props.handleUpdateRecipientData(this.props.accessToken, this.props.orderid)
       }
       
@@ -416,6 +458,7 @@ class MyPageDetailRecipient extends React.Component{
               recipientInfo={this.props.recipientInfo}
               orderid={this.props.orderid}
               accessToken={this.props.accessToken}
+              updateUrl={'updateRecipientdataBuyingService'}
              />
           displayHeight = '67rem'
         } else {

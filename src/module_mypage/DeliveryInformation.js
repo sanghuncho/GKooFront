@@ -121,7 +121,7 @@ export class DeliveryInformation extends React.Component{
       }    
 }
 
-  class TrackingButton extends React.Component {
+export class TrackingButton extends React.Component {
     constructor(props, context) {
       super(props, context);
       this.state = {
