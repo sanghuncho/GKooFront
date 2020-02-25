@@ -73,7 +73,8 @@ export class MyPage extends React.Component{
       orderInformation:'',
       warehouseInformation:'',
       paymentData:'',
-      deliveryKoreaData:''
+      deliveryKoreaData:'',
+      userBaseInfo:''
    };
   
     toggle(position) {
@@ -101,7 +102,7 @@ export class MyPage extends React.Component{
           accessToken:keycloak.token})
           this.fetchCustomerStatusData(keycloak.token)
 
-          //not used methods
+          //not used methods since 
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
@@ -161,39 +162,55 @@ export class MyPage extends React.Component{
         }).then((data) => {
           console.log(data)
           this.setState({deliveryKoreaData: data})
+          this.fetchUserBaseInfo(token)
         })   
     }
 
-    fetchPurchaseOrderList(token){
+    fetchUserBaseInfo(token){
       setTokenHeader(token)
-      fetch(basePort + '/purchaseOderList', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { purchaseOrder: data} )
-          console.log(data)
-        })   
+      fetch(basePort + '/fetchuserbaseinfo', {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {           
+          this.setState({userBaseInfo:data})
+        }).catch(function() {
+          console.log("error fetching userbaseinfo");
+      });
     }
 
-    fetchEndSettlementList(token){
-      setTokenHeader(token)
-      fetch(basePort + '/endSettlementList', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { userAccount: data} )
-        })   
-    }
+    // not necessary @since 25.02.2020
+    // fetchPurchaseOrderList(token){
+    //   setTokenHeader(token)
+    //   fetch(basePort + '/purchaseOderList', {headers})
+    //     .then((result) => {
+    //        return result.json();
+    //     }).then((data) => {
+    //       this.setState( { purchaseOrder: data} )
+    //       console.log(data)
+    //     })   
+    // }
 
-    fetchPurchasedImage(){
-      fetch(basePort + '/getItemImage')
-        .then((response) => {
-           return response.blob();
-        }).then((data) => {
-          var objectURL = URL.createObjectURL(data);
-          this.setState({image: objectURL, loaded:true})
-        })
-    }
+    // not necessary @since 25.02.2020
+    // fetchEndSettlementList(token){
+    //   setTokenHeader(token)
+    //   fetch(basePort + '/endSettlementList', {headers})
+    //     .then((result) => {
+    //        return result.json();
+    //     }).then((data) => {
+    //       this.setState( { userAccount: data} )
+    //     })   
+    // }
+
+    // maybe could be necessary for image tanfering later @since 25.02.2020
+    // fetchPurchasedImage(){
+    //   fetch(basePort + '/getItemImage')
+    //     .then((response) => {
+    //        return response.blob();
+    //     }).then((data) => {
+    //       var objectURL = URL.createObjectURL(data);
+    //       this.setState({image: objectURL, loaded:true})
+    //     })
+    // }
 
     validToken(token){
       return token === "" ? false : true
@@ -209,13 +226,14 @@ export class MyPage extends React.Component{
 
         if(this.validToken(token)){
           mypage = <MypageController 
-                      purchaseOrder = { this.state.purchaseOrder } 
-                      userAccount = { this.state.userAccount } 
+                      purchaseOrder={this.state.purchaseOrder} 
+                      userAccount={this.state.userAccount} 
                       customerStatusData = { this.state.customerStatusData}
                       orderInformation = { this.state.orderInformation }
                       warehouseInformation = { this.state.warehouseInformation }
                       paymentData = {this.state.paymentData}
                       deliveryKoreaData = {this.state.deliveryKoreaData}
+                      userBaseInfo={this.state.userBaseInfo}
                       accessToken = { this.state.accessToken }/>
         } else {
           mypage = this.getEmptyPage
@@ -257,6 +275,7 @@ export class MypageController extends React.Component{
             warehouseInformation={ this.props.warehouseInformation }
             paymentData = {this.props.paymentData}
             deliveryKoreaData = {this.props.deliveryKoreaData}
+            userBaseInfo={this.props.userBaseInfo}
             accessToken = { this.props.accessToken }
             />
         </BodyContainer>

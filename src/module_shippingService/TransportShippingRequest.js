@@ -83,6 +83,7 @@ export class TransportShippingRequest extends React.Component {
     render() {
       if (this.props.applyDeliveryService){
         const shippingServiceData = this.buildShippingServiceData()
+        console.log(shippingServiceData)
         this.createShippingService(shippingServiceData)
         this.props.finishService()
         if(this.props.registerFavoriteAddress){
@@ -90,7 +91,7 @@ export class TransportShippingRequest extends React.Component {
           this.registerFavoriteAddress(favoriteAddress)
         }
 
-        this.handleMoveToMypage()
+      this.handleMoveToMypage()
       }
 
       const link = "/mypage"

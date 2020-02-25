@@ -4,7 +4,7 @@ import { Form, Table, Card, Button, InputGroup, FormControl, Dropdown, DropdownB
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange} from 'react-icons-kit/fa/'
-import { headers, basePort } from "../module_mypage/AuthService"
+import { setTokenHeader, headers, basePort } from "../module_base_component/AuthService"
 
 const WhiteSmoke = '#F5F5F5'
 
@@ -124,6 +124,7 @@ export class EditorProductsList extends React.Component{
     handleShopUrl(event){
         this.setState({shopUrl:event.target.value})
         this.state.deliveryObject.shopUrl = event.target.value
+        console.log(event.target.value)
     }
 
     handleTrackingTitle(event, company) {
@@ -151,7 +152,7 @@ export class EditorProductsList extends React.Component{
             {shippingProductList: JSON.stringify(this.state.shippingProductList)}
         ]
 
-        this.setTokenHeader(accessToken)
+        setTokenHeader(accessToken)
         fetch(basePort + '/updateDataEditorProductsList', 
                   {method:'post', headers, 
                     body:JSON.stringify(editedProductsData)})
@@ -162,17 +163,14 @@ export class EditorProductsList extends React.Component{
 
         this.updateDataEditorProductsList(this.props.accessToken)
         
+        //instead of reloading --> state update
         window.scrollTo(0, 340);
         window.location.reload();
         this.props.handleShowStoredProductsList()
     }
 
-    setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
-    }
-      
-      render() {
-        
+    render() {
+        let trackingTitle = this.state.trackingTitle == null ? "선택" : this.state.trackingTitle
         return (
           <div>
             {/*strcture.1: display the shop url, tracking data editor */}
@@ -205,7 +203,8 @@ export class EditorProductsList extends React.Component{
                             <DropdownButton
                                 as={InputGroup.Prepend}
                                 variant="outline-secondary"
-                                title={this.state.trackingTitle}
+                                //title={this.state.trackingTitle}
+                                title={trackingTitle}
                                 id="input-group-dropdown-1"
                                 >
                                 <Dropdown.Item onSelect={e => this.handleTrackingTitle(e, "DHL")}>DHL</Dropdown.Item>

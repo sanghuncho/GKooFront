@@ -53,6 +53,7 @@ export class AdditionalProduct extends React.Component{
             productTotalPrice: null,
         };
         this.props.shippingProductList[this.props.index] = shippingProduct
+        console.log(this.props.index)
     }
 
     handleSelectCategory(event, title) {

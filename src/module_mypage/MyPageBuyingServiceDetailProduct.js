@@ -46,8 +46,8 @@ export class MyPageBuyingServiceDetailProducts extends React.Component{
 
         // const doEdit = this.state.doEdit
         let displayHeight;
-
         let productsListDisplay;
+        
         // remove unnecessary code
         if (false) {
             productsListDisplay = 

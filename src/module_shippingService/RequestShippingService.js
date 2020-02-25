@@ -398,6 +398,7 @@ class ShippingCenter extends React.Component{
 
     inputBrandName(event){
         this.setState({brandName:event.target.value})
+        console.log(event.target.value)
         this.state.shippingProductList[0].brandName = event.target.value
     }
 
@@ -777,7 +778,7 @@ class ShippingCenter extends React.Component{
                 {this.state.goodsList.map((itemName, index) => { return (
                     <div key={index}>
 
-                    <AdditionalProduct index={index} 
+                    <AdditionalProduct index={index+1} 
                         shippingProductList = {this.state.shippingProductList}
                         trackingNumberList = {this.state.trackingNumberList}
                         brandNameList = {this.state.brandNameList}

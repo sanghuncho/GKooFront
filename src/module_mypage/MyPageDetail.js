@@ -47,7 +47,6 @@ export class MyPageDetail extends React.Component{
           ownerName:'',
           shipstate:'',
         }
-
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
         this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
@@ -245,17 +244,13 @@ class MyPageDetailState extends React.Component{
           {orderid: this.props.orderid}
         ]
 
-        this.setTokenHeader(this.props.accessToken)
+        setTokenHeader(this.props.accessToken)
         fetch(basePort + '/deleteShipingServiceData', 
                   {method:'post', headers, 
                     body:JSON.stringify(deleteShippingServceData)})
         window.location.replace("/mypage");
       }
 
-      setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
-    }
-      
       render() {
         let shipState = this.props.productsCommonInfo.shipState
         /*refactoring : return only value backend, and rendering value to string in frontend*/

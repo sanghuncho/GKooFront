@@ -25,24 +25,24 @@ export class UserBaseInfo extends React.Component{
       }
 
       componentDidMount () {
-        this.fetchUserBaseInfo(this.props.accessToken)
+        //this.fetchUserBaseInfo(this.props.accessToken)
       }
 
       doEditUserBaseInfo(){
         this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
       }
   
-      fetchUserBaseInfo(token){
-        setTokenHeader(token)
-        fetch(basePort + '/fetchuserbaseinfo', {headers})
-          .then((result) => { 
-            return result.json();
-          }).then((data) => {           
-            this.setState( { userBaseInfo: data} )
-          }).catch(function() {
-            console.log("error fetching userbaseinfo");
-        });
-      }
+      // fetchUserBaseInfo(token){
+      //   setTokenHeader(token)
+      //   fetch(basePort + '/fetchuserbaseinfo', {headers})
+      //     .then((result) => { 
+      //       return result.json();
+      //     }).then((data) => {           
+      //       this.setState( { userBaseInfo: data} )
+      //     }).catch(function() {
+      //       console.log("error fetching userbaseinfo");
+      //   });
+      // }
       
       doOpenAddressManager(){
         //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
@@ -88,7 +88,7 @@ export class UserBaseInfo extends React.Component{
               <UserBaseInfoEditor 
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
                 accessToken={this.props.accessToken}
-                userBaseInfo={this.state.userBaseInfo}
+                userBaseInfo={this.props.userBaseInfo}
                 // recipientInfo={this.props.recipientInfo}
                 // orderNumber={this.props.orderNumber}
                />
