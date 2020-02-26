@@ -44,7 +44,7 @@ export class MyPageDetail extends React.Component{
           recipientInfo:"",
           productsInfo:"",
           productsCommonInfo:"", 
-          ownerName:'',
+          paymentOwnername:'',
           shipstate:'',
         }
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
@@ -70,12 +70,8 @@ export class MyPageDetail extends React.Component{
             })
       }
 
-      setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
-      }
-
       fetchOrderingPersonInforamtion(token){
-        this.setTokenHeader(token)
+        setTokenHeader(token)
         fetch(basePort + '/orderingpersoninfo', {headers})
         .then((result) => {
            return result.json();
@@ -111,7 +107,7 @@ export class MyPageDetail extends React.Component{
       }
 
       fetchProductsInforamtion(token, id){
-        this.setTokenHeader(token)
+        setTokenHeader(token)
         fetch(basePort + '/productslistinfo/'+ id, {headers})
         .then((result) => {
            return result.json();
@@ -121,7 +117,7 @@ export class MyPageDetail extends React.Component{
       }
 
       fetchProductsCommonInforamtion(token, id){
-        this.setTokenHeader(token)
+        setTokenHeader(token)
         fetch(basePort + '/productscommoninfo/'+ id, {headers})
         .then((result) => {
            return result.json();
@@ -130,22 +126,23 @@ export class MyPageDetail extends React.Component{
         })  
       }
 
-      sendPaymentOwnername(ownerName){
+      sendPaymentOwnername(paymentOwnername, paymentArt){
         const orderid = this.state.orderid
-        const contents =  [{orderid: orderid}, {ownerName:ownerName}]
-        this.setTokenHeader(this.state.accessToken)
-        fetch(basePort + '/willpaydeleveryfeeupdate', 
+        const contents =  [{orderid: orderid}, {paymentOwnername:paymentOwnername}, {paymentArt:paymentArt}]
+        setTokenHeader(this.state.accessToken)
+        console.log(contents)
+        fetch(basePort + '/updatePaymentOwnernameShippingService', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();}).then((data) => {
-                  this.setState( { productsCommonInfo: data} )
+                  this.setState({productsCommonInfo:data})
                   console.log(data)
            }).catch(err => err);
       }
 
-      createPaymentOwnername(ownerName){
-        this.setState({ownerName:ownerName})
-        this.sendPaymentOwnername(ownerName)        
+      createPaymentOwnername(paymentOwnername, paymentArt){
+        this.setState({paymentOwnername:paymentOwnername})
+        this.sendPaymentOwnername(paymentOwnername, paymentArt)        
       }
 
       render() {

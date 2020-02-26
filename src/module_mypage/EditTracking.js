@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Modal, InputGroup, DropdownButton, Dropdown, FormControl, Form } from "react-bootstrap"
-import { headers, basePort } from "./AuthService"
+import { setTokenHeader, headers, basePort } from "../module_base_component/AuthService"
 
 export class EditTracking extends React.Component{
     constructor(props) {
@@ -33,7 +33,7 @@ export class EditTracking extends React.Component{
         const contents =  [{orderid: this.state.orderid}, 
             {trackingCompany:this.state.trackingTitle},
             {trackingNumber:this.state.trackingNumber}]
-        this.setTokenHeader(accessToken)
+        setTokenHeader(accessToken)
         fetch(basePort + '/updatetrackingnumber', 
                   {method:'post', headers, 
                     body:JSON.stringify(contents)})
@@ -49,10 +49,6 @@ export class EditTracking extends React.Component{
 
       inputTrackingNumber(event) {
         this.setState({trackingNumber:event.target.value}) 
-      }
-
-      setTokenHeader(token){
-        headers ['Authorization'] = 'Bearer ' + token;
       }
       
       render() {

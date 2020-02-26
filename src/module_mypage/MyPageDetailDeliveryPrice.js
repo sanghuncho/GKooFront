@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React from 'react';
 import { Table, Card, Form, InputGroup, FormControl, Button, Dropdown, DropdownButton } from "react-bootstrap"
 import { Icon as BaseIcon } from "react-icons-kit";
+import { PAYMENT_ART_LIST, PaymentArtToString, PaymentArtToInt } from '../module_payment/PaymentUtil'
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
@@ -61,8 +62,9 @@ export class PaymentRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      artPayment: "무통자입금",
-      paymentOwerName: "",
+      artPayment: "선택",
+      artPaymentList:PAYMENT_ART_LIST,
+      paymentOwername: "",
     }
     this.inputArtPayment = this.inputArtPayment.bind(this);
     this.inputPaymentOwnerName = this.inputPaymentOwnerName.bind(this);
@@ -74,17 +76,19 @@ export class PaymentRequest extends React.Component {
 
 
   inputArtPayment(event, art) {
-    this.setState({ artPayment: art })
+    this.setState({artPayment:art})
+    //console.log(PaymentArtToInt(art))
   }
 
   inputPaymentOwnerName(event) {
-    this.setState({ paymentOwerName: event.target.value })
+    this.setState({ paymentOwername: event.target.value })
   }
 
   handleClickPayment() {
     //console.log(this.state.paymentOwerName)
     this.props.setPaymentCompletion(false)
-    this.props.createPaymentOwnername(this.state.paymentOwerName)
+    const paymentArt = PaymentArtToInt(this.state.artPayment)
+    this.props.createPaymentOwnername(this.state.paymentOwername, paymentArt)
   }
 
   render() {
@@ -157,8 +161,10 @@ export class PaymentRequest extends React.Component {
                       title={this.state.artPayment}
                       id="input-group-dropdown-1"
                     >
-                      <Dropdown.Item onSelect={e => this.inputArtPayment(e, "무통장입금")}>
-                        무통장입금</Dropdown.Item>
+                    {/* <Dropdown.Item onSelect={e => this.inputArtPayment(e, "무통장입금")}>
+                        무통장입금</Dropdown.Item> */}
+                    {this.state.artPaymentList.map((artPayment) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.inputArtPayment(e, artPayment)}>{artPayment}</Dropdown.Item></div> )})}
                     </DropdownButton>
                   </InputGroup>
                   <InputGroup size="sm" className="mb-3" style={{ width: '50%' }}>
@@ -300,7 +306,7 @@ class PaymentCompletion extends React.Component {
     const priceDiscount = 1000
     const shouldDeposit = shipPrice - priceDiscount
     const paymentDeposit = this.props.productsCommonInfo.paymentDeposit
-
+    const paymentArt = PaymentArtToString(this.props.productsCommonInfo.paymentArt)
     return (
       <div>
         <Card border="dark" style={{ width: '80%', height: '39rem', marginTop: '1rem', marginBottom: '1rem' }}>
@@ -373,7 +379,7 @@ class PaymentCompletion extends React.Component {
                       </tr>
                       <tr>
                         <td>결제수단</td>
-                        <td>무통장입금</td>
+                        <td>{paymentArt}</td>
                       </tr>
                       <tr>
                         <td>입금계좌</td>
