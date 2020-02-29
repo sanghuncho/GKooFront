@@ -6,7 +6,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { Redirect } from 'react-router';
 import { PaymentProductBooking, PaymentDeliveryBooking } from '../module_payment/PaymentBuyingService'
-import { PaymentArtToString } from '../module_payment/PaymentUtil'
+import { PaymentArtToString, PaymentStateToString } from '../module_payment/PaymentUtil'
 
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
@@ -101,7 +101,8 @@ export class PaymentInformation extends React.Component{
                 {/* <CaptionMypageTable title="결제 현황"/> */}
                 <BootstrapTable keyField='objectId'  
                     data={ this.props.paymentData } 
-                    //data={ data } 
+                    //data={ data }
+                    //hover
                     columns={ columnsPayment } 
                     bordered={ true }  noDataIndication="Table is empty"  />
             </MyPageBodyTableStyle>
@@ -206,9 +207,9 @@ class PaymentButton extends React.Component {
         if (paymentState === 1) {
             paymentButton = <RequestPayment orderid={this.props.orderid} />;
         } else if(paymentState === 2) {
-            paymentButton = <ApprovalPayment orderid={this.props.orderid} />;
+            paymentButton = <ApprovalPayment orderid={this.props.orderid} paymentState={paymentState} />;
         } else if(paymentState === 3) {
-            paymentButton = <div>결제완료</div>
+            paymentButton = <ApprovalPayment orderid={this.props.orderid} paymentState={paymentState} />;
         }
 
         return(
@@ -530,11 +531,13 @@ class ApprovalPayment extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            showModal:false
+            showModal:false,
+            redirect:false,
           };
       
           this.handleModalShow = this.handleModalShow.bind(this);
           this.handleModalClose = this.handleModalClose.bind(this);
+          this.handleShowDetailPage = this.handleShowDetailPage.bind(this);
     }
 
     componentDidMount() {
@@ -542,17 +545,31 @@ class ApprovalPayment extends React.Component{
     }
   
     handleModalClose() {
-      this.setState({ showModal: false });
+      this.setState({showModal:false});
     }
   
     handleModalShow() {
-        this.setState({ showModal: true });
+        this.setState({showModal:true});
+    }
+
+    handleShowDetailPage(){
+        this.setState({redirect: true});
     }
           
     render() {
+        const orderid = this.props.orderid
+        const link = "/detailsmypage/" + orderid
+        if (this.state.redirect) {
+            return <Redirect push to={link}/>
+        }
+        const paymentState = PaymentStateToString(this.props.paymentState)
         return (
             <div>
-                <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>결제확인중</Button>
+                {/* <Button variant="outline-secondary" size="sm" 
+                    onClick={this.handleShowDetailPage}>결제확인중</Button> */}
+                <Button variant="outline-secondary" size="sm" 
+                    onClick={this.handleShowDetailPage}> {paymentState} </Button>
+                {/* <Button variant="outline-secondary" size="sm" onClick={this.handleModalShow}>결제확인중</Button>
                 <Modal show={this.state.showModal} onHide={this.handleModalClose} size="lg">
                     <Modal.Header closeButton>
                     <Modal.Title>{this.props.paymentState}</Modal.Title>
@@ -566,7 +583,7 @@ class ApprovalPayment extends React.Component{
                         닫음
                     </Button>
                     </Modal.Footer>
-                </Modal>
+                </Modal> */}
             </div>
         );
     }    

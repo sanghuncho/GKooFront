@@ -22,7 +22,8 @@ export class AppNavbar extends React.Component{
       render() {
         return (
           <div>
-              <Navbar style={{background: naviGreen, height:"auto", borderRadius:2, boxShadow:"1px 1px 2px black"}}>
+              {/* <Navbar style={{background: naviGreen, height:"auto", borderRadius:2, boxShadow:"1px 1px 2px black"}}> */}
+              <Navbar style={{background: naviGreen, height:"50px", borderRadius:2, boxShadow:"1px 1px 2px black"}}>
                 <Navbar.Brand>
                     <NavLink style={{ textDecoration: 'none', color: 'white' }} to='/'>
                     <Text>GKoo</Text>

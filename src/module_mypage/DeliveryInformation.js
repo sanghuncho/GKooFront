@@ -70,7 +70,6 @@ export class DeliveryInformation extends React.Component{
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
           formatter:trackingFormatter,
-         
           }
         ];
 
@@ -81,7 +80,8 @@ export class DeliveryInformation extends React.Component{
               <BootstrapTable keyField='objectId'  
                 data={ this.props.deliveryKoreaData } 
                 columns={ columnsDelivery } 
-                hover bordered={ true } 
+                //hover 
+                bordered={ true } 
                 noDataIndication="Table is empty"  />
             </MyPageBodyTableStyle></div>
         );
@@ -130,6 +130,7 @@ export class TrackingButton extends React.Component {
   
       this.handleModalShow = this.handleModalShow.bind(this);
       this.handleModalClose = this.handleModalClose.bind(this);
+      this.handleOpenTrackingSite = this.handleOpenTrackingSite.bind(this);
     }
     
     componentDidMount() {
@@ -137,17 +138,24 @@ export class TrackingButton extends React.Component {
     }
   
     handleModalClose() {
-      this.setState({ showModal: false });
+      this.setState({showModal:false});
     }
   
     handleModalShow() {
-        this.setState({ showModal: true });
+        this.setState({showModal:true});
+    }
+
+    handleOpenTrackingSite(){
+      let trackingNr = this.props.deliveryTracking
+      const url = 'http://nplus.doortodoor.co.kr/web/info.jsp?slipno=' + trackingNr;
+      window.open(url, '_blank');
     }
   
     render() {
       return(
         <div>
-        <Button  variant="outline-secondary" size="sm" onClick={this.handleModalShow}>배송조회</Button>
+        {/* <Button  variant="outline-secondary" size="sm" onClick={this.handleModalShow}>배송조회</Button> */}
+        <Button  variant="outline-secondary" size="sm" onClick={this.handleOpenTrackingSite}>배송조회</Button>
           <Modal show={this.state.showModal} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>배송조회</Modal.Title>
@@ -156,6 +164,7 @@ export class TrackingButton extends React.Component {
               
               {/* 배송조회 api 연동 */}
               {this.props.deliveryTracking}
+
             </Modal.Body>
             <Modal.Footer>
               {/* <NavLink to="/">

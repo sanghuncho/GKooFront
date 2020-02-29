@@ -37,3 +37,17 @@ export function PaymentArtToString(paymentArt){
 
   return art
 }
+
+export function PaymentStateToString(paymentState){
+  let state
+  switch (paymentState) {
+    case 2:
+    state = "결제확인중";
+      break;
+    case 3:
+    state = "결제완료";
+      break;
+  }
+
+  return state
+}
