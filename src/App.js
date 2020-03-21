@@ -28,7 +28,7 @@ import { QuestionBoard } from './module_customerCenter/QuestionBoard'
 
 import { MyPage } from './module_mypage/MyPage';
 import { MyPageDetail } from './module_mypage/MyPageDetail';
-import { MyPage_BuyingService } from './module_mypage/MyPage_BuyingService';
+import { MyPageBuyingService } from './module_mypage/MyPageBuyingService';
 import { MyPageBuyingServiceDetail } from './module_mypage/MyPageBuyingServiceDetail';
 import { FavoriteAddressManager } from './module_mypage/FavoriteAddressManager';
 
@@ -76,7 +76,7 @@ const Main = () => (
     {/* 마이페이지 모둘 */} 
     <Route exact path='/mypage' component={ MyPage }></Route>
     <Route exact path='/detailsmypage/:id' component={ MyPageDetail }></Route>
-    <Route exact path='/mypage_buyingService' component={ MyPage_BuyingService }></Route>
+    <Route exact path='/mypagebuyingService' component={ MyPageBuyingService }></Route>
     <Route exact path='/detailsbuyingService/:id' component={ MyPageBuyingServiceDetail }></Route>
     <Route exact path='/favoriteAddressManager' component={ FavoriteAddressManager }></Route>
     

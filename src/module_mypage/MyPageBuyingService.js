@@ -65,7 +65,7 @@ var naviGreen = '#80b13e'
 var grey = '#727676';
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
-export class MyPage_BuyingService extends React.Component{
+export class MyPageBuyingService extends React.Component{
 
     state = { 
       active: null,
