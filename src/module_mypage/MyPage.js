@@ -8,7 +8,7 @@ import {
   BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
@@ -97,11 +97,15 @@ export class MyPage extends React.Component{
     };
 
     componentDidMount() {
+      console.log(keycloakUrlLocal)
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token})
+          //console.log(keycloak.tokenParsed.preferred_username)
+          //console.log(keycloak.tokenParsed.given_name)
+          //console.log(keycloak.tokenParsed.family_name)
+          
           this.fetchCustomerStatusData(keycloak.token)
-
           //not used methods since 
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
@@ -110,13 +114,16 @@ export class MyPage extends React.Component{
 
     fetchCustomerStatusData(token){
       setTokenHeader(token)
-      fetch(basePort + '/customerstatus', {headers})
+      let userid = keycloak.tokenParsed.preferred_username
+      //fetch(basePort + '/gkoo/customerstatus/'+ userid, {headers})
+      fetch(basePort + '/customerstatus/'+ userid, {headers})
+      //fetch(basePort + '/gkoo/customerstatus', {headers})
         .then((result) => {
            return result.json();
+           //return result.text();
         }).then((data) => {
-          //console.log(data)
           this.setState({customerStatusData:data})
-          this.fetchOrderInformation(token)
+          //this.fetchOrderInformation(token)
         })   
     }
 

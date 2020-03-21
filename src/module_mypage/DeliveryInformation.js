@@ -70,7 +70,9 @@ export class DeliveryInformation extends React.Component{
           dataField: 'deliveryTracking',
           text: '국내 배송조회',
           formatter:trackingFormatter,
-          }
+          headerStyle: (colum, colIndex) => {
+            return { textAlign: 'center' };
+          }} 
         ];
 
         return (

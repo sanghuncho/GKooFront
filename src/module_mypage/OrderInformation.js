@@ -82,9 +82,6 @@ const columnsUserAccount = [
     dataField: 'deliveryState',
     text: '진행상태',
     formatter:deliveryStateFormatter,
-    headerStyle: (colum, colIndex) => {
-      return { width: '110px', textAlign: 'center' };
-    }
   },{
     dataField: 'orderDate',
     text: '신청날짜',

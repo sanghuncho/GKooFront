@@ -13,12 +13,14 @@ export const NaviContainer = styled.div`
 `;
 
 export const Navigation = styled.div`
-  width: 110px;
-  flex-shrink: 0;
+  
+  flex-shrink: 0  ;
   background: #fff;
   height: 100vh;
   border-right: 1px solid rgba(0, 0, 0, 0.125);
 `;
+
+//width: 110px;
 export const Body = styled.div`
   padding: 12px;
   height: 100vh;

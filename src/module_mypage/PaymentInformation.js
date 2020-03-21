@@ -12,10 +12,17 @@ function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
 }
-  
+
+
+const PaymentButtonStyle = styled.div`
+    text-align:center;
+`;
+
 function paymentFormatter(cell, row) {        
     return (
+    <PaymentButtonStyle>
       <PaymentButton paymentState={cell} orderid={row.orderid}/>
+    </PaymentButtonStyle>
     );
 }
 
@@ -92,7 +99,10 @@ export class PaymentInformation extends React.Component{
             {
             dataField: 'paymentState',
             text: '결제상태',
-            formatter:paymentFormatter}, 
+            formatter:paymentFormatter,
+            headerStyle: (colum, colIndex) => {
+                return { textAlign: 'center' };
+              }} 
           ];
         
         return (

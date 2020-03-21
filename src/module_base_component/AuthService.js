@@ -1,4 +1,9 @@
-export const keycloakUrlLocal = 'http://localhost:8080/auth';
+import { KEYCLOAK_URL, BACKEND_URL, OPEN_BACKEND_URL } from "../Config"
+
+export const keycloakUrlLocal = KEYCLOAK_URL
+export const basePort = BACKEND_URL
+export const openBasePort = OPEN_BACKEND_URL
+
 export const keycloakConfigLocal = {
   'url': keycloakUrlLocal,
   'realm': 'gkoo',
@@ -9,7 +14,7 @@ export const keycloakConfigLocal = {
 
 export const headers = {
     'Accept': 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
 }
 
 export const openHeaders = {
@@ -30,8 +35,5 @@ export function validToken(token){
 export function getEmptyPage(){
   return ""
 }
-
-export const basePort = 'http://localhost:8888'
-export const openBasePort = 'http://localhost:8889'
 
 export const INITIAL_PAGE = 'http://localhost:3000/'
