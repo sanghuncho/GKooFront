@@ -74,7 +74,8 @@ export class MyPage extends React.Component{
       warehouseInformation:'',
       paymentData:'',
       deliveryKoreaData:'',
-      userBaseInfo:''
+      userBaseInfo:'',
+      userid:'',
    };
   
     toggle(position) {
@@ -100,12 +101,14 @@ export class MyPage extends React.Component{
       console.log(keycloakUrlLocal)
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
-          accessToken:keycloak.token})
+          accessToken:keycloak.token, 
+          userid:keycloak.tokenParsed.preferred_username})
           //console.log(keycloak.tokenParsed.preferred_username)
           //console.log(keycloak.tokenParsed.given_name)
           //console.log(keycloak.tokenParsed.family_name)
-          
+        
           this.fetchCustomerStatusData(keycloak.token)
+          
           //not used methods since 
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
@@ -113,23 +116,26 @@ export class MyPage extends React.Component{
     }
 
     fetchCustomerStatusData(token){
+      let lastname = keycloak.tokenParsed.family_name
+      let firstname = keycloak.tokenParsed.given_name
+      const customername =  [{lastname:lastname}, {firstname:firstname}]
+      //let userid = keycloak.tokenParsed.preferred_username
+      let userid = this.state.userid
       setTokenHeader(token)
-      let userid = keycloak.tokenParsed.preferred_username
-      //fetch(basePort + '/gkoo/customerstatus/'+ userid, {headers})
-      fetch(basePort + '/customerstatus/'+ userid, {headers})
-      //fetch(basePort + '/gkoo/customerstatus', {headers})
+      fetch(basePort + '/customerstatus/'+ userid, 
+      {method:'post', headers, body:JSON.stringify(customername)})
         .then((result) => {
            return result.json();
-           //return result.text();
         }).then((data) => {
           this.setState({customerStatusData:data})
-          //this.fetchOrderInformation(token)
+          this.fetchOrderInformation(token)
         })   
     }
 
     fetchOrderInformation(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/orderinformation', {headers})
+      fetch(basePort + '/orderinformation/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -139,8 +145,9 @@ export class MyPage extends React.Component{
     }
 
     fetchWarehouseInformation(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/warehouseinformation', {headers})
+      fetch(basePort + '/warehouseinformation/'+ userid, {headers})
         .then((result) => { 
            return result.json();
         }).then((data) => {
@@ -150,8 +157,9 @@ export class MyPage extends React.Component{
     }
 
     fetchPaymentData(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/paymentData', {headers})
+      fetch(basePort + '/paymentData/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -162,8 +170,9 @@ export class MyPage extends React.Component{
     }
 
     fetchDeliveryKoreaData(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/deliveryKoreaData', {headers})
+      fetch(basePort + '/deliveryKoreaData/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -174,8 +183,9 @@ export class MyPage extends React.Component{
     }
 
     fetchUserBaseInfo(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/fetchuserbaseinfo', {headers})
+      fetch(basePort + '/fetchuserbaseinfo/'+ userid, {headers})
         .then((result) => { 
           return result.json();
         }).then((data) => {           
@@ -241,7 +251,8 @@ export class MyPage extends React.Component{
                       paymentData = {this.state.paymentData}
                       deliveryKoreaData = {this.state.deliveryKoreaData}
                       userBaseInfo={this.state.userBaseInfo}
-                      accessToken = { this.state.accessToken }/>
+                      accessToken = {this.state.accessToken}
+                      userid={this.state.userid}/>
         } else {
           mypage = this.getEmptyPage
         }
@@ -283,7 +294,8 @@ export class MypageController extends React.Component{
             paymentData = {this.props.paymentData}
             deliveryKoreaData = {this.props.deliveryKoreaData}
             userBaseInfo={this.props.userBaseInfo}
-            accessToken = { this.props.accessToken }
+            accessToken = {this.props.accessToken}
+            userid={this.props.userid}
             />
         </BodyContainer>
         

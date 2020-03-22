@@ -39,13 +39,15 @@ export class BuyingServiceRegistration extends React.Component{
         this.state = { 
             keycloakAuth:null,
             accessToken:"",
+            userid:'',
         };
     }
 
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
-            accessToken:keycloak.token})
+            accessToken:keycloak.token,
+            userid:keycloak.tokenParsed.preferred_username})
         })
     }
 
@@ -60,7 +62,8 @@ export class BuyingServiceRegistration extends React.Component{
         if(validToken(token)){
             buyingServiceRegistration = 
                 <BuyingServiceController
-                    accessToken = { this.state.accessToken }/>
+                    accessToken={this.state.accessToken}
+                    userid={this.state.userid}/>
         } else {
             buyingServiceRegistration = getEmptyPage
         }
@@ -112,10 +115,11 @@ export class BuyingServiceController extends React.Component {
                         service='BuyingService'/>
 
                     {agreement ? <BuyingServiceCenter 
-                                    accessToken={this.props.accessToken}/>: EMPTY_PAGE }
+                                    accessToken={this.props.accessToken} />: EMPTY_PAGE }
 
                     {agreement ? <BuyingServiceContentWrapper 
-                                        accessToken={this.props.accessToken}/>: EMPTY_PAGE }
+                                        accessToken={this.props.accessToken}
+                                        userid={this.props.userid} />: EMPTY_PAGE }
                 </BodyContainer>
 
             </BuyingServiceRegistrationContainer>
@@ -190,6 +194,7 @@ class BuyingServiceContentWrapper extends React.Component {
             registerFavoriteAddress:false,
             customerBaseData:'',
             modalShow:false,
+            userid:'',
         }
         
         this.handleApplyService = this.handleApplyService.bind(this)
@@ -272,8 +277,9 @@ class BuyingServiceContentWrapper extends React.Component {
 
     registerFavoriteAddress(contents){
         const token = this.props.accessToken
+        let userid = this.props.userid
         setTokenHeader(token)
-        fetch(basePort + '/registerFavoriteAddressBuyingService', 
+        fetch(basePort + '/registerFavoriteAddressBuyingService/' + userid, 
                   {method:'post', headers, 
                     body:JSON.stringify(contents)})
                   .then((result) => { return result;}).then((contents) => {
@@ -283,8 +289,9 @@ class BuyingServiceContentWrapper extends React.Component {
 
     createBuyingService(contents){
         const token = this.props.accessToken
+        let userid = this.props.userid
         setTokenHeader(token)
-        fetch(basePort + '/createBuyingService', 
+        fetch(basePort + '/createBuyingService/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result;}).then((contents) => {
@@ -293,8 +300,9 @@ class BuyingServiceContentWrapper extends React.Component {
     }
 
     fetchFavoriteAddressList(accessToken){
+        let userid = this.props.userid
         setTokenHeader(accessToken)
-        fetch(basePort + '/fetchFavoriteAddressList', {headers})
+        fetch(basePort + '/fetchFavoriteAddressList/' + userid, {headers})
             .then((result) => {
                return result.json();
             }).then((data) => {
@@ -307,8 +315,9 @@ class BuyingServiceContentWrapper extends React.Component {
 
     /* 회원배송정보 불러오기 */
     fetchCustomerBaseData(token){
+        let userid = this.props.userid
         setTokenHeader(token)
-        fetch(basePort + '/fetchcustomerbaseinfoBuyingService', {headers})
+        fetch(basePort + '/fetchcustomerbaseinfoBuyingService/' + userid, {headers})
           .then((result) => { 
             return result.json();
           }).then((data) => {           
@@ -460,6 +469,7 @@ class BuyingServiceContentWrapper extends React.Component {
                 productContentObjectList={this.state.productContentObjectList}
                 shopDeliveryPrice={this.state.shopDeliveryPrice}
                 accessToken={this.props.accessToken}
+                userid={this.props.userid}
                 handleBuyingPrice={this.handleBuyingPrice}
              />
 
@@ -517,8 +527,9 @@ class ServiceEstimation extends React.Component {
 
     handleGetEstimation(contents){
         const token = this.props.accessToken
+        let userid = this.props.userid
         setTokenHeader(token)
-        fetch(basePort + '/estimationBuyingService', 
+        fetch(basePort + '/estimationBuyingService/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();})

@@ -89,6 +89,7 @@ export class UserBaseInfo extends React.Component{
                 handleMoveToBaseInfo={this.handleMoveToBaseInfo}
                 accessToken={this.props.accessToken}
                 userBaseInfo={this.props.userBaseInfo}
+                userid={this.props.userid}
                 // recipientInfo={this.props.recipientInfo}
                 // orderNumber={this.props.orderNumber}
                />
@@ -208,6 +209,7 @@ export class UserBaseInfoEditor extends React.Component{
           accessToken={this.props.accessToken}
           userBaseInfo={this.props.userBaseInfo}
           readOnly={true}
+          userid={this.props.userid}
           />
       } 
       /* edit mode */
@@ -218,7 +220,8 @@ export class UserBaseInfoEditor extends React.Component{
           doShowUserBaseInfo={this.doShowUserBaseInfo}
           accessToken={this.props.accessToken}
           userBaseInfo={this.props.userBaseInfo}
-          readOnly={false} />
+          readOnly={false}
+          userid={this.props.userid} />
       }
       return (
           <div>
@@ -281,7 +284,8 @@ export class UserBaseInfoDisplayer extends React.Component{
 
       setTokenHeader(accessToken)
       console.log(editedUserBaseInfo)
-      fetch(basePort + '/updateuserbaseinfo', 
+      let userid = this.props.userid
+      fetch(basePort + '/updateuserbaseinfo/'+ userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(editedUserBaseInfo)})
     }

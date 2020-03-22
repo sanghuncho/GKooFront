@@ -95,7 +95,7 @@ export class FavoriteAddressInputForm extends React.Component{
 
       handleCreate(accessToken, favoriteAddressData){
         setTokenHeader(accessToken)
-        fetch(basePort + '/createFavoriteAddress', 
+        fetch(basePort + '/createFavoriteAddress/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(favoriteAddressData)})
         this.handleCancel()
@@ -104,7 +104,7 @@ export class FavoriteAddressInputForm extends React.Component{
 
       handleUpdate(accessToken, favoriteAddressData){
         setTokenHeader(accessToken)
-        fetch(basePort + '/updateFavoriteAddress', 
+        fetch(basePort + '/updateFavoriteAddress/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(favoriteAddressData)})
         this.handleCancel()

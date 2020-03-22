@@ -1,4 +1,4 @@
-import { KEYCLOAK_URL, BACKEND_URL, OPEN_BACKEND_URL } from "../Config"
+import { KEYCLOAK_URL, BACKEND_URL, OPEN_BACKEND_URL, INITIAL_PAGE_URL } from "../Config"
 
 export const keycloakUrlLocal = KEYCLOAK_URL
 export const basePort = BACKEND_URL
@@ -36,4 +36,4 @@ export function getEmptyPage(){
   return ""
 }
 
-export const INITIAL_PAGE = 'http://localhost:3000/'
+export const INITIAL_PAGE = INITIAL_PAGE_URL

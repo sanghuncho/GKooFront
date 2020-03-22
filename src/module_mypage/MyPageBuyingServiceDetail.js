@@ -51,24 +51,27 @@ export class MyPageBuyingServiceDetail extends React.Component{
           productsInfo:"",
           shopUrl:'',
           productListTotalPrice:'',
+          userid:'',
         }
         this.mypageBuyingServiceDetailData = this.mypageBuyingServiceDetailData.bind(this)
         this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
       }
 
       componentDidMount () {
-          const {id} = this.props.match.params
-          this.setState({orderid:id})
+          const {orderid} = this.props.match.params
+          this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
-              accessToken:keycloak.token})
-              this.fetchOrderingPersonInforamtion(keycloak.token, id)
+              accessToken:keycloak.token,
+              userid:keycloak.tokenParsed.preferred_username})
+              this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
             })
       }
 
-      handleUpdateRecipientData(token, id){
+      handleUpdateRecipientData(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/getRecipientDataBuyingService/'+ id, {headers})
+        fetch(basePort + '/getRecipientDataBuyingService/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -77,20 +80,27 @@ export class MyPageBuyingServiceDetail extends React.Component{
         })  
       }
 
-      fetchOrderingPersonInforamtion(token, id){
-        setTokenHeader(token)
-        fetch(basePort + '/orderingpersoninfo', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState({orderingPersonInfo:data})
-          this.mypageBuyingServiceDetailData(keycloak.token, id)
-        })  
+      fetchOrderingPersonInforamtion(token, orderid){
+        // setTokenHeader(token)
+        // fetch(basePort + '/orderingpersoninfo', {headers})
+        // .then((result) => {
+        //    return result.json();
+        // }).then((data) => {
+        //   this.setState({orderingPersonInfo:data})
+        //   this.mypageBuyingServiceDetailData(keycloak.token, orderid)
+        // })
+
+        let lastname = keycloak.tokenParsed.family_name
+        let firstname = keycloak.tokenParsed.given_name
+        let fullname = lastname + firstname
+        this.setState({orderingPersonInfo:fullname})
+        this.mypageBuyingServiceDetailData(token, orderid)
       }
 
-      mypageBuyingServiceDetailData(token, id){
+      mypageBuyingServiceDetailData(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/mypageBuyingServiceDetailData/'+ id, {headers})
+        fetch(basePort + '/mypageBuyingServiceDetailData/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -104,7 +114,6 @@ export class MyPageBuyingServiceDetail extends React.Component{
             shopUrl:data.buyingServiceCommonData.shopUrl,
             productListTotalPrice:data.buyingServiceCommonData.productListTotalPrice
           })
-          console.log(data.productsInfo)
         })
       }
 

@@ -46,6 +46,7 @@ export class MyPageDetail extends React.Component{
           productsCommonInfo:"", 
           paymentOwnername:'',
           shipstate:'',
+          userid:'',
         }
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
@@ -55,34 +56,38 @@ export class MyPageDetail extends React.Component{
       }
 
       componentDidMount () {
-          const {id} = this.props.match.params
-          this.setState({orderid:id})
+          const {orderid} = this.props.match.params
+          this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ keycloakAuth: keycloak, 
-              accessToken:keycloak.token})
+              accessToken:keycloak.token,
+              userid:keycloak.tokenParsed.preferred_username})
               this.fetchOrderingPersonInforamtion(keycloak.token)
               // this.fetchRecipientInforamtion(keycloak.token, id)
               //this.fetchProductsCommonInforamtion(keycloak.token, id)
-              this.fetchMypageDetailData(keycloak.token, id)
-              
-              this.fetchProductsInforamtion(keycloak.token, id)
-
+              this.fetchMypageDetailData(keycloak.token, orderid)
+              this.fetchProductsInforamtion(keycloak.token, orderid)
             })
       }
 
       fetchOrderingPersonInforamtion(token){
-        setTokenHeader(token)
-        fetch(basePort + '/orderingpersoninfo', {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { orderingPersonInfo: data} )
-        })  
+        // setTokenHeader(token)
+        // fetch(basePort + '/orderingpersoninfo', {headers})
+        // .then((result) => {
+        //    return result.json();
+        // }).then((data) => {
+        //   this.setState( { orderingPersonInfo: data} )
+        // })
+        let lastname = keycloak.tokenParsed.family_name
+        let firstname = keycloak.tokenParsed.given_name
+        let fullname = lastname + firstname
+        this.setState({orderingPersonInfo:fullname})
       }
 
-      fetchMypageDetailData(token, id){
+      fetchMypageDetailData(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/mypageDetailData/'+ id, {headers})
+        fetch(basePort + '/mypageDetailData/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -92,9 +97,10 @@ export class MyPageDetail extends React.Component{
         })  
       }
 
-      fetchRecipientInforamtion(token, id){
+      fetchRecipientInforamtion(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/recipientinfo/'+ id, {headers})
+        fetch(basePort + '/recipientinfo/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -106,32 +112,34 @@ export class MyPageDetail extends React.Component{
         this.fetchRecipientInforamtion(accessToken, orderid)
       }
 
-      fetchProductsInforamtion(token, id){
+      fetchProductsInforamtion(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/productslistinfo/'+ id, {headers})
+        fetch(basePort + '/productslistinfo/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( { productsInfo: data} )
+          this.setState({productsInfo: data})
         })  
       }
 
-      fetchProductsCommonInforamtion(token, id){
+      fetchProductsCommonInforamtion(token, orderid){
+        let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/productscommoninfo/'+ id, {headers})
+        fetch(basePort + '/productscommoninfo/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState( { productsCommonInfo: data} )
+          this.setState({productsCommonInfo:data})
         })  
       }
 
       sendPaymentOwnername(paymentOwnername, paymentArt){
         const orderid = this.state.orderid
         const contents =  [{orderid: orderid}, {paymentOwnername:paymentOwnername}, {paymentArt:paymentArt}]
+        let userid = this.state.userid
         setTokenHeader(this.state.accessToken)
-        console.log(contents)
-        fetch(basePort + '/updatePaymentOwnernameShippingService', 
+        fetch(basePort + '/updatePaymentOwnernameShippingService/'+ userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();}).then((data) => {
@@ -166,6 +174,7 @@ export class MyPageDetail extends React.Component{
                 productsCommonInfo={this.state.productsCommonInfo}
                 createPaymentOwnername={this.createPaymentOwnername}
                 accessToken={this.state.accessToken}
+                userid={this.state.userid}
               />
             
             </BodyContainer>
@@ -199,6 +208,7 @@ class MyPageDetailWrapper extends React.Component{
                   handleUpdateRecipientData={this.props.handleUpdateRecipientData}
                   orderid={this.props.orderid}
                   accessToken={this.props.accessToken}
+                  userid={this.props.userid}
                 />
 
                 {/* 서비스현황 */}
@@ -206,6 +216,7 @@ class MyPageDetailWrapper extends React.Component{
                   productsCommonInfo={this.props.productsCommonInfo}
                   accessToken={this.props.accessToken}
                   orderid={this.props.orderid}
+                  userid={this.props.userid}
                 />
 
                 {/* 배송료 결제정보 */}
@@ -219,6 +230,7 @@ class MyPageDetailWrapper extends React.Component{
                   productsCommonInfo={this.props.productsCommonInfo}
                   accessToken={this.props.accessToken}
                   orderid={this.props.orderid}
+                  userid={this.props.userid}
                   />
 
                 {/* 총액정보 */}
@@ -240,9 +252,9 @@ class MyPageDetailState extends React.Component{
         const deleteShippingServceData =  [
           {orderid: this.props.orderid}
         ]
-
+        let userid = this.props.userid
         setTokenHeader(this.props.accessToken)
-        fetch(basePort + '/deleteShipingServiceData', 
+        fetch(basePort + '/deleteShipingServiceData/' + userid, 
                   {method:'post', headers, 
                     body:JSON.stringify(deleteShippingServceData)})
         window.location.replace("/mypage");
@@ -401,6 +413,7 @@ class MyPageDetailRecipient extends React.Component{
               orderid={this.props.orderid}
               accessToken={this.props.accessToken}
               updateUrl={'updaterecipientdata'}
+              userid={this.props.userid}
              />
           displayHeight = '67rem'
         } else {

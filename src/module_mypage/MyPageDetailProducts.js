@@ -55,6 +55,7 @@ export class MyPageDetailProducts extends React.Component{
                 productsCommonInfo={this.props.productsCommonInfo}
                 orderid={this.props.orderid}
                 accessToken={this.props.accessToken}
+                userid={this.props.userid}
                />
             //displayHeight = '67rem'
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
@@ -145,15 +146,15 @@ export class EditorProductsList extends React.Component{
     }
 
     updateDataEditorProductsList(accessToken){
-
         const editedProductsData =  [
             {orderid: this.state.orderid},
             {deliveryDataObject: JSON.stringify(this.state.deliveryObject)},
             {shippingProductList: JSON.stringify(this.state.shippingProductList)}
         ]
-
+        
+        let userid = this.props.userid
         setTokenHeader(accessToken)
-        fetch(basePort + '/updateDataEditorProductsList', 
+        fetch(basePort + '/updateDataEditorProductsList/' + userid, 
                   {method:'post', headers, 
                     body:JSON.stringify(editedProductsData)})
     }

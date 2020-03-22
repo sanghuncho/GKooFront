@@ -62,6 +62,7 @@ export class FavoriteAddressManager extends React.Component{
       orderInformation:'',
       warehouseInformation:'',
       trackingNumber:'1234',
+      userid:'',
    };
   
     toggle(position) {
@@ -86,7 +87,8 @@ export class FavoriteAddressManager extends React.Component{
     componentDidMount() {
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
-          accessToken:keycloak.token})
+          accessToken:keycloak.token,
+          userid:keycloak.tokenParsed.preferred_username})
          
           //this.fetchPurchaseOrderList(keycloak.token)
       })
@@ -116,7 +118,8 @@ export class FavoriteAddressManager extends React.Component{
 
         if(this.validToken(token)){
             addressManagerController = <AddressManagerController 
-            accessToken = { this.state.accessToken }/>
+            accessToken={this.state.accessToken}
+            userid={this.state.userid}/>
         } else {
             addressManagerController = this.getEmptyPage
         }
@@ -151,7 +154,9 @@ export class AddressManagerController extends React.Component{
             </Breadcrumb>
 
             {/* ToDo : userAccount name as mypagebody */}
-            <AddressManagerWrapper accessToken={this.props.accessToken}/>
+            <AddressManagerWrapper 
+              accessToken={this.props.accessToken}
+              userid={this.props.userid}/>
 
         </BodyContainer>
         
@@ -173,6 +178,7 @@ export class AddressManagerWrapper extends React.Component{
         favoriteAddressList:[],
         disableButtonAddingAddress:false,
         indexEditedFavoriteAddress:"",
+        userid = this.props.userid
       }
       this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
       this.handleOpenFavoriteAddressInputPanel = this.handleOpenFavoriteAddressInputPanel.bind(this);
@@ -186,8 +192,9 @@ export class AddressManagerWrapper extends React.Component{
   }
 
   fetchFavoriteAddressList(accessToken){
+    let userid = this.state.userid
     setTokenHeader(accessToken)
-    fetch(basePort + '/getFavoriteAddressList', {headers})
+    fetch(basePort + '/getFavoriteAddressList/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -198,8 +205,9 @@ export class AddressManagerWrapper extends React.Component{
 
   deleteFavoriteAddress(accessToken, favoriteAddressId){
     const deletedAddressData =  [{favoriteAddressId: favoriteAddressId}]
+    let userid = this.state.userid
     setTokenHeader(accessToken)
-    fetch(basePort + '/deleteFavoriteAddress', 
+    fetch(basePort + '/deleteFavoriteAddress/' + userid, 
       {method:'post', headers, 
         body:JSON.stringify(deletedAddressData)})
     
@@ -273,6 +281,7 @@ export class AddressManagerWrapper extends React.Component{
               handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel} 
               favoriteAddressData = {this.state.favoriteAddressList[indexEdited]}
               accessToken={this.props.accessToken}
+              userid={this.props.userid}
               />
         }
       return (
@@ -378,6 +387,7 @@ class EditingAddressPanel extends React.Component{
             handleOpenFavoriteAddressInputPanel={this.props.handleOpenFavoriteAddressInputPanel}
             saveType={"UPDATE"}
             accessToken={this.props.accessToken}
+            userid={this.props.userid}
             favoriteAddressData={this.props.favoriteAddressData}
             />
         </div>

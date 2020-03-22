@@ -142,8 +142,10 @@ export class CustomerRecipientEditor extends React.Component {
         ]
 
         setTokenHeader(accessToken)
-        let updateUrl = this.props.updateUrl
-        fetch(basePort + '/' + updateUrl, 
+        //let updateUrl = this.props.updateUrl
+        //fetch(basePort + '/' + updateUrl, 
+        let userid = this.props.userid
+        fetch(basePort +  '/' + updateUrl + '/' + userid, 
                   {method:'post', headers, 
                     body:JSON.stringify(editedRecipientData)})
                     .then((result) => {

@@ -13,3 +13,7 @@ export const BACKEND_URL = isDevBuild ? BACKEND_URL_DEV : BACKEND_URL_PROD
 const OPEN_BACKEND_URL_DEV = 'http://localhost:8888'
 const OPEN_BACKEND_URL_PROD = 'https://gkoo.co.kr/gkooOpenApi'
 export const OPEN_BACKEND_URL = isDevBuild ? OPEN_BACKEND_URL_DEV : OPEN_BACKEND_URL_PROD
+
+const INITIAL_PAGE_URL_DEV = 'http://localhost:3000/'
+const INITIAL_PAGE_URL_PROD = 'https://gkoo.co.kr/'
+export const INITIAL_PAGE_URL = isDevBuild ? INITIAL_PAGE_URL_DEV : INITIAL_PAGE_URL_PROD

@@ -77,6 +77,7 @@ export class MyPageBuyingService extends React.Component{
       paymentDelivery:'',
       deliveryKoreaData:'',
       userBaseInfo:'',
+      userid:'',
    };
   
     toggle(position) {
@@ -101,15 +102,16 @@ export class MyPageBuyingService extends React.Component{
     componentDidMount() {
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
-          accessToken:keycloak.token})
+          accessToken:keycloak.token, userid:keycloak.tokenParsed.preferred_username})
           localStorage.setItem("react-token", keycloak.token);
           this.fetchCustomerStatusData(keycloak.token)
       })
     }
 
     fetchCustomerStatusData(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/customerstatus', {headers})
+      fetch(basePort + '/customerstatus/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -120,8 +122,9 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchOrderInformation(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/orderdataBuyingService', {headers})
+      fetch(basePort + '/orderdataBuyingService/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -131,8 +134,9 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchPaymentData(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/paymentProductBuyingService', {headers})
+      fetch(basePort + '/paymentProductBuyingService/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -142,8 +146,9 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchPaymentDelivery(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/paymentDeliveryBuyingService', {headers})
+      fetch(basePort + '/paymentDeliveryBuyingService/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -153,8 +158,9 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchDeliveryKoreaData(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/deliveryKoreaDataBuyingService', {headers})
+      fetch(basePort + '/deliveryKoreaDataBuyingService/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -164,8 +170,9 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchUserBaseInfo(token){
+      let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/fetchuserbaseinfo', {headers})
+      fetch(basePort + '/fetchuserbaseinfo/'+ userid, {headers})
         .then((result) => { 
           return result.json();
         }).then((data) => {           

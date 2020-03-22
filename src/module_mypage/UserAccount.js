@@ -146,7 +146,8 @@ export class UserAccount extends React.Component{
         
         <UserBaseInfo customerStatusData={this.props.customerStatusData}
                       userBaseInfo={this.props.userBaseInfo}
-                      accessToken={this.props.accessToken}/>
+                      accessToken={this.props.accessToken}
+                      userid={this.props.userid}/>
         
         {/* 이용현황 -- 나중에 코딩 */}
         {/* <ServiceInformation/> */}
