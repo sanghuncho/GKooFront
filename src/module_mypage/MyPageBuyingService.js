@@ -23,7 +23,8 @@ var keycloak = Keycloak(keycloakConfigLocal);
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
-  height: auto;
+  min-height:calc(100vh);
+  height: auto;  
 `;
 
 const Navigation = styled(BaseNavigation)`
@@ -43,7 +44,7 @@ const BodyContainer = styled(BaseAppContainer)`
 
 const theme = {
     selectionBgColor: '#B0CC8B',
-  };
+};
 
 const NavLinkStyle = styled(BaseNav)`
   flex-direction: column;
@@ -109,14 +110,17 @@ export class MyPageBuyingService extends React.Component{
     }
 
     fetchCustomerStatusData(token){
+      let lastname = keycloak.tokenParsed.family_name
+      let firstname = keycloak.tokenParsed.given_name
+      const customername =  [{lastname:lastname}, {firstname:firstname}]
       let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/customerstatus/'+ userid, {headers})
+      fetch(basePort + '/customerstatus/'+ userid, 
+      {method:'post', headers, body:JSON.stringify(customername)})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          
-          this.setState({customerStatusData: data})
+          this.setState({customerStatusData:data})
           this.fetchOrderInformation(token)
         })   
     }

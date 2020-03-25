@@ -17,11 +17,13 @@ var naviGreen = '#80b13e'
 
 {/* ShippingService CSS */}
 export const BodyContainer = styled(BaseAppContainer)`
-  height:auto;
-  flex-direction: column;
+    min-height:calc(100vh);  
+    height:auto;
+    flex-direction: column;
 `;
 const ShippingServiceContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+    min-height:calc(100vh);
+    height: auto;
 `;
 
 export class ShippingService extends React.Component{

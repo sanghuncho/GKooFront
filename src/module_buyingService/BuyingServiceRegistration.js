@@ -16,6 +16,7 @@ import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm
 import { BaseProductPriceCalc } from '../module_base_component/BaseReactBootstrap'
 import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../module_base_style/baseStyle'
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './BuyingServiceConfig'
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -76,6 +77,7 @@ export class BuyingServiceRegistration extends React.Component{
 
                 {buyingServiceRegistration}
                
+                
             </div>
         );}           
 }
@@ -120,6 +122,8 @@ export class BuyingServiceController extends React.Component {
                     {agreement ? <BuyingServiceContentWrapper 
                                         accessToken={this.props.accessToken}
                                         userid={this.props.userid} />: EMPTY_PAGE }
+                    
+                    <CompanyIntroductionBottom/>
                 </BodyContainer>
 
             </BuyingServiceRegistrationContainer>

@@ -10,6 +10,7 @@ import { Card, Form, InputGroup, Row, Col, Container, Button } from 'react-boots
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange } from 'react-icons-kit/fa/'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -19,11 +20,13 @@ var keycloak = Keycloak(keycloakConfigLocal);
 
 {/* BuyingService Style */}
 export const BodyContainer = styled(BaseAppContainer)`
-    height: calc(100vh);
+    min-height:calc(100vh);
+    height: auto;
     flex-direction: column;
 `;
 const BuyingServiceContainer = styled(BaseAppContainer)`
     height:auto;
+    min-height:calc(100vh);
 `;
 
 export class BuyingService extends React.Component{
@@ -36,6 +39,8 @@ export class BuyingService extends React.Component{
                 <BuyingServiceNavbar/>
                 <BodyContainer>
                     <BuyingServiceWrapper/>
+
+                     <CompanyIntroductionBottom/>
                 </BodyContainer>
             </BuyingServiceContainer>
             </div>

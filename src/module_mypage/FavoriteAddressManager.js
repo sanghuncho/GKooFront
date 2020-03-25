@@ -178,7 +178,7 @@ export class AddressManagerWrapper extends React.Component{
         favoriteAddressList:[],
         disableButtonAddingAddress:false,
         indexEditedFavoriteAddress:"",
-        userid = this.props.userid
+        userid:this.props.userid
       }
       this.handleRemoveFavoriteAddressOnList = this.handleRemoveFavoriteAddressOnList.bind(this);
       this.handleOpenFavoriteAddressInputPanel = this.handleOpenFavoriteAddressInputPanel.bind(this);
@@ -272,6 +272,7 @@ export class AddressManagerWrapper extends React.Component{
               handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}    
               accessToken={this.props.accessToken}
               favoriteAddressData = {""}
+              userid={this.props.userid}
               />
         } else if(doLoadingFavoriteAddressInputPanel){
           const indexEdited = this.state.indexEditedFavoriteAddress

@@ -14,15 +14,16 @@ import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
 
 {/* BuyingServiceIntro CSS */}
 export const BodyContainer = styled(BaseAppContainer)`
-  height:auto;
-  flex-direction: column;
+    min-height:calc(100vh);
+    height: auto;
+    flex-direction: column;
 `;
 const BuyingServiceIntroContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+    min-height:calc(100vh);
+    height: auto;
 `;
 
 export class BuyingServiceIntro extends React.Component{
-
     render() {
         return (
             <div>

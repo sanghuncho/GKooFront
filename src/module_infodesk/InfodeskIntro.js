@@ -11,14 +11,16 @@ import { AppNavbar } from '../AppNavbar'
 import { connectdevelop, cube, bullseye, pagelines } from 'react-icons-kit/fa/'
 import { Image } from 'react-bootstrap';
 import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
-
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 {/* InfodeskIntro CSS */}
 export const BodyContainer = styled(BaseAppContainer)`
-  height:auto;
-  flex-direction: column;
+    min-height:calc(100vh);
+    height: auto;
+    flex-direction: column;
 `;
 const CustomerCenterIntroContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+    min-height:calc(100vh);
+    height: auto;
 `;
 
 export class InfodeskIntro extends React.Component{
@@ -31,6 +33,8 @@ export class InfodeskIntro extends React.Component{
                 <InfodeskIntroNavbar/>
                 <BodyContainer>
                     <Image src={GKoo_Service_Info} style={{ width: '600px', marginLeft:'20%', marginTop:'20px'}}/>
+
+                    <CompanyIntroductionBottom/>
                 </BodyContainer>
             </CustomerCenterIntroContainer>
             </div>
@@ -123,7 +127,7 @@ export class InfodeskIntroNavbar extends React.Component{
                         </NavLink>
                     </NavLinkStyle>
                     </div>
-            </SideNav>
+                    </SideNav>
             </NavigationStyle>
             </div>
         );}           

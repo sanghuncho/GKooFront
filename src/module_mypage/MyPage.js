@@ -17,6 +17,7 @@ var keycloak = Keycloak(keycloakConfigLocal);
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
+  min-height:calc(100vh);
   height: auto;
 `;
 
