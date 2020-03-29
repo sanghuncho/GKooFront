@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React from 'react';
+import { Table, Card } from "react-bootstrap"
 import { AppNavbar } from '../AppNavbar'
 import { BodyContainer, ShippingServiceNavbar } from './ShippingService'
 import {
@@ -26,10 +27,63 @@ export class ShippingServiceAddressPane extends React.Component{
                     <ShippingServiceNavbar/>
                     
                     <BodyContainer>
-                    
+                      <ShippingServiceAddressTable/>
                     </BodyContainer>
                 </ShippingServiceAddressPanelContainer>
           </div>
         );
       }    
+}
+
+export class ShippingServiceAddressTable extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  
+  render() {
+    return (
+      <div>
+          <Card border="dark" style={{ width: '50%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
+            <Card.Header>지쿠 배송대행 독일내 주소지 (개인사서함)
+            </Card.Header>
+            <Card.Body >
+            <Table bordered condensed responsive size="sm">
+            <thead>
+            </thead>
+            <tbody>
+              <tr>  
+                <td width='300px'>Vorname Nachname</td>
+                <td width='250px' align='left'>개인사서함번호 (e.g GK101010)</td>
+              </tr>
+              <tr>
+                <td>Anschrift (Firma, c/o)</td>
+                <td align='left'></td>
+              </tr>
+              <tr>
+                <td>Anschrift (Strasse und Hausnummer)</td>
+                <td align='left'>Westerbachstraße 50</td>
+              </tr>
+              <tr>
+                <td>Anschrift (Postleitzahl)</td>
+                <td align='left'>60489</td>
+              </tr>
+              <tr>
+                <td>Stadt</td>
+                <td align='left'>Frankfurt am Main</td>
+              </tr>
+              <tr>
+                <td>Bundesland</td>
+                <td align='left'>Bayern</td>
+              </tr>
+              <tr>
+                <td>Land</td>
+                <td align='left'>Germany</td>
+              </tr>
+            </tbody>
+          </Table>
+          </Card.Body>
+          </Card> 
+      </div>
+    );
+  }
 }

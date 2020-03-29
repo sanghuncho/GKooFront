@@ -13,8 +13,10 @@ export function getKoreanCurrency(rate){
 }
 
 export function getFormatKoreanCurrency(rate){
-    if(rate => 0){
+    if(rate > 0){
         return <div>{rate}원</div>
+    } else if (rate == 0) {
+        return <div>0원</div>
     } else {
         return EMPTY_STRING
     }
@@ -41,6 +43,16 @@ export function getKoreanCurrencyWithInfoBadge(rate){
 export function getFormattedWeight(weight){
     if(weight > 0){
         return weight+"kg"
+    } else {
+        return EMPTY_STRING
+    }
+}
+
+export function getFormattedPoint(point){
+    if(point>0){
+        return point+"p"
+    } else if (point == 0) {
+        return   <div>0p</div>
     } else {
         return EMPTY_STRING
     }

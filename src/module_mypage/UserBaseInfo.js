@@ -4,7 +4,7 @@ import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
 import { Link } from "react-router-dom";
 import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { Redirect } from 'react-router';
-import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
+import { getFormatKoreanCurrency, getFormattedPoint } from '../module_base_component/BaseUtil'
 
 export class UserBaseInfo extends React.Component{
     constructor(props) {
@@ -133,6 +133,9 @@ export class CompleteUserBaseInfo extends React.Component{
       
       render() {
         let insuranceAmount = getFormatKoreanCurrency(this.props.customerStatusData.insuranceAmount)
+        let depositeAmount = getFormatKoreanCurrency(this.props.customerStatusData.depositeAmount)
+        let pointAmount = getFormattedPoint(this.props.customerStatusData.pointAmount)
+        
         return (
           <div>
             <Card border="dark" style={{ width: '80%', height:'11rem', marginTop:'1rem' }}>
@@ -152,15 +155,15 @@ export class CompleteUserBaseInfo extends React.Component{
             <tbody>
               <tr>  
                 <td width='300px'>개인사서함주소</td>
-                <td width='250px' align='right'>gkoo-{this.props.customerStatusData.userid}</td>
+                <td width='250px' align='right'>{this.props.customerStatusData.personalBoxAddress}</td>
                 <td width='300px'>보유예치금</td>
                 <td width='250px' align='right'>{insuranceAmount}</td>
               </tr>
               <tr>
                 <td>보유적립금</td>
-                <td align='right'>{this.props.customerStatusData.depositeAmount}원</td>
+                <td align='right'>{depositeAmount}</td>
                 <td >보유포인트</td>
-                <td align='right'>{this.props.customerStatusData.pointAmount}p</td>
+                <td align='right'>{pointAmount}</td>
               </tr>
             </tbody>
           </Table>
