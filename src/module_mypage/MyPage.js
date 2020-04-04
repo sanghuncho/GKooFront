@@ -31,7 +31,7 @@ const Navigation = styled(BaseNavigation)`
     height: auto;
 `;
 
-const BodyContainer = styled(BaseAppContainer)`
+export const BodyContainer = styled(BaseAppContainer)`
   height:auto;
   flex-direction: column;
 `;

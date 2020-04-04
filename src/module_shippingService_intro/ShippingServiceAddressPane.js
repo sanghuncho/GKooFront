@@ -57,7 +57,7 @@ export class ShippingServiceAddressTable extends React.Component {
               </tr>
               <tr>
                 <td>Anschrift (Firma, c/o)</td>
-                <td align='left'></td>
+                <td align='left'>Euromams gmbh</td>
               </tr>
               <tr>
                 <td>Anschrift (Strasse und Hausnummer)</td>
@@ -73,11 +73,11 @@ export class ShippingServiceAddressTable extends React.Component {
               </tr>
               <tr>
                 <td>Bundesland</td>
-                <td align='left'>Bayern</td>
+                <td align='left'>Hessen</td>
               </tr>
               <tr>
                 <td>Land</td>
-                <td align='left'>Germany</td>
+                <td align='left'>Deutschland</td>
               </tr>
             </tbody>
           </Table>

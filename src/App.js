@@ -31,6 +31,7 @@ import { MyPageDetail } from './module_mypage/MyPageDetail';
 import { MyPageBuyingService } from './module_mypage/MyPageBuyingService';
 import { MyPageBuyingServiceDetail } from './module_mypage/MyPageBuyingServiceDetail';
 import { FavoriteAddressManager } from './module_mypage/FavoriteAddressManager';
+import { MyPageShippingAddressPane } from './module_mypage/MyPageShippingAddressPane';
 
 import { Home } from './Home'
 import { ManagementController } from './management/ManagementController'
@@ -79,6 +80,7 @@ const Main = () => (
     <Route exact path='/mypagebuyingService' component={ MyPageBuyingService }></Route>
     <Route exact path='/detailsbuyingService/:id' component={ MyPageBuyingServiceDetail }></Route>
     <Route exact path='/favoriteAddressManager' component={ FavoriteAddressManager }></Route>
+    <Route exact path='/mypageShippingAddressPane' component={ MyPageShippingAddressPane }></Route>
     
     {/* 관리자 모둘 */} 
     <Route exact path='/management' component={ ManagementController }></Route>

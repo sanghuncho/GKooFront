@@ -12,6 +12,7 @@ import { connectdevelop, cube, bullseye, pagelines } from 'react-icons-kit/fa/'
 import { Image } from 'react-bootstrap';
 import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
+
 {/* InfodeskIntro CSS */}
 export const BodyContainer = styled(BaseAppContainer)`
     min-height:calc(100vh);

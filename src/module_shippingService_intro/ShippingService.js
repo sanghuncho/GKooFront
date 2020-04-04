@@ -7,7 +7,7 @@ import {
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
-import { connectdevelop, cube, bullseye } from 'react-icons-kit/fa/'
+import { connectdevelop, cube, bullseye, home } from 'react-icons-kit/fa/'
 import { AppNavbar } from '../AppNavbar'
 import { Image } from 'react-bootstrap';
 import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
@@ -113,7 +113,7 @@ export class ShippingServiceNavbar extends React.Component{
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingServiceAddressPane' >
                             <IconCnt>
-                                <Icon icon={connectdevelop} />
+                                <Icon icon={home} />
                             </IconCnt>
                             <TextStyle>배송주소 안내</TextStyle>
                         </NavLink>

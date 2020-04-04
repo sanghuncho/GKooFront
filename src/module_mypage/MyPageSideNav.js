@@ -7,7 +7,7 @@ import {
     BaseNavigation,
   } from "../container";
 import { Icon as BaseIcon } from "react-icons-kit";
-import { calendar, pagelines, archive } from 'react-icons-kit/fa/'
+import { calendar, pagelines, archive, home } from 'react-icons-kit/fa/'
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -98,11 +98,11 @@ export class MyPageSideNav extends React.Component{
                     </div>
                     <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/mypageShippingAddressPane' >
                             <IconCnt>
-                                <Icon icon={calendar} />
+                                <Icon icon={home} />
                             </IconCnt>
-                            <Text>스케줄</Text>
+                            <Text>배송주소 안내</Text>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
