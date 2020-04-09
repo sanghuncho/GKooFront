@@ -1,11 +1,11 @@
-export const isDevBuild =  true //false == Production
+export const isDevBuild =  false //false == Production, production build : npm run build
 
 const KEYCLOAK_URL_DEV = 'http://localhost:8080/auth'
 const KEYCLOAK_URL_PROD = 'https://www.gkoo.co.kr/auth'
 export const KEYCLOAK_URL = isDevBuild ?  KEYCLOAK_URL_DEV : KEYCLOAK_URL_PROD
 
 
-const BACKEND_URL_DEV = 'http://localhost:8889'
+const BACKEND_URL_DEV = 'http://localhost:8889/gkoo'
 const BACKEND_URL_PROD = 'https://www.gkoo.co.kr/gkoo'
 export const BACKEND_URL = isDevBuild ? BACKEND_URL_DEV : BACKEND_URL_PROD
 

@@ -13,8 +13,11 @@ export const keycloakConfigLocal = {
 };
 
 export const headers = {
-    'Accept': 'application/json',
+    'Accept': 'application/json, text/plain',
     'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': "Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization",
+    'Allow-Control-Allow-Methods': "GET, POST, OPTIONS",
 }
 
 export const openHeaders = {
