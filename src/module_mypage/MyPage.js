@@ -77,6 +77,7 @@ export class MyPage extends React.Component{
       deliveryKoreaData:'',
       userBaseInfo:'',
       userid:'',
+      isUseridChecked:false,
    };
   
     toggle(position) {
@@ -109,7 +110,8 @@ export class MyPage extends React.Component{
           //console.log(keycloak.tokenParsed.family_name)
         
           this.fetchRegisterInitialCustomer(keycloak.token)
-          this.fetchCustomerStatusData(keycloak.token)
+          //this.fetchCustomerStatusData(keycloak.token)
+          
           //not used methods since 
           //this.fetchEndSettlementList(keycloak.token)
           //this.fetchPurchaseOrderList(keycloak.token)
@@ -122,18 +124,16 @@ export class MyPage extends React.Component{
       const customername =  [{lastname:lastname}, {firstname:firstname}]
       let userid = this.state.userid
       setTokenHeader(token)
-      //fetch(basePort + '/registerinitialcustomer/'+ userid, 
-      fetch(basePort + '/registerinitialcustomer', 
+      fetch(basePort + '/registerinitialcustomer/'+ userid, 
         {method:'post', headers, body:JSON.stringify(customername)})
         .then((result) => {
+           this.fetchCustomerStatusData(token)
            return result.json();
         }).then((data) => {
-          console.log("fetchCustomerStatusData" + data)
-          //this.fetchCustomerStatusData(token)
+          this.fetchCustomerStatusData(token)
         }).catch(error => {
           console.error('There was an error!', error);
       });
-        
     }
 
     fetchCustomerStatusData(token){
@@ -145,15 +145,7 @@ export class MyPage extends React.Component{
         }).then((data) => {
           this.setState({customerStatusData:data})
           this.fetchOrderInformation(token)
-        })  
-      // fetch(basePort + '/customerstatus/'+ userid, 
-      // {method:'post', headers, body:JSON.stringify(customername)})
-      //   .then((result) => {
-      //      return result.json();
-      //   }).then((data) => {
-      //     this.setState({customerStatusData:data})
-      //     this.fetchOrderInformation(token)
-      //   })   
+        }) 
     }
 
     fetchOrderInformation(token){

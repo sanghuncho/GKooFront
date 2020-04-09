@@ -1,4 +1,4 @@
-export const isDevBuild =  false //false == Production, production build : npm run build
+export const isDevBuild =  true //false == Production, production build : npm run build
 
 const KEYCLOAK_URL_DEV = 'http://localhost:8080/auth'
 const KEYCLOAK_URL_PROD = 'https://www.gkoo.co.kr/auth'
