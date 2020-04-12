@@ -76,9 +76,9 @@ const Main = () => (
     
     {/* 마이페이지 모둘 */} 
     <Route exact path='/mypage' component={ MyPage }></Route>
-    <Route exact path='/detailsmypage/:id' component={ MyPageDetail }></Route>
+    <Route exact path='/detailsmypage/:orderid' component={ MyPageDetail }></Route>
     <Route exact path='/mypagebuyingService' component={ MyPageBuyingService }></Route>
-    <Route exact path='/detailsbuyingService/:id' component={ MyPageBuyingServiceDetail }></Route>
+    <Route exact path='/detailsbuyingService/:orderid' component={ MyPageBuyingServiceDetail }></Route>
     <Route exact path='/favoriteAddressManager' component={ FavoriteAddressManager }></Route>
     <Route exact path='/mypageShippingAddressPane' component={ MyPageShippingAddressPane }></Route>
     

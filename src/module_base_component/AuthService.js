@@ -24,7 +24,8 @@ export const openHeaders = {
   'Accept': 'application/json',
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
-  'enable-cors':'false'
+  'Access-Control-Allow-Headers': "Origin, X-Requested-With, Access-Control-Allow-Headers, Content-Type, Authorization",
+  'Allow-Control-Allow-Methods': "GET, POST, OPTIONS",
 }
 
 export function setTokenHeader(token){
@@ -40,3 +41,7 @@ export function getEmptyPage(){
 }
 
 export const INITIAL_PAGE = INITIAL_PAGE_URL
+
+export function getUseridKeycloak(keycloak){
+  return keycloak.tokenParsed.preferred_username
+}

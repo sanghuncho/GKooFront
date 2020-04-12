@@ -102,9 +102,12 @@ export class MyPage extends React.Component{
     componentDidMount() {
       console.log(keycloakUrlLocal)
       keycloak.init({onLoad: 'login-required'}).success(() => {
-          this.setState({ keycloakAuth: keycloak, 
-          accessToken:keycloak.token, 
-          userid:keycloak.tokenParsed.preferred_username})
+      //  keycloak.init({onLoad: 'check-sso'}).success(() => {
+          this.setState({ 
+            keycloakAuth: keycloak, 
+            accessToken:keycloak.token, 
+            userid:keycloak.tokenParsed.preferred_username
+          })
           //console.log(keycloak.tokenParsed.preferred_username)
           //console.log(keycloak.tokenParsed.given_name)
           //console.log(keycloak.tokenParsed.family_name)
@@ -129,10 +132,8 @@ export class MyPage extends React.Component{
         .then((result) => {
            this.fetchCustomerStatusData(token)
            return result.json();
-        }).then((data) => {
-          this.fetchCustomerStatusData(token)
         }).catch(error => {
-          console.error('There was an error!', error);
+          console.error('Error fetching registerinitialcustomer!', error);
       });
     }
 

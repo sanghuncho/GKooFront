@@ -392,7 +392,7 @@ class MyPageDetailPerson extends React.Component{
                     <tbody>
                     <tr>
                         <td width='400px'>주문자명</td>
-                        <td width='400px'>{this.props.orderingPersonInfo.fullname}</td>
+                        <td width='400px'>{this.props.orderingPersonInfo}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>

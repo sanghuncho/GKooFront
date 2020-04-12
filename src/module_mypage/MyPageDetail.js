@@ -81,20 +81,20 @@ export class MyPageDetail extends React.Component{
         let lastname = keycloak.tokenParsed.family_name
         let firstname = keycloak.tokenParsed.given_name
         let fullname = lastname + firstname
+        console.log(fullname)
         this.setState({orderingPersonInfo:fullname})
       }
 
       fetchMypageDetailData(token, orderid){
         let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/mypageDetailData/'+ orderid + '/' + userid, {headers})
+        fetch(basePort + '/mypageDetailData/'+ orderid + '/' + userid , {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
           this.setState({recipientInfo:data.recipientData, 
               productsCommonInfo:data.productsCommonInformation})
-          //console.log(data)
-        })  
+        }) 
       }
 
       fetchRecipientInforamtion(token, orderid){
@@ -337,7 +337,7 @@ class MyPageDetailPerson extends React.Component{
                     <tbody>
                     <tr>
                         <td width='400px'>주문자명</td>
-                        <td width='400px'>{this.props.orderingPersonInfo.fullname}</td>
+                        <td width='400px'>{this.props.orderingPersonInfo}</td>
                         {/* <td width='250px' align='right'>gkoo-{this.props.customerBaseInfo.customerId}</td> */}
                     </tr>
                     <tr>

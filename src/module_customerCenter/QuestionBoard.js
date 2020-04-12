@@ -30,6 +30,7 @@ export class QuestionBoard extends React.Component{
         this.state = {
             keycloakAuth:null,
             accessToken:"",
+            userid:'',
             questionTitle:'',
             questionContent:'',
             questionAnswerList:[],
@@ -39,20 +40,27 @@ export class QuestionBoard extends React.Component{
 
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, accessToken:keycloak.token}) 
-        this.fetchQuestionAnswerData(keycloak.token)
+            this.setState({ 
+                keycloakAuth: keycloak, 
+                accessToken:keycloak.token, 
+                userid:keycloak.tokenParsed.preferred_username
+            })
+            this.fetchQuestionAnswerData(keycloak.token)
         })
     }
 
     fetchQuestionAnswerData(accessToken){
+        let userid = this.state.userid
         setTokenHeader(accessToken)
-        fetch(basePort + '/getQuestionAnswerList', {headers})
+        fetch(basePort + '/getQuestionAnswerList/' + userid, {headers})
             .then((result) => {
                return result.json();
             }).then((data) => {
+              console.log('fetching getQuestionAnswerList!' + data);
               this.setState( { questionAnswerList: data} )
-              console.log(data)
-        })
+            }).catch(error => {
+                console.error('Error fetching getQuestionAnswerList!', error);
+            });
     }
 
     validToken(token){
@@ -278,8 +286,9 @@ export class RegisterQuestion extends React.Component{
     }
     
     handleCreateQuestion(accessToken, questionBoardData){
+        let userid = this.keycloak.tokenParsed.preferred_username
         this.setTokenHeader(accessToken)
-        fetch(basePort + '/registerQuestion', 
+        fetch(basePort + '/registerQuestion/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(questionBoardData)})
         
