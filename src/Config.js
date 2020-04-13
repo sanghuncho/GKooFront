@@ -16,4 +16,9 @@ export const OPEN_BACKEND_URL = isDevBuild ? OPEN_BACKEND_URL_DEV : OPEN_BACKEND
 
 const INITIAL_PAGE_URL_DEV = 'http://localhost:3000/'
 const INITIAL_PAGE_URL_PROD = 'https://gkoo.co.kr/'
+
+const KEYCLOAK_ACCOUNT_DEV = KEYCLOAK_URL_DEV + '/realms/gkoo/account'
+const KEYCLOAK_ACCOUNT_PROD = KEYCLOAK_URL_PROD + '/realms/gkoo/account'
+export const KEYCLOAK_USER_ACCOUNT = isDevBuild ? KEYCLOAK_ACCOUNT_DEV : KEYCLOAK_ACCOUNT_PROD
+
 export const INITIAL_PAGE_URL = isDevBuild ? INITIAL_PAGE_URL_DEV : INITIAL_PAGE_URL_PROD

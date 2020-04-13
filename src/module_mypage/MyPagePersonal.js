@@ -1,178 +1,197 @@
+import { SideNav, Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
-import React from 'react';
-import { Table, Button, Card, InputGroup, FormControl } from "react-bootstrap"
-import { Link } from "react-router-dom";
-import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
-import { Redirect } from 'react-router';
-import { getFormatKoreanCurrency, getFormattedPoint } from '../module_base_component/BaseUtil'
+import React, { Component } from 'react';
+import { Icon as BaseIcon } from "react-icons-kit";
+import {
+  AppContainer as BaseAppContainer,
+  BaseNavigation,
+} from "../container";
+import { MyPageSideNav } from "./MyPageSideNav";
+import { Breadcrumb, Button, CardGroup, Table, Card, InputGroup, FormControl } from "react-bootstrap"
+import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { KEYCLOAK_USER_ACCOUNT } from "../Config"
 
-export class UserBaseInfo extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            doEditUserBaseInfo:false,
-            doOpenAddressManager:false,
-            showBaseInfoButtons:true,
-            showUserBaseInfoButtons:false,
-            userBaseInfo:null,
-            redirect:false,
-        };
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
+var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
-        this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
-        this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
-        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
-        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
-      }
+//dynamic height
+const AppContainer = styled(BaseAppContainer)`
+  min-height:calc(100vh);
+  height: auto;  
+`;
 
-      componentDidMount () {
-        //this.fetchUserBaseInfo(this.props.accessToken)
-      }
+const Navigation = styled(BaseNavigation)`
+    background: #80b13e;
+    color: #FFFFFF;
+    letter-spacing: 1px;
+    width: 110px;
+    line-height: 22px;
+    border-radius: 0px;
+    height: auto;
+`;
 
-      doEditUserBaseInfo(){
-        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
-      }
+const BodyContainer = styled(BaseAppContainer)`
+  height:auto;
+  flex-direction: column;
+`;
+
+const theme = {
+    selectionBgColor: '#B0CC8B',
+};
+
+const NavLinkStyle = styled(BaseNav)`
+  flex-direction: column;
+`;
+
+const IconCnt = styled.div`
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  aligh-items: center;
+`;
+
+const Text = styled.div`
+  padding-left: 0px;
+  font-size: 12px;
+`;
+
+var naviGreen = '#80b13e'
+var grey = '#727676';
+
+const Icon = props => <BaseIcon size={18} icon={props.icon} />;
+export class MyPagePersonal extends React.Component{
+
+    state = { 
+      active: null,
+      keycloakAuth:null,
+      accessToken:"",
+      userBaseInfo:'',
+      userid:'',
+   };
   
-      // fetchUserBaseInfo(token){
-      //   setTokenHeader(token)
-      //   fetch(basePort + '/fetchuserbaseinfo', {headers})
-      //     .then((result) => { 
-      //       return result.json();
-      //     }).then((data) => {           
-      //       this.setState( { userBaseInfo: data} )
-      //     }).catch(function() {
-      //       console.log("error fetching userbaseinfo");
-      //   });
-      // }
+    toggle(position) {
+      if (this.state.active === position) {
+        this.setState({active : null})
+      } else {
+        this.setState({active : position})
+      }
+    }
+  
+    myColor (position) {
+      if (this.state.active === position) {
+        return grey;
+      }
+      return "";
+    }
+  
+    onItemSelection = arg => {
+      this.setState({ selectedPath: arg.path });
+    };
+
+    componentDidMount() {
+      keycloak.init({onLoad: 'login-required'}).success(() => {
+          this.setState({ 
+              keycloakAuth: keycloak, 
+              accessToken:keycloak.token, 
+              userid:keycloak.tokenParsed.preferred_username
+        })
+        this.fetchUserBaseInfo(keycloak.token)
+      })
       
-      doOpenAddressManager(){
-        //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
-        // <NavLink to="/favoriteAddressManager/">
-        // </NavLink>
-        // <Link to={{pathname:"favoriteAddressManager/"}}>
-        // </Link>
-        this.setState({redirect: true});
-      }
+    }
 
-      handleMoveToBaseInfo(){
-        window.scrollTo(0, 0);
-        this.setState({doEditUserBaseInfo:false, showBaseInfoButtons:true}) 
-      }
+    // fetchCustomerStatusData(token){
+    //   let lastname = keycloak.tokenParsed.family_name
+    //   let firstname = keycloak.tokenParsed.given_name
+    //   const customername =  [{lastname:lastname}, {firstname:firstname}]
+    //   let userid = this.state.userid
+    //   setTokenHeader(token)
+    //   fetch(basePort + '/customerstatus/'+ userid, 
+    //   {method:'post', headers, body:JSON.stringify(customername)})
+    //     .then((result) => {
+    //        return result.json();
+    //     }).then((data) => {
+    //       this.setState({customerStatusData:data})
+    //       this.fetchOrderInformation(token)
+    //     })   
+    // }
 
-      handleShowStoredAddressManager(){
-        this.setState({doOpenAddressManager:false, showBaseInfoButtons:true}) 
-      }
-    
-      render() {
-        if (this.state.redirect) {
-          return <Redirect push to="/favoriteAddressManager"/>;
+    fetchUserBaseInfo(token){
+      let userid = this.state.userid
+      console.log(userid)
+      setTokenHeader(token)
+      fetch(basePort + '/fetchuserbaseinfo/'+ userid, {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {           
+          this.setState({userBaseInfo:data})
+          console.log(data)
+        }).catch(function() {
+      });
+    }
+
+    validToken(token){
+      return token === "" ? false : true
+    }
+
+    getEmptyPage(){
+      return ""
+    }
+
+    render() {
+        const token = this.state.accessToken
+        let mypage_personal;
+
+        if(this.validToken(token)){
+            mypage_personal = 
+                <MypagePersonalController 
+                  userBaseInfo = {this.state.userBaseInfo}
+                  accessToken = { this.state.accessToken }
+                />
+        } else {
+            mypage_personal = this.getEmptyPage
         }
-
-        const showBaseInfoButtons = this.state.showBaseInfoButtons
-        let editButton;
-        let addressManagerButton;
-        if(showBaseInfoButtons) {
-          editButton = <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
-            style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
-
-          addressManagerButton =  <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
-            style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
-        }
-    
-        const doEditUserBaseInfo = this.state.doEditUserBaseInfo
-        const doOpenAddressManager = this.state.doOpenAddressManager
-        let userbaseInfoDisplay;
-        let displayHeight;
-        let headerTitle
-        if (doEditUserBaseInfo) {
-            userbaseInfoDisplay = 
-              <UserBaseInfoEditor 
-                handleMoveToBaseInfo={this.handleMoveToBaseInfo}
-                accessToken={this.props.accessToken}
-                userBaseInfo={this.props.userBaseInfo}
-                userid={this.props.userid}
-                // recipientInfo={this.props.recipientInfo}
-                // orderNumber={this.props.orderNumber}
-               />
-            
-          } else if (doOpenAddressManager) {
-            userbaseInfoDisplay = <AddressManager
-                handleShowStoredAddressManager={this.handleShowStoredAddressManager}/>
-            displayHeight = '14rem'
-            headerTitle = '배송지 관리'
-
-          } else {
-            userbaseInfoDisplay = 
-              <CompleteUserBaseInfo 
-                customerStatusData={this.props.customerStatusData}
-                doEditUserBaseInfo={this.doEditUserBaseInfo}
-                doOpenAddressManager={this.doOpenAddressManager}/>
-          }
         return (
-          <div>
-            {userbaseInfoDisplay}
-          </div>
-        );
-      }    
+            <div>
+              <AppNavbar>
+                 <LogoutButton keycloak ={this.state.keycloakAuth}/>
+              </AppNavbar>
+
+              {mypage_personal}
+
+            </div>
+           
+        );}           
 }
 
-export class CompleteUserBaseInfo extends React.Component{
-    constructor(props) {
-        super(props);
-
-        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
-        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
-      }
-
-      doEditUserBaseInfo(){
-        this.props.doEditUserBaseInfo()
-      }
+export class MypagePersonalController extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <AppContainer>
       
-      doOpenAddressManager(){
-        this.props.doOpenAddressManager()
-      }
+          <MyPageSideNav/>
       
-      render() {
-        let insuranceAmount = getFormatKoreanCurrency(this.props.customerStatusData.insuranceAmount)
-        let depositeAmount = getFormatKoreanCurrency(this.props.customerStatusData.depositeAmount)
-        let pointAmount = getFormattedPoint(this.props.customerStatusData.pointAmount)
+          <BodyContainer>
+            <Breadcrumb style={{ width: '100%'}}>
+              <Breadcrumb.Item active>마이페이지 / 개인정보 </Breadcrumb.Item>
+            </Breadcrumb>
+            
+            <UserBaseInfoEditor userBaseInfo={this.props.userBaseInfo}/>
         
-        return (
-          <div>
-            <Card border="dark" style={{ width: '80%', height:'11rem', marginTop:'1rem' }}>
-            <Card.Header>기본정보
-              {/* 배송지관리버튼 */}
-              <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
-                style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
-                
-              {/* 개인정보수정버튼 */}
-              <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
-                style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
-            </Card.Header>
-            <Card.Body >
-            <Table bordered condensed responsive size="sm">
-            <thead>
-            </thead>
-            <tbody>
-              <tr>  
-                <td width='300px'>개인사서함주소</td>
-                <td width='250px' align='right'>{this.props.customerStatusData.personalBoxAddress}</td>
-                <td width='300px'>보유예치금</td>
-                <td width='250px' align='right'>{insuranceAmount}</td>
-              </tr>
-              <tr>
-                <td>보유적립금</td>
-                <td align='right'>{depositeAmount}</td>
-                <td >보유포인트</td>
-                <td align='right'>{pointAmount}</td>
-              </tr>
-            </tbody>
-          </Table>
-          </Card.Body>
-          </Card> 
-          </div>
-        );
-      }    
+        </BodyContainer>
+        
+        </AppContainer>
+      </div>
+      );
+    }    
 }
 
 export class UserBaseInfoEditor extends React.Component{
@@ -520,37 +539,6 @@ export class UserBaseInfoDisplayer extends React.Component{
             
             </Card.Body>
           </Card>
-        </div>
-      );
-    }    
-}
-
-export class AddressManager extends React.Component{
-  constructor(props) {
-      super(props);
-    }
-
-    handleCancel(update){
-      window.scrollTo(0, 0);
-      this.props.handleShowStoredAddressManager()
-  }
-
-  handleSave(){
-    
-  }
-    
-    render() {
-      return (
-        <div>
-          <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-              <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                  onClick={this.handleSave}
-              >완료
-              </Button>
-              <Button size="sm" variant='secondary' 
-                  onClick={(e) => this.handleCancel(e)}
-              >취소</Button>
-          </InputGroup >
         </div>
       );
     }    

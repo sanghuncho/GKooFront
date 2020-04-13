@@ -110,10 +110,10 @@ export class MyPage extends React.Component{
           })
           //console.log(keycloak.tokenParsed.preferred_username)
           //console.log(keycloak.tokenParsed.given_name)
-          //console.log(keycloak.tokenParsed.family_name)
+          // console.log(keycloak.tokenParsed.email)
         
-          this.fetchRegisterInitialCustomer(keycloak.token)
-          //this.fetchCustomerStatusData(keycloak.token)
+          //this.fetchRegisterInitialCustomer(keycloak.token)
+          this.fetchCustomerStatusData(keycloak.token)
           
           //not used methods since 
           //this.fetchEndSettlementList(keycloak.token)
@@ -121,32 +121,40 @@ export class MyPage extends React.Component{
       })
     }
 
-    fetchRegisterInitialCustomer(token){
-      let lastname = keycloak.tokenParsed.family_name
-      let firstname = keycloak.tokenParsed.given_name
-      const customername =  [{lastname:lastname}, {firstname:firstname}]
-      let userid = this.state.userid
-      setTokenHeader(token)
-      fetch(basePort + '/registerinitialcustomer/'+ userid, 
-        {method:'post', headers, body:JSON.stringify(customername)})
-        .then((result) => {
-           this.fetchCustomerStatusData(token)
-           return result.json();
-        }).catch(error => {
-          console.error('Error fetching registerinitialcustomer!', error);
-      });
-    }
+    // fetchRegisterInitialCustomer(token){
+    //   let lastname = keycloak.tokenParsed.family_name
+    //   let firstname = keycloak.tokenParsed.given_name
+    //   const customername =  [{lastname:lastname}, {firstname:firstname}]
+    //   let userid = this.state.userid
+    //   setTokenHeader(token)
+    //   fetch(basePort + '/registerinitialcustomer/'+ userid, 
+    //     {method:'post', headers, body:JSON.stringify(customername)})
+    //     .then((result) => {
+    //        this.fetchCustomerStatusData(token)
+    //        return result.json();
+    //     }).catch(error => {
+    //       console.error('Error fetching registerinitialcustomer!', error);
+    //   });
+    // }
 
     fetchCustomerStatusData(token){
+      let lastname = keycloak.tokenParsed.family_name
+      let firstname = keycloak.tokenParsed.given_name
+      let email = keycloak.tokenParsed.email
+      const customername =  [{lastname:lastname}, {firstname:firstname}, {email:email}]
       let userid = this.state.userid
       setTokenHeader(token)
-      fetch(basePort + '/customerstatus/'+ userid, {headers})
-        .then((result) => {
+      //fetch(basePort + '/customerstatus/'+ userid, {headers})
+      fetch(basePort + '/customerstatus/'+ userid,
+      {method:'post', headers, body:JSON.stringify(customername)})
+      .then((result) => {
            return result.json();
         }).then((data) => {
           this.setState({customerStatusData:data})
           this.fetchOrderInformation(token)
-        }) 
+        }).catch(error => {
+          console.error('Error fetching customerStatusData!', error);
+        }); 
     }
 
     fetchOrderInformation(token){
