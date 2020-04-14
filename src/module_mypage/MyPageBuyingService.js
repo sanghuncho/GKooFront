@@ -12,7 +12,7 @@ import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { OrderInformation, BuyingServiceOrderData } from './OrderInformation'
 import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } from './PaymentInformation'
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
-import { UserBaseInfoEditor, AddressManager, CompleteUserBaseInfo } from './UserBaseInfo'
+import { UserBaseInfo } from './UserBaseInfo'
 import { Redirect } from 'react-router';
 
 ///// keycloak -> /////
@@ -112,7 +112,8 @@ export class MyPageBuyingService extends React.Component{
     fetchCustomerStatusData(token){
       let lastname = keycloak.tokenParsed.family_name
       let firstname = keycloak.tokenParsed.given_name
-      const customername =  [{lastname:lastname}, {firstname:firstname}]
+      let email = keycloak.tokenParsed.email
+      const customername =  [{lastname:lastname}, {firstname:firstname}, {email:email}]
       let userid = this.state.userid
       setTokenHeader(token)
       fetch(basePort + '/customerstatus/'+ userid, 
@@ -286,97 +287,4 @@ export class MypageBuyingServiceController extends React.Component{
       </div>
       );
     }    
-}
-
-export class UserBaseInfo extends React.Component{
-    constructor(props) {
-        super(props);
-        this.state = {
-            doEditUserBaseInfo:false,
-            doOpenAddressManager:false,
-            showBaseInfoButtons:true,
-            showUserBaseInfoButtons:false,
-            userBaseInfo:this.props.userBaseInfo,
-            redirect:false,
-        };
-
-        this.handleMoveToBaseInfo = this.handleMoveToBaseInfo.bind(this)
-        this.handleShowStoredAddressManager = this.handleShowStoredAddressManager.bind(this)
-        this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
-        this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
-      }
-
-      componentDidMount () {
-      }
-
-      doEditUserBaseInfo(){
-        this.setState({doEditUserBaseInfo:true, showBaseInfoButtons:false})
-      }
-  
-      doOpenAddressManager(){
-        //this.setState({doOpenAddressManager:true, showBaseInfoButtons:false})
-        // <NavLink to="/favoriteAddressManager/">
-        // </NavLink>
-        // <Link to={{pathname:"favoriteAddressManager/"}}>
-        // </Link>
-        this.setState({redirect: true});
-      }
-
-      handleMoveToBaseInfo(){
-        window.scrollTo(0, 0);
-        this.setState({doEditUserBaseInfo:false, showBaseInfoButtons:true}) 
-      }
-
-      handleShowStoredAddressManager(){
-        this.setState({doOpenAddressManager:false, showBaseInfoButtons:true}) 
-      }
-    
-      render() {
-        if (this.state.redirect) {
-          return <Redirect push to="/favoriteAddressManager"/>;
-        }
-
-        const showBaseInfoButtons = this.state.showBaseInfoButtons
-        let editButton;
-        let addressManagerButton;
-        if(showBaseInfoButtons) {
-          editButton = <Button variant="secondary" size="sm" onClick={(e) => this.doEditUserBaseInfo(e)} 
-            style={{ marginRight: '10px', float:"right"}}>개인정보</Button>
-
-          addressManagerButton =  <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
-            style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>
-        }
-    
-        const doEditUserBaseInfo = this.state.doEditUserBaseInfo
-        const doOpenAddressManager = this.state.doOpenAddressManager
-        let userbaseInfoDisplay;
-        let displayHeight;
-        let headerTitle
-        if (doEditUserBaseInfo) {
-            userbaseInfoDisplay = 
-              <UserBaseInfoEditor 
-                handleMoveToBaseInfo={this.handleMoveToBaseInfo}
-                userBaseInfo={this.props.userBaseInfo}
-                accessToken={this.props.accessToken}
-               />
-            
-          } else if(doOpenAddressManager) {
-            userbaseInfoDisplay = <AddressManager
-                handleShowStoredAddressManager={this.handleShowStoredAddressManager}/>
-            displayHeight = '14rem'
-            headerTitle = '배송지 관리'
-
-          } else {
-            userbaseInfoDisplay = 
-              <CompleteUserBaseInfo 
-                customerStatusData={this.props.customerStatusData}
-                doEditUserBaseInfo={this.doEditUserBaseInfo}
-                doOpenAddressManager={this.doOpenAddressManager}/>
-          }
-        return (
-          <div>
-            {userbaseInfoDisplay}
-          </div>
-        );
-      }    
 }

@@ -10,12 +10,13 @@ import { times, exchange } from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
 import { TransportShippingRequest } from "../module_shippingService/TransportShippingRequest";
 import { AdditionalProduct } from "../module_shippingService/AdditionalProduct" 
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './ShippingServiceConfig'
+
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
@@ -52,8 +53,11 @@ export class RequestShippingService extends React.Component {
 
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, 
-            accessToken:keycloak.token})
+            this.setState({
+                keycloakAuth: keycloak, 
+                accessToken:keycloak.token
+            })
+            fetchRegisterInitialCustomer(keycloak)
         })
     }
 

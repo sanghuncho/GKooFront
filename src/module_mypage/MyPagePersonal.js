@@ -98,26 +98,12 @@ export class MyPagePersonal extends React.Component{
               accessToken:keycloak.token, 
               userid:keycloak.tokenParsed.preferred_username
         })
+        console.log(keycloak.tokenParsed.given_name)
+        console.log(keycloak.tokenParsed.email)
         this.fetchUserBaseInfo(keycloak.token)
       })
       
     }
-
-    // fetchCustomerStatusData(token){
-    //   let lastname = keycloak.tokenParsed.family_name
-    //   let firstname = keycloak.tokenParsed.given_name
-    //   const customername =  [{lastname:lastname}, {firstname:firstname}]
-    //   let userid = this.state.userid
-    //   setTokenHeader(token)
-    //   fetch(basePort + '/customerstatus/'+ userid, 
-    //   {method:'post', headers, body:JSON.stringify(customername)})
-    //     .then((result) => {
-    //        return result.json();
-    //     }).then((data) => {
-    //       this.setState({customerStatusData:data})
-    //       this.fetchOrderInformation(token)
-    //     })   
-    // }
 
     fetchUserBaseInfo(token){
       let userid = this.state.userid
@@ -148,8 +134,9 @@ export class MyPagePersonal extends React.Component{
         if(this.validToken(token)){
             mypage_personal = 
                 <MypagePersonalController 
-                  userBaseInfo = {this.state.userBaseInfo}
-                  accessToken = { this.state.accessToken }
+                  userBaseInfo={this.state.userBaseInfo}
+                  keycloakAuth={this.state.keycloakAuth}
+                  userid={this.state.userid}
                 />
         } else {
             mypage_personal = this.getEmptyPage
@@ -184,7 +171,11 @@ export class MypagePersonalController extends React.Component{
               <Breadcrumb.Item active>마이페이지 / 개인정보 </Breadcrumb.Item>
             </Breadcrumb>
             
-            <UserBaseInfoEditor userBaseInfo={this.props.userBaseInfo}/>
+            <UserBaseInfoEditor 
+                userBaseInfo={this.props.userBaseInfo}
+                userid={this.props.userid}
+                keycloakAuth={this.props.keycloakAuth}
+            />
         
         </BodyContainer>
         
@@ -210,7 +201,12 @@ export class UserBaseInfoEditor extends React.Component{
     }
 
     doEditUserBaseInfo(){
-      this.setState({showUserBaseInfoDisplayer:false}) 
+      let show = this.state.showUserBaseInfoDisplayer
+      if(show){
+        this.setState({showUserBaseInfoDisplayer:false}) 
+      } else {
+        this.setState({showUserBaseInfoDisplayer:true}) 
+      }
     }
 
     doShowUserBaseInfo(){
@@ -228,23 +224,23 @@ export class UserBaseInfoEditor extends React.Component{
         userBaseInfoDisplayer = <UserBaseInfoDisplayer
           handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
           doEditUserBaseInfo={this.doEditUserBaseInfo}
-          displaySaveButton={false}
-          accessToken={this.props.accessToken}
+          keycloakAuth={this.props.keycloakAuth}
           userBaseInfo={this.props.userBaseInfo}
           readOnly={true}
           userid={this.props.userid}
+          buttonLabel={"Edit"}
           />
       } 
       /* edit mode */
       else {
         userBaseInfoDisplayer = <UserBaseInfoDisplayer
           handleMoveToBaseInfo={this.props.handleMoveToBaseInfo}
-          displaySaveButton={true}
-          doShowUserBaseInfo={this.doShowUserBaseInfo}
-          accessToken={this.props.accessToken}
+          doEditUserBaseInfo={this.doEditUserBaseInfo}
+          keycloakAuth={this.props.keycloakAuth}
           userBaseInfo={this.props.userBaseInfo}
           readOnly={false}
-          userid={this.props.userid} />
+          userid={this.props.userid} 
+          buttonLabel={"Complete"}/>
       }
       return (
           <div>
@@ -258,9 +254,9 @@ export class UserBaseInfoDisplayer extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-        nameKor:this.props.userBaseInfo.nameKor,
+        nameKor:this.props.keycloakAuth.tokenParsed.family_name + this.props.keycloakAuth.tokenParsed.given_name,
+        email:this.props.keycloakAuth.tokenParsed.email,
         nameEng:this.props.userBaseInfo.nameEng,
-        email:this.props.userBaseInfo.email,
         transitNr:this.props.userBaseInfo.transitNr,
         phonenumberFirst:this.props.userBaseInfo.phonenumberFirst,
         phonenumberSecond:this.props.userBaseInfo.phonenumberSecond,
@@ -286,24 +282,24 @@ export class UserBaseInfoDisplayer extends React.Component{
     /* 기본정보란으로 이동 */
     handleCancel(){
       window.scrollTo(0, 0);
-      this.props.doShowUserBaseInfo()
+      //this.props.doShowUserBaseInfo()
     }
 
     handleSave(){
-      this.updateUserBaseInfo(this.props.accessToken)
-      this.props.doShowUserBaseInfo()
+      this.updateUserBaseInfo(this.props.keycloakAuth.token)
+      window.location.reload();
     }
 
     updateUserBaseInfo(accessToken){
       var userBaseInfoData = {
-          nameKor: this.state.nameKor,
-          nameEng: this.state.nameEng,
-          email: this.state.email,
-          transitNr: this.state.transitNr,
-          phonenumberFirst: this.state.phonenumberFirst,
-          phonenumberSecond: this.state.phonenumberSecond,
-          zipCode: this.state.zipCode,
-          address: this.state.address,
+          nameKor: this.props.keycloakAuth.tokenParsed.family_name + this.props.keycloakAuth.tokenParsed.given_name,
+          nameEng: this.props.userBaseInfo.nameEng,
+          email: this.props.keycloakAuth.tokenParsed.email,
+          transitNr: this.props.userBaseInfo.transitNr,
+          phonenumberFirst: this.props.userBaseInfo.phonenumberFirst,
+          phonenumberSecond: this.props.userBaseInfo.phonenumberSecond,
+          zipCode: this.props.userBaseInfo.zipCode,
+          address: this.props.userBaseInfo.address,
       }
 
       const editedUserBaseInfo =  [
@@ -311,11 +307,13 @@ export class UserBaseInfoDisplayer extends React.Component{
       ]
 
       setTokenHeader(accessToken)
+      console.log("save")
       console.log(editedUserBaseInfo)
       let userid = this.props.userid
       fetch(basePort + '/updateuserbaseinfo/'+ userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(editedUserBaseInfo)})
+      
     }
 
     changeHandlerNameKor(event){
@@ -355,38 +353,23 @@ export class UserBaseInfoDisplayer extends React.Component{
 
     changeHandlerAddress(event){
       this.setState({address:event.target.value})
+      console.log(event.target.value)
       this.props.userBaseInfo.address = event.target.value
     }
 
     render() {
-      let saveButton;
+     
       let headerLine;
-      if(this.props.displaySaveButton){
-        /* 개인정보수정 편집가능 및 저장,취소버튼 노출 */
-        headerLine = <div>개인정보 수정</div>
-        saveButton = <InputGroup className="mb-3"  style={{ marginLeft:'40%'}} >
-                          <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}
-                              onClick={(e) => this.handleSave(e)}
-                          >완료
-                          </Button>
-                          <Button size="sm" variant='secondary' 
-                              onClick={(e) => this.handleCancel(e)}
-                          >취소</Button>
-                    </InputGroup >
-      } else {
-        /* 개인정보 ony read 및 개인정보수정 버튼 노출 */
-        headerLine = <div>개인정보
+      headerLine = <div>개인정보
                             <Button variant="secondary" size="sm" 
-                              onClick={(e) => this.props.handleMoveToBaseInfo()} 
-                              style={{ marginRight: '10px', float:"right"}}>OK</Button>
-                            
+                              onClick={(e) => this.handleSave()} 
+                              style={{ marginRight: '10px', float:"right"}}>저장하기</Button>
                             </div>
-      }
       
       return (
         <div>
         {/* <Card border="dark" style={{ width: '80%', height:'48rem', marginTop:'1rem' }}> */}
-        <Card border="dark" style={{ width: '80%', height:'auto', marginTop:'1rem' }}>
+        <Card border="dark" style={{ width: '70%', height:'auto', marginTop:'1rem', marginBottom:'1rem'  }}>
             <Card.Header>
               
               {headerLine}
@@ -397,7 +380,7 @@ export class UserBaseInfoDisplayer extends React.Component{
             <Card.Header>기본정보
               <Button variant="secondary" size="sm" 
                                 onClick={(e) => this.handleLinkAccountPage()} 
-                                style={{ marginRight: '10px', float:"right"}}>변경</Button>
+                                style={{ marginRight: '10px', float:"right"}}>Edit</Button>
             </Card.Header>
             <Card.Body >
                 <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -409,7 +392,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                   <FormControl id="basic-url" aria-describedby="basic-addon3"
                       onChange = { this.changeHandlerNameKor }
                       readOnly={true}
-                      defaultValue={this.props.userBaseInfo.nameKor}
+                      defaultValue={this.state.nameKor}
                       style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                   />
                   
@@ -422,7 +405,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       readOnly={true}
-                      defaultValue={this.props.userBaseInfo.email}
+                      defaultValue={this.state.email}
                       style={{ width: '50px',backgroundColor: '#FFFFFF'}}
                       onChange = { this.changeHandlerEmail }
                     />
@@ -436,6 +419,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                       readOnly={true}
+                      placeholder="password"
                       style={{ width: '50px',backgroundColor: '#FFFFFF'}}
                       type="password"
                     />
@@ -449,7 +433,7 @@ export class UserBaseInfoDisplayer extends React.Component{
             <Card.Header>상세정보 
               <Button variant="secondary" size="sm" 
                               onClick={(e) => this.props.doEditUserBaseInfo()} 
-                              style={{ marginRight: '10px', float:"right"}}>변경</Button>
+                              style={{ marginRight: '10px', float:"right"}}>{this.props.buttonLabel}</Button>
             </Card.Header>
             <Card.Body >
                 <InputGroup size="sm" className="mb-4" style={{ width:'80%'}}>
@@ -533,7 +517,7 @@ export class UserBaseInfoDisplayer extends React.Component{
                         />
                   </InputGroup>
                    {/* 완료 및 저장버튼 */}
-                  {saveButton}
+                  {/* {saveButton} */}
                 </Card.Body>
               </Card>
             

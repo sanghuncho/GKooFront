@@ -45,3 +45,19 @@ export const INITIAL_PAGE = INITIAL_PAGE_URL
 export function getUseridKeycloak(keycloak){
   return keycloak.tokenParsed.preferred_username
 }
+
+export function fetchRegisterInitialCustomer(keycloak){
+  let lastname = keycloak.tokenParsed.family_name
+  let firstname = keycloak.tokenParsed.given_name
+  let email = keycloak.tokenParsed.email
+  let userid = keycloak.tokenParsed.preferred_username
+  const customername =  [{lastname:lastname}, {firstname:firstname}, {email:email}]
+  setTokenHeader(keycloak.token)
+  fetch(basePort + '/register_customer/'+ userid, 
+    {method:'post', headers, body:JSON.stringify(customername)})
+    .then((result) => {
+       return result.json();
+    }).catch(error => {
+      console.error('Error fetching register_customer!', error);
+  });
+}

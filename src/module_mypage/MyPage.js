@@ -110,9 +110,8 @@ export class MyPage extends React.Component{
           })
           //console.log(keycloak.tokenParsed.preferred_username)
           //console.log(keycloak.tokenParsed.given_name)
-          // console.log(keycloak.tokenParsed.email)
+          //console.log(keycloak.tokenParsed.email)
         
-          //this.fetchRegisterInitialCustomer(keycloak.token)
           this.fetchCustomerStatusData(keycloak.token)
           
           //not used methods since 
@@ -120,22 +119,6 @@ export class MyPage extends React.Component{
           //this.fetchPurchaseOrderList(keycloak.token)
       })
     }
-
-    // fetchRegisterInitialCustomer(token){
-    //   let lastname = keycloak.tokenParsed.family_name
-    //   let firstname = keycloak.tokenParsed.given_name
-    //   const customername =  [{lastname:lastname}, {firstname:firstname}]
-    //   let userid = this.state.userid
-    //   setTokenHeader(token)
-    //   fetch(basePort + '/registerinitialcustomer/'+ userid, 
-    //     {method:'post', headers, body:JSON.stringify(customername)})
-    //     .then((result) => {
-    //        this.fetchCustomerStatusData(token)
-    //        return result.json();
-    //     }).catch(error => {
-    //       console.error('Error fetching registerinitialcustomer!', error);
-    //   });
-    // }
 
     fetchCustomerStatusData(token){
       let lastname = keycloak.tokenParsed.family_name

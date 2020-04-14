@@ -20,7 +20,7 @@ import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyI
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, validToken, fetchRegisterInitialCustomer } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -46,10 +46,14 @@ export class BuyingServiceRegistration extends React.Component{
 
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, 
-            accessToken:keycloak.token,
-            userid:keycloak.tokenParsed.preferred_username})
+            this.setState({ 
+                keycloakAuth: keycloak, 
+                accessToken:keycloak.token,
+                userid:keycloak.tokenParsed.preferred_username
+            })
+            fetchRegisterInitialCustomer(keycloak)
         })
+
     }
 
     handleLogout(){
