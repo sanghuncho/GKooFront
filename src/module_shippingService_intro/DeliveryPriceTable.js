@@ -70,7 +70,7 @@ export class DeliveryPriceTaleTabs extends React.Component {
   render() {
       return (
         <div>
-           <Card border="dark" style={{ width: '60%', marginTop:'1rem', marginBottom:'1rem' }}>
+           <Card border="dark" style={{ width: '60%', marginTop:'1rem', marginBottom:'1rem', marginLeft:'1rem' }}>
             <Card.Header>
               국제배송요금표
             </Card.Header>
@@ -148,13 +148,13 @@ let del2 = {weight:"1", deiveryPrice:"15000"};
 var list = [
 ];
 
-for (var i=0; i<60; i++) {
+for (var i=0; i<59; i++) {
   let weight_price = { weight: getDeliveryWeight(i), deiveryPrice: getDeliveryPrice(i)}
   list.push(weight_price)
 }
 
 function getDeliveryWeight(i){
-  const start_weight = 0.5
+  const start_weight = 1
   const weight_range = 0.5
   return start_weight + (weight_range*i)
 }

@@ -48,7 +48,7 @@ export class ShippingServiceAddressTable extends React.Component {
     return (
       <div>
           <Card border="dark" style={{ width: '50%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
-            <Card.Header>지쿠 배송대행 독일내 주소지 (개인사서함)
+            <Card.Header>독일 배송대행 주소안내 (개인사서함)
             </Card.Header>
             <Card.Body >
             <Table bordered condensed responsive size="sm">
