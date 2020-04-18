@@ -6,11 +6,12 @@ import {
 import React from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { CustomerCenterNavbar } from './CustomerCenterIntro'
-import { Table, Image, Button, Card, CardGroup, Container, Row, Col } from "react-bootstrap"
+import { Table, Image, Button, Card, Breadcrumb, Container, Row, Col } from "react-bootstrap"
 import GKoo_Intro_Banner_Org  from '../assets/Gkoo_Intro_Banner_Org.jpg'
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { openHeaders, openBasePort } from "../module_base_component/AuthService"
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 /** NoticePane Style */
 export const BodyContainer = styled(BaseAppContainer)`
@@ -18,7 +19,8 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const NoticePaneContainer = styled(BaseAppContainer)`
-  height: calc(200vh);
+  height: auto;
+  min-height:calc(100vh);
 `;
 
 /** 공지사항  */
@@ -35,8 +37,13 @@ export class NoticeBoard extends React.Component {
                     <CustomerCenterNavbar/>
                     
                     <BodyContainer>
+                        <Breadcrumb style={{ width: '100%'}}>
+                            <Breadcrumb.Item active>고객센터 / 공지사항</Breadcrumb.Item>
+                        </Breadcrumb>
                         {/* 공지사항 목록 */}
                         <NoticePaneWrapper/>
+
+                        <CompanyIntroductionBottom/>
                     </BodyContainer>
                 </NoticePaneContainer>
             </div>

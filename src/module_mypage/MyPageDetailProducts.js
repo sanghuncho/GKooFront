@@ -5,6 +5,7 @@ import { InfoBadge } from "../module_base_component/InfoBadge";
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange} from 'react-icons-kit/fa/'
 import { setTokenHeader, headers, basePort } from "../module_base_component/AuthService"
+import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from '../module_shippingService/ShippingServiceConfig'
 
 const WhiteSmoke = '#F5F5F5'
 
@@ -299,6 +300,7 @@ class MyPageDetailProductEditor extends React.Component{
         super(props);
         this.state = {
             categoryTitle:this.props.product.categoryTitle,
+            categoryTitleList:CATEGORY_LIST,
             isValidCategory:false,
             categoryVariant:"outline-secondary",
 
@@ -308,6 +310,7 @@ class MyPageDetailProductEditor extends React.Component{
 
             brandName:this.props.product.brandName,
             itemName:this.props.product.itemName,
+            itemTitleList:[],
             isValidItemName:false,
             warningInvalidItemName: false,
             heightOfInputProduct:"26",
@@ -349,6 +352,7 @@ class MyPageDetailProductEditor extends React.Component{
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
         this.props.shippingProductList[this.props.productIndex].categoryTitle = title
+        this.state.itemTitleList = getItemTitleList(title)
     }
 
     handleSelectItem(event, it) {
@@ -422,9 +426,8 @@ class MyPageDetailProductEditor extends React.Component{
                         id="input-group-dropdown-category"
                         style={{ marginRight: '200px'}}
                         >
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "전자제품")}>전자제품</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
+                         {this.state.categoryTitleList.map((category) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
                     </DropdownButton>
                 </InputGroup> 
                 <InputGroup size="sm" className="mb-3">
@@ -440,9 +443,9 @@ class MyPageDetailProductEditor extends React.Component{
                         title={this.state.itemTitle}
                         id="input-group-dropdown-category"
                         >
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "오디오")}>오디오</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "쌀")}>쌀</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "강아지")}>강아지</Dropdown.Item>
+                       {this.state.itemTitleList.map((item) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
+
                     </DropdownButton>
                    
                 </InputGroup>

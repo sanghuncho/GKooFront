@@ -175,8 +175,10 @@ export class BaseRecipientTransitNrForm extends React.Component {
                 </InputGroup.Prepend>
                 <Card style={{ width: '90%'}}>
                     <Card.Body>
-                        <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
-                        <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)' style={{marginRight:'10rem', fontSize:'14px'}}/>
+                        {/* 나중에 사업자통관 기능 추가, 배송대행 및 구매대행 */}
+                        <Form.Check inline checked={true} type='radio' label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
+                        {/* <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
+                        <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)' style={{marginRight:'10rem', fontSize:'14px'}}/> */}
                                         
                         <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
                             <FormControl id="basic-url" aria-describedby="basic-addon3" 

@@ -1,4 +1,4 @@
-import { SideNav, Nav as BaseNav} from "react-sidenav";
+import { Nav as BaseNav} from "react-sidenav";
 import styled from "styled-components";
 import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
@@ -102,9 +102,13 @@ export class MyPageBuyingService extends React.Component{
 
     componentDidMount() {
       keycloak.init({onLoad: 'login-required'}).success(() => {
-          this.setState({ keycloakAuth: keycloak, 
-          accessToken:keycloak.token, userid:keycloak.tokenParsed.preferred_username})
+          this.setState({ 
+            keycloakAuth: keycloak, 
+            accessToken:keycloak.token, 
+            userid:keycloak.tokenParsed.preferred_username
+          })
           localStorage.setItem("react-token", keycloak.token);
+          localStorage.setItem("userid", keycloak.tokenParsed.preferred_username);
           this.fetchCustomerStatusData(keycloak.token)
       })
     }
@@ -228,9 +232,6 @@ export class MyPageBuyingService extends React.Component{
 }
 
 export class MypageBuyingServiceController extends React.Component{
-  constructor(props) {
-      super(props);
-    }
     
     render() {
       return (

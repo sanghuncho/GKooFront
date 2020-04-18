@@ -1,4 +1,5 @@
-export const isDevBuild =  true //false == Production, production build : npm run build
+ /* production build : npm run build, changing server-url in keycloak.json */
+export const isDevBuild =  true //false == Production, 
 
 const KEYCLOAK_URL_DEV = 'http://localhost:8080/auth'
 const KEYCLOAK_URL_PROD = 'https://www.gkoo.co.kr/auth'

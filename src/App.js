@@ -10,6 +10,7 @@ import { InfodeskIntro } from './module_infodesk/InfodeskIntro'
 import { InfodeskBuyingService } from './module_infodesk/InfodeskBuyingService'
 import { InfodeskShippingService } from './module_infodesk/InfodeskShippingService'
 import { InfodeskInspectRefundService } from './module_infodesk/InfodeskInspectRefundService'
+import { InfodeskTransitNr } from './module_infodesk/InfodeskTransitNr'
 
 import { BuyingServiceIntro } from './module_buyingService/BuyingServiceIntro'
 import { BuyingService } from './module_buyingService/BuyingService'
@@ -21,6 +22,7 @@ import { RequestShippingService } from './module_shippingService/RequestShipping
 import { ShippingService } from './module_shippingService_intro/ShippingService'
 import { ShippingServiceInfo } from './module_shippingService_intro/ShippingServiceInfo'
 import { ShippingServiceAddressPane } from './module_shippingService_intro/ShippingServiceAddressPane'
+import { DeliveryPriceTable } from './module_shippingService_intro/DeliveryPriceTable'
 
 import { CustomerCenterIntro } from './module_customerCenter/CustomerCenterIntro'
 import { NoticeBoard } from './module_customerCenter/NoticeBoard'
@@ -56,6 +58,7 @@ const Main = () => (
     <Route exact path='/infodeskBuyingService' component={ InfodeskBuyingService }></Route>
     <Route exact path='/infodeskShippingService' component={ InfodeskShippingService }></Route>
     <Route exact path='/infodeskInspectRefundService' component={ InfodeskInspectRefundService }></Route>
+    <Route exact path='/infodeskTransitNr' component={ InfodeskTransitNr }></Route>
     
     {/* 구매대행 모둘 */}
     <Route exact path='/buyingServiceIntro' component={ BuyingServiceIntro }></Route>
@@ -68,7 +71,8 @@ const Main = () => (
     <Route exact path='/shippingService/' component={ ShippingService }></Route> 
     <Route exact path='/shippingServiceInfo/' component={ ShippingServiceInfo }></Route> 
     <Route exact path='/requestshipping' component={ RequestShippingService }></Route>
-    <Route exact path='/shippingServiceAddressPane' component={ ShippingServiceAddressPane }></Route> 
+    <Route exact path='/shippingServiceAddressPane' component={ ShippingServiceAddressPane }></Route>
+    <Route exact path='/deliveryPriceTable' component={ DeliveryPriceTable }></Route> 
     
     {/* 고객센터 모둘 */}
     <Route exact path='/customercenterIntro' component={ CustomerCenterIntro }></Route> 

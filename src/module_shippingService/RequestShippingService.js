@@ -13,10 +13,11 @@ import { AdditionalProduct } from "../module_shippingService/AdditionalProduct"
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
-import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './ShippingServiceConfig'
+import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from './ShippingServiceConfig'
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer, validToken, getEmptyPage } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
@@ -43,19 +44,16 @@ export class RequestShippingService extends React.Component {
             agreement:true,
             keycloakAuth:null,
             accessToken:"",
+            userid:''
         };
-        this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
     }
-
-    handleChangeOnCheckbox(e) {
-        this.setState({agreement:e.target.checked}) 
-    }
-
+    
     componentDidMount() {
         keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({
                 keycloakAuth: keycloak, 
-                accessToken:keycloak.token
+                accessToken:keycloak.token,
+                userid:keycloak.tokenParsed.preferred_username
             })
             fetchRegisterInitialCustomer(keycloak)
         })
@@ -66,13 +64,49 @@ export class RequestShippingService extends React.Component {
     }
 
   render() {
-    const didAgreeWith=this.state.agreement;
+    const token = this.state.accessToken
+    let userid = this.state.userid
+    let shippingService;
+
+    if(validToken(token)){
+        shippingService = 
+            <ShippingServiceController 
+              accessToken={this.state.accessToken}
+              userid={userid}
+            />
+    } else {
+        shippingService = getEmptyPage()
+    }
+
     return(
         <div>
             <AppNavbar>
                 <LogoutButton keycloak ={this.state.keycloakAuth}/>
             </AppNavbar>
             
+            {shippingService}
+        </div>
+    );}
+}
+
+export class ShippingServiceController extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = { 
+            //agreement:false,
+            agreement:true,
+        };
+        this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
+      }
+
+    handleChangeOnCheckbox(e) {
+        this.setState({agreement:e.target.checked}) 
+    }
+
+      render() {
+        const didAgreeWith=this.state.agreement;
+        return (
+          <div>
             <AppContainer>
                 <ShippingServiceNavbar/>
                 
@@ -100,12 +134,14 @@ export class RequestShippingService extends React.Component {
                             <Form.Check style={{fontSize:'15px'}} type='checkbox' onChange={e => this.handleChangeOnCheckbox(e)} label='주의사항을 모두 확인하였으며, 위의 내용에 동의하고 배송대행을 신청합니다.'/>
                         </Card.Footer>
                     </Card>
-                    {didAgreeWith ? <ShippingCenter accessToken={this.state.accessToken}/>:""}
+                    {didAgreeWith ? <ShippingCenter accessToken={this.props.accessToken} 
+                                                    userid={this.props.userid} />:""}
                 </BodyContainer>
             </AppContainer>
         </div>
-    );}
-}
+        );
+      }    
+  }
 
 export default RequestShippingService;
 
@@ -160,7 +196,8 @@ class ShippingCenter extends React.Component{
                 </Card.Footer>
             </Card>
             {didUnderstand ? <InputDeliveryContentWrapper easyShip={this.state.easyShip}
-                accessToken={this.props.accessToken}/>:""}
+                accessToken={this.props.accessToken}
+                userid={this.props.userid} />:""}
             {/* {didUnderstand ? <InputDelivery/>:""} */}
             {didUnderstand ? <TransportShippingRequest/>:""}
         </div>
@@ -189,7 +226,7 @@ class ShippingCenter extends React.Component{
             categoryVariant:"outline-secondary",
 
             itemTitle:"선택",
-            itemTitleList:ITEM_TITLE_LIST,
+            itemTitleList:[],
             isValidItemTitle:false,
             //itemTitleVariant:"danger",
             itemTitleVariant:"outline-secondary",
@@ -291,6 +328,7 @@ class ShippingCenter extends React.Component{
         this.handleOpenFavoriteAddressPanel = this.handleOpenFavoriteAddressPanel.bind(this)
         this.handleCloseFavoriteAddressListPanel = this.handleCloseFavoriteAddressListPanel.bind(this)
         this.handleLoadSelectedAddress = this.handleLoadSelectedAddress.bind(this)
+        this.handleOpenHowToGetTransitNr = this.handleOpenHowToGetTransitNr.bind(this)
     }
 
     componentDidMount() {
@@ -318,8 +356,9 @@ class ShippingCenter extends React.Component{
     /* 회원배송정보 불러오기 */
     fetchCustomerBaseData(token){
         console.log("fetchCustomerBaseData");
+        let userid = this.props.userid
         setTokenHeader(token)
-        fetch(basePort + '/fetchcustomerbaseinfo', {headers})
+        fetch(basePort + '/fetchcustomerbaseinfo/' + userid, {headers})
           .then((result) => { 
             return result.json();
           }).then((data) => {           
@@ -352,7 +391,7 @@ class ShippingCenter extends React.Component{
                 phonenumberFirst:null,
                 phonenumberSecond:null,
                 postCode:null,
-                deliveryAddress:null,
+                deliveryAddress:"",
             })
         }
     }
@@ -393,6 +432,7 @@ class ShippingCenter extends React.Component{
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
         this.state.shippingProductList[0].categoryTitle = title
+        this.state.itemTitleList = getItemTitleList(title)
     }
 
     handleSelectItem(event, it) {
@@ -526,7 +566,8 @@ class ShippingCenter extends React.Component{
     }
 
     handleRemoveItemOnList(index){
-        this.state.goodsList.splice(index, 1)
+        //this index from additionalProduct is already 1 added because of shippingProductList(first element exist aleady) 
+        this.state.goodsList.splice(index-1, 1)
         this.state.shippingProductList.splice(index, 1)
         this.setState({
                 goodsList:this.state.goodsList, 
@@ -555,8 +596,9 @@ class ShippingCenter extends React.Component{
     }
 
     fetchFavoriteAddressList(accessToken){
+        let userid = this.props.userid
         setTokenHeader(accessToken)
-        fetch(basePort + '/retrieveFavoriteAddressList', {headers})
+        fetch(basePort + '/retrieveFavoriteAddressList/' + userid, {headers})
             .then((result) => {
                return result.json();
             }).then((data) => {
@@ -565,6 +607,11 @@ class ShippingCenter extends React.Component{
                 openFavoriteAddressListPanel:true})
               console.log(data)
         }).catch(error => console.log(error) );
+    }
+
+    handleOpenHowToGetTransitNr(){
+        const url = '/InfodeskTransitNr';
+        window.open(url, '_blank');
     }
 
     render(){
@@ -596,7 +643,7 @@ class ShippingCenter extends React.Component{
         const warningInvalidItemName =  this.state.warningInvalidItemName
         const heightOfInputProduct = heightOfInputProduct + "rem"
 
-        const isValidTotalPrice = productTotalPrice == 0 ? false : true  
+        const isValidTotalPrice = productTotalPrice === 0 ? false : true  
         const allowToApply = (isValidCategory & isValidItemTitle & isValidTransitNumber 
                 & isValidItemName & isValidTotalPrice)
 
@@ -609,7 +656,7 @@ class ShippingCenter extends React.Component{
         if(isValidCategory & isValidItemTitle & isValidTransitNumber){
             popOver = <div></div>   
         } else if( isValidCategory & isValidItemTitle & !isValidTransitNumber){
-            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유번호를 체크해주세요.";
+            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유부호를 체크해주세요.";
             popOver = <Popover id="popover-basic" title="필수기재사항">
                             {warnMessageTransitNumber}
                       </Popover>
@@ -618,7 +665,7 @@ class ShippingCenter extends React.Component{
             warnItemTitle = isValidItemTitle ? "" : "품목";
             warnComma = (isValidCategory || isValidItemTitle) ? "" : ", ";
 
-            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유번호를 체크해주세요.";
+            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유부호를 체크해주세요.";
             popOver = <Popover id="popover-basic" title="필수기재사항">
                             {warnCategory}{warnComma} {warnItemTitle} 영역을 선택해주세요.<br/>
                             {warnMessageTransitNumber}
@@ -875,8 +922,10 @@ class ShippingCenter extends React.Component{
                             </InputGroup.Prepend>
                             <Card style={{ width: '90%'}}>
                             <Card.Body>
-                                <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
-                                <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/>
+                                {/* 나중에 사업자통관 기능 추가, 배송대행 및 구매대행 */}
+                                <Form.Check inline checked={true} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유부호' style={{marginRight:'10rem'}}/>
+                                {/* <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
+                                <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/> */}
                                         
                                     <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
@@ -884,7 +933,9 @@ class ShippingCenter extends React.Component{
                                             onChange = { this.inputTransitNumber }
                                             defaultValue={this.state.transitNumber}
                                             style={{ marginRight:'10px'}}/>
-                                        <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
+                                        <Button size="sm" variant='secondary'
+                                            onClick={() => this.handleOpenHowToGetTransitNr()} 
+                                            style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
                                         {/* <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button> */}
                                     </InputGroup >
                                     
@@ -951,7 +1002,7 @@ class ShippingCenter extends React.Component{
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         as="textarea" rows="2"
                                         onChange={e => this.inputDeliveryAddress(e)}
-                                        value={this.state.deliveryAddress}
+                                        defaultValue={this.state.deliveryAddress}
                                        
                                         />
                                 </InputGroup >
@@ -1043,8 +1094,11 @@ class ShippingCenter extends React.Component{
                         deliveryMessage={this.state.deliveryMessage}
 
                         accessToken={this.props.accessToken}
+                        userid={this.props.userid}
                         />
                 </Card>
+
+                <CompanyIntroductionBottom/>
             </div>
             );
         }

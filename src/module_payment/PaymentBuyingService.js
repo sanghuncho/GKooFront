@@ -34,12 +34,10 @@ export class PaymentProductBooking extends React.Component {
 
     handleClickPayment() {
         this.updateOwnername(localStorage.getItem("react-token", keycloak.token))
-        console.log(this.state.paymentOwnername)
-        //console.log(localStorage.getItem("react-token", keycloak.token))
-        console.log(PaymentArtToInt(this.state.artPayment))
     }
 
     updateOwnername(token){
+        let userid = this.props.userid
         setTokenHeader(token)
         const contents = [
             {paymentid:this.props.paymentid},
@@ -47,11 +45,12 @@ export class PaymentProductBooking extends React.Component {
             {paymentArt:PaymentArtToInt(this.state.artPayment)},
         ]
 
-        fetch(basePort + '/updatePaymentProductBuyingService', 
-                {method:'post', headers, 
-                  body:JSON.stringify(contents)})
-                .then((result) => { return result;}).then((contents) => {
-            console.log(contents)
+        fetch(basePort + '/updatePaymentProductBuyingService/' + userid, 
+          {method:'post', headers, 
+            body:JSON.stringify(contents)})
+            .then((result) => { return result;})
+            .then((contents) => {
+            window.location.reload();
         }).catch(err => err);
     }
   
@@ -141,6 +140,7 @@ export class PaymentProductBooking extends React.Component {
     }
 }
 
+// not used, can be deleted 16.04.20
 export class PaymentProductBookingInDetail extends React.Component {
   constructor(props) {
       super(props);
@@ -166,7 +166,7 @@ export class PaymentProductBookingInDetail extends React.Component {
   handleClickPayment() {
       this.updateOwnername(localStorage.getItem("react-token", keycloak.token))
       console.log(this.state.paymentOwnername)
-      //console.log(localStorage.getItem("react-token", keycloak.token))
+      console.log(localStorage.getItem("react-token", keycloak.token))
       console.log(PaymentArtToInt(this.state.artPayment))
   }
 

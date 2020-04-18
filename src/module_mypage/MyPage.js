@@ -8,10 +8,11 @@ import {
   BaseNavigation,
 } from "../container";
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal, validToken, getEmptyPage } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -127,7 +128,6 @@ export class MyPage extends React.Component{
       const customername =  [{lastname:lastname}, {firstname:firstname}, {email:email}]
       let userid = this.state.userid
       setTokenHeader(token)
-      //fetch(basePort + '/customerstatus/'+ userid, {headers})
       fetch(basePort + '/customerstatus/'+ userid,
       {method:'post', headers, body:JSON.stringify(customername)})
       .then((result) => {
@@ -148,6 +148,7 @@ export class MyPage extends React.Component{
            return result.json();
         }).then((data) => {
           this.setState({orderInformation:data})
+          console.log(data)
           this.fetchWarehouseInformation(token)
         })   
     }
@@ -237,19 +238,11 @@ export class MyPage extends React.Component{
     //     })
     // }
 
-    validToken(token){
-      return token === "" ? false : true
-    }
-
-    getEmptyPage(){
-      return ""
-    }
-
     render() {
         const token = this.state.accessToken
         let mypage;
 
-        if(this.validToken(token)){
+        if(validToken(token)){
           mypage = <MypageController 
                       purchaseOrder={this.state.purchaseOrder} 
                       userAccount={this.state.userAccount} 
@@ -262,7 +255,7 @@ export class MyPage extends React.Component{
                       accessToken = {this.state.accessToken}
                       userid={this.state.userid}/>
         } else {
-          mypage = this.getEmptyPage
+          mypage = getEmptyPage()
         }
         return (
             <div>
@@ -305,6 +298,8 @@ export class MypageController extends React.Component{
             accessToken = {this.props.accessToken}
             userid={this.props.userid}
             />
+
+            <CompanyIntroductionBottom/>
         </BodyContainer>
         
         </AppContainer>

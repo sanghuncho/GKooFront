@@ -23,10 +23,14 @@ export const BodyContainer = styled(BaseAppContainer)`
     min-height:calc(100vh);
     height: auto;
     flex-direction: column;
+    flex: 1;
+    justifyContent: 'flex-end';
+    
 `;
 const BuyingServiceContainer = styled(BaseAppContainer)`
     height:auto;
     min-height:calc(100vh);
+    
 `;
 
 export class BuyingService extends React.Component{
@@ -39,8 +43,8 @@ export class BuyingService extends React.Component{
                 <BuyingServiceNavbar/>
                 <BodyContainer>
                     <BuyingServiceWrapper/>
-
-                     <CompanyIntroductionBottom/>
+                        <CompanyIntroductionBottom/>
+                   
                 </BodyContainer>
             </BuyingServiceContainer>
             </div>

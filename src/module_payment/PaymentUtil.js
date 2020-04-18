@@ -18,7 +18,7 @@ export function PaymentArtToInt(paymentArt){
 {/* 결제수단 */}
 export const PAYMENT_ART_LIST = [
   "무통장입금",
-  "카드결제", 
+  "카드결제(준비중)", 
 ]
 
 export function PaymentArtToString(paymentArt){
@@ -31,7 +31,7 @@ export function PaymentArtToString(paymentArt){
       art = "무통장입금";
       break;
     case 2:
-      art = "카드결제";
+      art = "카드결제(준비중)";
       break;
   }
 

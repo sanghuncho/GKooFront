@@ -8,10 +8,11 @@ import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { CustomerCenterNavbar } from './CustomerCenterIntro'
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, headers, setTokenHeader, basePort } from "../module_base_component/AuthService"
-import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button, Popover, 
+import { Card, Form, InputGroup, FormControl, Breadcrumb, Button, 
     } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
@@ -21,7 +22,8 @@ export const BodyContainer = styled(BaseAppContainer)`
   flex-direction: column;
 `;
 const QuestionBoardContainer = styled(BaseAppContainer)`
-  height: calc(150vh);
+  min-height:calc(100vh);
+  height: auto;
 `;
 
 export class QuestionBoard extends React.Component{
@@ -95,8 +97,13 @@ export class QuestionBoard extends React.Component{
                 {/* 좌측 내비 */}
                 <CustomerCenterNavbar/>
                 <BodyContainer>
+                    <Breadcrumb style={{ width: '100%'}}>
+                        <Breadcrumb.Item active>고객센터 / 문의게시판</Breadcrumb.Item>
+                    </Breadcrumb>
                     {/* 이메일 보내기 */}
                     {questionBoard}
+
+                    <CompanyIntroductionBottom/>
                 </BodyContainer>
             </QuestionBoardContainer>
             </div>

@@ -78,11 +78,11 @@ export class MyPageSideNav extends React.Component{
                 <SideNav theme={theme} onItemSelection={this.onItemSelection}>
                     <div style={{background: this.myColor(0), borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(0)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/mypage' >
                             <IconCnt>
                                 <Icon icon={pagelines} />
                             </IconCnt>
-                            <Text>배송비 안내</Text>
+                            <Text>My배송대행</Text>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

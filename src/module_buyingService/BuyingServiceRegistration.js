@@ -15,8 +15,9 @@ import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUti
 import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm'
 import { BaseProductPriceCalc } from '../module_base_component/BaseReactBootstrap'
 import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../module_base_style/baseStyle'
-import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, ITEM_TITLE_LIST } from './BuyingServiceConfig'
+import { CATEGORY_LIST, getItemTitleList } from './BuyingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
+import { Redirect } from 'react-router';
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -203,6 +204,7 @@ class BuyingServiceContentWrapper extends React.Component {
             customerBaseData:'',
             modalShow:false,
             userid:'',
+            redirectToMypage:false,
         }
         
         this.handleApplyService = this.handleApplyService.bind(this)
@@ -225,10 +227,15 @@ class BuyingServiceContentWrapper extends React.Component {
         this.handleModalShow = this.handleModalShow.bind(this);
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleBuyingPrice = this.handleBuyingPrice.bind(this);
+        this.handleMoveToMypage = this.handleMoveToMypage.bind(this);
     }
 
     componentDidMount() {
     }
+
+    handleMoveToMypage(){
+        this.setState({redirectToMypage: true});
+      }
 
     buildBuyingServiceData(){
         var recipientObjectData = {
@@ -280,7 +287,7 @@ class BuyingServiceContentWrapper extends React.Component {
             //this.registerFavoriteAddress(favoriteAddress)
           }
         console.log(buyingServiceData)
-
+        this.handleMoveToMypage()
     }
 
     registerFavoriteAddress(contents){
@@ -451,6 +458,7 @@ class BuyingServiceContentWrapper extends React.Component {
 
     handleModalClose() {
         this.setState({ modalShow: false });
+        this.handleMoveToMypage()
     }
 
     handleBuyingPrice(estimationResult){
@@ -458,6 +466,10 @@ class BuyingServiceContentWrapper extends React.Component {
     }
 
     render() {
+        const link = "/mypagebuyingService"
+        if (this.state.redirectToMypage) {
+            return <Redirect push to={link}/>
+        }
 
         let button = <ServiceApplyButton 
                         handleApplyService={this.handleApplyService}
@@ -529,7 +541,7 @@ class ServiceEstimation extends React.Component {
             {shopDeliveryPrice:this.props.shopDeliveryPrice},
             {productContentObjectList: JSON.stringify(this.props.productContentObjectList)},
         ]
-        //console.log(estimationObject)
+        console.log(estimationObject)
         this.handleGetEstimation(estimationObject)
     }
 
@@ -732,7 +744,7 @@ export class ProductContent extends React.Component {
             categoryTitle:"선택",
             categoryTitleList:CATEGORY_LIST,
             itemTitle:"선택",
-            itemTitleList:ITEM_TITLE_LIST,
+            itemTitleList:[],
             brandName:'',
             itemName:'',
             productPrice:"",
@@ -765,6 +777,7 @@ export class ProductContent extends React.Component {
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title})
         this.props.productContentObjectList[this.props.index].categoryTitle = title
+        this.state.itemTitleList = getItemTitleList(title)
     }
 
     handleSelectItem(event, item) {

@@ -57,15 +57,17 @@ export class MyPageBuyingServiceDetail extends React.Component{
         this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
       }
 
-      componentDidMount () {
+      componentDidMount() {
           const {orderid} = this.props.match.params
           this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, 
+            this.setState({ 
+              keycloakAuth: keycloak, 
               accessToken:keycloak.token,
-              userid:keycloak.tokenParsed.preferred_username})
-              this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
+              userid:keycloak.tokenParsed.preferred_username
             })
+            this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
+          })
       }
 
       handleUpdateRecipientData(token, orderid){
@@ -104,6 +106,8 @@ export class MyPageBuyingServiceDetail extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
+          console.log("data.deliveryPayment")
+          console.log(data.deliveryPayment)
           this.setState({
             recipientInfo:data.recipientData, 
             buyingServiceState:data.buyingServiceState,
@@ -160,6 +164,7 @@ export class MyPageBuyingServiceDetail extends React.Component{
                 shopUrl={this.state.shopUrl}
                 productListTotalPrice={this.state.productListTotalPrice}
                 accessToken={this.state.accessToken}
+                userid={this.state.userid}
               />
             
             </BodyContainer>
@@ -203,6 +208,7 @@ class MyPageDetailWrapper extends React.Component{
                   productPayment={this.props.productPayment}
                   deliveryPayment={this.props.deliveryPayment}
                   deliveryKoreaData={this.props.deliveryKoreaData}
+                  userid={this.props.userid}
                 />
 
                 {/* 상품정보 */}
@@ -255,19 +261,19 @@ class MyPageDetailBuyingServiceState extends React.Component{
   constructor(props) {
       super(props);
 
-      this.handleDeleteShippingService = this.handleDeleteShippingService.bind(this)
+      this.handleDeleteBuyingService = this.handleDeleteBuyingService.bind(this)
     }
 
-    handleDeleteShippingService(){
-      const deleteShippingServceData =  [
+    handleDeleteBuyingService(){
+      const deleteBuyingServceData =  [
         {orderid: this.props.orderid}
       ]
 
       this.setTokenHeader(this.props.accessToken)
-      fetch(basePort + '/deleteShipingServiceData', 
+      fetch(basePort + '/deleteBuyingServiceData', 
                 {method:'post', headers, 
-                  body:JSON.stringify(deleteShippingServceData)})
-      window.location.replace("/mypage");
+                  body:JSON.stringify(deleteBuyingServceData)})
+      window.location.replace("/mypagebuyingService");
     }
 
     setTokenHeader(token){
@@ -279,14 +285,29 @@ class MyPageDetailBuyingServiceState extends React.Component{
       let productPaymentReady = 1
       let deleteButton;
       if(productPaymentReady === buyingServiceState) {
-        deleteButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleDeleteShippingService(e)} 
+        deleteButton = <Button variant="secondary" size="sm" onClick={(e) => this.handleDeleteBuyingService(e)} 
                           style={{ marginRight: '10px', float:"right"}}>서비스 삭제</Button>
       }
       let serviceState = BuyingServiceStateToString(buyingServiceState)
+
+      let deliveryPaymentButton
+      if (buyingServiceState === 1 || buyingServiceState === 2){
+        deliveryPaymentButton = "입고대기중"
+      } else {
+        deliveryPaymentButton = <PaymentDeliveryBuyingServiceButton 
+                                    paymentState={this.props.buyingServiceState} 
+                                    orderid={this.props.deliveryPayment.orderid} 
+                                    shipPrice={this.props.deliveryPayment.shipPrice}
+                                    boxActualWeight={this.props.deliveryPayment.boxActualWeight}
+                                    boxVolumeWeight={this.props.deliveryPayment.boxVolumeWeight}
+                                    paymentid={this.props.deliveryPayment.paymentid}
+                                    paymentOwnername={this.props.deliveryPayment.paymentOwnername}
+                                    paymentArt={this.props.deliveryPayment.paymentArt}/> 
+      }
       return (
         <div>
             <Card border="dark" style={{ width: '80%', height:'15rem', marginTop:'1rem', marginBottom:'1rem' }}>
-              <Card.Header>서비스현황</Card.Header>
+              <Card.Header>서비스현황 {deleteButton}</Card.Header>
               <Card.Body>
               <div>
                 <Table bordered condensed responsive size="sm">
@@ -301,20 +322,14 @@ class MyPageDetailBuyingServiceState extends React.Component{
                                                 buyingPrice={this.props.productPayment.buyingPrice}
                                                 paymentid={this.props.productPayment.paymentid}
                                                 paymentOwnername={this.props.productPayment.paymentOwnername}
-                                                paymentArt={this.props.productPayment.paymentArt}/>
+                                                paymentArt={this.props.productPayment.paymentArt}
+                                                userid={this.props.userid}/>
                         </td>
                       </tr>
                       <tr>
                         <td width='150px'>배송비 결제현황</td>
-                        <td width='250px' align='center'><PaymentDeliveryBuyingServiceButton 
-                                                paymentState={this.props.buyingServiceState} 
-                                                orderid={this.props.deliveryPayment.orderid} 
-                                                shipPrice={this.props.deliveryPayment.shipPrice}
-                                                boxActualWeight={this.props.deliveryPayment.boxActualWeight}
-                                                boxVolumeWeight={this.props.deliveryPayment.boxVolumeWeight}
-                                                paymentid={this.props.deliveryPayment.paymentid}
-                                                paymentOwnername={this.props.deliveryPayment.paymentOwnername}
-                                                paymentArt={this.props.deliveryPayment.paymentArt}/> 
+                        <td width='250px' align='center'> 
+                          {deliveryPaymentButton}
                         </td>
                       </tr>
                       <tr>
@@ -327,7 +342,9 @@ class MyPageDetailBuyingServiceState extends React.Component{
                       </tr>
                       <tr>
                           <td>전체 현황</td>
-                          <td colSpan="3" align='center'>{serviceState} {deleteButton}</td>
+                          <td colSpan="3" align='center'>{serviceState} 
+                          {/* {deleteButton} */}
+                          </td>
                       </tr>
                     </tbody> 
                 </Table>

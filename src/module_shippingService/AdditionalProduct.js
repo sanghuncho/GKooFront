@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button } from 'react-bootstrap';
 import { times, exchange} from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
+import { CATEGORY_LIST, getItemTitleList } from './ShippingServiceConfig'
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
@@ -13,10 +14,12 @@ export class AdditionalProduct extends React.Component{
         super(props);
         this.state = {
             categoryTitle:"선택",
+            categoryTitleList:CATEGORY_LIST,
             isValidCategory:false,
             categoryVariant:"outline-secondary",
 
             itemTitle:"선택",
+            itemTitleList:[],
             isValidItemTitle:false,
             itemTitleVariant:"outline-secondary",
 
@@ -59,6 +62,7 @@ export class AdditionalProduct extends React.Component{
     handleSelectCategory(event, title) {
         this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
         this.props.shippingProductList[this.props.index].categoryTitle = title
+        this.state.itemTitleList = getItemTitleList(title)
     }
 
     handleSelectItem(event, it) {
@@ -151,9 +155,8 @@ export class AdditionalProduct extends React.Component{
                         id="input-group-dropdown-category"
                         style={{ marginRight: '200px'}}
                         >
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "전자제품")}>전자제품</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "음식")}>음식</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectCategory(e, "동물")}>동물</Dropdown.Item>
+                       {this.state.categoryTitleList.map((category) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
                     </DropdownButton>
                 </InputGroup> 
                 <InputGroup size="sm" className="mb-3">
@@ -169,9 +172,9 @@ export class AdditionalProduct extends React.Component{
                         title={this.state.itemTitle}
                         id="input-group-dropdown-category"
                         >
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "오디오")}>오디오</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "쌀")}>쌀</Dropdown.Item>
-                        <Dropdown.Item onSelect={e => this.handleSelectItem(e, "강아지")}>강아지</Dropdown.Item>
+                        {this.state.itemTitleList.map((item) => 
+                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
+
                     </DropdownButton>
                    
                 </InputGroup>

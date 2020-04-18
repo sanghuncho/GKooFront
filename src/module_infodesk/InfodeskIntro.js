@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { MemoryRouter as Router, Route, Switch, NavLink } from "react-router-dom";
 import { AppNavbar } from '../AppNavbar'
-import { connectdevelop, cube, bullseye, pagelines } from 'react-icons-kit/fa/'
+import { connectdevelop, cube, bullseye, pagelines, checkSquareO, link } from 'react-icons-kit/fa/'
 import { Image } from 'react-bootstrap';
 import GKoo_Service_Info  from '../assets/GKoo_Service_Info.jpg'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
@@ -54,10 +54,17 @@ const NavigationStyle = styled(BaseNavigation)`
 const NavLinkStyle = styled(BaseNav)`
     flex-direction: column;
 `;
+
 const TextStyle = styled.div`
   padding-left: 0px;
   font-size: 12px;
 `;
+
+const TextStyleTransitNr = styled.div`
+  padding-left: 0px;
+  font-size: 10px;
+`;
+
 const IconCnt = styled.div`
   color: #FFF;
   display: flex;
@@ -122,9 +129,19 @@ export class InfodeskIntroNavbar extends React.Component{
                     <NavLinkStyle>
                         <NavLink style={{ textDecoration:'none', color:'white'}} to='/infodeskInspectRefundService' >
                             <IconCnt>
-                                <Icon icon={cube} />
+                                <Icon icon={checkSquareO} />
                             </IconCnt>
                             <TextStyle>검수/보상안내</TextStyle>
+                        </NavLink>
+                    </NavLinkStyle>
+                    </div>
+                    <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(3)}} >
+                    <NavLinkStyle>
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/InfodeskTransitNr' >
+                            <IconCnt>
+                                <Icon icon={link} />
+                            </IconCnt>
+                            <TextStyle>통관고유부호</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

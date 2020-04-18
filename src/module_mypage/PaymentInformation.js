@@ -13,7 +13,6 @@ function CaptionMypageTable(props) {
     padding: '0.5em', fontWeight:'bold' }}>{props.title}</h6>;
 }
 
-
 const PaymentButtonStyle = styled.div`
     text-align:center;
 `;
@@ -125,7 +124,6 @@ export class PaymentInformationBuyingService extends React.Component{
     constructor(props) {
         super(props);
         this.state = { 
-          
         };
       }
       
@@ -228,7 +226,8 @@ class PaymentButton extends React.Component {
             </div>
         );}
 }
-    
+
+/* 구매대행 결제현황, 결제버튼 */
 export class PaymentBuyingServiceButton extends React.Component {
         constructor(props, context) {
           super(props, context);
@@ -255,6 +254,7 @@ export class PaymentBuyingServiceButton extends React.Component {
             console.log("paymentOwnername: " + paymentOwnername )
             console.log("paymentState: " + paymentState )
             if (paymentState === 1 && paymentOwnername === "") {
+                const CHOICE = 0 //선택
                 paymentButton = <RequestPaymentProduct 
                                     orderid={this.props.orderid} 
                                     buyingPrice={this.props.buyingPrice}
@@ -262,7 +262,8 @@ export class PaymentBuyingServiceButton extends React.Component {
                                     buttonLabel={"결제하기"}
                                     paymentOwnername={this.props.paymentOwnername}
                                     readOnly={false}
-                                    paymentArt={"선택"}/>
+                                    paymentArt={CHOICE}
+                                    userid={this.state.userid}/>
 
             } else if (paymentState === 1 && paymentOwnername != "") {
                 paymentButton = <RequestPaymentProduct 
@@ -359,6 +360,7 @@ export class PaymentDeliveryBuyingServiceButton extends React.Component {
         );}
 }
 
+/* 결제하기, 결제확인중, 결제완료 */
 class RequestPaymentProduct extends React.Component{
     constructor(props) {
         super(props);
@@ -401,6 +403,7 @@ class RequestPaymentProduct extends React.Component{
                             paymentOwnername={this.props.paymentOwnername}
                             paymentArt={PaymentArtToString(this.props.paymentArt)}
                             readOnly={this.props.readOnly}
+                            userid={this.props.userid}
                             />
                     </Modal.Body>
 

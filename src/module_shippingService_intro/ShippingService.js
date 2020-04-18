@@ -101,11 +101,11 @@ export class ShippingServiceNavbar extends React.Component{
                     </div>
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(1)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/shippingServiceInfo' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/deliveryPriceTable' >
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
-                            <TextStyle>배송대행 안내</TextStyle>
+                            <TextStyle>국제배송요금</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

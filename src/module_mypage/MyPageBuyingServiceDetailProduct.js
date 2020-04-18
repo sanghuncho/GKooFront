@@ -61,7 +61,7 @@ export class MyPageBuyingServiceDetailProducts extends React.Component{
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
           } else {
-            const dynamicHeight = (14 + 13*(this.props.productsInfo.length))
+            const dynamicHeight = (14 + 15*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
             productsListDisplay = <CompleteProductsListDisplay 
                 productsInfo={this.props.productsInfo}

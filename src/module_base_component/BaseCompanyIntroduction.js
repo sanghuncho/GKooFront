@@ -5,7 +5,7 @@ export class CompanyIntroductionBottom  extends React.Component{
     render() {
         return (
             <div>
-            <Card className="text-center" style={{ width: '80%', height:'12rem', marginTop:'1rem', marginLeft:'1rem', marginBottom:'2rem',}}>
+            <Card className="text-center" style={{ width: '80%', height:'12rem', marginTop:'1rem', marginLeft:'1rem', marginBottom:'2rem', fontSize:'14px'}}>
                 <Card.Header>상호명: 지쿠(GKoo) | 대표: 조상훈 | 개인정보책임자: 조상훈 | 호스팅 제공자: 카페24</Card.Header>
                 <Card.Body>
                     {/* <Card.Title>Special title treatment</Card.Title> */}

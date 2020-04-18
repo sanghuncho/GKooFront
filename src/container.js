@@ -13,7 +13,6 @@ export const NaviContainer = styled.div`
 `;
 
 export const Navigation = styled.div`
-  
   flex-shrink: 0  ;
   background: #fff;
   height: 100vh;
@@ -38,12 +37,6 @@ export const ExampleContainer = styled.div`
   border: 1px solid #e5e5e5;
   height: calc(100vh - 40px);
 `;
-
-// export const ExampleNavigation = styled(Navigation)`
-//   height: 100%;
-//   margin-right: 4px;
-//   border: 0px solid rgba(0, 0, 0, 0.125); 
-// `;
 
 export const BaseNavigation = styled(Navigation)`
   height: 100%;

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from 'react';
-import { Table, Card } from "react-bootstrap"
+import { Table, Card, Breadcrumb } from "react-bootstrap"
 import { AppNavbar } from '../AppNavbar'
 import { BodyContainer, ShippingServiceNavbar } from './ShippingService'
 import {
@@ -27,6 +27,10 @@ export class ShippingServiceAddressPane extends React.Component{
                     <ShippingServiceNavbar/>
                     
                     <BodyContainer>
+                      <Breadcrumb style={{ width: '100%'}}>
+                        <Breadcrumb.Item active>배송대행 / 배송주소 안내</Breadcrumb.Item>
+                      </Breadcrumb>
+
                       <ShippingServiceAddressTable/>
                     </BodyContainer>
                 </ShippingServiceAddressPanelContainer>

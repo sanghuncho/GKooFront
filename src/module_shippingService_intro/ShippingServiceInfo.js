@@ -7,6 +7,7 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
   } from "../container";
+import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb } from 'react-bootstrap';
 
 {/* ShippingServiceInfo CSS */}
 const ShippingServiceInfoContainer = styled(BaseAppContainer)`
@@ -27,7 +28,9 @@ export class ShippingServiceInfo extends React.Component{
                     <ShippingServiceNavbar/>
                     
                     <BodyContainer>
-                    
+                      <Breadcrumb style={{ width: '100%'}}>
+                        <Breadcrumb.Item active>배송대행 / 국제배송요금</Breadcrumb.Item>
+                      </Breadcrumb>
                     </BodyContainer>
                 </ShippingServiceInfoContainer>
           </div>

@@ -12,25 +12,23 @@ export class TransportShippingRequest extends React.Component {
     }
 
     createShippingService(contents){
-        const token = this.props.accessToken
-        setTokenHeader(token)
-        fetch(basePort + '/createshippingservice', 
-                {method:'post', headers, 
-                  body:JSON.stringify(contents)})
-                .then((result) => { return result;}).then((contents) => {
-            console.log(contents)
-           }).catch(err => err);
+      const token = this.props.accessToken
+      let userid = this.props.userid
+      setTokenHeader(token)
+      fetch(basePort + '/createshippingservice/' + userid, 
+        {method:'post', headers, body:JSON.stringify(contents)})
+                .then((result) => { return result;})
+                .catch(err => err);
     }
 
     registerFavoriteAddress(contents){
       const token = this.props.accessToken
+      let userid = this.props.userid
       setTokenHeader(token)
-      fetch(basePort + '/registerFavoriteAddress', 
-                {method:'post', headers, 
-                  body:JSON.stringify(contents)})
-                .then((result) => { return result;}).then((contents) => {
-            console.log(contents)
-           }).catch(err => err);
+      fetch(basePort + '/registerFavoriteAddress/' + userid, 
+        {method:'post', headers, body:JSON.stringify(contents)})
+                .then((result) => { return result;})
+                .catch(err => err);
     }
 
     buildFavoriteAddressData(){
@@ -91,7 +89,7 @@ export class TransportShippingRequest extends React.Component {
           this.registerFavoriteAddress(favoriteAddress)
         }
 
-      this.handleMoveToMypage()
+        this.handleMoveToMypage()
       }
 
       const link = "/mypage"
