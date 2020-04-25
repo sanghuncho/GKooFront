@@ -6,7 +6,9 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Redirect } from 'react-router';
-import { getFormatKoreanCurrency } from '../module_base_component/BaseUtil'
+import { getFormattedDeliveryPrice } from '../module_base_component/BaseUtil'
+import paginationFactory from 'react-bootstrap-table2-paginator';
+import { BaseTablePagination } from '../module_base_component/BaseTable'
 
 const OrderInfoTableStyle = styled.div`
   margin-top: 20px;
@@ -149,7 +151,7 @@ export class OrderInformation extends React.Component {
   }
 
   render() {
-    //console.log(this.props.orderInformation)
+    console.log(this.props.orderInformation.length)
     const expand = expandRowA
     return(
       <div>
@@ -170,12 +172,13 @@ export class OrderInformation extends React.Component {
         <Tab eventKey="total" title="전체">
               <OrderInfoTableStyle>
               {/*ToDo: contents located in center */}
-                  <BootstrapTable keyField='objectId'  
-                      data={ this.props.orderInformation } 
-                      columns={ columnsUserAccount } 
-                      bordered={ true }  
-                      noDataIndication="주문하신 물품이 없습니다"
-                      expandRow={ "" }  />
+                  <BaseTablePagination
+                   keyField='objectId'  
+                   data={ this.props.orderInformation } 
+                   columns={ columnsUserAccount } 
+                   bordered={ true }  
+                   noDataIndication="주문하신 물품이 없습니다"
+                  />
               </OrderInfoTableStyle>
         </Tab>
             {/* <Tab eventKey="germnay" title="독일"> </Tab> */}
@@ -375,7 +378,7 @@ class KoreaCurrencyFormatter extends React.Component {
     }
     
     render() {
-      let formattedPrice = getFormatKoreanCurrency(this.props.cell)
+      let formattedPrice = getFormattedDeliveryPrice(this.props.cell)
 
       return (
         <div>
@@ -433,7 +436,7 @@ const columnsBuyingService = [
   }
 ];
 
-{/* 배송대행 이용현황 */}
+{/* 구매대행 이용현황 */}
 export class BuyingServiceOrderData extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -463,12 +466,13 @@ export class BuyingServiceOrderData extends React.Component {
         <Tab eventKey="total" title="전체">
               <OrderInfoTableStyle>
               {/*ToDo: contents located in center */}
-                  <BootstrapTable keyField='objectId'  
+                  <BaseTablePagination
+                      keyField='objectId'  
                       data={ this.props.buyingOrderData } 
                       columns={ columnsBuyingService } 
                       bordered={ true }  
                       noDataIndication="주문하신 물품이 없습니다"
-                      expandRow={ "" }  />
+                  />
               </OrderInfoTableStyle>
         </Tab>
             {/* <Tab eventKey="germnay" title="독일"> </Tab> */}

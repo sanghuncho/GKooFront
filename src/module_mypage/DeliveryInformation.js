@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React from 'react';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { Button, Modal } from "react-bootstrap"
+import { BaseTablePagination } from '../module_base_component/BaseTable'
 
 const MyPageBodyTableStyle = styled.div`
   margin-top: 10px;
@@ -79,12 +80,13 @@ export class DeliveryInformation extends React.Component{
           <div>
             <MyPageBodyTableStyle>
               {/* <CaptionMypageTable title="배송 현황"/> */}
-              <BootstrapTable keyField='objectId'  
-                data={ this.props.deliveryKoreaData } 
-                columns={ columnsDelivery } 
-                //hover 
-                bordered={ true } 
-                noDataIndication="Table is empty"  />
+              <BaseTablePagination
+                  keyField='objectId'  
+                  data={ this.props.deliveryKoreaData } 
+                  columns={ columnsDelivery } 
+                  bordered={ true }  
+                  noDataIndication="Table is empty"
+              />
             </MyPageBodyTableStyle></div>
         );
       }    
@@ -112,12 +114,13 @@ export class DeliveryInformation extends React.Component{
           <div>
             <MyPageBuyingServiceBodyTableStyle>
               {/* <CaptionMypageTable title="배송 현황"/> */}
-              <BootstrapTable keyField='objectId'  
-                data={ this.props.deliveryKoreaData } 
-                columns={ columnsDelivery } 
-                hover bordered={ true } 
-                // rowEvents={ rowEvents } 
-                noDataIndication="Table is empty"  />
+              <BaseTablePagination
+                  keyField='objectId'  
+                  data={ this.props.deliveryKoreaData } 
+                  columns={ columnsDelivery } 
+                  bordered={ true }  
+                  noDataIndication="Table is empty"
+              />
             </MyPageBuyingServiceBodyTableStyle></div>
         );
       }    

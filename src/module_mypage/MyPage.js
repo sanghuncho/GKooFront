@@ -103,7 +103,6 @@ export class MyPage extends React.Component{
     componentDidMount() {
       console.log(keycloakUrlLocal)
       keycloak.init({onLoad: 'login-required'}).success(() => {
-      //  keycloak.init({onLoad: 'check-sso'}).success(() => {
           this.setState({ 
             keycloakAuth: keycloak, 
             accessToken:keycloak.token, 
@@ -172,7 +171,6 @@ export class MyPage extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          console.log(data)
           this.setState({paymentData:data})
           this.fetchDeliveryKoreaData(token)
         })   

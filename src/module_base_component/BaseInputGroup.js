@@ -81,3 +81,17 @@ export class BaseInputGroupUrl extends React.Component {
         );
       }    
 }
+
+export function validateInputForm(fieldName,  value){
+    let valid = false
+    switch(fieldName) {
+        case 'transitNumber':
+            //console.log(value.length === 8)
+            return value.length === 8
+        case 'agreeWithCollection':
+        console.log("agree")    
+        console.log(value)
+            return value === true  
+    }
+
+}

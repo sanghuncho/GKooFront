@@ -13,7 +13,7 @@ import { OrderInformation, BuyingServiceOrderData } from './OrderInformation'
 import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } from './PaymentInformation'
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfo } from './UserBaseInfo'
-import { Redirect } from 'react-router';
+import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -282,6 +282,8 @@ export class MypageBuyingServiceController extends React.Component{
               </Card.Body>
             </Card>
           </CardGroup>
+
+           <CompanyIntroductionBottom/>
         </BodyContainer>
         
         </AppContainer>

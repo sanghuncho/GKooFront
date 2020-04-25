@@ -14,8 +14,6 @@ const data = [
     }
   ]
 
-
-
 const BaseTableComponentStyle = styled.div`
     margin-top: 25px;
     margin-left:1%; 

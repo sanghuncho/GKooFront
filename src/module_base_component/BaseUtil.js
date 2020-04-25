@@ -22,6 +22,16 @@ export function getFormatKoreanCurrency(rate){
     }
 }
 
+export function getFormattedDeliveryPrice(rate){
+    if(rate > 0){
+        return <div>{rate}원</div>
+    } else if (rate == 0) {
+        return <div>미정</div>
+    } else {
+        return EMPTY_STRING
+    }
+}
+
 export function getKoreanCurrencyWithInfoBadge(rate){
     if(rate > 0){
         return <div>

@@ -143,7 +143,6 @@ export class CustomerRecipientEditor extends React.Component {
 
         setTokenHeader(accessToken)
         let updateUrl = this.props.updateUrl
-        //fetch(basePort + '/' + updateUrl, 
         let userid = this.props.userid
         fetch(basePort +  '/' + updateUrl + '/' + userid, 
                   {method:'post', headers, 
@@ -236,12 +235,14 @@ export class CustomerRecipientEditor extends React.Component {
                                     checked={true}
                                     //onChange={e => this.inputPrivateTransit(e)} 
                                     label='개인통관고유번호' style={{marginRight:'10rem', fontSize:textFontSize}}/>
+                                
+                                {/* 추후 개발  
                                 <Form.Check inline 
-                                    //checked={this.state.businessTransit} 
+                                    checked={this.state.businessTransit} 
                                     type='radio' 
                                     checked={false}
-                                    //onChange={e => this.inputBusinessTransit(e)} 
-                                    label='사업자번호(사업자통관)' style={{ fontSize: textFontSize}}/>
+                                    onChange={e => this.inputBusinessTransit(e)} 
+                                    label='사업자번호(사업자통관)' style={{ fontSize: textFontSize}}/> */}
                                         
                                 <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 

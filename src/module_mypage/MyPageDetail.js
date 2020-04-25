@@ -59,25 +59,22 @@ export class MyPageDetail extends React.Component{
           const {orderid} = this.props.match.params
           this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
-            this.setState({ keycloakAuth: keycloak, 
+            this.setState({ 
+              keycloakAuth: keycloak, 
               accessToken:keycloak.token,
-              userid:keycloak.tokenParsed.preferred_username})
-              this.fetchOrderingPersonInforamtion(keycloak.token)
-              // this.fetchRecipientInforamtion(keycloak.token, id)
-              //this.fetchProductsCommonInforamtion(keycloak.token, id)
-              this.fetchMypageDetailData(keycloak.token, orderid)
-              this.fetchProductsInforamtion(keycloak.token, orderid)
+              userid:keycloak.tokenParsed.preferred_username
+            })
+            this.fetchOrderingPersonInforamtion(keycloak.token)
+            //fetchRecipientInforamtion and fetchProductsCommonInforamtion run in fetchMypageDetailData
+            //this.fetchRecipientInforamtion(keycloak.token, id)
+            //this.fetchProductsCommonInforamtion(keycloak.token, id)
+            this.fetchMypageDetailData(keycloak.token, orderid)
+            //fetchProductsInforamtion runs after finishing the fetching MypageDetailData because of error backend stream closed
+            //this.fetchProductsInforamtion(keycloak.token, orderid)
             })
       }
 
       fetchOrderingPersonInforamtion(token){
-        // setTokenHeader(token)
-        // fetch(basePort + '/orderingpersoninfo', {headers})
-        // .then((result) => {
-        //    return result.json();
-        // }).then((data) => {
-        //   this.setState( { orderingPersonInfo: data} )
-        // })
         let lastname = keycloak.tokenParsed.family_name
         let firstname = keycloak.tokenParsed.given_name
         let fullname = lastname + firstname
@@ -92,8 +89,11 @@ export class MyPageDetail extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({recipientInfo:data.recipientData, 
-              productsCommonInfo:data.productsCommonInformation})
+          this.setState({
+            recipientInfo:data.recipientData, 
+            productsCommonInfo:data.productsCommonInformation
+          })
+          this.fetchProductsInforamtion(token, orderid)
         }) 
       }
 
@@ -307,7 +307,7 @@ class MyPageDetailProductPrice extends React.Component{
                       </tr> */}
                       <tr>
                           <td width='300px'>총 구매금액</td>
-                          <td width='300px'>{this.props.productsCommonInfo.totalPrice}원</td>
+                          <td width='300px'>{this.props.productsCommonInfo.totalPrice} EUR</td>
                       </tr>
                       </tbody>
                   </Table>
@@ -449,7 +449,7 @@ export class CompleteRecipientDisplay extends React.Component{
       const nameEng = this.props.recipientInfo.nameEng
       let name
       if(nameKor != null && nameEng != null){
-        name = nameKor +  "(" + nameEng + ")"
+        name = nameKor +  " (" + nameEng + ")"
       } else {
         name = ""
       }
@@ -461,7 +461,7 @@ export class CompleteRecipientDisplay extends React.Component{
                     <tbody>
                       <tr>
                           <td width='150px' > 받는분 </td>
-                          <td width='250px' > {this.props.recipientInfo.nameKor} </td>
+                          <td width='250px' > {name} </td>
                           <td width='150px' > 연락처1 </td>
                           <td width='250px' > {this.props.recipientInfo.phonenumberFirst} </td>
                       </tr>

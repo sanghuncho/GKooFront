@@ -6,7 +6,7 @@ import {
 import React, { Component } from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Card, Form, InputGroup, Row, Col, Container, Button } from 'react-bootstrap';
+import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange } from 'react-icons-kit/fa/'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
@@ -42,6 +42,10 @@ export class BuyingService extends React.Component{
             <BuyingServiceContainer>
                 <BuyingServiceNavbar/>
                 <BodyContainer>
+                    <Breadcrumb>
+                        <Breadcrumb.Item active>구매대행</Breadcrumb.Item>
+                        <Breadcrumb.Item active>구매대행 견적보기</Breadcrumb.Item>
+                    </Breadcrumb>
                     <BuyingServiceWrapper/>
                         <CompanyIntroductionBottom/>
                    

@@ -15,6 +15,7 @@ import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from './ShippingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
+import { validateInputForm } from '../module_base_component/BaseInputGroup'
 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer, validToken, getEmptyPage } from "../module_base_component/AuthService"
@@ -27,6 +28,7 @@ const IconCnt = styled.div`
 const IconStyle = {justifyContent:"center"}
 
 const AppContainer = styled(BaseAppContainer)`
+    min-height:calc(100vh);    
     height:auto;
     width: 99vw;
 `;
@@ -93,8 +95,8 @@ export class ShippingServiceController extends React.Component{
     constructor(props) {
         super(props);
         this.state = { 
-            //agreement:false,
-            agreement:true,
+            agreement:false,
+            //agreement:true,
         };
         this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this);
       }
@@ -151,8 +153,8 @@ class ShippingCenter extends React.Component{
         this.state = { 
           easyShip:true,
           customShip:false,
-          //understandWarning:false,
-          understandWarning:true,
+          understandWarning:false,
+          //understandWarning:true,
         };
         this.handleChangeEasy = this.handleChangeEasy.bind(this);
         this.handleChangeCustom = this.handleChangeCustom.bind(this);
@@ -189,7 +191,9 @@ class ShippingCenter extends React.Component{
                 <Card.Header>서비스 선택</Card.Header>
                 <Card.Body>
                     <Form.Check style={{fontSize:'14px', marginRight:'10rem'}} inline checked={this.state.easyShip} type='radio' onChange={e => this.handleChangeEasy(e)} label='간편배송'/>
-                    <Form.Check style={{fontSize:'14px'}} inline checked={this.state.customShip} type='radio' onChange={e => this.handleChangeCustom(e)} label='체크인배송'/>
+                    <Form.Check style={{fontSize:'14px'}} inline checked={this.state.customShip} type='radio' 
+                        //onChange={e => this.handleChangeCustom(e)} 
+                        label='체크인배송(준비중)'/>
                 </Card.Body>
                 <Card.Footer>
                     <Form.Check style={{fontSize:'15px'}} checked={this.state.understandWarning} type='checkbox' onChange={e => this.handleChangeWarn(e)} label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
@@ -204,7 +208,7 @@ class ShippingCenter extends React.Component{
     );}
  }
 
- class InputDeliveryContentWrapper extends React.Component{
+class InputDeliveryContentWrapper extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
@@ -262,9 +266,12 @@ class ShippingCenter extends React.Component{
             businessTransit:false,
 
             transitNumber:"",
-            isValidTransitNumber:false,
+            validTransitNumber:false,
+            isInvalidTransitNumber:false,
 
             agreeWithCollection:false,
+            validAgreeWithCollection:false,
+            isInvalidAgreeWithCollection:false,
 
             phonenumberFirst:"",
             phonenumberSecond:"",
@@ -281,7 +288,12 @@ class ShippingCenter extends React.Component{
             deliveryObject: null,
             customerBaseData:null,
             favoriteAddressList:[],
-            openFavoriteAddressListPanel:false
+            openFavoriteAddressListPanel:false,
+            
+            //control total validation
+            tryToValidate:false,
+            validForm:false,
+            disabledButton:false
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -329,6 +341,7 @@ class ShippingCenter extends React.Component{
         this.handleCloseFavoriteAddressListPanel = this.handleCloseFavoriteAddressListPanel.bind(this)
         this.handleLoadSelectedAddress = this.handleLoadSelectedAddress.bind(this)
         this.handleOpenHowToGetTransitNr = this.handleOpenHowToGetTransitNr.bind(this)
+        this.validForm = this.validForm.bind(this)
     }
 
     componentDidMount() {
@@ -504,14 +517,6 @@ class ShippingCenter extends React.Component{
         this.setState({businessTransit:true})
     }
 
-    inputTransitNumber(event){
-        this.setState({transitNumber:event.target.value})
-    }
-
-    agreeWithCollectionCheckbox(event){
-        this.setState({agreeWithCollection:event.target.checked})
-    }
-
     changeHandlerPhonenumberFirst(event){
         this.setState({phonenumberFirst:event.target.value})
     }
@@ -581,10 +586,6 @@ class ShippingCenter extends React.Component{
     handleModalClose() {
         this.setState({ show: false });
     }
-    
-    handleModalShow() {
-        this.setState({ show: true });
-    }
 
     handleOpenFavoriteAddressPanel(){
         console.log("click shipping open address")
@@ -613,6 +614,53 @@ class ShippingCenter extends React.Component{
         const url = '/InfodeskTransitNr';
         window.open(url, '_blank');
     }
+    
+    handleModalShow() {
+        this.setState({
+            tryToValidate:true,
+            isInvalidTransitNumber: !validateInputForm('transitNumber', this.state.transitNumber),
+            isInvalidAgreeWithCollection: !validateInputForm('agreeWithCollection', this.state.agreeWithCollection)
+        });
+
+        if(this.validForm()){
+            console.log("show")
+            //this.setState({show:true});
+        } else {
+            console.log("not show")
+        }
+    }
+
+    inputTransitNumber(event){
+        let value = event.target.value
+        let valid = validateInputForm('transitNumber', value)
+        this.setState({
+            transitNumber:value,
+            validTransitNumber: valid,
+            isInvalidTransitNumber:this.state.tryToValidate && !valid
+        })
+        this.validForm()
+    }
+
+    agreeWithCollectionCheckbox(event){
+        let value = event.target.checked
+        let valid = validateInputForm('agreeWithCollection', value)
+        this.setState({
+            agreeWithCollection:event.target.checked,
+            validAgreeWithCollection: valid,
+            isInvalidAgreeWithCollection:this.state.tryToValidate && !valid
+        })
+        this.validForm()
+    }
+
+    validForm() {
+        if(this.state.agreeWithCollection &
+            this.state.validTransitNumber
+            ){
+            return true
+        } else {
+            return false
+        }
+      }
 
     render(){
 
@@ -633,42 +681,34 @@ class ShippingCenter extends React.Component{
 
         const transitNumber = this.state.transitNumber
         const deliveryAddress = this.state.deliveryAddress
-        //const isValidTransitNumber = this.state.isValidTransitNumber
-        //const isValidTransitNumber = transitNumber.length == 8 ? true : false
-        const isValidTransitNumber = true
-        
+    
         const isValidItemName = this.state.isValidItemName
         const itemNameLength = this.state.itemName.length
-        //const warningItemName = isValidItemName == true ? "" : true
         const warningInvalidItemName =  this.state.warningInvalidItemName
         const heightOfInputProduct = heightOfInputProduct + "rem"
 
         const isValidTotalPrice = productTotalPrice === 0 ? false : true  
-        const allowToApply = (isValidCategory & isValidItemTitle & isValidTransitNumber 
+        const allowToApply = (isValidCategory & isValidItemTitle 
                 & isValidItemName & isValidTotalPrice)
 
         let popOver
         let warnCategory
         let warnItemTitle
         let warnComma
-        let warnMessageTransitNumber
-
-        if(isValidCategory & isValidItemTitle & isValidTransitNumber){
+        // ToDo delete this logic
+        if(isValidCategory & isValidItemTitle){
             popOver = <div></div>   
-        } else if( isValidCategory & isValidItemTitle & !isValidTransitNumber){
-            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유부호를 체크해주세요.";
+        } else if( isValidCategory & isValidItemTitle){
+          
             popOver = <Popover id="popover-basic" title="필수기재사항">
-                            {warnMessageTransitNumber}
+                           
                       </Popover>
         } else {
             warnCategory = isValidCategory ? "" : "카테고리";
             warnItemTitle = isValidItemTitle ? "" : "품목";
             warnComma = (isValidCategory || isValidItemTitle) ? "" : ", ";
-
-            warnMessageTransitNumber = isValidTransitNumber  ? "" : "개인통관고유부호를 체크해주세요.";
             popOver = <Popover id="popover-basic" title="필수기재사항">
                             {warnCategory}{warnComma} {warnItemTitle} 영역을 선택해주세요.<br/>
-                            {warnMessageTransitNumber}
                       </Popover>
         }
 
@@ -798,7 +838,7 @@ class ShippingCenter extends React.Component{
                         </InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                            placeholder="상품단가"
+                            placeholder="단가 EUR"
                             val ue={this.state.productPrice}
                             onChange = {this.inputProductPrice}/>
                         <IconCnt style={{marginTop:"2px",marginLeft:"2px", marginRight:"2px"}}>
@@ -927,22 +967,34 @@ class ShippingCenter extends React.Component{
                                 {/* <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem'}}/>
                                 <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)'/> */}
                                         
-                                    <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
-                                        <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                                            placeholder="8자리 고유번호" 
-                                            onChange = { this.inputTransitNumber }
-                                            defaultValue={this.state.transitNumber}
-                                            style={{ marginRight:'10px'}}/>
-                                        <Button size="sm" variant='secondary'
-                                            onClick={() => this.handleOpenHowToGetTransitNr()} 
-                                            style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
-                                        {/* <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button> */}
-                                    </InputGroup >
+                                    <Form noValidate validated={this.state.validTransitNumber}>
+                                        <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
+                                            <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                                                placeholder="8자리 고유번호" 
+                                                onChange = { this.inputTransitNumber }
+                                                defaultValue={this.state.transitNumber}
+                                                style={{ marginRight:'10px'}}
+                                                required
+                                                isInvalid={ this.state.isInvalidTransitNumber }
+                                            />
+                                            <Button size="sm" variant='secondary'
+                                                onClick={() => this.handleOpenHowToGetTransitNr()} 
+                                                style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
+                                            {/* <Button size="sm" variant='secondary' style={{fontSize:'14px'}}>내 개인통관고유번호 저장</Button> */}
+                                        </InputGroup >
+                                    </Form> 
                                     
-                                    <Form.Check type='checkbox' 
-                                        onChange={e => this.agreeWithCollectionCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
-                                        checked={this.state.agreeWithCollection}
-                                        style={{fontSize:'14px'}}/>
+                                    <Form noValidate validated={this.state.validAgreeWithCollection}>
+                                        <Form.Check 
+                                            type='checkbox' 
+                                            label='수입통관신고를 위한 개인통관고유부호 수집에 동의합니다'
+                                            onChange={e => this.agreeWithCollectionCheckbox(e)} 
+                                            checked={this.state.agreeWithCollection}
+                                            style={{fontSize:'14px'}}
+                                            required
+                                            isInvalid={this.state.isInvalidAgreeWithCollection}
+                                        />
+                                   </Form>
                                     <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
                             </Card.Body> 
                             </Card> 
@@ -1103,3 +1155,14 @@ class ShippingCenter extends React.Component{
             );
         }
     }
+
+
+    function ValidationMessage(props) {
+        // if (!props.valid) {
+            if (true) {
+          return(
+            <div className='error-msg'>ERROR</div>
+          )
+        }
+        return null;
+      }

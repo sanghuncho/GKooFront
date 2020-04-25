@@ -13,7 +13,7 @@ import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module
 import { BaseDropdown } from '../module_base_component/BaseDropdown'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
 import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm'
-import { BaseProductPriceCalc } from '../module_base_component/BaseReactBootstrap'
+import { BaseProductPriceCalc } from '../module_base_component/BaseCustomComponent'
 import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../module_base_style/baseStyle'
 import { CATEGORY_LIST, getItemTitleList } from './BuyingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'

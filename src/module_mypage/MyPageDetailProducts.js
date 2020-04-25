@@ -154,6 +154,10 @@ export class EditorProductsList extends React.Component{
         ]
         
         let userid = this.props.userid
+        console.log("editedProductsData")
+        console.log(this.state.deliveryObject)
+        console.log(this.state.shippingProductList[0])
+        console.log(this.state.shippingProductList[1])
         setTokenHeader(accessToken)
         fetch(basePort + '/updateDataEditorProductsList/' + userid, 
                   {method:'post', headers, 
@@ -551,7 +555,7 @@ class MyPageDetailProduct extends React.Component{
                     </tr>
                     <tr>
                         <td>단가</td>
-                        <td>{this.props.product.price}원</td>
+                        <td>{this.props.product.price} EUR</td>
                     </tr>
                     <tr>
                         <td>수량</td>
@@ -559,7 +563,7 @@ class MyPageDetailProduct extends React.Component{
                     </tr>
                     <tr>
                         <td>총 가격</td>
-                        <td>{this.props.product.totalPrice}원</td>
+                        <td>{this.props.product.totalPrice} EUR</td>
                     </tr>
                     
                     </tbody>

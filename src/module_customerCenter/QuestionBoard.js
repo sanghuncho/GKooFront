@@ -103,7 +103,7 @@ export class QuestionBoard extends React.Component{
                     {/* 이메일 보내기 */}
                     {questionBoard}
 
-                    <CompanyIntroductionBottom/>
+                   
                 </BodyContainer>
             </QuestionBoardContainer>
             </div>
@@ -144,11 +144,13 @@ export class QuestionBoardWrapper extends React.Component{
 
         return (
           <div>
-              {/* 질문 등록 */}
-              {questionRegisterFormWrapper}
+            {/* 질문 등록 */}
+            {questionRegisterFormWrapper}
 
-                {/* 질문 답변 게시판 */}
-              <QuestionAnswerBoard questionAnswerList={this.props.questionAnswerList}/>
+            {/* 질문 답변 게시판 */}
+            <QuestionAnswerBoard questionAnswerList={this.props.questionAnswerList}/>
+
+            <CompanyIntroductionBottom/>
           </div>
         );
       }    
