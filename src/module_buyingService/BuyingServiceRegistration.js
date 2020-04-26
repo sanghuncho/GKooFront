@@ -18,6 +18,8 @@ import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../mod
 import { CATEGORY_LIST, getItemTitleList } from './BuyingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 import { Redirect } from 'react-router';
+import { validateInputForm } from '../module_base_component/BaseInputGroup'
+import { window_reload } from '../module_base_component/BaseUtil'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -188,7 +190,15 @@ class BuyingServiceContentWrapper extends React.Component {
             productContentObjectList:[],
             receiverNameByKorea:'',
             receiverNameByEnglish: "",
+
             transitNumber: "",
+            validTransitNumber:false,
+            isInvalidTransitNumber:false,
+
+            agreeWithCollection:false,
+            validAgreeWithCollection:false,
+            isInvalidAgreeWithCollection:false,
+
             phonenumberFirst: "",
             phonenumberSecond: "",
             postCode: "",
@@ -205,6 +215,10 @@ class BuyingServiceContentWrapper extends React.Component {
             modalShow:false,
             userid:'',
             redirectToMypage:false,
+
+            //control total validation
+            tryToValidate:false,
+            validForm:false,
         }
         
         this.handleApplyService = this.handleApplyService.bind(this)
@@ -228,6 +242,7 @@ class BuyingServiceContentWrapper extends React.Component {
         this.handleModalClose = this.handleModalClose.bind(this);
         this.handleBuyingPrice = this.handleBuyingPrice.bind(this);
         this.handleMoveToMypage = this.handleMoveToMypage.bind(this);
+        this.handleChangeAgreeWithCollection = this.handleChangeAgreeWithCollection.bind(this);
     }
 
     componentDidMount() {
@@ -274,20 +289,6 @@ class BuyingServiceContentWrapper extends React.Component {
         ]
         console.log(favoriteAddressData)
         return favoriteAddressData
-      }
-
-    handleApplyService(e){
-        console.log("Apply BuyingService!!")
-        this.setState({applyBuyingService:true, modalShow:false})
-        const buyingServiceData = this.buildBuyingServiceData()
-        this.createBuyingService(buyingServiceData)
-        if(this.state.registerFavoriteAddress){
-            const favoriteAddress = this.buildFavoriteAddressData()
-            console.log('favoriteAddressData:' + favoriteAddress)
-            //this.registerFavoriteAddress(favoriteAddress)
-          }
-        console.log(buyingServiceData)
-        this.handleMoveToMypage()
     }
 
     registerFavoriteAddress(contents){
@@ -373,8 +374,46 @@ class BuyingServiceContentWrapper extends React.Component {
     }
 
     handleChangeTransitNumber(event){
-        this.setState({transitNumber:event.target.value})
-        console.log(event.target.value)
+        let value = event.target.value
+        let valid = validateInputForm('transitNumber', value)
+        this.setState({
+            transitNumber:value,
+            validTransitNumber: valid,
+            isInvalidTransitNumber:this.state.tryToValidate && !valid
+        })
+        this.validForm()
+    }
+
+    handleChangeAgreeWithCollection(event){
+        let value = event.target.checked
+        let valid = validateInputForm('agreeWithCollection', value)
+        this.setState({
+            agreeWithCollection:value,
+            validAgreeWithCollection: valid,
+            isInvalidAgreeWithCollection:this.state.tryToValidate && !valid
+        })
+        this.validForm()
+    }
+
+    validForm() {
+        if(this.state.agreeWithCollection &
+            this.state.validTransitNumber
+            ){
+            return true
+        } else {
+            return false
+        }
+    }
+
+    handleApplyService(e){
+        this.setState({applyBuyingService:true, modalShow:false})
+        const buyingServiceData = this.buildBuyingServiceData()
+        this.createBuyingService(buyingServiceData)
+        if(this.state.registerFavoriteAddress){
+            const favoriteAddress = this.buildFavoriteAddressData()
+            //this.registerFavoriteAddress(favoriteAddress)
+          }
+        this.handleMoveToMypage()
     }
 
     handleChangePhonenumberFirst(event){
@@ -453,12 +492,21 @@ class BuyingServiceContentWrapper extends React.Component {
     }
 
     handleModalShow() {
-        this.setState({ modalShow: true });
+        this.setState({
+            tryToValidate:true,
+            isInvalidTransitNumber: !validateInputForm('transitNumber', this.state.transitNumber),
+            isInvalidAgreeWithCollection: !validateInputForm('agreeWithCollection', this.state.agreeWithCollection)
+        });
+
+        if(this.validForm()){
+            this.setState({ modalShow: true });
+        } else {
+            console.log("not showing Modal")
+        }
     }
 
     handleModalClose() {
-        this.setState({ modalShow: false });
-        this.handleMoveToMypage()
+        this.setState({ modalShow: false })
     }
 
     handleBuyingPrice(estimationResult){
@@ -517,7 +565,12 @@ class BuyingServiceContentWrapper extends React.Component {
                 favoriteAddressList={this.state.favoriteAddressList}
                 openFavoriteAddressListPanel={this.state.openFavoriteAddressListPanel}
                 handleGetCustomerAddressData={this.handleGetCustomerAddressData}
-                handleRegisterFavoriteAddress ={this.handleRegisterFavoriteAddress }
+                handleRegisterFavoriteAddress ={this.handleRegisterFavoriteAddress}
+                handleChangeAgreeWithCollection={this.handleChangeAgreeWithCollection}
+                validTransitNumber={this.state.validTransitNumber}
+                isInvalidTransitNumber={this.state.isInvalidTransitNumber}
+                validAgreeWithCollection={this.state.validAgreeWithCollection}
+                isInvalidAgreeWithCollection={this.state.isInvalidAgreeWithCollection}
                 />
 
           </div>

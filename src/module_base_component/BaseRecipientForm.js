@@ -61,6 +61,11 @@ export class BaseRecipientWrapper extends React.Component {
                         <BaseRecipientTransitNrForm
                             handleChangeTransitNumber={this.props.handleChangeTransitNumber}
                             transitNumber={this.props.transitNumber}
+                            validTransitNumber={this.props.validTransitNumber}
+                            isInvalidTransitNumber={this.props.isInvalidTransitNumber}
+                            validAgreeWithCollection={this.props.validAgreeWithCollection}
+                            isInvalidAgreeWithCollection={this.props.isInvalidAgreeWithCollection}
+                            handleChangeAgreeWithCollection={this.props.handleChangeAgreeWithCollection}
                         />
 
                         <BaseRecipientAddressContactNrForm
@@ -179,21 +184,31 @@ export class BaseRecipientTransitNrForm extends React.Component {
                         <Form.Check inline checked={true} type='radio' label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
                         {/* <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
                         <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)' style={{marginRight:'10rem', fontSize:'14px'}}/> */}
-                                        
-                        <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
-                            <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                                placeholder="8자리 고유번호" 
-                                onChange = { this.props.handleChangeTransitNumber }
-                                defaultValue={this.props.transitNumber}
-                                style={{ marginRight:'10px'}}/>
-                            <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
-                        </InputGroup >
-                                    
-                        <Form.Check type='checkbox' 
-                            onChange={e => this.agreeWithCollectionCheckbox(e)} label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
-                            checked={this.state.agreeWithCollection}
-                            style={{fontSize:'14px'}}/>
-                            <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
+                        <Form noValidate validated={this.props.validTransitNumber}>
+                            <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
+                                <FormControl id="basic-url" aria-describedby="basic-addon3" 
+                                    placeholder="8자리 고유번호" 
+                                    onChange = { this.props.handleChangeTransitNumber }
+                                    defaultValue={this.props.transitNumber}
+                                    style={{ marginRight:'10px'}}
+                                    required
+                                    isInvalid={ this.props.isInvalidTransitNumber }
+                                />
+                                <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
+                            </InputGroup >
+                        </Form>
+
+                        <Form noValidate validated={this.props.validAgreeWithCollection}>    
+                            <Form.Check type='checkbox' 
+                                onChange={this.props.handleChangeAgreeWithCollection} 
+                                label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
+                                checked={this.state.agreeWithCollection}
+                                style={{fontSize:'14px'}}
+                                required
+                                isInvalid={this.props.isInvalidAgreeWithCollection}
+                            />
+                                <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
+                        </Form>
                     </Card.Body> 
                 </Card> 
             </InputGroup>

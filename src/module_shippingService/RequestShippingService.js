@@ -180,7 +180,7 @@ class ShippingCenter extends React.Component{
      return(
         /* ToDo : as component */
         <div>
-            <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem' }}>
+            <Card border="dark" style={{ width: '80%', height:'18rem', marginTop:'1rem', marginBottom:'1rem' }}>
                 <Card.Header>물류센터</Card.Header>
                 <Card.Body >
                     <Card.Text>
@@ -293,7 +293,6 @@ class InputDeliveryContentWrapper extends React.Component{
             //control total validation
             tryToValidate:false,
             validForm:false,
-            disabledButton:false
         };
 
         this.inputShopUrl               = this.inputShopUrl.bind(this);
@@ -624,7 +623,7 @@ class InputDeliveryContentWrapper extends React.Component{
 
         if(this.validForm()){
             console.log("show")
-            //this.setState({show:true});
+            this.setState({show:true});
         } else {
             console.log("not show")
         }
@@ -645,7 +644,7 @@ class InputDeliveryContentWrapper extends React.Component{
         let value = event.target.checked
         let valid = validateInputForm('agreeWithCollection', value)
         this.setState({
-            agreeWithCollection:event.target.checked,
+            agreeWithCollection:value,
             validAgreeWithCollection: valid,
             isInvalidAgreeWithCollection:this.state.tryToValidate && !valid
         })
@@ -660,7 +659,7 @@ class InputDeliveryContentWrapper extends React.Component{
         } else {
             return false
         }
-      }
+    }
 
     render(){
 
@@ -1155,14 +1154,3 @@ class InputDeliveryContentWrapper extends React.Component{
             );
         }
     }
-
-
-    function ValidationMessage(props) {
-        // if (!props.valid) {
-            if (true) {
-          return(
-            <div className='error-msg'>ERROR</div>
-          )
-        }
-        return null;
-      }

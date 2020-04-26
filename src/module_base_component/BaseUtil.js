@@ -67,3 +67,8 @@ export function getFormattedPoint(point){
         return EMPTY_STRING
     }
 }
+
+
+export function window_reload(){
+    window.location.reload();
+}
