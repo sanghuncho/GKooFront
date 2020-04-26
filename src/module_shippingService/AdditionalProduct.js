@@ -21,6 +21,7 @@ export class AdditionalProduct extends React.Component{
             itemTitle:"선택",
             itemTitleList:[],
             isValidItemTitle:false,
+            disabled_itemTitleList:true,
             itemTitleVariant:"outline-secondary",
 
             brandName:"",
@@ -60,7 +61,12 @@ export class AdditionalProduct extends React.Component{
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
+        this.setState({
+            categoryTitle:title,
+            disabled_itemTitleList:false,
+            categoryVariant:"outline-secondary",
+            isValidCategory:true
+        })
         this.props.shippingProductList[this.props.index].categoryTitle = title
         this.state.itemTitleList = getItemTitleList(title)
     }
@@ -153,10 +159,11 @@ export class AdditionalProduct extends React.Component{
                         variant = {categoryVariant}
                         title={this.state.categoryTitle}
                         id="input-group-dropdown-category"
+                        drop='right'
                         style={{ marginRight: '200px'}}
                         >
                        {this.state.categoryTitleList.map((category) => 
-                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
+                                { return (<div><Dropdown.Item style={{fontSize:'14px'}} onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
                     </DropdownButton>
                 </InputGroup> 
                 <InputGroup size="sm" className="mb-3">
@@ -171,9 +178,11 @@ export class AdditionalProduct extends React.Component{
                         variant={itemTitleVariant}
                         title={this.state.itemTitle}
                         id="input-group-dropdown-category"
+                        drop='right'
+                        disabled={this.state.disabled_itemTitleList}
                         >
                         {this.state.itemTitleList.map((item) => 
-                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
+                                { return (<div><Dropdown.Item style={{fontSize:'14px'}} onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
 
                     </DropdownButton>
                    

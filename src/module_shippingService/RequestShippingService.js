@@ -458,7 +458,6 @@ class InputDeliveryContentWrapper extends React.Component{
 
     inputBrandName(event){
         this.setState({brandName:event.target.value})
-        console.log(event.target.value)
         this.state.shippingProductList[0].brandName = event.target.value
     }
 

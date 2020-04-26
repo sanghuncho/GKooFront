@@ -10,7 +10,7 @@ import { BuyingServiceNavbar } from './BuyingServiceIntro'
 import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup, Modal } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
 import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
-import { BaseDropdown } from '../module_base_component/BaseDropdown'
+import { BaseDropdown, BaseDropdownDisabled } from '../module_base_component/BaseDropdown'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
 import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm'
 import { BaseProductPriceCalc } from '../module_base_component/BaseCustomComponent'
@@ -798,6 +798,7 @@ export class ProductContent extends React.Component {
             categoryTitleList:CATEGORY_LIST,
             itemTitle:"선택",
             itemTitleList:[],
+            disabled_itemTitleList:true,
             brandName:'',
             itemName:'',
             productPrice:"",
@@ -828,7 +829,10 @@ export class ProductContent extends React.Component {
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title})
+        this.setState({
+            categoryTitle:title,
+            disabled_itemTitleList:false,
+        })
         this.props.productContentObjectList[this.props.index].categoryTitle = title
         this.state.itemTitleList = getItemTitleList(title)
     }
@@ -892,11 +896,12 @@ export class ProductContent extends React.Component {
                     handleSelectTitle={this.handleSelectCategory}
                 />
 
-                <BaseDropdown
+                <BaseDropdownDisabled
                     label="품목"
                     title={this.state.itemTitle}
                     titleList={this.state.itemTitleList}
                     handleSelectTitle={this.handleSelectItem}
+                    disabled_itemTitleList={this.state.disabled_itemTitleList}
                 />
 
                 <BaseInputGroup 
