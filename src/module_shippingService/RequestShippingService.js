@@ -226,13 +226,12 @@ class InputDeliveryContentWrapper extends React.Component{
             categoryTitle:"선택",
             categoryTitleList:CATEGORY_LIST,
             isValidCategory:false,
-            //categoryVariant:"danger",
             categoryVariant:"outline-secondary",
 
             itemTitle:"선택",
             itemTitleList:[],
-            isValidItemTitle:false,
-            //itemTitleVariant:"danger",
+            //isValidItemTitle:false,
+            disabled_itemTitleList:true,
             itemTitleVariant:"outline-secondary",
 
             brandName:"",
@@ -442,7 +441,12 @@ class InputDeliveryContentWrapper extends React.Component{
     }
 
     handleSelectCategory(event, title) {
-        this.setState({categoryTitle:title, categoryVariant:"outline-secondary", isValidCategory:true})
+        this.setState({
+            categoryTitle:title,
+            disabled_itemTitleList:false,
+            categoryVariant:"outline-secondary",
+            isValidCategory:true
+        })
         this.state.shippingProductList[0].categoryTitle = title
         this.state.itemTitleList = getItemTitleList(title)
     }
@@ -523,22 +527,6 @@ class InputDeliveryContentWrapper extends React.Component{
     changeHandlerPhonenumberSecond(event){
         this.setState({phonenumberSecond:event.target.value})
     }
-
-    // applyDeliveryService(e, allowToApply, itemNameLength){
-    //     console.log("==>additional shopList")
-    //     console.log(this.state.shopUrlList)
-    //     console.log("<==additional shopList")
-    //     if(allowToApply){
-    //         console.log("allowToApply")
-    //         this.setState({applyDeliveryService:true})
-    //     } else {
-    //         console.log("Not allowToApply")
-    //         console.log("itemNameLength: " + itemNameLength)
-    //         itemNameLength === 0 ? this.setState({warningInvalidItemName:true}) : 
-    //             this.setState({warningInvalidItemName:false}) 
-            
-    //     }
-    // }
 
     applyDeliveryService(e, allowToApply, itemNameLength){
         this.setState({applyDeliveryService:true})
@@ -707,7 +695,7 @@ class InputDeliveryContentWrapper extends React.Component{
             warnItemTitle = isValidItemTitle ? "" : "품목";
             warnComma = (isValidCategory || isValidItemTitle) ? "" : ", ";
             popOver = <Popover id="popover-basic" title="필수기재사항">
-                            {warnCategory}{warnComma} {warnItemTitle} 영역을 선택해주세요.<br/>
+                            {/* {warnCategory}{warnComma} {warnItemTitle} 영역을 선택해주세요.<br/> */}
                       </Popover>
         }
 
@@ -780,9 +768,10 @@ class InputDeliveryContentWrapper extends React.Component{
                             variant = {categoryVariant}
                             title={this.state.categoryTitle}
                             id="input-group-dropdown-category"
+                            drop='right'
                             >
                             {this.state.categoryTitleList.map((category) => 
-                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
+                                { return (<div><Dropdown.Item  style={{fontSize:'14px'}} onSelect={e => this.handleSelectCategory(e, category)}>{category}</Dropdown.Item></div> )})}
                         </DropdownButton>
                     </InputGroup> 
                     <InputGroup size="sm" className="mb-3">   
@@ -797,9 +786,11 @@ class InputDeliveryContentWrapper extends React.Component{
                             variant={itemTitleVariant}
                             title={this.state.itemTitle}
                             id="input-group-dropdown-category"
+                            drop='right'
+                            disabled={this.state.disabled_itemTitleList}
                             >
                             {this.state.itemTitleList.map((item) => 
-                                { return (<div><Dropdown.Item onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
+                                { return (<div><Dropdown.Item style={{fontSize:'14px'}} onSelect={e => this.handleSelectItem(e, item)}>{item}</Dropdown.Item></div> )})}
 
                         </DropdownButton>
                        
@@ -1083,14 +1074,16 @@ class InputDeliveryContentWrapper extends React.Component{
                         </InputGroup>
 
                         <InputGroup className="mb-3" style={{ width: '50%', marginTop:'10px', marginLeft:'35%', marginRight:'25%'}}>
-                            <OverlayTrigger trigger="hover" overlay={popOver} placement="left">
+                            
+                            {/* OverlayTrigger 안씀 관련된 코드 제거 해야함 
+                            <OverlayTrigger trigger="hover" overlay={popOver} placement="left"> */}
                                 <Button size="sm" variant='secondary' style={{ marginRight:'10px', fontSize:'14px'}}
                                     //onClick={(e) => this.applyDeliveryService(e, allowToApply, itemNameLength)}
                                     //확인 창 떠서 예 클리하면 DB 전달
                                     onClick={this.handleModalShow}
                                     >배송대행 신청하기
                                 </Button>
-                            </OverlayTrigger>
+                            {/* </OverlayTrigger> */}
                             {/* 추후 개발
                             <Button size="sm" variant='secondary'>임시 저장하기</Button> */}
                         </InputGroup >

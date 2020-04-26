@@ -30,8 +30,8 @@ export const CATEGORY_LIST = [
     category_map.get("cat_10"), category_map.get("cat_11"), category_map.get("cat_12"),
     category_map.get("cat_13"), category_map.get("cat_14"), category_map.get("cat_15"),
     category_map.get("cat_16"), category_map.get("cat_17"), category_map.get("cat_18"),
-    category_map.get("cat_19"), category_map.get("cat_20"), category_map.get("cat_21"),
-    category_map.get("cat_22"), 
+    //category_map.get("cat_19"), category_map.get("cat_20"), category_map.get("cat_21"),
+    //category_map.get("cat_22"), 
     ]
 
 {/* 배송회사 */}
