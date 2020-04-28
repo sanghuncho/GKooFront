@@ -39,14 +39,25 @@ export class BuyingServiceIntro extends React.Component{
 }
 
 {/* BuyingServiceNavbar CSS */}
+// const NavigationStyle = styled(BaseNavigation)`
+//     background: #80b13e;
+//     color: #FFFFFF;
+//     letter-spacing: 1px;
+//     width: 110px;
+//     line-height: 22px;
+//     border-radius: 0px;
+// `;
+
 const NavigationStyle = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 110px;
+    width: 90px;
     line-height: 22px;
     border-radius: 0px;
 `;
+
+
 const NavLinkStyle = styled(BaseNav)`
     flex-direction: column;
 `;
@@ -110,7 +121,8 @@ export class BuyingServiceNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
-                            <TextStyle>구매대행 신청</TextStyle>
+                            {/* <TextStyle>구매대행 신청</TextStyle> */}
+                            <TextStyle>신청하기</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
@@ -130,7 +142,7 @@ export class BuyingServiceNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={connectdevelop} />
                             </IconCnt>
-                            <TextStyle>이베이 경매대행</TextStyle>
+                            <TextStyle>경매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

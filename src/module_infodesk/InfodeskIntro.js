@@ -43,21 +43,36 @@ export class InfodeskIntro extends React.Component{
 }
 
 {/* InfodeskIntroNavbar CSS */}
+// const NavigationStyle = styled(BaseNavigation)`
+//     background: #80b13e;
+//     color: #FFFFFF;
+//     letter-spacing: 1px;
+//     width: 110px;
+//     line-height: 22px;
+//     border-radius: 0px;
+// `;
+
 const NavigationStyle = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 110px;
+    width: 90px;
     line-height: 22px;
     border-radius: 0px;
 `;
+
 const NavLinkStyle = styled(BaseNav)`
     flex-direction: column;
 `;
 
+// const TextStyle = styled.div`
+//   padding-left: 0px;
+//   font-size: 12px;
+// `;
+
 const TextStyle = styled.div`
   padding-left: 0px;
-  font-size: 12px;
+  font-size: 10px;
 `;
 
 const TextStyleTransitNr = styled.div`
@@ -111,7 +126,7 @@ export class InfodeskIntroNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={bullseye} />
                             </IconCnt>
-                            <TextStyle>구매대행 안내</TextStyle>
+                            <TextStyle>구매대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
@@ -121,7 +136,7 @@ export class InfodeskIntroNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={cube} />
                             </IconCnt>
-                            <TextStyle>배송대행 안내</TextStyle>
+                            <TextStyle>배송대행</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
@@ -131,7 +146,7 @@ export class InfodeskIntroNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={checkSquareO} />
                             </IconCnt>
-                            <TextStyle>검수/보상안내</TextStyle>
+                            <TextStyle>검수/보상</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

@@ -12,15 +12,18 @@ import { MyPageSideNav } from "./MyPageSideNav"
 import { Breadcrumb, Card, Button, Form, Table, Row, Col, InputGroup, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressInputForm } from './FavoriteAddressInputForm'
+import { get_log_message } from "../module_base_component/LogMessenger"
 
 var keycloak = Keycloak(keycloakConfigLocal);
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
+  min-height:calc(100vh);    
 `;
 
 const BodyContainer = styled(BaseAppContainer)`
   height:auto;
+  min-height:calc(100vh);    
   flex-direction: column;
 `;
 
@@ -89,11 +92,12 @@ export class FavoriteAddressManager extends React.Component{
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token,
           userid:keycloak.tokenParsed.preferred_username})
-         
+          get_log_message("FavoriteAddressManager", "userid", keycloak.tokenParsed.preferred_username)
           //this.fetchPurchaseOrderList(keycloak.token)
       })
     }
 
+    // not need since 28.04.20
     // updateTranckingNumber(orderNumber, trackingCompany, trackingNumber){
     //   const contents =  [{orderNumber: orderNumber}, 
     //       {trackingCompany:trackingCompany},
@@ -355,6 +359,7 @@ export class FavoriteAddress extends React.Component{
     }    
 }
 
+{/* 배송지 추가 */}
 class AddingAddressPanel extends React.Component{
   constructor(props) {
       super(props);
@@ -369,12 +374,14 @@ class AddingAddressPanel extends React.Component{
             saveType={"CREATE"}
             accessToken={this.props.accessToken}
             favoriteAddressData={this.props.favoriteAddressData}
+            userid={this.props.userid}
             />
         </div>
       );
     }    
 }
 
+{/* 배송지 수정 */}
 class EditingAddressPanel extends React.Component{
   constructor(props) {
       super(props);

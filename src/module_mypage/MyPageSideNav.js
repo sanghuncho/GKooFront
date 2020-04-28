@@ -31,14 +31,14 @@ const IconCnt = styled.div`
 
 const Text = styled.div`
   padding-left: 0px;
-  font-size: 12px;
+  font-size: 10px;
 `;
 
 const Navigation = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 110px;
+    width: 90px;
     line-height: 22px;
     border-radius: 0px;
 `;
@@ -102,7 +102,7 @@ export class MyPageSideNav extends React.Component{
                             <IconCnt>
                                 <Icon icon={home} />
                             </IconCnt>
-                            <Text>배송주소 안내</Text>
+                            <Text>배송주소안내</Text>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

@@ -42,7 +42,7 @@ const NavigationStyle = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 110px;
+    width: 90px;
     line-height: 22px;
     border-radius: 0px;
 `;
@@ -51,7 +51,7 @@ const NavLinkStyle = styled(BaseNav)`
 `;
 const TextStyle = styled.div`
   padding-left: 0px;
-  font-size: 12px;
+  font-size: 10px;
 `;
 const IconCnt = styled.div`
   color: #FFF;

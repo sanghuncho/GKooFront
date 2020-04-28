@@ -47,7 +47,7 @@ const NavigationStyle = styled(BaseNavigation)`
     background: #80b13e;
     color: #FFFFFF;
     letter-spacing: 1px;
-    width: 110px;
+    width: 90px;
     line-height: 22px;
     border-radius: 0px;
 `;
@@ -56,7 +56,7 @@ const NavLinkStyle = styled(BaseNav)`
 `;
 const TextStyle = styled.div`
   padding-left: 0px;
-  font-size: 12px;
+  font-size: 10px;
 `;
 const IconCnt = styled.div`
   color: #FFF;
@@ -95,7 +95,7 @@ export class ShippingServiceNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={bullseye} />
                             </IconCnt>
-                            <TextStyle>배송대행 신청</TextStyle>
+                            <TextStyle>신청하기</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>
@@ -115,7 +115,7 @@ export class ShippingServiceNavbar extends React.Component{
                             <IconCnt>
                                 <Icon icon={home} />
                             </IconCnt>
-                            <TextStyle>배송주소 안내</TextStyle>
+                            <TextStyle>배송주소안내</TextStyle>
                         </NavLink>
                     </NavLinkStyle>
                     </div>

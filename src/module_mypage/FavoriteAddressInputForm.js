@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React from 'react';
 import { Card, Button, InputGroup, FormControl } from "react-bootstrap"
 import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
+import { get_log_message } from "../module_base_component/LogMessenger"
 
 export class FavoriteAddressInputForm extends React.Component{
     constructor(props) {
@@ -96,6 +97,7 @@ export class FavoriteAddressInputForm extends React.Component{
       handleCreate(accessToken, favoriteAddressData){
         let userid=this.props.userid
         setTokenHeader(accessToken)
+        get_log_message("createFavoriteAddress", "userid", userid)
         fetch(basePort + '/createFavoriteAddress/' + userid, 
                 {method:'post', headers, 
                   body:JSON.stringify(favoriteAddressData)})
