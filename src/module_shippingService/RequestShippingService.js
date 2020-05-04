@@ -639,13 +639,15 @@ class InputDeliveryContentWrapper extends React.Component{
     }
 
     validForm() {
-        if(this.state.agreeWithCollection &
-            this.state.validTransitNumber
-            ){
-            return true
-        } else {
-            return false
-        }
+        // if(this.state.agreeWithCollection &
+        //     this.state.validTransitNumber
+        //     ){
+        //     return true
+        // } else {
+        //     return false
+        // }
+        return this.state.validTransitNumber &
+                this.state.validTransitNumber ? true : false
     }
 
     render(){

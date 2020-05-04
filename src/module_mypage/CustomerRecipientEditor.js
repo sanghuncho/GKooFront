@@ -5,7 +5,10 @@ import { Card, Button, InputGroup, FormControl, Form, Badge } from "react-bootst
 import { Icon as BaseIcon } from "react-icons-kit";
 import { check, minus, circle } from 'react-icons-kit/fa/'
 import { InfoBadge } from "../module_base_component/InfoBadge";
+import { get_log_message } from "../module_base_component/LogMessenger";
 import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
+import { validateInputForm } from '../module_base_component/BaseInputGroup'
+import { window_reload } from '../module_base_component/BaseUtil'
 
 /*
  *
@@ -30,12 +33,18 @@ export class CustomerRecipientEditor extends React.Component {
             edited:false,     
             nameKor:this.props.recipientInfo.nameKor,
             nameEng:this.props.recipientInfo.nameEng,
+            
             transitNr:this.props.recipientInfo.transitNr,
+            validTransitNumber:false,
+            isInvalidTransitNumber:false,
+
             phonenumberFirst:this.props.recipientInfo.phonenumberFirst,
             phonenumberSecond:this.props.recipientInfo.phonenumberSecond,
             zipCode:this.props.recipientInfo.zipCode,
             address:this.props.recipientInfo.address,
             usercomment:this.props.recipientInfo.usercomment,
+            tryToValidate:false,
+            validForm:false,
         }
 
         this.handleCancel = this.handleCancel.bind(this)
@@ -48,6 +57,8 @@ export class CustomerRecipientEditor extends React.Component {
         this.changeHandlerZipCode = this.changeHandlerZipCode.bind(this)
         this.changeHandlerAddress = this.changeHandlerAddress.bind(this)
         this.changeHandlerUsercomment = this.changeHandlerUsercomment.bind(this)
+        this.handleOpenHowToGetTransitNr = this.handleOpenHowToGetTransitNr.bind(this)
+        this.validForm = this.validForm.bind(this)
     }
 
        /*
@@ -56,6 +67,10 @@ export class CustomerRecipientEditor extends React.Component {
     //   shouldComponentUpdate(nextProps, nextState) {
     //     return this.state.value != nextState.value;
     //   }
+      handleOpenHowToGetTransitNr(){
+          const url = '/InfodeskTransitNr';
+          window.open(url, '_blank');
+        }
 
       handleCancel(update){
           window.scrollTo(0, 340);
@@ -63,12 +78,25 @@ export class CustomerRecipientEditor extends React.Component {
       }
 
       handleSave(){
+        get_log_message("CustomerRecipientEditor", "transitNr length", this.state.transitNr.length)
+        get_log_message("CustomerRecipientEditor", "invalid",  !validateInputForm('transitNumber', this.state.transitNr))
+        this.setState({
+            tryToValidate:true,
+            // get valid transitnumber!!
+            isInvalidTransitNumber: !validateInputForm('transitNumber', this.state.transitNr),
+        });
         //comparing the state?
-        if(this.state.edited){
-            this.updateRecipient(this.props.accessToken)
+        if(this.validForm()){
+            get_log_message("CustomerRecipientEditor", "validForm", '')
+            if(this.state.edited){
+                this.updateRecipient(this.props.accessToken)
+            }
+            this.props.showStoredRecipient()
+            //window.scrollTo(0, 340);
+            window_reload()
+        } else {
+            get_log_message("CustomerRecipientEditor", "invalidForm", '')
         }
-        this.props.showStoredRecipient()
-        window.scrollTo(0, 340);
       }
 
       changeHandlerNameKor(event){
@@ -84,10 +112,21 @@ export class CustomerRecipientEditor extends React.Component {
       }
 
       changeHandlerTransitNr(event){
+        let value = event.target.value
+        let valid = validateInputForm('transitNumber', value)
         const transitNrRef = this.props.recipientInfo.transitNr
         this.changeHandlerCommonState(transitNrRef, event)
-        this.setState({transitNr:event.target.value}) 
+        this.setState({
+            transitNr:value,
+            validTransitNumber:valid,
+            isInvalidTransitNumber:this.state.tryToValidate && !valid
+        })
+        this.validForm()
       }
+
+      validForm() {
+        return this.state.validTransitNumber ? true : false
+    }
 
       changeHandlerPhonenumberFirst(event){
         const phonenumberFirstRef = this.props.recipientInfo.phonenumberFirst
@@ -243,16 +282,21 @@ export class CustomerRecipientEditor extends React.Component {
                                     checked={false}
                                     onChange={e => this.inputBusinessTransit(e)} 
                                     label='사업자번호(사업자통관)' style={{ fontSize: textFontSize}}/> */}
-                                        
-                                <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
+                                <Form noValidate validated={this.state.validTransitNumber}>        
+                                    <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                             placeholder="8자리 고유번호"
                                             defaultValue={this.props.recipientInfo.transitNr}
-                                            onChange = { this.changeHandlerTransitNr }
-                                            style={{ marginRight:'10px'}}/>
-                                        <Button size="sm" variant='secondary' style={{ marginRight:'10px'}}>발급방법</Button>
-                                        <Button size="sm" variant='secondary'>내 개인통관고유번호 저장</Button>
+                                            onChange = {this.changeHandlerTransitNr}
+                                            required
+                                            isInvalid={this.state.isInvalidTransitNumber}
+                                            style={{marginRight:'10px'}}/>
+                                        <Button size="sm" variant='secondary' 
+                                            onClick={() => this.handleOpenHowToGetTransitNr()}
+                                            style={{ marginRight:'10px'}}>발급방법</Button>
+                                        {/*  <Button size="sm" variant='secondary'>내 개인통관고유번호 저장</Button> */}
                                     </InputGroup >
+                                </Form> 
                                     <Form.Check type='checkbox' 
                                         //onChange={e => this.agreeWithCollectionCheckbox(e)} 
                                         label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'

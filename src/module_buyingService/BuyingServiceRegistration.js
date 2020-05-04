@@ -29,8 +29,9 @@ var keycloak = Keycloak(keycloakConfigLocal);
 
 {/* BuyingServiceRegistration Style */}
 export const BodyContainer = styled(BaseAppContainer)`
-  height:auto;
-  flex-direction: column;
+    min-height:calc(100vh);     
+    height:auto;
+    flex-direction: column;
 `;
 
 const BuyingServiceRegistrationContainer = styled(BaseAppContainer)`
@@ -56,7 +57,6 @@ export class BuyingServiceRegistration extends React.Component{
             })
             fetchRegisterInitialCustomer(keycloak)
         })
-
     }
 
     handleLogout(){
@@ -93,15 +93,21 @@ export class BuyingServiceController extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            //agreement:false,
-            agreement:true,
+            agreement:false,
+            //agreement:true,
+            agreementBoxsize:false
         }
 
       this.handleChangeOnCheckbox = this.handleChangeOnCheckbox.bind(this)
+      this.handleChangeWarn = this.handleChangeWarn.bind(this)
     }
 
     handleChangeOnCheckbox(e) {
         this.setState({agreement:e.target.checked}) 
+    }
+
+    handleChangeWarn(event) {
+        this.setState({agreementBoxsize:event.target.checked}) 
     }
       
     render() {
@@ -124,9 +130,12 @@ export class BuyingServiceController extends React.Component {
                         service='BuyingService'/>
 
                     {agreement ? <BuyingServiceCenter 
-                                    accessToken={this.props.accessToken} />: EMPTY_PAGE }
+                                    accessToken={this.props.accessToken}
+                                    handleChangeWarn={this.handleChangeWarn}
+                                    agreementBoxsize={this.props.agreementBoxsize}
+                                     />: EMPTY_PAGE }
 
-                    {agreement ? <BuyingServiceContentWrapper 
+                    {this.state.agreementBoxsize ? <BuyingServiceContentWrapper 
                                         accessToken={this.props.accessToken}
                                         userid={this.props.userid} />: EMPTY_PAGE }
                     
@@ -147,13 +156,14 @@ class BuyingServiceCenter extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            understandWarning:true,
+            //understandWarning:true,
+            agreementBoxsize:false,
         }
       this.handleChangeWarn = this.handleChangeWarn.bind(this)
     }
 
     handleChangeWarn(event) {
-        this.setState({understandWarning:event.target.checked}) 
+        this.setState({agreementBoxsize:event.target.checked}) 
     }
       
     render() {
@@ -169,9 +179,9 @@ class BuyingServiceCenter extends React.Component {
                 </Card.Body>
                 <Card.Footer>
                     <Form.Check style={LogisticsCenterWarnFont} 
-                        checked={this.state.understandWarning} 
+                        checked={this.props.agreementBoxsize} 
                         type='checkbox' 
-                        onChange={e => this.handleChangeWarn(e)} 
+                        onChange={e => this.props.handleChangeWarn(e)} 
                         label='Box 어느 한면이라도 152cm를 초과하거나, 1건당 무게 30kg을 초과할 경우 신청불가'/>
                 </Card.Footer>
             </Card>

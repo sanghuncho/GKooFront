@@ -194,6 +194,7 @@ class MyPageDetailWrapper extends React.Component{
             <div>
                 <Breadcrumb>
                     <Breadcrumb.Item active>마이페이지</Breadcrumb.Item>
+                    <Breadcrumb.Item active>배송대행 </Breadcrumb.Item>
                     <Breadcrumb.Item active>주문 상세정보</Breadcrumb.Item>
                 </Breadcrumb> 
                 

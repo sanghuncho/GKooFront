@@ -72,3 +72,7 @@ export function getFormattedPoint(point){
 export function window_reload(){
     window.location.reload();
 }
+
+export function window_scrollTo(x_corordinate, y_corordinate){
+    window.scrollTo(x_corordinate, y_corordinate);
+}
