@@ -7,6 +7,7 @@ import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { Redirect } from 'react-router';
 import { PaymentProductBooking, PaymentDeliveryBooking } from '../module_payment/PaymentBuyingService'
 import { PaymentArtToString, PaymentStateToString } from '../module_payment/PaymentUtil'
+import { get_log_message } from '../module_base_component/LogMessenger'
 
 function CaptionMypageTable(props) {
     return <h6 style={{ borderRadius: '0.25em', textAlign: 'left', color: 'black',
@@ -315,8 +316,7 @@ export class PaymentDeliveryBuyingServiceButton extends React.Component {
         const paymentState = this.props.paymentState
         const paymentOwnername = this.props.paymentOwnername
         let paymentButton;
-        // console.log("paymentOwnername: " + paymentOwnername )
-        // console.log("paymentState: " + paymentState )
+        const CHOICE = 0 //선택
         if (paymentState === 3 && paymentOwnername === "") {
             paymentButton = <RequestPaymentDelivery 
                                 orderid={this.props.orderid} 
@@ -327,7 +327,8 @@ export class PaymentDeliveryBuyingServiceButton extends React.Component {
                                 buttonLabel={"결제하기"}
                                 paymentOwnername={this.props.paymentOwnername}
                                 readOnly={false}
-                                paymentArt={this.props.paymentArt}/>
+                                paymentArt={CHOICE}
+                                />
 
         } else if (paymentState === 3 && paymentOwnername != "") {
             paymentButton = <RequestPaymentDelivery 
@@ -404,6 +405,7 @@ class RequestPaymentProduct extends React.Component{
                             paymentArt={PaymentArtToString(this.props.paymentArt)}
                             readOnly={this.props.readOnly}
                             userid={this.props.userid}
+                            handleModalClose={this.handleModalClose}
                             />
                     </Modal.Body>
 
@@ -435,19 +437,19 @@ class RequestPaymentDelivery extends React.Component{
     }
   
     handleModalClose() {
-      this.setState({ showModal: false });
+      this.setState({showModal:false});
+      get_log_message('PaymentInformation/RequestPaymentProduct','modal closed','')
     }
   
     handleModalShow() {
-        this.setState({ showModal: true });
+        this.setState({showModal:true});
     }
 
     handleShowDetailPage(){
-        this.setState({redirect: true});
+        this.setState({redirect:true});
     }
 
     render() {
-        console.log("paymentArt:" + this.props.paymentArt)
         return (
             <div>
                
@@ -463,6 +465,7 @@ class RequestPaymentDelivery extends React.Component{
                             paymentOwnername={this.props.paymentOwnername}
                             paymentArt={PaymentArtToString(this.props.paymentArt)}
                             readOnly={this.props.readOnly}
+                            handleModalClose={this.handleModalClose}
                             />
                     </Modal.Body>
 

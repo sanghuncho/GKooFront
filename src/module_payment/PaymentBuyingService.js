@@ -50,8 +50,9 @@ export class PaymentProductBooking extends React.Component {
             body:JSON.stringify(contents)})
             .then((result) => { return result;})
             .then((contents) => {
-            window.location.reload();
+            this.props.handleModalClose()
         }).catch(err => err);
+        window.location.reload();
     }
   
     render() {
@@ -182,7 +183,7 @@ export class PaymentProductBookingInDetail extends React.Component {
               {method:'post', headers, 
                 body:JSON.stringify(contents)})
               .then((result) => { return result;}).then((contents) => {
-          console.log(contents)
+             
       }).catch(err => err);
   }
 
@@ -314,8 +315,9 @@ export class PaymentDeliveryBooking extends React.Component {
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result;}).then((contents) => {
-            console.log(contents)
+                this.props.handleModalClose()
         }).catch(err => err);
+        window.location.reload();
     }
   
     render() {

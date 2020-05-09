@@ -76,3 +76,10 @@ export function window_reload(){
 export function window_scrollTo(x_corordinate, y_corordinate){
     window.scrollTo(x_corordinate, y_corordinate);
 }
+
+//not export time 2000 = 2 second
+function setTimer(method, time){
+    setTimeout(() => {
+        method()
+    }, time);
+}

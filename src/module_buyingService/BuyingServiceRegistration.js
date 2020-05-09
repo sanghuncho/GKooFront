@@ -421,9 +421,12 @@ class BuyingServiceContentWrapper extends React.Component {
         this.createBuyingService(buyingServiceData)
         if(this.state.registerFavoriteAddress){
             const favoriteAddress = this.buildFavoriteAddressData()
-            //this.registerFavoriteAddress(favoriteAddress)
-          }
-        this.handleMoveToMypage()
+            this.registerFavoriteAddress(favoriteAddress)
+        }
+
+        setTimeout(() => {
+            this.handleMoveToMypage()
+        }, 2000);
     }
 
     handleChangePhonenumberFirst(event){
