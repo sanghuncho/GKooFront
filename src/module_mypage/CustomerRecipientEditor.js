@@ -35,8 +35,12 @@ export class CustomerRecipientEditor extends React.Component {
             nameEng:this.props.recipientInfo.nameEng,
             
             transitNr:this.props.recipientInfo.transitNr,
-            validTransitNumber:false,
+            validatedTransitNumber:false,
             isInvalidTransitNumber:false,
+
+            agreeWithCollection:false,
+            validatedAgreeWithCollection:false,
+            isInvalidAgreeWithCollection:false,
 
             phonenumberFirst:this.props.recipientInfo.phonenumberFirst,
             phonenumberSecond:this.props.recipientInfo.phonenumberSecond,
@@ -59,6 +63,7 @@ export class CustomerRecipientEditor extends React.Component {
         this.changeHandlerUsercomment = this.changeHandlerUsercomment.bind(this)
         this.handleOpenHowToGetTransitNr = this.handleOpenHowToGetTransitNr.bind(this)
         this.validForm = this.validForm.bind(this)
+        this.handleChangeAgreeWithCollection = this.handleChangeAgreeWithCollection.bind(this);
     }
 
        /*
@@ -78,16 +83,21 @@ export class CustomerRecipientEditor extends React.Component {
       }
 
       handleSave(){
-        get_log_message("CustomerRecipientEditor", "transitNr length", this.state.transitNr.length)
+        //get_log_message("CustomerRecipientEditor", "transitNr length", this.state.transitNr.length)
+        get_log_message("CustomerRecipientEditor", "agreeWithCollection", this.state.agreeWithCollection)
         get_log_message("CustomerRecipientEditor", "invalid",  !validateInputForm('transitNumber', this.state.transitNr))
         this.setState({
             tryToValidate:true,
             // get valid transitnumber!!
+            validatedAgreeWithCollection:true,
+            validatedTransitNumber:true,
             isInvalidTransitNumber: !validateInputForm('transitNumber', this.state.transitNr),
+            isInvalidAgreeWithCollection: !validateInputForm('agreeWithCollection', this.state.agreeWithCollection)
         });
         //comparing the state?
         if(this.validForm()){
             get_log_message("CustomerRecipientEditor", "validForm", '')
+            get_log_message("CustomerRecipientEditor", "edited", this.state.edited)
             if(this.state.edited){
                 this.updateRecipient(this.props.accessToken)
             }
@@ -97,6 +107,17 @@ export class CustomerRecipientEditor extends React.Component {
         } else {
             get_log_message("CustomerRecipientEditor", "invalidForm", '')
         }
+      }
+
+      handleChangeAgreeWithCollection(event){
+        let value = event.target.checked
+        let valid = validateInputForm('agreeWithCollection', value)
+        this.setState({
+            agreeWithCollection:value,
+            validatedAgreeWithCollection: true,
+            isInvalidAgreeWithCollection:this.state.tryToValidate && !valid
+        })
+        this.validForm()
       }
 
       changeHandlerNameKor(event){
@@ -118,15 +139,16 @@ export class CustomerRecipientEditor extends React.Component {
         this.changeHandlerCommonState(transitNrRef, event)
         this.setState({
             transitNr:value,
-            validTransitNumber:valid,
+            validatedTransitNumber:true,
             isInvalidTransitNumber:this.state.tryToValidate && !valid
         })
         this.validForm()
       }
 
       validForm() {
-        return this.state.validTransitNumber ? true : false
-    }
+        return this.state.validatedTransitNumber && 
+            this.state.agreeWithCollection ? true : false
+      }
 
       changeHandlerPhonenumberFirst(event){
         const phonenumberFirstRef = this.props.recipientInfo.phonenumberFirst
@@ -273,7 +295,7 @@ export class CustomerRecipientEditor extends React.Component {
                                     type='radio' 
                                     checked={true}
                                     //onChange={e => this.inputPrivateTransit(e)} 
-                                    label='개인통관고유번호' style={{marginRight:'10rem', fontSize:textFontSize}}/>
+                                    label='개인통관고유부호' style={{marginRight:'10rem', fontSize:textFontSize}}/>
                                 
                                 {/* 추후 개발  
                                 <Form.Check inline 
@@ -282,7 +304,7 @@ export class CustomerRecipientEditor extends React.Component {
                                     checked={false}
                                     onChange={e => this.inputBusinessTransit(e)} 
                                     label='사업자번호(사업자통관)' style={{ fontSize: textFontSize}}/> */}
-                                <Form noValidate validated={this.state.validTransitNumber}>        
+                                <Form noValidate validated={this.state.validatedTransitNumber}>        
                                     <InputGroup size="sm" className="mb-3" style={{ width: '80%', marginTop:'10px'}}>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                                             placeholder="8자리 고유번호"
@@ -296,14 +318,18 @@ export class CustomerRecipientEditor extends React.Component {
                                             style={{ marginRight:'10px'}}>발급방법</Button>
                                         {/*  <Button size="sm" variant='secondary'>내 개인통관고유번호 저장</Button> */}
                                     </InputGroup >
-                                </Form> 
+                                </Form>
+                                <Form noValidate validated={this.state.validatedAgreeWithCollection}>
                                     <Form.Check type='checkbox' 
-                                        //onChange={e => this.agreeWithCollectionCheckbox(e)} 
+                                        onChange={e => this.handleChangeAgreeWithCollection(e)} 
                                         label='수입통관신고를 위한 개인통관고유번호 수집에 동의합니다'
-                                        //checked={this.state.agreeWithCollection}
+                                        checked={this.state.agreeWithCollection}
+                                        isInvalid={this.props.isInvalidAgreeWithCollection}
                                         style={{fontSize: textFontSize}}
+                                        required
                                     />
                                     <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."}/>
+                                </Form>
                             </Card.Body> 
                             </Card> 
                         </InputGroup>

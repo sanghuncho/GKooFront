@@ -207,7 +207,7 @@ export class BaseRecipientTransitNrForm extends React.Component {
                                 required
                                 isInvalid={this.props.isInvalidAgreeWithCollection}
                             />
-                                <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
+                            <InfoBadge infoText={"목록통관 대상품목도 개인통관고유번호 제출이 필수입니다."} />
                         </Form>
                     </Card.Body> 
                 </Card> 

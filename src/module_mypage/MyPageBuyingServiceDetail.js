@@ -199,6 +199,7 @@ class MyPageDetailWrapper extends React.Component{
                   handleUpdateRecipientData={this.props.handleUpdateRecipientData}
                   orderid={this.props.orderid}
                   accessToken={this.props.accessToken}
+                  userid={this.props.userid}
                 />
 
                 {/* 서비스현황, 구매대행-, 배송비 결제현황 포함 */}
@@ -486,6 +487,7 @@ class MyPageDetailRecipient extends React.Component{
               orderid={this.props.orderid}
               accessToken={this.props.accessToken}
               updateUrl={'updateRecipientdataBuyingService'}
+              userid={this.props.userid}
              />
           displayHeight = '67rem'
         } else {
@@ -538,7 +540,7 @@ export class CompleteRecipientDisplay extends React.Component{
                           <td width='250px' > {this.props.recipientInfo.phonenumberFirst} </td>
                       </tr>
                       <tr>
-                          <td width='150px' > 개인통관고유번호 </td>
+                          <td width='150px' > 개인통관고유부호 </td>
                           <td width='250px' > {this.props.recipientInfo.transitNr} </td>
                           <td width='150px' > 연락처2 </td>
                           <td width='250px' > {this.props.recipientInfo.phonenumberSecond} </td>
