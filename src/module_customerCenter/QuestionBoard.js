@@ -80,6 +80,7 @@ export class QuestionBoard extends React.Component{
 
         if(this.validToken(token)){
             questionBoard = <QuestionBoardWrapper keycloak ={this.state.keycloakAuth}
+                userid={this.state.userid}
                 accessToken={this.state.accessToken}
                 questionAnswerList={this.state.questionAnswerList} />
         } else {
@@ -137,6 +138,7 @@ export class QuestionBoardWrapper extends React.Component{
             questionRegisterFormWrapper = <CompleteRegisterQuestion handleCompleted={this.handleCompleted}/>
         } else {
             questionRegisterFormWrapper = <RegisterQuestion keycloak ={this.props.keycloakAuth}
+                userid={this.props.userid}
                 handleDispatchQuestion={this.handleDispatchQuestion}
                 accessToken={this.props.accessToken}
                 />
@@ -295,7 +297,7 @@ export class RegisterQuestion extends React.Component{
     }
     
     handleCreateQuestion(accessToken, questionBoardData){
-        let userid = this.keycloak.tokenParsed.preferred_username
+        let userid = this.props.userid
         this.setTokenHeader(accessToken)
         fetch(basePort + '/registerQuestion/' + userid, 
                 {method:'post', headers, 

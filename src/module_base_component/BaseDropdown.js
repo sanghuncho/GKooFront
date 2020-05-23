@@ -11,7 +11,7 @@ export class BaseDropdown extends React.Component {
     render() {
         return (
           <div>
-               <InputGroup size="sm" className="mb-3">
+                <InputGroup size="sm" className="mb-3">
                         <InputGroup.Prepend>
                             <InputGroup.Text id="basic-addon4" style={{ width: '110px'}}>
                                 {this.props.label}
@@ -27,7 +27,7 @@ export class BaseDropdown extends React.Component {
                             {this.props.titleList.map((title) => 
                                 { return (<div><Dropdown.Item style={{fontSize:'14px'}} onSelect={e => this.props.handleSelectTitle(e, title)}>{title}</Dropdown.Item></div> )})}
                         </DropdownButton>
-                    </InputGroup> 
+                </InputGroup> 
           </div>
         );
       }    

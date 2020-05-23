@@ -30,7 +30,12 @@ export const BodyContainer = styled(BaseAppContainer)`
 const BuyingServiceContainer = styled(BaseAppContainer)`
     height:auto;
     min-height:calc(100vh);
-    
+`;
+
+const CompanyIntroductionStyle = styled.section`
+    height: 100%;
+    width: 90%;
+    vertical-align: bottom;
 `;
 
 export class BuyingService extends React.Component{
@@ -47,8 +52,10 @@ export class BuyingService extends React.Component{
                         <Breadcrumb.Item active>구매대행 견적보기</Breadcrumb.Item>
                     </Breadcrumb>
                     <BuyingServiceWrapper/>
-                        <CompanyIntroductionBottom/>
                    
+                    <CompanyIntroductionStyle>
+                        <CompanyIntroductionBottom/>
+                    </CompanyIntroductionStyle>
                 </BodyContainer>
             </BuyingServiceContainer>
             </div>

@@ -73,6 +73,16 @@ export function window_reload(){
     window.location.reload();
 }
 
+//url replace and browser shows new page
+export function window_location_replace(url){
+    window.location.replace(url)
+}
+
+//new browser opened with new url
+export function window_location_open(url){
+    window.open(url)
+}
+
 export function window_scrollTo(x_corordinate, y_corordinate){
     window.scrollTo(x_corordinate, y_corordinate);
 }
