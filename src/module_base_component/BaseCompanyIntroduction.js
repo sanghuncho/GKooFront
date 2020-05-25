@@ -26,7 +26,7 @@ export class CompanyIntroductionBottom  extends React.Component{
                             </Card.Text>
                         </Col>
                         <Col>
-                            <Image src={ShippingServiceSA} style={{ width: '200px', marginLeft:'20%', marginTop:'10px'}}/>
+                            <Image src={ShippingServiceSA} style={{ width: '200px', marginLeft:'10%', marginTop:'25px'}}/>
                         </Col>
                     </Row>
                     </Container>
