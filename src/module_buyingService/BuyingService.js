@@ -6,7 +6,7 @@ import {
 import React, { Component } from 'react';
 import { AppNavbar } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb } from 'react-bootstrap';
+import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange } from 'react-icons-kit/fa/'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
@@ -71,11 +71,12 @@ export class BuyingServiceWrapper extends React.Component {
         super(props);
         this.state = {
             showCalculationResult:false,
-            fasrEstimationResult:'',
+            fastEstimationResult:'',
             productsValue:'',
             productsValueValid:false,
             deliveryValue:'',
             deliveryValueValid:false,
+            showSpinner:false,
         }
 
       this.handleProductsValue = this.handleProductsValue.bind(this)
@@ -95,17 +96,17 @@ export class BuyingServiceWrapper extends React.Component {
     }
 
     handleGetFastEstimation(contents){
-        console.log(contents)
         fetch(openBasePort + '/fastEstimationBuyingService', 
                 {method:'post', headers, 
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();})
                 .then((data) => {
-                    this.setState( { fasrEstimationResult: data} )
+                    this.setState({fastEstimationResult:data, showSpinner:false})
                 }).catch(err => err);
     }
 
     handleCalculation(){
+        this.setState({showSpinner:true})
         let productsValue = this.state.productsValue 
         let deliveryValue = this.state.deliveryValue 
         
@@ -117,12 +118,24 @@ export class BuyingServiceWrapper extends React.Component {
             console.log("valid values")
             this.handleGetFastEstimation(fastEstimationObject)  
         } else {
-            this.setState({fasrEstimationResult:''})
+            this.setState({fastEstimationResult:''})
         }
     }
       
     render() {
-        let fasrEstimationResult = getKoreanCurrencyWithInfoBadge(this.state.fasrEstimationResult.resultPrice)
+        let spinner = <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"/>
+        let fastEstimationResult
+        if(this.state.showSpinner){
+            fastEstimationResult = spinner
+        } else {
+            fastEstimationResult = getKoreanCurrencyWithInfoBadge(this.state.fastEstimationResult.resultPrice)
+        }
+        //let 
         return (
           <div>
             <Card border="dark" style={{ width:'70%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
@@ -174,8 +187,11 @@ export class BuyingServiceWrapper extends React.Component {
                     <Card.Body>
                     <Container>
                         <Row>
-                            <Col xs={8}>{fasrEstimationResult}</Col>
-                            {/* <Col></Col> */}
+                            <Col xs={8}>
+                                {fastEstimationResult}
+                                
+                            </Col>
+                            
                             <Col>
                                 <Button size="sm" 
                                     variant='secondary' 
@@ -183,6 +199,7 @@ export class BuyingServiceWrapper extends React.Component {
                                     onClick={(e) => this.handleCalculation(e)}
                                 >견적 계산
                                 </Button>
+                               
                             </Col>
                         </Row>
                         <Row>
