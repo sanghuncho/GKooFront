@@ -18,7 +18,7 @@ export class CompanyIntroductionBottom  extends React.Component{
                         </Col>
                         <Col xs={6}>
                             <Card.Text>
-                            사업자등록번호: 311-34-00638 | 통신판매신고: 제 000  <br/>
+                            사업자등록번호: 311-34-00638 | 통신판매신고: 2020-대구남구-0282  <br/>
                             전화번호: 070-000-0000 | 카카오톡 아이디: gkoo <br/>
                             주소: 대구광역시 남구 양지로 16 영호빌딩 3층(대명동) <br/>
                             이용약관 | 개인정보처리방침 <br/>

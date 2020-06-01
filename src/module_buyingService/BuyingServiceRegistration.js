@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 import React, {useState} from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
-import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup, Modal } from 'react-bootstrap';
+import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup, Modal, Spinner } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
 import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
 import { BaseDropdown, BaseDropdownDisabled } from '../module_base_component/BaseDropdown'
@@ -596,6 +596,8 @@ class ServiceEstimation extends React.Component {
         super(props);
         this.state = {
             estimationResult:'',
+            showSpinner:false,
+            getResult:''
         }
         
         this.handleCalculation = this.handleCalculation.bind(this)
@@ -603,6 +605,7 @@ class ServiceEstimation extends React.Component {
     }
 
     handleCalculation(){
+        this.setState({showSpinner:true})
         const estimationObject = [
             {shopDeliveryPrice:this.props.shopDeliveryPrice},
             {productContentObjectList: JSON.stringify(this.props.productContentObjectList)},
@@ -620,15 +623,29 @@ class ServiceEstimation extends React.Component {
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();})
                 .then((data) => {
-                    this.setState( { estimationResult: data} )
+                    this.setState( { estimationResult: data, showSpinner:false, getResult:true} )
                     this.props.handleBuyingPrice(data)
-                    //console.log(result.resultPrice)
-                }).catch(err => err);
+                }).catch(error => {
+                    this.setState({getResult:false, showSpinner:false})
+                })
     }
       
     render() {
+        let spinner = <Spinner
+                        as="span"
+                        animation="border"
+                        size="sm"
+                        role="status"
+                        aria-hidden="true"/>
+        let estimationResult
+        if(this.state.showSpinner){
+            estimationResult = spinner
+        } else if (this.state.getResult === false && this.state.showSpinner === false){
+            estimationResult = "접속이 원활하지 않으니 다시 시도해주세요"
+        } else {
+            estimationResult = getKoreanCurrencyWithInfoBadge(this.state.estimationResult.resultPrice)
+        }
 
-        let estimationResult = getKoreanCurrencyWithInfoBadge(this.state.estimationResult.resultPrice)
         return (
         <div>
              <Card border="dark" style={{ width: '80%', marginTop:'1rem', marginBottom:'1rem' }}>

@@ -46,7 +46,7 @@ function BuyingServiceNotice(props) {
   
     return (
       <div>
-        <Card.Body style={{'height': '210px','overflow-y': 'scroll', fontSize:'14px'}}>
+        <Card.Body style={{'height': '220px','overflow-y': 'scroll', fontSize:'14px'}}>
             <Card.Text>1. 지쿠 구매대행 신청서에 기재된 모든 내용은 통관시 세관에 신고되므로 허위로 작성하실 수 없습니다.</Card.Text>
             <Card.Text>2. 지쿠는 나눔배송 또는 분할배송 서비스를 제공하지 않습니다.</Card.Text>
             <Card.Text>3. 한곳의 쇼핑몰에서 한번에 여러 개의 상품을 주문한 경우에는 하나의 구매대행 신청서에 모두 등록하여야 합니다. 
@@ -66,7 +66,7 @@ function ShippingServiceNotice(props) {
   
     return (
       <div>
-         <Card.Body style={{'height': '210px','overflow-y': 'scroll', fontSize:'14px'}}>
+         <Card.Body style={{'height': '220px','overflow-y': 'scroll', fontSize:'14px'}}>
             <Card.Text>1. 지쿠 배송대행 신청서에 기재된 모든 내용은 통관시 세관에 신고되므로 허위로 작성하실 수 없습니다.</Card.Text>
             <Card.Text>2. 지쿠는 나눔배송 또는 분할배송 서비스를 제공하지 않습니다.</Card.Text>
             <Card.Text>3. 한곳의 쇼핑몰에서 한번에 여러 개의 상품을 주문한 경우에는 하나의 배송대행 신청서에 모두 등록하여야 합니다. 

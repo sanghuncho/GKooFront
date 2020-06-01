@@ -166,7 +166,13 @@ export class BaseRecipientTransitNrForm extends React.Component {
         super(props);
         this.state = {
         }
+        this.handleOpenHowToGetTransitNr = this.handleOpenHowToGetTransitNr.bind(this)
 
+    }
+
+    handleOpenHowToGetTransitNr(){
+        const url = '/InfodeskTransitNr';
+        window.open(url, '_blank');
     }
       
     render() {
@@ -181,7 +187,7 @@ export class BaseRecipientTransitNrForm extends React.Component {
                 <Card style={{ width: '90%'}}>
                     <Card.Body>
                         {/* 나중에 사업자통관 기능 추가, 배송대행 및 구매대행 */}
-                        <Form.Check inline checked={true} type='radio' label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
+                        <Form.Check inline checked={true} type='radio' label='개인통관고유부호' style={{marginRight:'10rem', fontSize:'14px'}}/>
                         {/* <Form.Check inline checked={this.state.privateTransit} type='radio' onChange={e => this.inputPrivateTransit(e)} label='개인통관고유번호' style={{marginRight:'10rem', fontSize:'14px'}}/>
                         <Form.Check inline checked={this.state.businessTransit} type='radio' onChange={e => this.inputBusinessTransit(e)} label='사업자번호(사업자통관)' style={{marginRight:'10rem', fontSize:'14px'}}/> */}
                         <Form noValidate validated={this.props.validTransitNumber}>
@@ -194,7 +200,9 @@ export class BaseRecipientTransitNrForm extends React.Component {
                                     required
                                     isInvalid={ this.props.isInvalidTransitNumber }
                                 />
-                                <Button size="sm" variant='secondary' style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
+                                <Button size="sm" variant='secondary'
+                                    onClick={() => this.handleOpenHowToGetTransitNr()}
+                                    style={{marginRight:'10px', fontSize:'14px'}}>발급방법</Button>
                             </InputGroup >
                         </Form>
 

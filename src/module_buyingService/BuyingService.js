@@ -77,6 +77,7 @@ export class BuyingServiceWrapper extends React.Component {
             deliveryValue:'',
             deliveryValueValid:false,
             showSpinner:false,
+            getResult:''
         }
 
       this.handleProductsValue = this.handleProductsValue.bind(this)
@@ -101,8 +102,10 @@ export class BuyingServiceWrapper extends React.Component {
                   body:JSON.stringify(contents)})
                 .then((result) => { return result.json();})
                 .then((data) => {
-                    this.setState({fastEstimationResult:data, showSpinner:false})
-                }).catch(err => err);
+                    this.setState({fastEstimationResult:data, showSpinner:false, getResult:true})
+            }).catch(error => {
+                this.setState({getResult:false, showSpinner:false})
+            })
     }
 
     handleCalculation(){
@@ -132,10 +135,12 @@ export class BuyingServiceWrapper extends React.Component {
         let fastEstimationResult
         if(this.state.showSpinner){
             fastEstimationResult = spinner
+        } else if (this.state.getResult === false && this.state.showSpinner === false){
+            fastEstimationResult = "접속이 원활하지 않으니 다시 시도해주세요"
         } else {
             fastEstimationResult = getKoreanCurrencyWithInfoBadge(this.state.fastEstimationResult.resultPrice)
         }
-        //let 
+
         return (
           <div>
             <Card border="dark" style={{ width:'70%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
