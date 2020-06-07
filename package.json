@@ -1,6 +1,6 @@
 {
-  "name": "GKoo-Web-client",
-  "version": "0.1.0",
+  "name": "GKoo-Front-Web",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "bootstrap": "^4.5.0",

@@ -7,6 +7,7 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
   } from "../container";
+import { deliveryMapGer } from "../Config"
 
 {/* ShippingServiceAddressPanel CSS */}
 const ShippingServiceAddressPanelContainer = styled(BaseAppContainer)`
@@ -61,27 +62,27 @@ export class ShippingServiceAddressTable extends React.Component {
               </tr>
               <tr>
                 <td>Anschrift (Firma, c/o)</td>
-                <td align='left'>Euromams gmbh</td>
+                <td align='left'>{deliveryMapGer.get("company")}</td>
               </tr>
               <tr>
                 <td>Anschrift (Strasse und Hausnummer)</td>
-                <td align='left'>Westerbachstraße 50</td>
+                <td align='left'>{deliveryMapGer.get("street")}</td>
               </tr>
               <tr>
                 <td>Anschrift (Postleitzahl)</td>
-                <td align='left'>60489</td>
+                <td align='left'>{deliveryMapGer.get("plz")}</td>
               </tr>
               <tr>
                 <td>Stadt</td>
-                <td align='left'>Frankfurt am Main</td>
+                <td align='left'>{deliveryMapGer.get("city")}</td>
               </tr>
               <tr>
                 <td>Bundesland</td>
-                <td align='left'>Hessen</td>
+                <td align='left'>{deliveryMapGer.get("federal_state")}</td>
               </tr>
               <tr>
                 <td>Land</td>
-                <td align='left'>Deutschland</td>
+                <td align='left'>{deliveryMapGer.get("land")}</td>
               </tr>
             </tbody>
           </Table>
