@@ -8,6 +8,7 @@ import {
     AppContainer as BaseAppContainer,
     BaseNavigation,
   } from "../container";
+import { deliveryMapGer } from "../Config"
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -78,13 +79,13 @@ export class ShippingAddressTable extends React.Component {
   render() {
     let personalBoxAddress
     if (this.props.customerStatus === '') {
-      personalBoxAddress = '개인사서함번호 (e.g GK101010)'
+      personalBoxAddress = deliveryMapGer.get("company") + ' 개인사서함번호 (e.g GK101010)'
     } else {
       personalBoxAddress = this.props.customerStatus.personalBoxAddress
     }
     return (
       <div>
-          <Card border="dark" style={{ width: '50%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
+          <Card border="dark" style={{ width: '50%', height:'21rem', marginTop:'1rem', marginLeft:'1rem' }}>
             <Card.Header>독일 배송대행 주소안내 (개인사서함)
             </Card.Header>
             <Card.Body >
@@ -94,31 +95,31 @@ export class ShippingAddressTable extends React.Component {
             <tbody>
               <tr>  
                 <td width='300px'>Vorname Nachname</td>
-                <td width='250px' align='left'>{personalBoxAddress}</td>
+                <td width='250px' align='left'>{deliveryMapGer.get("company")} {personalBoxAddress}</td>
               </tr>
               <tr>
                 <td>Anschrift (Firma, c/o)</td>
-                <td align='left'>Euromams gmbh</td>
+                <td align='left'>{deliveryMapGer.get("company")}</td>
               </tr>
               <tr>
                 <td>Anschrift (Strasse und Hausnummer)</td>
-                <td align='left'>Westerbachstraße 50</td>
+                <td align='left'>{deliveryMapGer.get("street")}</td>
               </tr>
               <tr>
                 <td>Anschrift (Postleitzahl)</td>
-                <td align='left'>60489</td>
+                <td align='left'>{deliveryMapGer.get("plz")}</td>
               </tr>
               <tr>
                 <td>Stadt</td>
-                <td align='left'>Frankfurt am Main</td>
+                <td align='left'>{deliveryMapGer.get("city")}</td>
               </tr>
               <tr>
                 <td>Bundesland</td>
-                <td align='left'>Hessen</td>
+                <td align='left'>{deliveryMapGer.get("federal_state")}</td>
               </tr>
               <tr>
                 <td>Land</td>
-                <td align='left'>Deutschland</td>
+                <td align='left'>{deliveryMapGer.get("land")}</td>
               </tr>
             </tbody>
           </Table>

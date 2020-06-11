@@ -121,7 +121,7 @@ export class PaymentInformation extends React.Component{
       }    
 }
 
-export class PaymentInformationBuyingService extends React.Component{
+export class PaymentInformationBuyingService extends React.Component {
     constructor(props) {
         super(props);
         this.state = { 

@@ -48,7 +48,7 @@ export class ShippingServiceAddressTable extends React.Component {
   render() {
     return (
       <div>
-          <Card border="dark" style={{ width: '50%', height:'20rem', marginTop:'1rem', marginLeft:'1rem' }}>
+          <Card border="dark" style={{ width: '50%', height:'21rem', marginTop:'1rem', marginLeft:'1rem' }}>
             <Card.Header>독일 배송대행 주소안내 (개인사서함)
             </Card.Header>
             <Card.Body >
@@ -58,7 +58,9 @@ export class ShippingServiceAddressTable extends React.Component {
             <tbody>
               <tr>  
                 <td width='300px'>Vorname Nachname</td>
-                <td width='250px' align='left'>개인사서함번호 (e.g GK101010)</td>
+                <td width='250px' align='left'>{deliveryMapGer.get("company")} 개인사서함번호 
+                  <br/>(e.g {deliveryMapGer.get("company")} GK101010)
+                </td>
               </tr>
               <tr>
                 <td>Anschrift (Firma, c/o)</td>
