@@ -11,7 +11,8 @@ import { deliveryMapGer } from "../Config"
 
 {/* ShippingServiceAddressPanel CSS */}
 const ShippingServiceAddressPanelContainer = styled(BaseAppContainer)`
-  height: calc(250vh);
+min-height:calc(100vh);
+height: auto;
 `;
 
 export class ShippingServiceAddressPane extends React.Component{

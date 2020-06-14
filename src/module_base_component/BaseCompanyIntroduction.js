@@ -13,21 +13,22 @@ export class CompanyIntroductionBottom  extends React.Component{
                 <Card.Body>
                     <Container>
                     <Row>
-                        <Col>
+                        {/* <Col>
                             <Image src={BuyingServiceSJ} style={{ width: '80px', marginLeft:'10%', marginTop:'0px'}}/>
-                        </Col>
-                        <Col xs={6}>
+                        </Col> */}
+                        {/* <Col xs={7}> */}
+                        <Col>
                             <Card.Text>
                             사업자등록번호: 311-34-00638 | 통신판매신고: 2020-대구남구-0282  <br/>
-                            전화번호: 070-000-0000 | 카카오톡 아이디: gkoo <br/>
+                            카카오톡 아이디: GKoo | 이메일: gkoosoft@gmail.com <br/>
                             주소: 대구광역시 남구 양지로 16 영호빌딩 3층(대명동) <br/>
                             이용약관 | 개인정보처리방침 <br/>
                             COPYRIGHT (C) 2020 GKoo ALL RIGHT RESERVED
                             </Card.Text>
                         </Col>
-                        <Col>
+                        {/* <Col>
                             <Image src={ShippingServiceSA} style={{ width: '200px', marginLeft:'10%', marginTop:'25px'}}/>
-                        </Col>
+                        </Col> */}
                     </Row>
                     </Container>
                 </Card.Body>

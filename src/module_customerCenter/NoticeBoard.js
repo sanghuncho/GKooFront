@@ -253,7 +253,7 @@ export class NoticeUnit_1 extends React.Component {
 
 /** NoticeUnit_2 Style  */
 const noticeUnit_2_Style = {
-    width: '260px', marginTop:'1px'
+    width: '230px', marginTop:'1px'
 }
 export class NoticeUnit_2 extends React.Component {
 
@@ -288,6 +288,7 @@ export class NoticeUnit_3 extends React.Component {
         const url = 'http://cafe.naver.com/ggigguinmuenchen';
         window.open(url, '_blank');
     }
+
     render() {
         return (<div>
             <Card>
