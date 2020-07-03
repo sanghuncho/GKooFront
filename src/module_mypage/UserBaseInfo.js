@@ -5,8 +5,8 @@ import { Link } from "react-router-dom";
 import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../module_base_component/AuthService"
 import { Redirect } from 'react-router';
 import { getFormatKoreanCurrency, getFormattedPoint } from '../module_base_component/BaseUtil'
-import { KEYCLOAK_USER_ACCOUNT } from "../Config"
-
+import { KEYCLOAK_USER_ACCOUNT, INITIAL_PAGE_URL } from "../Config"
+import naho from '../assets/naho.pdf'
 export class UserBaseInfo extends React.Component{
     constructor(props) {
         super(props);
@@ -17,11 +17,12 @@ export class UserBaseInfo extends React.Component{
             showUserBaseInfoButtons:false,
             userBaseInfo:null,
             goToMypagePersonal:false,
-            goToAddressManager:false
+            goToAddressManager:false,
         };
 
         this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
         this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
+        this.doOpenPaymentHistory = this.doOpenPaymentHistory.bind(this)
       }
 
       componentDidMount () {
@@ -32,8 +33,13 @@ export class UserBaseInfo extends React.Component{
       }
   
       doOpenAddressManager(){
-    
         this.setState({goToAddressManager: true});
+      }
+
+      doOpenPaymentHistory(){
+        this.setState({goToPaymentHistory: true});
+        const url = INITIAL_PAGE_URL + 'paymentHistory';
+        window.open(naho, '_blank');
       }
 
       render() {
@@ -50,7 +56,8 @@ export class UserBaseInfo extends React.Component{
             <CompleteUserBaseInfo 
                 customerStatusData={this.props.customerStatusData}
                 doEditUserBaseInfo={this.doEditUserBaseInfo}
-                doOpenAddressManager={this.doOpenAddressManager}/>
+                doOpenAddressManager={this.doOpenAddressManager}
+                doOpenPaymentHistory={this.doOpenPaymentHistory}/>
           </div>
         );
       }    
@@ -62,6 +69,7 @@ export class CompleteUserBaseInfo extends React.Component{
 
         this.doEditUserBaseInfo = this.doEditUserBaseInfo.bind(this)
         this.doOpenAddressManager = this.doOpenAddressManager.bind(this)
+        this.doOpenPaymentHistory = this.doOpenPaymentHistory.bind(this)
       }
 
       doEditUserBaseInfo(){
@@ -70,6 +78,10 @@ export class CompleteUserBaseInfo extends React.Component{
       
       doOpenAddressManager(){
         this.props.doOpenAddressManager()
+      }
+
+      doOpenPaymentHistory(){
+        this.props.doOpenPaymentHistory()
       }
       
       render() {
@@ -81,6 +93,10 @@ export class CompleteUserBaseInfo extends React.Component{
           <div>
             <Card border="dark" style={{ width: '80%', height:'11rem', marginTop:'1rem' }}>
             <Card.Header>기본정보
+               {/* 결제내역버튼 */}
+               <Button variant="secondary" size="sm" onClick={(e) => this.doOpenPaymentHistory(e)} 
+                style={{ marginRight: '10px', float:"right"}}>결제내역</Button>
+              
               {/* 배송지관리버튼 */}
               <Button variant="secondary" size="sm" onClick={(e) => this.doOpenAddressManager(e)} 
                 style={{ marginRight: '10px', float:"right"}}>배송지관리</Button>

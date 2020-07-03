@@ -55,7 +55,7 @@ export class HowToGetTransitNr extends React.Component {
     handleOpenCustomsSite(){
         const url = 'https://unipass.customs.go.kr/csp/persIndex.do';
         window.open(url, '_blank');
-      }
+    }
       
     render() {
         return (

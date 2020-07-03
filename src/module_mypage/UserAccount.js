@@ -143,7 +143,7 @@ export class UserAccount extends React.Component{
      
       return(
       <div>
-        
+        {/* 기본정보 */}
         <UserBaseInfo customerStatusData={this.props.customerStatusData}
                       userBaseInfo={this.props.userBaseInfo}
                       accessToken={this.props.accessToken}

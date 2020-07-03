@@ -36,6 +36,8 @@ import { FavoriteAddressManager } from './module_mypage/FavoriteAddressManager';
 import { MyPageShippingAddressPane } from './module_mypage/MyPageShippingAddressPane';
 import { MyPagePersonal } from './module_mypage/MyPagePersonal';
 
+import { PaymentHistory } from './module_payment/PaymentHistory';
+
 import { Home } from './Home'
 import { ManagementController } from './management/ManagementController'
 
@@ -87,6 +89,7 @@ const Main = () => (
     <Route exact path='/favoriteAddressManager' component={ FavoriteAddressManager }></Route>
     <Route exact path='/mypageShippingAddressPane' component={ MyPageShippingAddressPane }></Route>
     <Route exact path='/mypagePersonal' component={ MyPagePersonal }></Route>
+    <Route exact path='/paymentHistory' component={ PaymentHistory }></Route>
 
     {/* 관리자 모둘 */} 
     <Route exact path='/management' component={ ManagementController }></Route>
