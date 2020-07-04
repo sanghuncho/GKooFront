@@ -6,7 +6,7 @@ import { keycloakConfigLocal, basePort, headers, setTokenHeader } from "../modul
 import { Redirect } from 'react-router';
 import { getFormatKoreanCurrency, getFormattedPoint } from '../module_base_component/BaseUtil'
 import { KEYCLOAK_USER_ACCOUNT, INITIAL_PAGE_URL } from "../Config"
-import naho from '../assets/naho.pdf'
+
 export class UserBaseInfo extends React.Component{
     constructor(props) {
         super(props);
@@ -38,8 +38,8 @@ export class UserBaseInfo extends React.Component{
 
       doOpenPaymentHistory(){
         this.setState({goToPaymentHistory: true});
-        const url = INITIAL_PAGE_URL + 'paymentHistory';
-        window.open(naho, '_blank');
+        const url = '/paymentHistory';
+        window.open(url, '_blank');
       }
 
       render() {

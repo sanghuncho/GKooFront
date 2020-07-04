@@ -45,7 +45,8 @@ function detailPageLinkFormatter(cell, row) {
   );
 }
 
-function detailBuyingServiceFormatter(cell, row) {        
+//exported to paymentHistory
+export function detailBuyingServiceFormatter(cell, row) {        
   return (
     <DetailBuyingServiceButton orderid={cell}/>
   );
@@ -57,6 +58,7 @@ function deliveryStateFormatter(cell, row) {
   );
 }
 
+//moved to paymentUtil since 04.07.2020
 function currencyFormatter(cell, row) {        
   return (
     <KoreaCurrencyFormatter cell={cell}/>
@@ -372,6 +374,7 @@ class DeliveryState extends React.Component{
     }    
 }
 
+//moved to paymentUtil since 04.07.2020
 class KoreaCurrencyFormatter extends React.Component {
   constructor(props) {
       super(props);

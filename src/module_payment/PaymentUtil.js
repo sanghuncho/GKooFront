@@ -1,3 +1,6 @@
+import * as React from "react";
+import { getFormattedDeliveryPrice } from '../module_base_component/BaseUtil'
+
 export function PaymentArtToInt(paymentArt){
     let art
     switch (paymentArt) {
@@ -50,4 +53,26 @@ export function PaymentStateToString(paymentState){
   }
 
   return state
+}
+
+export function currencyFormatter(cell, row) {        
+  return (
+    <KoreaCurrencyFormatter cell={cell}/>
+  );
+}
+
+export class KoreaCurrencyFormatter extends React.Component {
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      let formattedPrice = getFormattedDeliveryPrice(this.props.cell)
+
+      return (
+        <div>
+          {formattedPrice}
+       </div>
+      );
+    }    
 }

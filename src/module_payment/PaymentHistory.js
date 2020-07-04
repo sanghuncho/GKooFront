@@ -10,11 +10,10 @@ import { MyPageSideNav } from "../module_mypage/MyPageSideNav";
 import { Breadcrumb, Button, CardGroup, Table, Card, InputGroup, Image } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { KEYCLOAK_USER_ACCOUNT } from "../Config"
-import { Document, Page } from 'react-pdf'
-//import { Document } from 'react-pdf/dist/entry.webpack';
-//import { Document } from 'react-pdf/dist/entry.parcel'
-import naho from '../assets/naho.pdf'
-import ShippingServiceSA from '../assets/ShippingServiceSA.jpg'
+import { BaseTablePagination } from '../module_base_component/BaseTable'
+import { currencyFormatter } from '../module_payment/PaymentUtil'
+import { Redirect } from 'react-router';
+
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
@@ -151,12 +150,99 @@ export class PaymentHistory extends React.Component {
               <AppNavbar>
                  <LogoutButton keycloak ={this.state.keycloakAuth}/>
               </AppNavbar>
+
               {paymentHistory}
 
             </div>
            
         );}           
 }
+
+const data = [
+  {"orderDate":"2020-07-04",
+    "currentDeposit":1000000,
+    "oldInsuranceAmount":30000,
+    "insuranceAmount":130000,
+    "buyingPrice":42000,
+    "deliveryPrice":13000,
+    "itemPrice":13000,
+    "serviceFee":13000,
+    "orderid":'1234',
+    // "itemImageUrl":'ebay.de',
+    "itemTitle":'sabe speaekr',
+    "orderid":'1234',
+  },
+  
+]
+
+const columnsPaymentHistory = [
+  {
+    dataField: 'orderDate',
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'center' };
+    }
+  },
+  {
+    dataField: 'currentDeposit',
+    text: '결제금액',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'oldInsuranceAmount',
+    text: '기존예치금',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'insuranceAmount',
+    text: '보유예치금',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'buyingPrice',
+    text: '구매/경매대행',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'deliveryPrice',
+    text: '배송대행',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'itemPrice',
+    text: '상품가격',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'serviceFee',
+    text: '수수료',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'orderid',
+    text: '신청번호',
+    
+  },
+  // {
+  //   dataField: 'itemImageUrl',
+  //   text: '상품이미지'
+  // },
+  {
+    dataField: 'itemTitle',
+    text: '상품명',
+    headerStyle: (colum, colIndex) => {
+      return { width: '130px', textAlign: 'center' };
+    }
+  }, 
+  {
+    dataField: 'orderid',
+    text: '상품상세',
+    formatter:detailPaymentHistoryFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '80px', textAlign: 'center' };
+    }
+  }
+];
 
 export class PaymentHistoryController extends React.Component{
   constructor(props) {
@@ -178,21 +264,96 @@ export class PaymentHistoryController extends React.Component{
             <Breadcrumb style={{ width: '100%'}}>
               <Breadcrumb.Item active>마이페이지 / 결제내역 </Breadcrumb.Item>
             </Breadcrumb>
-            
-            <a href = {naho} target = "_blank">Download Pdf</a>
-            {/* <UserBaseInfoEditor 
-                userBaseInfo={this.props.userBaseInfo}
-                userid={this.props.userid}
-                keycloakAuth={this.props.keycloakAuth}
-            /> */}
-       
-           
-        
-        {/* <Image src={ShippingServiceSA} style={{ width: '200px', marginLeft:'10%', marginTop:'25px'}}/> */}
+ 
+            <PaymentHistoryTable/>
         </BodyContainer>
         
         </AppContainer>
       </div>
       );
     }    
+}
+
+
+const PaymentHistoryTableStyle = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 11px;
+`;
+
+class PaymentHistoryTable extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+    };
+  }
+
+  componentDidMount() {
+  }
+
+  render() {
+    return(
+      <div>
+        <Card border="dark" style={{ width: '90%', marginTop:'1rem' }}>
+        <Card.Header>
+          {/* 구매대행 이용현황 */}
+          결제내역
+        </Card.Header>
+        <Card.Body >
+       
+              <PaymentHistoryTableStyle>
+              <BaseTablePagination
+                   keyField='objectId'  
+                   data={ data } 
+                   columns={ columnsPaymentHistory } 
+                   bordered={ true }  
+                   noDataIndication="주문하신 물품이 없습니다"
+              />
+              </PaymentHistoryTableStyle>
+     
+      </Card.Body>
+   
+      </Card> 
+      </div>
+    );}
+}
+
+export function detailPaymentHistoryFormatter(cell, row) {        
+  return (
+    <DetailPaymentHistoryButton orderid={cell}/>
+  );
+}
+
+export class DetailPaymentHistoryButton extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+      redirect:false,
+    };
+    this.handleLinkDetailPage = this.handleLinkDetailPage.bind(this);
+    
+  }
+  
+  componentDidMount() {
+   
+  }
+
+  handleLinkDetailPage(){
+    this.setState({redirect: true});
+  }
+
+  render() {
+    const orderid = this.props.orderid
+    const link = "/detailsbuyingService/" + orderid
+    //console.log(link)
+    if (this.state.redirect) {
+      return <Redirect push to={link}/>
+    }
+
+    return(
+      <div>
+        <Button variant="outline-secondary" size="sm" 
+          onClick={this.handleLinkDetailPage}>Go</Button>
+      </div>
+    );}
 }
