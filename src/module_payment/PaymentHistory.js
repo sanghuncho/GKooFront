@@ -11,7 +11,7 @@ import { Breadcrumb, Button, CardGroup, Table, Card, InputGroup, Image } from "r
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { KEYCLOAK_USER_ACCOUNT } from "../Config"
 import { BaseTablePagination } from '../module_base_component/BaseTable'
-import { currencyFormatter } from '../module_payment/PaymentUtil'
+import { currencyFormatter, currencyFormatterEuro } from '../module_payment/PaymentUtil'
 import { Redirect } from 'react-router';
 
 ///// keycloak -> /////
@@ -72,6 +72,8 @@ export class PaymentHistory extends React.Component {
       keycloakAuth:null,
       accessToken:"",
       userid:'',
+      paymentHistoryDepositData:'',
+      paymentHistoryTransferData:''
    };
   
     toggle(position) {
@@ -102,24 +104,41 @@ export class PaymentHistory extends React.Component {
         })
         console.log(keycloak.tokenParsed.given_name)
         console.log(keycloak.tokenParsed.email)
-        //this.fetchUserBaseInfo(keycloak.token)
+        this.fetchPaymentHistoryDeposit(keycloak.token)
+        this.fetchPaymentHistoryTransfer(keycloak.token)
       })
       
     }
 
-    // fetchUserBaseInfo(token){
-    //   let userid = this.state.userid
-    //   console.log(userid)
-    //   setTokenHeader(token)
-    //   fetch(basePort + '/fetchuserbaseinfo/'+ userid, {headers})
-    //     .then((result) => { 
-    //       return result.json();
-    //     }).then((data) => {           
-    //       this.setState({userBaseInfo:data})
-    //       console.log(data)
-    //     }).catch(function() {
-    //   });
-    // }
+    fetchPaymentHistoryDeposit(token){
+      let userid = this.state.userid
+      console.log(userid)
+      setTokenHeader(token)
+      fetch(basePort + '/fetchPaymentHistoryDeposit/'+ userid, {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {           
+          this.setState({paymentHistoryDepositData:data})
+          console.log(data)
+        }).catch(function() {
+
+      });
+    }
+
+    fetchPaymentHistoryTransfer(token){
+      let userid = this.state.userid
+      console.log(userid)
+      setTokenHeader(token)
+      fetch(basePort + '/fetchPaymentHistoryTransfer/'+ userid, {headers})
+        .then((result) => { 
+          return result.json();
+        }).then((data) => {           
+          this.setState({paymentHistoryTransferData:data})
+          console.log(data)
+        }).catch(function() {
+
+      });
+    }
 
     validToken(token){
       return token === "" ? false : true
@@ -136,7 +155,8 @@ export class PaymentHistory extends React.Component {
         if(this.validToken(token)){
             paymentHistory = 
                 <PaymentHistoryController 
-                  userBaseInfo={this.state.userBaseInfo}
+                  paymentHistoryDepositData={this.state.paymentHistoryDepositData}
+                  paymentHistoryTransferData={this.state.paymentHistoryTransferData}
                   keycloakAuth={this.state.keycloakAuth}
                   userid={this.state.userid}
                  
@@ -158,24 +178,156 @@ export class PaymentHistory extends React.Component {
         );}           
 }
 
-const data = [
+
+
+export class PaymentHistoryController extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+
+    componentDidMount() {
+        
+      }
+    
+    render() {
+        return (
+        <div>
+          <AppContainer>
+      
+          <MyPageSideNav/>
+      
+          <BodyContainer>
+            <Breadcrumb style={{ width: '100%'}}>
+              <Breadcrumb.Item active>마이페이지 / 결제내역 </Breadcrumb.Item>
+            </Breadcrumb>
+ 
+            {/* 무통장입금내역 */}
+            <PaymentHistoryTransferTable paymentHistoryTransferData={this.props.paymentHistoryTransferData}/>
+
+            {/* 예치금 결제내역 */}
+            <PaymentHistoryDepositTable paymentHistoryDepositData={this.props.paymentHistoryDepositData}/>
+        </BodyContainer>
+        
+        </AppContainer>
+      </div>
+      );
+    }    
+}
+
+const PaymentHistoryTableStyle = styled.div`
+  margin-top: 20px;
+  width: 100%;
+  font-size: 11px;
+`;
+
+const transferData = [
   {"orderDate":"2020-07-04",
     "currentDeposit":1000000,
-    "oldInsuranceAmount":30000,
-    "insuranceAmount":130000,
     "buyingPrice":42000,
     "deliveryPrice":13000,
-    "itemPrice":13000,
-    "serviceFee":13000,
     "orderid":'1234',
-    // "itemImageUrl":'ebay.de',
     "itemTitle":'sabe speaekr',
     "orderid":'1234',
   },
   
 ]
 
-const columnsPaymentHistory = [
+const columnsPaymentHistoryTransfer = [
+  {
+    dataField: 'orderDate',
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'center' };
+    }
+  },
+  {
+    dataField: 'currentDeposit',
+    text: '결제금액',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'buyingPrice',
+    text: '구매/경매대행',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'deliveryPrice',
+    text: '배송대행',
+    formatter:currencyFormatter,
+  },
+  {
+    dataField: 'orderid',
+    text: '신청번호',
+  },
+  {
+    dataField: 'itemTitle',
+    text: '상품명',
+    headerStyle: (colum, colIndex) => {
+      return { width: '130px', textAlign: 'center' };
+    }
+  }, 
+  {
+    dataField: 'orderid',
+    text: '상품상세',
+    formatter:detailPaymentHistoryFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '80px', textAlign: 'center' };
+    }
+  }
+];
+
+class PaymentHistoryTransferTable extends React.Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = {
+    };
+  }
+
+  componentDidMount() {
+  }
+
+  render() {
+    return(
+      <div>
+        <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
+        <Card.Header>
+          무통장 결제내역
+        </Card.Header>
+        <Card.Body >
+       
+              <PaymentHistoryTableStyle>
+              <BaseTablePagination
+                   keyField='objectId'  
+                   data={ transferData }
+                   //data={ this.props.paymentHistoryTransferData}
+                   columns={ columnsPaymentHistoryTransfer } 
+                   bordered={ true }  
+                   noDataIndication="결제내역이 없습니다"
+              />
+              </PaymentHistoryTableStyle>
+     
+      </Card.Body>
+   
+      </Card> 
+      </div>
+    );}
+}
+
+const depositData = [
+  {"orderDate":"2020-07-04",
+    "currentDeposit":1000000,
+    "oldInsuranceAmount":30000,
+    "insuranceAmount":130000,
+    "buyingPrice":42000,
+    "deliveryPrice":13000,
+    "orderid":'1234',
+    "itemTitle":'sabe speaekr',
+    "orderid":'1234',
+  },
+  
+]
+
+const columnsPaymentHistoryDeposit = [
   {
     dataField: 'orderDate',
     text: '신청날짜',
@@ -209,24 +361,9 @@ const columnsPaymentHistory = [
     formatter:currencyFormatter,
   },
   {
-    dataField: 'itemPrice',
-    text: '상품가격',
-    formatter:currencyFormatter,
-  },
-  {
-    dataField: 'serviceFee',
-    text: '수수료',
-    formatter:currencyFormatter,
-  },
-  {
     dataField: 'orderid',
     text: '신청번호',
-    
   },
-  // {
-  //   dataField: 'itemImageUrl',
-  //   text: '상품이미지'
-  // },
   {
     dataField: 'itemTitle',
     text: '상품명',
@@ -244,44 +381,7 @@ const columnsPaymentHistory = [
   }
 ];
 
-export class PaymentHistoryController extends React.Component{
-  constructor(props) {
-      super(props);
-    }
-
-    componentDidMount() {
-        
-      }
-    
-    render() {
-        return (
-        <div>
-          <AppContainer>
-      
-          <MyPageSideNav/>
-      
-          <BodyContainer>
-            <Breadcrumb style={{ width: '100%'}}>
-              <Breadcrumb.Item active>마이페이지 / 결제내역 </Breadcrumb.Item>
-            </Breadcrumb>
- 
-            <PaymentHistoryTable/>
-        </BodyContainer>
-        
-        </AppContainer>
-      </div>
-      );
-    }    
-}
-
-
-const PaymentHistoryTableStyle = styled.div`
-  margin-top: 20px;
-  width: 100%;
-  font-size: 11px;
-`;
-
-class PaymentHistoryTable extends React.Component {
+class PaymentHistoryDepositTable extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
@@ -294,20 +394,20 @@ class PaymentHistoryTable extends React.Component {
   render() {
     return(
       <div>
-        <Card border="dark" style={{ width: '90%', marginTop:'1rem' }}>
+        <Card border="dark" style={{ width: '80%', marginTop:'1rem' }}>
         <Card.Header>
-          {/* 구매대행 이용현황 */}
-          결제내역
+          예치금 결제내역
         </Card.Header>
         <Card.Body >
        
               <PaymentHistoryTableStyle>
               <BaseTablePagination
                    keyField='objectId'  
-                   data={ data } 
-                   columns={ columnsPaymentHistory } 
+                   data={ depositData }
+                   //data={ this.props.paymentHistoryDepositData}
+                   columns={ columnsPaymentHistoryDeposit } 
                    bordered={ true }  
-                   noDataIndication="주문하신 물품이 없습니다"
+                   noDataIndication="결제내역이 없습니다"
               />
               </PaymentHistoryTableStyle>
      
@@ -345,8 +445,8 @@ export class DetailPaymentHistoryButton extends React.Component {
   render() {
     const orderid = this.props.orderid
     const link = "/detailsbuyingService/" + orderid
-    //console.log(link)
     if (this.state.redirect) {
+      //새페이지로 만들기
       return <Redirect push to={link}/>
     }
 
