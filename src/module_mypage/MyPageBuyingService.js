@@ -253,13 +253,14 @@ export class MypageBuyingServiceController extends React.Component{
             <BuyingServiceOrderData buyingOrderData={this.props.buyingOrderData}
               serviceTitle={"구매대행 이용현황"} />
           
+          {/* deprecated since 23.07.2020
           <CardGroup style={{ width:'80%', marginTop:'1rem',  marginBottom:'1rem'}}>
             <Card border="dark">
               <Card.Header>
                 구매대행 결제현황
               </Card.Header>
               <Card.Body>
-                {/* 결제 현황 */}  
+               
                 <PaymentInformationBuyingService paymentData={this.props.paymentData}/>
               </Card.Body>
             </Card>
@@ -268,7 +269,7 @@ export class MypageBuyingServiceController extends React.Component{
                 배송비 결제현황
               </Card.Header>
               <Card.Body>
-                {/* 결제 현황 */}  
+                 
                 <PaymentDeliveryDataBuyingService paymentDelivery={this.props.paymentDelivery}/>
               </Card.Body>
             </Card>
@@ -277,11 +278,11 @@ export class MypageBuyingServiceController extends React.Component{
                 배송 현황
               </Card.Header>
               <Card.Body>
-                {/* 배송 현황 */}
+               
                 <DeliveryInformationBuyingService deliveryKoreaData={this.props.deliveryKoreaData}/>
               </Card.Body>
             </Card>
-          </CardGroup>
+          </CardGroup> */}
 
            <CompanyIntroductionBottom/>
         </BodyContainer>

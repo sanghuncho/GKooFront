@@ -9,6 +9,7 @@ import { Redirect } from 'react-router';
 import { getFormattedDeliveryPrice } from '../module_base_component/BaseUtil'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { BaseTablePagination } from '../module_base_component/BaseTable'
+import { Image } from 'react-bootstrap';
 
 const OrderInfoTableStyle = styled.div`
   margin-top: 20px;
@@ -323,7 +324,7 @@ export class DetailBuyingServiceButton extends React.Component {
     return(
       <div>
         <Button variant="outline-secondary" size="sm" 
-          onClick={this.handleLinkDetailPage}>상세페이지</Button>
+          onClick={this.handleLinkDetailPage}>Go</Button>
       </div>
     );}
 }
@@ -403,6 +404,13 @@ const columnsBuyingService = [
     dataField: 'productInfo',
     text: '상품정보'
   },{
+    dataField: 'productInfo',
+    text: '이미지',
+    formatter:imageFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
+  },{
     dataField: 'buyingPrice',
     text: '구매대행 비용',
     formatter:currencyFormatter,
@@ -429,12 +437,19 @@ const columnsBuyingService = [
     headerStyle: (colum, colIndex) => {
       return { width: '100px', textAlign: 'center' };
     }
-  }, {
+  },{
     dataField: 'orderid',
-    text: '상세페이지',
+    text: '배송조회',
     formatter:detailBuyingServiceFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '120px', textAlign: 'center' };
+      return { width: '80px', textAlign: 'center' };
+    }
+  },{
+    dataField: 'orderid',
+    text: '상세내역',
+    formatter:detailBuyingServiceFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '80px', textAlign: 'center' };
     }
   }
 ];
@@ -485,6 +500,27 @@ export class BuyingServiceOrderData extends React.Component {
       </Card> 
       </div>
     );}
+}
+
+function imageFormatter(cell, row) {        
+  return (
+    <ImageFormatter cell={cell}/>
+  );
+}
+
+class ImageFormatter extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+         <Image src="https://i.ebayimg.com/images/g/qM8AAOSwVmFfBgQc/s-l1600.jpg" 
+          style={{ width: '100%', height: '40px'}}/>
+       </div>
+      );
+    }    
 }
 
 function buyingServiceStateFormatter(cell, row) {        
