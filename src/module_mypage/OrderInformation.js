@@ -10,6 +10,7 @@ import { getFormattedDeliveryPrice } from '../module_base_component/BaseUtil'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { BaseTablePagination } from '../module_base_component/BaseTable'
 import { Image } from 'react-bootstrap';
+import { TrackingButton } from './DeliveryInformation'
 
 const OrderInfoTableStyle = styled.div`
   margin-top: 20px;
@@ -28,17 +29,32 @@ const TabsStyle = styled.div`
   font-size: 13px;
 `;
 
+const TrackingButtonStyle = styled.div`
+    text-align:center;
+`;
+
+function trackingFormatter(cell, row) {        
+  return (
+    <TrackingButtonStyle>
+      <TrackingButton
+        orderid={row.orderid}
+        deliveryTracking={row.deliveryTracking}
+        disable={true}/>
+     </TrackingButtonStyle>
+  );
+}
+
 function orderNumberFormatter(cell, row) {        
   return (
     <OrderNumberLink orderid={cell}/>
   );
 }
 
-function trackingFormatter(cell, row) {        
-  return (
-    <TrackingButton/>
-  );
-}
+// function trackingFormatter(cell, row) {        
+//   return (
+//     <TrackingButton/>
+//   );
+// }
 
 function detailPageLinkFormatter(cell, row) {        
   return (
@@ -214,52 +230,54 @@ export class OrderNumberLink extends React.Component {
  
 }
 
-export class TrackingButton extends React.Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {
-      showModal:false
-    };
 
-    this.handleModalShow = this.handleModalShow.bind(this);
-    this.handleModalClose = this.handleModalClose.bind(this);
-  }
+//deprecated since 21.07.2020
+// export class TrackingButton extends React.Component {
+//   constructor(props, context) {
+//     super(props, context);
+//     this.state = {
+//       showModal:false
+//     };
+
+//     this.handleModalShow = this.handleModalShow.bind(this);
+//     this.handleModalClose = this.handleModalClose.bind(this);
+//   }
   
-  componentDidMount() {
+//   componentDidMount() {
    
-  }
+//   }
 
-  handleModalClose() {
-    this.setState({ showModal: false });
-  }
+//   handleModalClose() {
+//     this.setState({ showModal: false });
+//   }
 
-  handleModalShow() {
-      this.setState({ showModal: true });
-  }
+//   handleModalShow() {
+//       this.setState({ showModal: true });
+//   }
 
-  render() {
-    return(
-      <div>
-      <Button variant="secondary" size="sm" onClick={this.handleModalShow}>통관정보조회</Button>
-        <Modal show={this.state.showModal} onHide={this.handleModalClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>통관정보조회</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>한국배송중</Modal.Body>
-          <Modal.Footer>
-            <NavLink to="/">
-            <Button variant="success" onClick={this.handleModalClose}>
-              예
-            </Button>
-            </NavLink>
-            <Button variant="dark" onClick={this.handleModalClose}>
-              취소
-            </Button>
-          </Modal.Footer>
-          </Modal>
-      </div>
-    );}
-}
+//   render() {
+//     return(
+//       <div>
+//       <Button variant="secondary" size="sm" onClick={this.handleModalShow}>통관정보조회</Button>
+//         <Modal show={this.state.showModal} onHide={this.handleModalClose}>
+//           <Modal.Header closeButton>
+//             <Modal.Title>통관정보조회</Modal.Title>
+//           </Modal.Header>
+//           <Modal.Body>한국배송중</Modal.Body>
+//           <Modal.Footer>
+//             <NavLink to="/">
+//             <Button variant="success" onClick={this.handleModalClose}>
+//               예
+//             </Button>
+//             </NavLink>
+//             <Button variant="dark" onClick={this.handleModalClose}>
+//               취소
+//             </Button>
+//           </Modal.Footer>
+//           </Modal>
+//       </div>
+//     );}
+// }
 
 export class DetailPageLinkButton extends React.Component {
   constructor(props, context) {
@@ -440,7 +458,7 @@ const columnsBuyingService = [
   },{
     dataField: 'orderid',
     text: '배송조회',
-    formatter:detailBuyingServiceFormatter,
+    formatter:trackingFormatter,
     headerStyle: (colum, colIndex) => {
       return { width: '80px', textAlign: 'center' };
     }

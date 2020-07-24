@@ -5,6 +5,7 @@ import { InfoBadge } from "../module_base_component/InfoBadge";
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange} from 'react-icons-kit/fa/'
 import { headers, basePort } from "../module_mypage/AuthService"
+import { Image } from 'react-bootstrap';
 
 const WhiteSmoke = '#F5F5F5'
 
@@ -61,7 +62,7 @@ export class MyPageBuyingServiceDetailProducts extends React.Component{
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
           } else {
-            const dynamicHeight = (14 + 15*(this.props.productsInfo.length))
+            const dynamicHeight = (14 + 20*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
             productsListDisplay = <CompleteProductsListDisplay 
                 productsInfo={this.props.productsInfo}
@@ -483,6 +484,16 @@ class MyPageDetailProduct extends React.Component{
                         <td width='300px'>{this.props.productIndex}</td>
                     </tr>
                     <tr>
+                        <td width='300px'>이미지</td>
+                        <td width='300px'>
+                            <Image src="https://i.ebayimg.com/images/g/qM8AAOSwVmFfBgQc/s-l1600.jpg" 
+                                   style={{ width: '200px', height: '80px'}}/></td>
+                    </tr>
+                    <tr>
+                        <td width='300px'>상품링크</td>
+                        <td width='300px'><ProductSiteOpenButton/></td>
+                    </tr>
+                    <tr>
                         <td width='300px'>카테고리</td>
                         <td width='300px'>{this.props.product.categoryTitle}</td>
                     </tr>
@@ -517,3 +528,30 @@ class MyPageDetailProduct extends React.Component{
         );
       }    
 }
+
+class ProductSiteOpenButton extends React.Component {
+    constructor(props, context) {
+      super(props, context);
+      this.state = {
+      };
+  
+      this.handleOpenProductSite = this.handleOpenProductSite.bind(this);
+    }
+    
+    componentDidMount() {
+     
+    }
+  
+    handleOpenProductSite(){
+      let trackingNr = this.props.deliveryTracking
+      const url = 'http://ebay.de';
+      window.open(url, '_blank');
+    }
+  
+    render() {
+      return(
+        <div>
+            <Button variant="outline-secondary" size="sm" onClick={this.handleOpenProductSite}>Go</Button>
+        </div>
+      );}
+    }

@@ -159,8 +159,7 @@ export class TrackingButton extends React.Component {
     render() {
       return(
         <div>
-        {/* <Button  variant="outline-secondary" size="sm" onClick={this.handleModalShow}>배송조회</Button> */}
-        <Button  variant="outline-secondary" size="sm" onClick={this.handleOpenTrackingSite}>배송조회</Button>
+        <Button  variant="outline-secondary" size="sm" onClick={this.handleOpenTrackingSite} disabled={this.props.disable}>조회</Button>
           <Modal show={this.state.showModal} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>배송조회</Modal.Title>

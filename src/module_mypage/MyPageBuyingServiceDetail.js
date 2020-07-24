@@ -335,18 +335,19 @@ class MyPageDetailBuyingServiceState extends React.Component{
                         </td>
                       </tr>
                       <tr>
-                        <td width='150px'>배송현황</td>
-                        <td width='250px' align='center'>
-                          <TrackingButton 
-                            deliveryTracking={this.props.deliveryKoreaData.deliveryTracking}
-                          />
-                        </td>
-                      </tr>
-                      <tr>
                           <td>전체 현황</td>
                           <td colSpan="3" align='center'>{serviceState} 
                           {/* {deleteButton} */}
                           </td>
+                      </tr>
+                      <tr>
+                        <td width='150px'>배송현황</td>
+                        <td width='250px' align='center'>
+                          <TrackingButton 
+                            deliveryTracking={this.props.deliveryKoreaData.deliveryTracking}
+                            disable={true}
+                          />
+                        </td>
                       </tr>
                     </tbody> 
                 </Table>
