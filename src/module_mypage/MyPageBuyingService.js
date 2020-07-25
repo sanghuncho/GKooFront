@@ -7,17 +7,18 @@ import {
   BaseNavigation,
 } from "../container";
 import { MyPageSideNav } from "./MyPageSideNav";
-import { Breadcrumb, Button, CardGroup, Card } from "react-bootstrap"
+import { Breadcrumb, Button, InputGroup, Card, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { OrderInformation, BuyingServiceOrderData } from './OrderInformation'
 import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } from './PaymentInformation'
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfo } from './UserBaseInfo'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
+import { BaseInputGroup } from '../module_base_component/BaseInputGroup'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -79,6 +80,7 @@ export class MyPageBuyingService extends React.Component{
       deliveryKoreaData:'',
       userBaseInfo:'',
       userid:'',
+      isAdmin:false
    };
   
     toggle(position) {
@@ -103,13 +105,16 @@ export class MyPageBuyingService extends React.Component{
     componentDidMount() {
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ 
-            keycloakAuth: keycloak, 
+            keycloakAuth:keycloak, 
             accessToken:keycloak.token, 
-            userid:keycloak.tokenParsed.preferred_username
+            userid:keycloak.tokenParsed.preferred_username,
+            realmAccessRoles:keycloak.realmAccess.roles,
+            isAdmin:isAdmin(keycloak.realmAccess)
           })
           localStorage.setItem("react-token", keycloak.token);
           localStorage.setItem("userid", keycloak.tokenParsed.preferred_username);
           this.fetchCustomerStatusData(keycloak.token)
+          //todo : search button click / set id / fetch info
       })
     }
 
@@ -214,10 +219,13 @@ export class MyPageBuyingService extends React.Component{
                   deliveryKoreaData = {this.state.deliveryKoreaData}
                   userBaseInfo = {this.state.userBaseInfo}
                   accessToken = { this.state.accessToken }
+                  isAdmin = {this.state.isAdmin}
                 />
         } else {
             mypage_buyingService = this.getEmptyPage
         }
+
+        
         return (
             <div>
               <AppNavbar>
@@ -234,6 +242,11 @@ export class MyPageBuyingService extends React.Component{
 export class MypageBuyingServiceController extends React.Component{
     
     render() {
+      let searchPane
+      if(this.props.isAdmin){
+        searchPane = <SearchPanel/>
+      }
+
       return (
         <div>
           <AppContainer>
@@ -244,6 +257,8 @@ export class MypageBuyingServiceController extends React.Component{
             <Breadcrumb style={{ width: '100%'}}>
               <Breadcrumb.Item active>마이페이지 / 구매대행</Breadcrumb.Item>
             </Breadcrumb>
+
+            {searchPane}
 
             <UserBaseInfo customerStatusData={this.props.customerStatusData}
                       userBaseInfo = {this.props.userBaseInfo}
@@ -289,6 +304,30 @@ export class MypageBuyingServiceController extends React.Component{
         
         </AppContainer>
       </div>
+      );
+    }    
+}
+
+//baseform move
+class SearchPanel extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <InputGroup className="mb-3" style={{ width: '20%', marginTop:'1rem', marginBottom:'1rem' }}>
+              <FormControl
+                placeholder="회원 아이디"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+              />
+              <InputGroup.Append>
+                <Button variant="outline-secondary">Search</Button>
+              </InputGroup.Append>
+          </InputGroup>
+        </div>
       );
     }    
 }

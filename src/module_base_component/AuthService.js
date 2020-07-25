@@ -61,3 +61,8 @@ export function fetchRegisterInitialCustomer(keycloak){
       console.error('Error fetching register_customer!', error);
   });
 }
+
+export function isAdmin(keycloakRealmAccess){
+  var result = keycloakRealmAccess.roles.filter(role => role === 'admin');
+  return (result.length === 1) && (result[0] === 'admin')
+}

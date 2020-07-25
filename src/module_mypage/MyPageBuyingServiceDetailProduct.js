@@ -62,7 +62,7 @@ export class MyPageBuyingServiceDetailProducts extends React.Component{
             const dynamicHeight = (20 + 22*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
           } else {
-            const dynamicHeight = (14 + 20*(this.props.productsInfo.length))
+            const dynamicHeight = (14 + 24*(this.props.productsInfo.length))
             displayHeight = dynamicHeight + 'rem'
             productsListDisplay = <CompleteProductsListDisplay 
                 productsInfo={this.props.productsInfo}
@@ -544,7 +544,7 @@ class ProductSiteOpenButton extends React.Component {
   
     handleOpenProductSite(){
       let trackingNr = this.props.deliveryTracking
-      const url = 'http://ebay.de';
+      const url = 'https://www.ebay.de/itm/Business-Notebook-Laptop-Dell-latitude-3450-I3-8gb-500gb/283958087876?hash=item421d3890c4:g:XywAAOSw1elfCc16';
       window.open(url, '_blank');
     }
   
