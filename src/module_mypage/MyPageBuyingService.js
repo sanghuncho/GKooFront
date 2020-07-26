@@ -14,7 +14,7 @@ import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } fro
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfo } from './UserBaseInfo'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { BaseInputGroup } from '../module_base_component/BaseInputGroup'
+import { window_reload } from '../module_base_component/BaseUtil'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -67,9 +67,10 @@ var naviGreen = '#80b13e'
 var grey = '#727676';
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
-export class MyPageBuyingService extends React.Component{
-
-    state = { 
+export class MyPageBuyingService extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { 
       active: null,
       keycloakAuth:null,
       accessToken:"",
@@ -81,7 +82,10 @@ export class MyPageBuyingService extends React.Component{
       userBaseInfo:'',
       userid:'',
       isAdmin:false
-   };
+    }
+    this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
+  }
   
     toggle(position) {
       if (this.state.active === position) {
@@ -113,8 +117,11 @@ export class MyPageBuyingService extends React.Component{
           })
           localStorage.setItem("react-token", keycloak.token);
           localStorage.setItem("userid", keycloak.tokenParsed.preferred_username);
-          this.fetchCustomerStatusData(keycloak.token)
-          //todo : search button click / set id / fetch info
+          
+          if(!this.state.isAdmin){
+            //회원일 경우 데이터 로딩시작
+            this.fetchCustomerStatusData(keycloak.token)
+          }
       })
     }
 
@@ -127,6 +134,18 @@ export class MyPageBuyingService extends React.Component{
       setTokenHeader(token)
       fetch(basePort + '/customerstatus/'+ userid, 
       {method:'post', headers, body:JSON.stringify(customername)})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState({customerStatusData:data})
+          this.fetchOrderInformation(token)
+        })   
+    }
+
+    fetchCustomerStatusDataAdmin(token){
+      let userid = this.state.userid
+      setTokenHeader(token)
+      fetch(basePort + '/fetchCustomerStatusAdmin/'+ userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
@@ -166,7 +185,7 @@ export class MyPageBuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({paymentDelivery: data})
+          this.setState({paymentDelivery:data})
           this.fetchDeliveryKoreaData(token)
         })   
     }
@@ -178,7 +197,7 @@ export class MyPageBuyingService extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({deliveryKoreaData: data})
+          this.setState({deliveryKoreaData:data})
           this.fetchUserBaseInfo(token)
         })   
     }
@@ -191,9 +210,27 @@ export class MyPageBuyingService extends React.Component{
           return result.json();
         }).then((data) => {           
           this.setState({userBaseInfo:data})
-          console.log(data)
         }).catch(function() {
       });
+    }
+
+    handleSearch(){
+      if(this.state.userid === ''){
+        this.setState({customerStatusData:'',
+                       buyingOrderData:'',
+                       paymentData:'',
+                       paymentDelivery:'',
+                       deliveryKoreaData:'',
+                       userBaseInfo:'',
+                    })
+      } else {
+        this.fetchCustomerStatusDataAdmin(this.state.accessToken)
+      }
+    }
+
+    handleSearchChangeInput(event){
+      this.setState({userid:event.target.value})
+      console.log(event.target.value)
     }
 
     validToken(token){
@@ -220,6 +257,8 @@ export class MyPageBuyingService extends React.Component{
                   userBaseInfo = {this.state.userBaseInfo}
                   accessToken = { this.state.accessToken }
                   isAdmin = {this.state.isAdmin}
+                  handleSearchChangeInput = {this.handleSearchChangeInput}
+                  handleSearch={this.handleSearch}
                 />
         } else {
             mypage_buyingService = this.getEmptyPage
@@ -244,7 +283,9 @@ export class MypageBuyingServiceController extends React.Component{
     render() {
       let searchPane
       if(this.props.isAdmin){
-        searchPane = <SearchPanel/>
+        searchPane = <SearchPanel 
+                        handleSearchChangeInput={this.props.handleSearchChangeInput}
+                        handleSearch={this.props.handleSearch}/>
       }
 
       return (
@@ -322,9 +363,12 @@ class SearchPanel extends React.Component{
                 placeholder="회원 아이디"
                 aria-label="Recipient's username"
                 aria-describedby="basic-addon2"
+                onChange = {this.props.handleSearchChangeInput} 
               />
               <InputGroup.Append>
-                <Button variant="outline-secondary">Search</Button>
+                <Button variant="outline-secondary"
+                        onClick={(e) => this.props.handleSearch(e)}>Search
+                </Button>
               </InputGroup.Append>
           </InputGroup>
         </div>
