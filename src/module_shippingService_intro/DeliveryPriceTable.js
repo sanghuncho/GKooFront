@@ -37,6 +37,12 @@ export class DeliveryPriceTable extends React.Component{
 
                     <DeliveryPriceTaleTabs/>
 
+                    {/* 부피무게배송비 계산 안내 */}
+                    <DeliveryCalculation/>
+                    
+                    {/* 기타 서비스 요금안내 */}
+                    <DeliveryOptionsInfo/>
+                    
                     <CompanyIntroductionBottom/>
                     </BodyContainer>
                 </DeliveryPriceTableContainer>
@@ -110,7 +116,7 @@ export class DeliveryPriceTaleTabs extends React.Component {
            
           </Tabs>
           </Card.Body>
-          </Card> 
+          </Card>
         </div>
       );
     }    
@@ -148,14 +154,14 @@ let del2 = {weight:"1", deiveryPrice:"15000"};
 var list = [
 ];
 
-for (var i=0; i<59; i++) {
+for (var i=0; i<20; i++) {
   let weight_price = { weight: getDeliveryWeight(i), deiveryPrice: getDeliveryPrice(i)}
   list.push(weight_price)
 }
 
 function getDeliveryWeight(i){
   const start_weight = 1
-  const weight_range = 0.5
+  const weight_range = 1
   return start_weight + (weight_range*i)
 }
 
@@ -301,6 +307,77 @@ export class DeliveryPriceTableChina extends React.Component {
               expandRow={ "" }
               striped />
           </DeliveryPriceTableStyle>
+        </div>
+      );
+    }    
+}
+
+const WeightCalcStyle = styled.div`
+  width: 350px;
+  padding: 10px;
+  border: 2px solid gray;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+export class DeliveryCalculation extends React.Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+      }
+  }
+
+  render() {
+      return (
+        <div>
+          <Card border="dark" style={{ width: '60%', marginTop:'1rem', marginBottom:'1rem', marginLeft:'1rem' }}>
+            <Card.Header>
+              국제배송비 책정 안내
+            </Card.Header>
+            <Card.Body >
+             
+              항공 운송 특성상, 특송화물에 대해서는 <span style={{ color: 'red' }}>실무게 VS 부피무게</span> 중 무거운 쪽으로 배송비가 책정됩니다.<br/>
+              부피무게 계산 기준은 아래와 같습니다.<br/>
+              <WeightCalcStyle>
+                가로(cm) * 세로(cm) * 높이(cm) / 6000(kg)
+              </WeightCalcStyle>
+              예시 1. 실무게(<span style={{ color: 'blue' }}>4kg</span>) > 부피무게(<span style={{ color: 'blue' }}>1kg</span>, 
+                20cm * 30cm * 10cm / 6000 = 1) => 배송비 <span style={{ color: 'blue' }}>4kg</span> 요금 책정<br/> 
+              예시 2. 부피무게(<span style={{ color: 'blue' }}>12kg</span>, 60cm * 40cm * 30cm / 6000 = 12) > 
+                실무게(<span style={{ color: 'blue' }}>4kg</span>) => 배송비 <span style={{ color: 'blue' }}>12kg</span> 요금 책정
+              
+              <br/>
+              <br/>
+            </Card.Body>
+          </Card>
+        </div>
+      );
+    }    
+}
+
+export class DeliveryOptionsInfo extends React.Component {
+  constructor(props) {
+      super(props);
+      this.state = {
+      }
+  }
+
+  render() {
+      return (
+        <div>
+          <Card border="dark" style={{ width: '60%', marginTop:'1rem', marginBottom:'1rem', marginLeft:'1rem' }}>
+            <Card.Header>
+              추가비용 및 부가서비스 안내
+            </Card.Header>
+            <Card.Body >
+              무게 또는 부피 초과비용 (<span style={{ fontSize: '12px' }}>박스중량이 20kg초과시, 세변의 길이합이 160cm 초과시, 한변의 길이가 120cm 초과시</span>)<br/> 
+               - 3만원<br/> 
+              분할비용<br/> 
+               - 3000원<br/> 
+              합배송<br/> 
+               - 3000원
+            </Card.Body>
+          </Card>
         </div>
       );
     }    
