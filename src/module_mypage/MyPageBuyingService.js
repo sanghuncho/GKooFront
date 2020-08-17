@@ -112,14 +112,14 @@ export class MyPageBuyingService extends React.Component {
             keycloakAuth:keycloak, 
             accessToken:keycloak.token, 
             userid:keycloak.tokenParsed.preferred_username,
-            realmAccessRoles:keycloak.realmAccess.roles,
+            //realmAccessRoles:keycloak.realmAccess.roles,
             isAdmin:isAdmin(keycloak.realmAccess)
           })
           localStorage.setItem("react-token", keycloak.token);
           localStorage.setItem("userid", keycloak.tokenParsed.preferred_username);
           
           if(!this.state.isAdmin){
-            //회원일 경우 데이터 로딩시작
+            //회원일 경우 데이터 로딩시작, 관리자는 search
             this.fetchCustomerStatusData(keycloak.token)
           }
       })
@@ -256,6 +256,7 @@ export class MyPageBuyingService extends React.Component {
                   deliveryKoreaData = {this.state.deliveryKoreaData}
                   userBaseInfo = {this.state.userBaseInfo}
                   accessToken = { this.state.accessToken }
+                  //관리지 properties
                   isAdmin = {this.state.isAdmin}
                   handleSearchChangeInput = {this.handleSearchChangeInput}
                   handleSearch={this.handleSearch}

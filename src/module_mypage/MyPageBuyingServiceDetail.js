@@ -6,7 +6,7 @@ import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageBuyingServiceDetailProducts } from "./MyPageBuyingServiceDetailProduct"
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { PaymentBuyingServiceButton, PaymentDeliveryBuyingServiceButton } from '../module_mypage/PaymentInformation'
 import { TrackingButton } from '../module_mypage/DeliveryInformation'
@@ -52,9 +52,12 @@ export class MyPageBuyingServiceDetail extends React.Component{
           shopUrl:'',
           productListTotalPrice:'',
           userid:'',
+          customerNameKor:'',
         }
         this.mypageBuyingServiceDetailData = this.mypageBuyingServiceDetailData.bind(this)
-        this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
+        this.handleSearchChangeInputUserid = this.handleSearchChangeInputUserid.bind(this)
+        this.handleSearchChangeInputOrderid = this.handleSearchChangeInputOrderid.bind(this)
+        this.handleSearch = this.handleSearch.bind(this)
       }
 
       componentDidMount() {
@@ -64,22 +67,15 @@ export class MyPageBuyingServiceDetail extends React.Component{
             this.setState({ 
               keycloakAuth: keycloak, 
               accessToken:keycloak.token,
-              userid:keycloak.tokenParsed.preferred_username
+              userid:keycloak.tokenParsed.preferred_username,
+              isAdmin:isAdmin(keycloak.realmAccess)
             })
-            this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
-          })
-      }
 
-      handleUpdateRecipientData(token, orderid){
-        let userid = this.state.userid
-        setTokenHeader(token)
-        fetch(basePort + '/getRecipientDataBuyingService/'+ orderid + '/' + userid, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState({recipientInfo:data})
-          console.log(data)
-        })  
+            if(!this.state.isAdmin){
+              //회원일 경우 데이터 로딩시작, 관리자는 search
+              this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
+            }
+          })
       }
 
       fetchOrderingPersonInforamtion(token, orderid){
@@ -92,10 +88,10 @@ export class MyPageBuyingServiceDetail extends React.Component{
         //   this.mypageBuyingServiceDetailData(keycloak.token, orderid)
         // })
 
-        let lastname = keycloak.tokenParsed.family_name
-        let firstname = keycloak.tokenParsed.given_name
-        let fullname = lastname + firstname
-        this.setState({orderingPersonInfo:fullname})
+        // let lastname = keycloak.tokenParsed.family_name
+        // let firstname = keycloak.tokenParsed.given_name
+        // let fullname = lastname + firstname
+        // this.setState({orderingPersonInfo:fullname})
         this.mypageBuyingServiceDetailData(token, orderid)
       }
 
@@ -109,6 +105,8 @@ export class MyPageBuyingServiceDetail extends React.Component{
           console.log("data.deliveryPayment")
           console.log(data.deliveryPayment)
           this.setState({
+            customerNameKor:data.customerData.nameKor,
+            orderingPersonInfo:data.customerData.nameKor,
             recipientInfo:data.recipientData, 
             buyingServiceState:data.buyingServiceState,
             productPayment:data.productPayment,
@@ -139,6 +137,35 @@ export class MyPageBuyingServiceDetail extends React.Component{
         this.sendPaymentOwnername(ownerName)        
       }
 
+      handleSearch(){
+        if(this.state.userid === '' || this.state.orderid === ''){
+          this.setState({
+                      recipientInfo:'', 
+                      buyingServiceState:'',
+                      productPayment:'',
+                      deliveryPayment:'',
+                      deliveryKoreaData:'',
+                      productsInfo:'',
+                      shopUrl:'',
+                      productListTotalPrice:'',
+                      })
+        } else {
+          console.log(this.state.userid)
+          console.log(this.state.orderid)
+          this.mypageBuyingServiceDetailData(this.state.accessToken, this.state.orderid)
+        }
+      }
+  
+      handleSearchChangeInputUserid(event){
+        this.setState({userid:event.target.value})
+        console.log(event.target.value)
+      }
+
+      handleSearchChangeInputOrderid(event){
+        this.setState({orderid:event.target.value})
+        console.log(event.target.value)
+      }
+
       render() {
         return (
           <div>
@@ -165,6 +192,11 @@ export class MyPageBuyingServiceDetail extends React.Component{
                 productListTotalPrice={this.state.productListTotalPrice}
                 accessToken={this.state.accessToken}
                 userid={this.state.userid}
+                //관리지 properties
+                isAdmin = {this.state.isAdmin}
+                handleSearchChangeInputUserid = {this.handleSearchChangeInputUserid}
+                handleSearchChangeInputOrderid = {this.handleSearchChangeInputOrderid}
+                handleSearch={this.handleSearch}
               />
             
             </BodyContainer>
@@ -180,6 +212,13 @@ class MyPageDetailWrapper extends React.Component{
       }
       
       render() {
+        let searchOrderPanel
+        if(this.props.isAdmin){
+          searchOrderPanel = <SearchOrderPanel 
+                          handleSearchChangeInputUserid={this.props.handleSearchChangeInputUserid}
+                          handleSearchChangeInputOrderid={this.props.handleSearchChangeInputOrderid}
+                          handleSearch={this.props.handleSearch}/>
+        }
         return (
             <div>
                 <Breadcrumb>
@@ -188,6 +227,9 @@ class MyPageDetailWrapper extends React.Component{
                     <Breadcrumb.Item active>주문 상세정보</Breadcrumb.Item>
                 </Breadcrumb> 
                 
+                {/* 주문번호로 찾기 */}
+                {searchOrderPanel}
+
                 {/* 주문자정보 */}
                 <MyPageDetailPerson 
                   orderid={this.props.orderid}
@@ -228,6 +270,38 @@ class MyPageDetailWrapper extends React.Component{
           </div>
         );
       }    
+}
+
+class SearchOrderPanel extends React.Component{
+  constructor(props) {
+      super(props);
+    }
+    
+    render() {
+      return (
+        <div>
+          <InputGroup className="mb-3" style={{ width: '30%', marginTop:'1rem', marginBottom:'1rem' }}>
+            <FormControl
+                placeholder="회원 아이디"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                onChange = {this.props.handleSearchChangeInputUserid} 
+              />
+              <FormControl
+                placeholder="주문번호"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                onChange = {this.props.handleSearchChangeInputOrderid} 
+              />
+              <InputGroup.Append>
+                <Button variant="outline-secondary"
+                        onClick={(e) => this.props.handleSearch(e)}>Search
+                </Button>
+              </InputGroup.Append>
+          </InputGroup>
+        </div>
+      );
+    }    
 }
 
 export function BuyingServiceStateToString(state){
