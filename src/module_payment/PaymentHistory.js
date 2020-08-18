@@ -66,17 +66,19 @@ var grey = '#727676';
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 export class PaymentHistory extends React.Component {
-
-    state = { 
+  constructor(props) {
+    super(props);
+    this.state = { 
       active: null,
       keycloakAuth:null,
       accessToken:"",
       userid:'',
       paymentHistoryDepositData:'',
       paymentHistoryTransferData:''
-   };
-  
-    toggle(position) {
+    }
+  }
+
+  toggle(position) {
       if (this.state.active === position) {
         this.setState({active : null})
       } else {
@@ -101,9 +103,10 @@ export class PaymentHistory extends React.Component {
               keycloakAuth: keycloak, 
               accessToken:keycloak.token, 
               userid:keycloak.tokenParsed.preferred_username
-        })
-        console.log(keycloak.tokenParsed.given_name)
-        console.log(keycloak.tokenParsed.email)
+            })
+            console.log("history")
+            console.log(keycloak.tokenParsed.given_name)
+            console.log(keycloak.tokenParsed.email)
         this.fetchPaymentHistoryDeposit(keycloak.token)
         this.fetchPaymentHistoryTransfer(keycloak.token)
       })
@@ -120,8 +123,8 @@ export class PaymentHistory extends React.Component {
         }).then((data) => {           
           this.setState({paymentHistoryDepositData:data})
           console.log(data)
-        }).catch(function() {
-
+        }).catch(error => {
+          console.error('Error fetching customerStatusData!', error);
       });
     }
 
@@ -135,8 +138,8 @@ export class PaymentHistory extends React.Component {
         }).then((data) => {           
           this.setState({paymentHistoryTransferData:data})
           console.log(data)
-        }).catch(function() {
-
+        }).catch(error => {
+          console.error('Error fetching customerStatusData!', error);
       });
     }
 
@@ -234,24 +237,24 @@ const transferData = [
 
 const columnsPaymentHistoryTransfer = [
   {
-    dataField: 'orderDate',
+    dataField: 'paymentDate',
     text: '신청날짜',
     headerStyle: (colum, colIndex) => {
       return { width: '100px', textAlign: 'center' };
     }
   },
   {
-    dataField: 'currentDeposit',
+    dataField: 'depositPayment',
     text: '결제금액',
     formatter:currencyFormatter,
   },
   {
-    dataField: 'buyingPrice',
+    dataField: 'buyingPayment',
     text: '구매/경매대행',
     formatter:currencyFormatter,
   },
   {
-    dataField: 'deliveryPrice',
+    dataField: 'shippingPayment',
     text: '배송대행',
     formatter:currencyFormatter,
   },
@@ -260,7 +263,7 @@ const columnsPaymentHistoryTransfer = [
     text: '신청번호',
   },
   {
-    dataField: 'itemTitle',
+    dataField: 'itemname',
     text: '상품명',
     headerStyle: (colum, colIndex) => {
       return { width: '130px', textAlign: 'center' };
@@ -297,9 +300,9 @@ class PaymentHistoryTransferTable extends React.Component {
        
               <PaymentHistoryTableStyle>
               <BaseTablePagination
-                   keyField='objectId'  
-                   data={ transferData }
-                   //data={ this.props.paymentHistoryTransferData}
+                   keyField='orderid'  
+                   //data={ transferData }
+                   data={ this.props.paymentHistoryTransferData}
                    columns={ columnsPaymentHistoryTransfer } 
                    bordered={ true }  
                    noDataIndication="결제내역이 없습니다"
@@ -403,8 +406,8 @@ class PaymentHistoryDepositTable extends React.Component {
               <PaymentHistoryTableStyle>
               <BaseTablePagination
                    keyField='objectId'  
-                   data={ depositData }
-                   //data={ this.props.paymentHistoryDepositData}
+                   //data={ depositData }
+                   data={ this.props.paymentHistoryDepositData}
                    columns={ columnsPaymentHistoryDeposit } 
                    bordered={ true }  
                    noDataIndication="결제내역이 없습니다"
