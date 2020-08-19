@@ -14,7 +14,7 @@ import { PaymentInformationBuyingService, PaymentDeliveryDataBuyingService } fro
 import { DeliveryInformationBuyingService } from './DeliveryInformation'
 import { UserBaseInfo } from './UserBaseInfo'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { window_reload } from '../module_base_component/BaseUtil'
+import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -256,7 +256,7 @@ export class MyPageBuyingService extends React.Component {
                   deliveryKoreaData = {this.state.deliveryKoreaData}
                   userBaseInfo = {this.state.userBaseInfo}
                   accessToken = { this.state.accessToken }
-                  //관리지 properties
+                  //관리자 properties
                   isAdmin = {this.state.isAdmin}
                   handleSearchChangeInput = {this.handleSearchChangeInput}
                   handleSearch={this.handleSearch}
@@ -284,7 +284,7 @@ export class MypageBuyingServiceController extends React.Component{
     render() {
       let searchPane
       if(this.props.isAdmin){
-        searchPane = <SearchPanel 
+        searchPane = <SearchPanel_ID 
                         handleSearchChangeInput={this.props.handleSearchChangeInput}
                         handleSearch={this.props.handleSearch}/>
       }
@@ -351,28 +351,28 @@ export class MypageBuyingServiceController extends React.Component{
 }
 
 //baseform move
-class SearchPanel extends React.Component{
-  constructor(props) {
-      super(props);
-    }
+// class SearchPanel extends React.Component{
+//   constructor(props) {
+//       super(props);
+//     }
     
-    render() {
-      return (
-        <div>
-          <InputGroup className="mb-3" style={{ width: '20%', marginTop:'1rem', marginBottom:'1rem' }}>
-              <FormControl
-                placeholder="회원 아이디"
-                aria-label="Recipient's username"
-                aria-describedby="basic-addon2"
-                onChange = {this.props.handleSearchChangeInput} 
-              />
-              <InputGroup.Append>
-                <Button variant="outline-secondary"
-                        onClick={(e) => this.props.handleSearch(e)}>Search
-                </Button>
-              </InputGroup.Append>
-          </InputGroup>
-        </div>
-      );
-    }    
-}
+//     render() {
+//       return (
+//         <div>
+//           <InputGroup className="mb-3" style={{ width: '20%', marginTop:'1rem', marginBottom:'1rem' }}>
+//               <FormControl
+//                 placeholder="회원 아이디"
+//                 aria-label="Recipient's username"
+//                 aria-describedby="basic-addon2"
+//                 onChange = {this.props.handleSearchChangeInput} 
+//               />
+//               <InputGroup.Append>
+//                 <Button variant="outline-secondary"
+//                         onClick={(e) => this.props.handleSearch(e)}>Search
+//                 </Button>
+//               </InputGroup.Append>
+//           </InputGroup>
+//         </div>
+//       );
+//     }    
+// }

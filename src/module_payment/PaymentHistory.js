@@ -7,16 +7,17 @@ import {
   BaseNavigation,
 } from "../container";
 import { MyPageSideNav } from "../module_mypage/MyPageSideNav";
-import { Breadcrumb, Button, CardGroup, Table, Card, InputGroup, Image } from "react-bootstrap"
+import { Breadcrumb, Button, Card } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { KEYCLOAK_USER_ACCOUNT } from "../Config"
 import { BaseTablePagination } from '../module_base_component/BaseTable'
 import { currencyFormatter, currencyFormatterEuro } from '../module_payment/PaymentUtil'
 import { Redirect } from 'react-router';
+import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -76,6 +77,8 @@ export class PaymentHistory extends React.Component {
       paymentHistoryDepositData:'',
       paymentHistoryTransferData:''
     }
+    this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
   }
 
   toggle(position) {
@@ -102,20 +105,23 @@ export class PaymentHistory extends React.Component {
           this.setState({ 
               keycloakAuth: keycloak, 
               accessToken:keycloak.token, 
-              userid:keycloak.tokenParsed.preferred_username
+              userid:keycloak.tokenParsed.preferred_username,
+              isAdmin:isAdmin(keycloak.realmAccess)
             })
             console.log("history")
             console.log(keycloak.tokenParsed.given_name)
             console.log(keycloak.tokenParsed.email)
-        this.fetchPaymentHistoryDeposit(keycloak.token)
-        this.fetchPaymentHistoryTransfer(keycloak.token)
+        if(!this.state.isAdmin){
+          //회원일 경우 데이터 로딩시작, 관리자는 search
+          this.fetchPaymentHistoryDeposit(keycloak.token)
+          this.fetchPaymentHistoryTransfer(keycloak.token)
+        }
       })
       
     }
 
     fetchPaymentHistoryDeposit(token){
       let userid = this.state.userid
-      console.log(userid)
       setTokenHeader(token)
       fetch(basePort + '/fetchPaymentHistoryDeposit/'+ userid, {headers})
         .then((result) => { 
@@ -124,13 +130,12 @@ export class PaymentHistory extends React.Component {
           this.setState({paymentHistoryDepositData:data})
           console.log(data)
         }).catch(error => {
-          console.error('Error fetching customerStatusData!', error);
+          console.error('Error fetching fetchPaymentHistoryDeposit!', error);
       });
     }
 
     fetchPaymentHistoryTransfer(token){
       let userid = this.state.userid
-      console.log(userid)
       setTokenHeader(token)
       fetch(basePort + '/fetchPaymentHistoryTransfer/'+ userid, {headers})
         .then((result) => { 
@@ -139,7 +144,7 @@ export class PaymentHistory extends React.Component {
           this.setState({paymentHistoryTransferData:data})
           console.log(data)
         }).catch(error => {
-          console.error('Error fetching customerStatusData!', error);
+          console.error('Error fetching fetchPaymentHistoryTransfer!', error);
       });
     }
 
@@ -149,6 +154,26 @@ export class PaymentHistory extends React.Component {
 
     getEmptyPage(){
       return ""
+    }
+
+    handleSearch(){
+      if(this.state.userid === ''){
+        this.setState({customerStatusData:'',
+                       buyingOrderData:'',
+                       paymentData:'',
+                       paymentDelivery:'',
+                       deliveryKoreaData:'',
+                       userBaseInfo:'',
+                    })
+      } else {
+        this.fetchPaymentHistoryDeposit(this.state.accessToken)
+        this.fetchPaymentHistoryTransfer(this.state.accessToken)
+      }
+    }
+
+    handleSearchChangeInput(event){
+      this.setState({userid:event.target.value})
+      console.log(event.target.value)
     }
 
     render() {
@@ -162,7 +187,10 @@ export class PaymentHistory extends React.Component {
                   paymentHistoryTransferData={this.state.paymentHistoryTransferData}
                   keycloakAuth={this.state.keycloakAuth}
                   userid={this.state.userid}
-                 
+                  //관리자 properties
+                  isAdmin = {this.state.isAdmin}
+                  handleSearchChangeInput = {this.handleSearchChangeInput}
+                  handleSearch={this.handleSearch}
                 />
         } else {
             paymentHistory = this.getEmptyPage
@@ -193,6 +221,13 @@ export class PaymentHistoryController extends React.Component{
       }
     
     render() {
+        let searchPane
+        if(this.props.isAdmin){
+          searchPane = <SearchPanel_ID 
+                          handleSearchChangeInput={this.props.handleSearchChangeInput}
+                          handleSearch={this.props.handleSearch}/>
+        }
+
         return (
         <div>
           <AppContainer>
@@ -204,6 +239,8 @@ export class PaymentHistoryController extends React.Component{
               <Breadcrumb.Item active>마이페이지 / 결제내역 </Breadcrumb.Item>
             </Breadcrumb>
  
+            {searchPane}
+
             {/* 무통장입금내역 */}
             <PaymentHistoryTransferTable paymentHistoryTransferData={this.props.paymentHistoryTransferData}/>
 

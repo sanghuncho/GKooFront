@@ -422,7 +422,7 @@ const columnsBuyingService = [
     dataField: 'productInfo',
     text: '상품정보'
   },{
-    dataField: 'productInfo',
+    dataField: 'mainImageUrl',
     text: '이미지',
     formatter:imageFormatter,
     headerStyle: (colum, colIndex) => {
@@ -534,7 +534,7 @@ class ImageFormatter extends React.Component{
     render() {
       return (
         <div>
-         <Image src="https://i.ebayimg.com/images/g/qM8AAOSwVmFfBgQc/s-l1600.jpg" 
+         <Image src = {this.props.cell} 
           style={{ width: '100%', height: '40px'}}/>
        </div>
       );

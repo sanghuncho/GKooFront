@@ -486,7 +486,7 @@ class MyPageDetailProduct extends React.Component{
                     <tr>
                         <td width='300px'>이미지</td>
                         <td width='300px'>
-                            <Image src="https://i.ebayimg.com/images/g/qM8AAOSwVmFfBgQc/s-l1600.jpg" 
+                            <Image src = {this.props.product.imageUrl} 
                                    style={{ width: '200px', height: '80px'}}/></td>
                     </tr>
                     <tr>
