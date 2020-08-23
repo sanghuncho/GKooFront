@@ -18,7 +18,7 @@ import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -112,7 +112,7 @@ export class MyPageBuyingService extends React.Component {
             keycloakAuth:keycloak, 
             accessToken:keycloak.token, 
             userid:keycloak.tokenParsed.preferred_username,
-            //realmAccessRoles:keycloak.realmAccess.roles,
+            //관리자 체크
             isAdmin:isAdmin(keycloak.realmAccess)
           })
           localStorage.setItem("react-token", keycloak.token);

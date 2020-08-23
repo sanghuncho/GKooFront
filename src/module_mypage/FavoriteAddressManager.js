@@ -6,15 +6,18 @@ import {
   AppContainer as BaseAppContainer,
   ExampleNavigation as BaseNavigation,
 } from "../container"
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav"
-import { Breadcrumb, Card, Button, Form, Table, Row, Col, InputGroup, FormControl } from "react-bootstrap"
+import { Breadcrumb, Card, Button } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressInputForm } from './FavoriteAddressInputForm'
 import { get_log_message } from "../module_base_component/LogMessenger"
+import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
 
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -54,18 +57,21 @@ const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 
 export class FavoriteAddressManager extends React.Component{
 
-    state = { 
+  constructor(props) {
+    super(props);
+    this.state = { 
+      userid:'',
       active: null,
-      image:null,
       keycloakAuth:null,
       accessToken:"",
-      customerStatusData:'',
-      userAccount:'',
-      purchaseOrder:'',
-      orderInformation:'',
-      warehouseInformation:'',
-      trackingNumber:'1234',
-      userid:'',
+      //image:null,
+      //customerStatusData:'',
+      //userAccount:'',
+      //purchaseOrder:'',
+      //orderInformation:'',
+      //warehouseInformation:'',
+      //trackingNumber:'1234',
+    }
    };
   
     toggle(position) {
@@ -91,22 +97,13 @@ export class FavoriteAddressManager extends React.Component{
       keycloak.init({onLoad: 'login-required'}).success(() => {
           this.setState({ keycloakAuth: keycloak, 
           accessToken:keycloak.token,
-          userid:keycloak.tokenParsed.preferred_username})
-          get_log_message("FavoriteAddressManager", "userid", keycloak.tokenParsed.preferred_username)
-          //this.fetchPurchaseOrderList(keycloak.token)
+          userid:keycloak.tokenParsed.preferred_username,
+          //관리자 체크
+          isAdmin:isAdmin(keycloak.realmAccess)
+        })
+        get_log_message("FavoriteAddressManager", "userid", keycloak.tokenParsed.preferred_username)
       })
     }
-
-    // not need since 28.04.20
-    // updateTranckingNumber(orderNumber, trackingCompany, trackingNumber){
-    //   const contents =  [{orderNumber: orderNumber}, 
-    //       {trackingCompany:trackingCompany},
-    //       {trackingNumber:trackingNumber}]
-    //   this.setTokenHeader(this.state.accessToken)
-    //   fetch('http://localhost:8888/willpaydeleveryfeeupdate', 
-    //             {method:'post', headers, 
-    //               body:JSON.stringify(contents)})
-    // }
     
     validToken(token){
       return token === "" ? false : true
@@ -122,8 +119,11 @@ export class FavoriteAddressManager extends React.Component{
 
         if(this.validToken(token)){
             addressManagerController = <AddressManagerController 
-            accessToken={this.state.accessToken}
-            userid={this.state.userid}/>
+              accessToken={this.state.accessToken}
+              userid={this.state.userid}
+              //관리자 properties
+              isAdmin={this.state.isAdmin}
+             />
         } else {
             addressManagerController = this.getEmptyPage
         }
@@ -160,7 +160,8 @@ export class AddressManagerController extends React.Component{
             {/* ToDo : userAccount name as mypagebody */}
             <AddressManagerWrapper 
               accessToken={this.props.accessToken}
-              userid={this.props.userid}/>
+              userid={this.props.userid}
+              isAdmin={this.props.isAdmin}/>
 
         </BodyContainer>
         
@@ -188,11 +189,15 @@ export class AddressManagerWrapper extends React.Component{
       this.handleOpenFavoriteAddressInputPanel = this.handleOpenFavoriteAddressInputPanel.bind(this);
       this.handleCloseAddingAddressPanel = this.handleCloseAddingAddressPanel.bind(this);
       this.handleEditingFavoriteAddressInputPanel = this.handleEditingFavoriteAddressInputPanel.bind(this)
+      this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
+      this.handleSearch = this.handleSearch.bind(this)
   }
 
   componentDidMount() {
-    //fetch list
-    this.fetchFavoriteAddressList(this.props.accessToken)
+    if(!this.props.isAdmin){
+      //회원일 경우 데이터 로딩시작, 관리자는 search
+      this.fetchFavoriteAddressList(this.props.accessToken)
+    }
   }
 
   fetchFavoriteAddressList(accessToken){
@@ -243,6 +248,19 @@ export class AddressManagerWrapper extends React.Component{
     var favoriteAddressId = this.state.favoriteAddressList[index].id
     this.deleteFavoriteAddress(this.props.accessToken, favoriteAddressId)
   }
+
+  handleSearch(){
+    if(this.state.userid === ''){
+      this.setState({favoriteAddressList:[]})
+    } else {
+      this.fetchFavoriteAddressList(this.props.accessToken)
+    }
+  }
+
+  handleSearchChangeInput(event){
+    this.setState({userid:event.target.value})
+    console.log(event.target.value)
+  }
     
   render() {
       const showAddingAddressButton = this.state.showAddingAddressButton
@@ -262,15 +280,15 @@ export class AddressManagerWrapper extends React.Component{
       let heightAddressManager
         if(sizeOnList == 0 & showFavoriteAddressInputPanel == false) {
           intro = <div>배송지 추가버튼으로 자주 이용하는 주소를 등록하실수 있습니다.</div>
-          heightAddressManager = '10rem'
+          heightAddressManager = '11rem'
           console.log(sizeOnList)
         } else {
-          heightAddressManager = 6 + 14*sizeOnList + 'rem'
+          heightAddressManager = 6 + 15*sizeOnList + 'rem'
         }
       
       let addingAddressPanel
         if(showFavoriteAddressInputPanel){
-          heightAddressManager = 35 + 14*sizeOnList + 'rem'
+          heightAddressManager = 35 + 15*sizeOnList + 'rem'
           addingAddressPanel = 
             <AddingAddressPanel 
               handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel}    
@@ -280,7 +298,7 @@ export class AddressManagerWrapper extends React.Component{
               />
         } else if(doLoadingFavoriteAddressInputPanel){
           const indexEdited = this.state.indexEditedFavoriteAddress
-          heightAddressManager = 35 + 14*sizeOnList + 'rem'
+          heightAddressManager = 35 + 15*sizeOnList + 'rem'
           addingAddressPanel = 
             <EditingAddressPanel 
               handleCloseAddingAddressPanel={this.handleCloseAddingAddressPanel} 
@@ -289,6 +307,13 @@ export class AddressManagerWrapper extends React.Component{
               userid={this.props.userid}
               />
         }
+
+        let searchPane
+        if(this.props.isAdmin){
+          searchPane = <SearchPanel_ID 
+                          handleSearchChangeInput={this.handleSearchChangeInput}
+                          handleSearch={this.handleSearch}/>
+        }
       return (
         <div>
           <Card border="dark" style={{ width: '80%', height:heightAddressManager, marginTop:'1rem' }}>
@@ -296,6 +321,8 @@ export class AddressManagerWrapper extends React.Component{
                   {addAddressButton}
                 </Card.Header>
                 <Card.Body >
+                   {/* 관리자모드 */}
+                  {searchPane}
                   
                   {intro}
 

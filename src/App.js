@@ -84,6 +84,7 @@ const Main = () => (
     {/* 마이페이지 모둘 */} 
     <Route exact path='/mypage' component={ MyPage }></Route>
     <Route exact path='/detailsmypage/:orderid' component={ MyPageDetail }></Route>
+    <Route exact path='/detailsmypage' component={ MyPageDetail }></Route>
     <Route exact path='/mypagebuyingService' component={ MyPageBuyingService }></Route>
     <Route exact path='/detailsbuyingService/:orderid' component={ MyPageBuyingServiceDetail }></Route>
     <Route exact path='/detailsbuyingService' component={ MyPageBuyingServiceDetail }></Route>

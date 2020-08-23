@@ -5,14 +5,17 @@ import { AppContainer as BaseAppContainer } from "../container";
 import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-bootstrap"
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageBuyingServiceDetailProducts } from "./MyPageBuyingServiceDetailProduct"
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { PaymentBuyingServiceButton, PaymentDeliveryBuyingServiceButton } from '../module_mypage/PaymentInformation'
 import { TrackingButton } from '../module_mypage/DeliveryInformation'
 import { getKoreanCurrency } from '../module_base_component/BaseUtil'
+import { SearchOrderPanel } from '../module_base_component/BaseSearchPanel'
 
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -61,16 +64,17 @@ export class MyPageBuyingServiceDetail extends React.Component{
       }
 
       componentDidMount() {
-          const {orderid} = this.props.match.params
-          this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ 
               keycloakAuth: keycloak, 
               accessToken:keycloak.token,
               userid:keycloak.tokenParsed.preferred_username,
+              //관리자 체크
               isAdmin:isAdmin(keycloak.realmAccess)
             })
 
+            const {orderid} = this.props.match.params
+            this.setState({orderid:orderid})
             if(!this.state.isAdmin){
               //회원일 경우 데이터 로딩시작, 관리자는 search
               this.fetchOrderingPersonInforamtion(keycloak.token, orderid)
@@ -272,37 +276,39 @@ class MyPageDetailWrapper extends React.Component{
       }    
 }
 
-class SearchOrderPanel extends React.Component{
-  constructor(props) {
-      super(props);
-    }
+
+// deprecated since 23.08.2020 use SearchOrderPanel in /module_base_component/BaseSearchPanel
+// class SearchOrderPanel extends React.Component{
+//   constructor(props) {
+//       super(props);
+//     }
     
-    render() {
-      return (
-        <div>
-          <InputGroup className="mb-3" style={{ width: '30%', marginTop:'1rem', marginBottom:'1rem' }}>
-            <FormControl
-                placeholder="회원 아이디"
-                aria-label="Recipient's username"
-                aria-describedby="basic-addon2"
-                onChange = {this.props.handleSearchChangeInputUserid} 
-              />
-              <FormControl
-                placeholder="주문번호"
-                aria-label="Recipient's username"
-                aria-describedby="basic-addon2"
-                onChange = {this.props.handleSearchChangeInputOrderid} 
-              />
-              <InputGroup.Append>
-                <Button variant="outline-secondary"
-                        onClick={(e) => this.props.handleSearch(e)}>Search
-                </Button>
-              </InputGroup.Append>
-          </InputGroup>
-        </div>
-      );
-    }    
-}
+//     render() {
+//       return (
+//         <div>
+//           <InputGroup className="mb-3" style={{ width: '30%', marginTop:'1rem', marginBottom:'1rem' }}>
+//             <FormControl
+//                 placeholder="회원 아이디"
+//                 aria-label="Recipient's username"
+//                 aria-describedby="basic-addon2"
+//                 onChange = {this.props.handleSearchChangeInputUserid} 
+//               />
+//               <FormControl
+//                 placeholder="주문번호"
+//                 aria-label="Recipient's username"
+//                 aria-describedby="basic-addon2"
+//                 onChange = {this.props.handleSearchChangeInputOrderid} 
+//               />
+//               <InputGroup.Append>
+//                 <Button variant="outline-secondary"
+//                         onClick={(e) => this.props.handleSearch(e)}>Search
+//                 </Button>
+//               </InputGroup.Append>
+//           </InputGroup>
+//         </div>
+//       );
+//     }    
+// }
 
 export function BuyingServiceStateToString(state){
   let stateString

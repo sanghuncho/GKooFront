@@ -6,11 +6,14 @@ import { Table, Card, Breadcrumb, Button, InputGroup, FormControl } from "react-
 import { MyPageDetailDeliveryPrice } from "./MyPageDetailDeliveryPrice";
 import { CustomerRecipientEditor } from "./CustomerRecipientEditor";
 import { MyPageDetailProducts } from "./MyPageDetailProducts"
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader } from "../module_base_component/AuthService"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
+import { SearchOrderPanel } from '../module_base_component/BaseSearchPanel'
 
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 const AppContainer = styled(BaseAppContainer)`
   height: auto;
@@ -47,30 +50,35 @@ export class MyPageDetail extends React.Component{
           paymentOwnername:'',
           shipstate:'',
           userid:'',
+          customerNameKor:'',
         }
         this.createPaymentOwnername = this.createPaymentOwnername.bind(this);
         this.sendPaymentOwnername = this.sendPaymentOwnername.bind(this);
         this.handleUpdateRecipientData = this.handleUpdateRecipientData.bind(this)
         this.fetchRecipientInforamtion = this.fetchRecipientInforamtion.bind(this)
         this.fetchMypageDetailData = this.fetchMypageDetailData.bind(this)
+        this.handleSearchChangeInputUserid = this.handleSearchChangeInputUserid.bind(this)
+        this.handleSearchChangeInputOrderid = this.handleSearchChangeInputOrderid.bind(this)
+        this.handleSearch = this.handleSearch.bind(this)
       }
 
       componentDidMount () {
-          const {orderid} = this.props.match.params
-          this.setState({orderid:orderid})
           keycloak.init({onLoad: 'login-required'}).success(() => {
             this.setState({ 
               keycloakAuth: keycloak, 
               accessToken:keycloak.token,
-              userid:keycloak.tokenParsed.preferred_username
+              userid:keycloak.tokenParsed.preferred_username,
+              //관리자 체크
+              isAdmin:isAdmin(keycloak.realmAccess)
             })
-            this.fetchOrderingPersonInforamtion(keycloak.token)
-            //fetchRecipientInforamtion and fetchProductsCommonInforamtion run in fetchMypageDetailData
-            //this.fetchRecipientInforamtion(keycloak.token, id)
-            //this.fetchProductsCommonInforamtion(keycloak.token, id)
-            this.fetchMypageDetailData(keycloak.token, orderid)
-            //fetchProductsInforamtion runs after finishing the fetching MypageDetailData because of error backend stream closed
-            //this.fetchProductsInforamtion(keycloak.token, orderid)
+
+            const {orderid} = this.props.match.params
+            this.setState({orderid:orderid})
+            if(!this.state.isAdmin){
+              //회원일 경우 데이터 로딩시작, 관리자는 search
+              //this.fetchOrderingPersonInforamtion(keycloak.token)
+              this.fetchMypageDetailData(keycloak.token, orderid)
+              }
             })
       }
 
@@ -91,25 +99,12 @@ export class MyPageDetail extends React.Component{
         }).then((data) => {
           this.setState({
             recipientInfo:data.recipientData, 
-            productsCommonInfo:data.productsCommonInformation
+            productsCommonInfo:data.productsCommonInformation,
+            customerNameKor:data.customerData.nameKor,
+            orderingPersonInfo:data.customerData.nameKor,
           })
           this.fetchProductsInforamtion(token, orderid)
         }) 
-      }
-
-      fetchRecipientInforamtion(token, orderid){
-        let userid = this.state.userid
-        setTokenHeader(token)
-        fetch(basePort + '/recipientinfo/'+ orderid + '/' + userid, {headers})
-        .then((result) => {
-           return result.json();
-        }).then((data) => {
-          this.setState( { recipientInfo: data} )
-        })  
-      }
-
-      handleUpdateRecipientData(accessToken, orderid){
-        this.fetchRecipientInforamtion(accessToken, orderid)
       }
 
       fetchProductsInforamtion(token, orderid){
@@ -119,19 +114,40 @@ export class MyPageDetail extends React.Component{
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({productsInfo: data})
+          this.setState({productsInfo:data})
         })  
       }
 
-      fetchProductsCommonInforamtion(token, orderid){
+      handleUpdateRecipientData(accessToken, orderid){
+        this.fetchRecipientInforamtion(accessToken, orderid)
+      }
+
+      fetchRecipientInforamtion(token, orderid){
         let userid = this.state.userid
         setTokenHeader(token)
-        fetch(basePort + '/productscommoninfo/'+ orderid + '/' + userid, {headers})
+        fetch(basePort + '/recipientinfo/'+ orderid + '/' + userid, {headers})
         .then((result) => {
            return result.json();
         }).then((data) => {
-          this.setState({productsCommonInfo:data})
+          this.setState({recipientInfo:data})
         })  
+      }
+
+      // deprecated - use fetchMypageDetailData
+      // fetchProductsCommonInforamtion(token, orderid){
+      //   let userid = this.state.userid
+      //   setTokenHeader(token)
+      //   fetch(basePort + '/productscommoninfo/'+ orderid + '/' + userid, {headers})
+      //   .then((result) => {
+      //      return result.json();
+      //   }).then((data) => {
+      //     this.setState({productsCommonInfo:data})
+      //   })  
+      // }
+
+      createPaymentOwnername(paymentOwnername, paymentArt){
+        this.setState({paymentOwnername:paymentOwnername})
+        this.sendPaymentOwnername(paymentOwnername, paymentArt)        
       }
 
       sendPaymentOwnername(paymentOwnername, paymentArt){
@@ -148,9 +164,26 @@ export class MyPageDetail extends React.Component{
            }).catch(err => err);
       }
 
-      createPaymentOwnername(paymentOwnername, paymentArt){
-        this.setState({paymentOwnername:paymentOwnername})
-        this.sendPaymentOwnername(paymentOwnername, paymentArt)        
+      handleSearch(){
+        if(this.state.userid === '' || this.state.orderid === ''){
+          this.setState({
+                      recipientInfo:'', 
+                      productsInfo:'',
+                      productsCommonInfo:'',
+                      })
+        } else {
+          this.fetchMypageDetailData(this.state.accessToken, this.state.orderid)
+        }
+      }
+  
+      handleSearchChangeInputUserid(event){
+        this.setState({userid:event.target.value})
+        console.log(event.target.value)
+      }
+
+      handleSearchChangeInputOrderid(event){
+        this.setState({orderid:event.target.value})
+        console.log(event.target.value)
       }
 
       render() {
@@ -175,6 +208,11 @@ export class MyPageDetail extends React.Component{
                 createPaymentOwnername={this.createPaymentOwnername}
                 accessToken={this.state.accessToken}
                 userid={this.state.userid}
+                //관리지 properties
+                isAdmin = {this.state.isAdmin}
+                handleSearchChangeInputUserid = {this.handleSearchChangeInputUserid}
+                handleSearchChangeInputOrderid = {this.handleSearchChangeInputOrderid}
+                handleSearch={this.handleSearch}
               />
             
             </BodyContainer>
@@ -184,12 +222,19 @@ export class MyPageDetail extends React.Component{
       }    
 }
 
-class MyPageDetailWrapper extends React.Component{
+class MyPageDetailWrapper extends React.Component {
     constructor(props) {
         super(props);
       }
       
       render() {
+        let searchOrderPanel
+        if(this.props.isAdmin){
+          searchOrderPanel = <SearchOrderPanel 
+                          handleSearchChangeInputUserid={this.props.handleSearchChangeInputUserid}
+                          handleSearchChangeInputOrderid={this.props.handleSearchChangeInputOrderid}
+                          handleSearch={this.props.handleSearch}/>
+        }
         return (
             <div>
                 <Breadcrumb>
@@ -198,6 +243,9 @@ class MyPageDetailWrapper extends React.Component{
                     <Breadcrumb.Item active>주문 상세정보</Breadcrumb.Item>
                 </Breadcrumb> 
                 
+                {/* 주문번호로 찾기 */}
+                {searchOrderPanel}
+
                 {/* 주문자정보 */}
                 <MyPageDetailPerson 
                   orderid={this.props.orderid}

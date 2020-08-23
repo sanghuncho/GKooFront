@@ -7,14 +7,17 @@ import {
   AppContainer as BaseAppContainer,
   BaseNavigation,
 } from "../container";
-import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal, validToken, getEmptyPage } from "../module_base_component/AuthService"
 import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
+import { SearchPanel_ID, SearchOrderPanel } from '../module_base_component/BaseSearchPanel'
 
+///// keycloak -> /////
+import * as Keycloak from 'keycloak-js';
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal, validToken, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
+///// <- keycloak /////
 
 //dynamic height
 const AppContainer = styled(BaseAppContainer)`
@@ -63,8 +66,9 @@ var grey = '#727676';
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 
 export class MyPage extends React.Component{
-
-    state = { 
+  constructor(props) {
+    super(props);
+    this.state = { 
       active: null,
       image:null,
       keycloakAuth:null,
@@ -78,7 +82,10 @@ export class MyPage extends React.Component{
       deliveryKoreaData:'',
       userBaseInfo:'',
       userid:'',
-      isUseridChecked:false,
+      isUseridChecked:false
+    }
+    this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
+    this.handleSearch = this.handleSearch.bind(this)
    };
   
     toggle(position) {
@@ -106,17 +113,18 @@ export class MyPage extends React.Component{
           this.setState({ 
             keycloakAuth: keycloak, 
             accessToken:keycloak.token, 
-            userid:keycloak.tokenParsed.preferred_username
+            userid:keycloak.tokenParsed.preferred_username,
+            //관리자 체크
+            isAdmin:isAdmin(keycloak.realmAccess)
           })
           //console.log(keycloak.tokenParsed.preferred_username)
           //console.log(keycloak.tokenParsed.given_name)
           //console.log(keycloak.tokenParsed.email)
         
-          this.fetchCustomerStatusData(keycloak.token)
-          
-          //not used methods since 
-          //this.fetchEndSettlementList(keycloak.token)
-          //this.fetchPurchaseOrderList(keycloak.token)
+          if(!this.state.isAdmin){
+            //회원일 경우 데이터 로딩시작, 관리자는 search
+            this.fetchCustomerStatusData(keycloak.token)
+          }
       })
     }
 
@@ -137,6 +145,18 @@ export class MyPage extends React.Component{
         }).catch(error => {
           console.error('Error fetching customerStatusData!', error);
         }); 
+    }
+
+    fetchCustomerStatusDataAdmin(token){
+      let userid = this.state.userid
+      setTokenHeader(token)
+      fetch(basePort + '/fetchCustomerStatusAdmin/'+ userid, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+          this.setState({customerStatusData:data})
+          this.fetchOrderInformation(token)
+        })   
     }
 
     fetchOrderInformation(token){
@@ -202,28 +222,24 @@ export class MyPage extends React.Component{
       });
     }
 
-    // not necessary @since 25.02.2020
-    // fetchPurchaseOrderList(token){
-    //   setTokenHeader(token)
-    //   fetch(basePort + '/purchaseOderList', {headers})
-    //     .then((result) => {
-    //        return result.json();
-    //     }).then((data) => {
-    //       this.setState( { purchaseOrder: data} )
-    //       console.log(data)
-    //     })   
-    // }
+    handleSearch(){
+      if(this.state.userid === ''){
+        this.setState({customerStatusData:'',
+                       orderInformation:'',
+                       paymentData:'',
+                       paymentDelivery:'',
+                       deliveryKoreaData:'',
+                       userBaseInfo:'',
+                    })
+      } else {
+        this.fetchCustomerStatusDataAdmin(this.state.accessToken)
+      }
+    }
 
-    // not necessary @since 25.02.2020
-    // fetchEndSettlementList(token){
-    //   setTokenHeader(token)
-    //   fetch(basePort + '/endSettlementList', {headers})
-    //     .then((result) => {
-    //        return result.json();
-    //     }).then((data) => {
-    //       this.setState( { userAccount: data} )
-    //     })   
-    // }
+    handleSearchChangeInput(event){
+      this.setState({userid:event.target.value})
+      console.log(event.target.value)
+    }
 
     // maybe could be necessary for image tanfering later @since 25.02.2020
     // fetchPurchasedImage(){
@@ -251,7 +267,12 @@ export class MyPage extends React.Component{
                       deliveryKoreaData = {this.state.deliveryKoreaData}
                       userBaseInfo={this.state.userBaseInfo}
                       accessToken = {this.state.accessToken}
-                      userid={this.state.userid}/>
+                      userid={this.state.userid}
+                      //관리자 properties
+                      isAdmin = {this.state.isAdmin}
+                      handleSearchChangeInput = {this.handleSearchChangeInput}
+                      handleSearch={this.handleSearch}
+                      />
         } else {
           mypage = getEmptyPage()
         }
@@ -272,6 +293,12 @@ export class MypageController extends React.Component{
     }
     
     render() {
+      let searchPane
+      if(this.props.isAdmin){
+        searchPane = <SearchPanel_ID 
+                        handleSearchChangeInput={this.props.handleSearchChangeInput}
+                        handleSearch={this.props.handleSearch}/>
+      }
       return (
         <div>
           <AppContainer>
@@ -282,6 +309,8 @@ export class MypageController extends React.Component{
             <Breadcrumb style={{ width: '100%'}}>
               <Breadcrumb.Item active>마이페이지 / 배송대행</Breadcrumb.Item>
             </Breadcrumb>
+
+          {searchPane}
 
           {/* ToDo : userAccount name as mypagebody */}
           <UserAccount 

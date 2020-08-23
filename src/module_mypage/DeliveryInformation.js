@@ -157,9 +157,10 @@ export class TrackingButton extends React.Component {
     }
   
     render() {
+      let disableTracking = this.props.deliveryTracking === null ? true : false
       return(
         <div>
-        <Button  variant="outline-secondary" size="sm" onClick={this.handleOpenTrackingSite} disabled={this.props.disable}>조회</Button>
+        <Button  variant="outline-secondary" size="sm" onClick={this.handleOpenTrackingSite} disabled={disableTracking}>조회</Button>
           <Modal show={this.state.showModal} onHide={this.handleModalClose}>
             <Modal.Header closeButton>
               <Modal.Title>배송조회</Modal.Title>

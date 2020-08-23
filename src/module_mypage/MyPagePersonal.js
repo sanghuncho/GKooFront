@@ -7,13 +7,13 @@ import {
   BaseNavigation,
 } from "../container";
 import { MyPageSideNav } from "./MyPageSideNav";
-import { Breadcrumb, Button, CardGroup, Table, Card, InputGroup, FormControl } from "react-bootstrap"
+import { Breadcrumb, Button, Card, InputGroup, FormControl } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { KEYCLOAK_USER_ACCOUNT } from "../Config"
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, basePort, headers, setTokenHeader, getEmptyPage, validToken } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, basePort, headers, setTokenHeader, validToken, getEmptyPage} from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -63,14 +63,16 @@ var grey = '#727676';
 
 const Icon = props => <BaseIcon size={18} icon={props.icon} />;
 export class MyPagePersonal extends React.Component{
-
-    state = { 
+  constructor(props) {
+    super(props);
+    this.state = { 
       active: null,
       keycloakAuth:null,
       accessToken:"",
       userBaseInfo:'',
       userid:'',
-   };
+     }
+  }
   
     toggle(position) {
       if (this.state.active === position) {
@@ -96,13 +98,12 @@ export class MyPagePersonal extends React.Component{
           this.setState({ 
               keycloakAuth: keycloak, 
               accessToken:keycloak.token, 
-              userid:keycloak.tokenParsed.preferred_username
+              userid:keycloak.tokenParsed.preferred_username,
         })
         console.log(keycloak.tokenParsed.given_name)
         console.log(keycloak.tokenParsed.email)
         this.fetchUserBaseInfo(keycloak.token)
       })
-      
     }
 
     fetchUserBaseInfo(token){
@@ -119,19 +120,11 @@ export class MyPagePersonal extends React.Component{
       });
     }
 
-    validToken(token){
-      return token === "" ? false : true
-    }
-
-    getEmptyPage(){
-      return ""
-    }
-
     render() {
         const token = this.state.accessToken
         let mypage_personal;
 
-        if(this.validToken(token)){
+        if(validToken(token)){
             mypage_personal = 
                 <MypagePersonalController 
                   userBaseInfo={this.state.userBaseInfo}
@@ -139,7 +132,7 @@ export class MyPagePersonal extends React.Component{
                   userid={this.state.userid}
                 />
         } else {
-            mypage_personal = this.getEmptyPage
+            mypage_personal = getEmptyPage()
         }
         return (
             <div>

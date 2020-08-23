@@ -33,13 +33,13 @@ const TrackingButtonStyle = styled.div`
     text-align:center;
 `;
 
-function trackingFormatter(cell, row) {        
+function trackingFormatter(cell, row) {
   return (
     <TrackingButtonStyle>
       <TrackingButton
         orderid={row.orderid}
         deliveryTracking={row.deliveryTracking}
-        disable={true}/>
+        />
      </TrackingButtonStyle>
   );
 }
@@ -49,12 +49,6 @@ function orderNumberFormatter(cell, row) {
     <OrderNumberLink orderid={cell}/>
   );
 }
-
-// function trackingFormatter(cell, row) {        
-//   return (
-//     <TrackingButton/>
-//   );
-// }
 
 function detailPageLinkFormatter(cell, row) {        
   return (
@@ -92,29 +86,44 @@ const columnsUserAccount = [
   },{
     dataField: 'productInfo',
     text: '상품정보'
-  },{
-    dataField: 'recipient',
-    text: '받는분'
-  }, {
+  },
+  // {
+  //   dataField: 'recipient',
+  //   text: '받는분'
+  // }, 
+  {
     dataField: 'deliveryPayment',
     text: '운송료',
     formatter:currencyFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '90px', textAlign: 'center' };
+    }
   }, {
     dataField: 'deliveryState',
     text: '진행상태',
     formatter:deliveryStateFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '110px', textAlign: 'center' };
+    }
   },{
     dataField: 'orderDate',
     text: '신청날짜',
     headerStyle: (colum, colIndex) => {
       return { width: '100px', textAlign: 'center' };
     }
-  }, {
+  },{
+    dataField: 'deliveryTracking',
+    text: '배송조회',
+    formatter:trackingFormatter,
+    headerStyle: (colum, colIndex) => {
+      return { width: '80px', textAlign: 'center' };
+    }
+  },{
     dataField: 'orderid',
-    text: '상세페이지',
+    text: '상세내역',
     formatter:detailPageLinkFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '120px', textAlign: 'center' };
+      return { width: '80px', textAlign: 'center' };
     }
   }
 ];
@@ -170,7 +179,6 @@ export class OrderInformation extends React.Component {
   }
 
   render() {
-    console.log(this.props.orderInformation.length)
     const expand = expandRowA
     return(
       <div>
@@ -230,55 +238,6 @@ export class OrderNumberLink extends React.Component {
  
 }
 
-
-//deprecated since 21.07.2020
-// export class TrackingButton extends React.Component {
-//   constructor(props, context) {
-//     super(props, context);
-//     this.state = {
-//       showModal:false
-//     };
-
-//     this.handleModalShow = this.handleModalShow.bind(this);
-//     this.handleModalClose = this.handleModalClose.bind(this);
-//   }
-  
-//   componentDidMount() {
-   
-//   }
-
-//   handleModalClose() {
-//     this.setState({ showModal: false });
-//   }
-
-//   handleModalShow() {
-//       this.setState({ showModal: true });
-//   }
-
-//   render() {
-//     return(
-//       <div>
-//       <Button variant="secondary" size="sm" onClick={this.handleModalShow}>통관정보조회</Button>
-//         <Modal show={this.state.showModal} onHide={this.handleModalClose}>
-//           <Modal.Header closeButton>
-//             <Modal.Title>통관정보조회</Modal.Title>
-//           </Modal.Header>
-//           <Modal.Body>한국배송중</Modal.Body>
-//           <Modal.Footer>
-//             <NavLink to="/">
-//             <Button variant="success" onClick={this.handleModalClose}>
-//               예
-//             </Button>
-//             </NavLink>
-//             <Button variant="dark" onClick={this.handleModalClose}>
-//               취소
-//             </Button>
-//           </Modal.Footer>
-//           </Modal>
-//       </div>
-//     );}
-// }
-
 export class DetailPageLinkButton extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -308,7 +267,7 @@ export class DetailPageLinkButton extends React.Component {
     return(
       <div>
         <Button variant="outline-secondary" size="sm" 
-          onClick={this.handleLinkDetailPage}>상세페이지</Button>
+          onClick={this.handleLinkDetailPage}>Go</Button>
       </div>
     );}
 }
@@ -320,7 +279,6 @@ export class DetailBuyingServiceButton extends React.Component {
       redirect:false,
     };
     this.handleLinkDetailPage = this.handleLinkDetailPage.bind(this);
-    
   }
   
   componentDidMount() {
@@ -347,7 +305,7 @@ export class DetailBuyingServiceButton extends React.Component {
     );}
 }
 
-class DeliveryState extends React.Component{
+class DeliveryState extends React.Component {
   constructor(props) {
       super(props);
     }
@@ -370,7 +328,7 @@ class DeliveryState extends React.Component{
       } else if(state==2){
         deliveryState = "입고완료";
       } else if(state==3){
-        deliveryState = "결제요청";
+        deliveryState = "결제대기";
       } else if(state==4){
         deliveryState = "결제완료";
       } else if(state==5){
@@ -430,24 +388,24 @@ const columnsBuyingService = [
     }
   },{
     dataField: 'buyingPrice',
-    text: '구매대행 비용',
+    text: '대행 비용',
     formatter:currencyFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '110px', textAlign: 'center' };
+      return { width: '90px', textAlign: 'center' };
     }
   }, {
     dataField: 'deliveryPayment',
     text: '운송료',
     formatter:currencyFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '110px', textAlign: 'center' };
+      return { width: '80px', textAlign: 'center' };
     }
   }, {
     dataField: 'buyingServiceState',
     text: '진행상태',
     formatter:buyingServiceStateFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '120px', textAlign: 'center' };
+      return { width: '110px', textAlign: 'center' };
     }
   },{
     dataField: 'orderDate',
@@ -456,7 +414,7 @@ const columnsBuyingService = [
       return { width: '100px', textAlign: 'center' };
     }
   },{
-    dataField: 'orderid',
+    dataField: 'deliveryTracking',
     text: '배송조회',
     formatter:trackingFormatter,
     headerStyle: (colum, colIndex) => {
@@ -541,6 +499,11 @@ class ImageFormatter extends React.Component{
     }    
 }
 
+
+const ServiceStateStyle = styled.div`
+  font-size: 11px;
+`;
+
 function buyingServiceStateFormatter(cell, row) {        
   return (
     <BuyinServiceState cell={cell}/>
@@ -587,7 +550,9 @@ class BuyinServiceState extends React.Component{
 
       return (
         <div>
-          {buyinServiceState}
+          <ServiceStateStyle>
+            {buyinServiceState}
+          </ServiceStateStyle>
        </div>
       );
     }    
