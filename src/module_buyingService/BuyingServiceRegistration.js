@@ -59,9 +59,9 @@ export class BuyingServiceRegistration extends React.Component{
         })
     }
 
-    handleLogout(){
-        keycloak.logout({ redirectUri: INITIAL_PAGE });
-    }
+    // handleLogout(){
+    //     keycloak.logout({ redirectUri: INITIAL_PAGE });
+    // }
 
     render() {
         const token = this.state.accessToken

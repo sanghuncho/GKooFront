@@ -138,7 +138,7 @@ export class BuyingServiceNavbar extends React.Component{
                     </div> */}
                     <div style={{ borderBottom:'1px solid #4D8444', height:'70px'}} onClick={() => {this.toggle(2)}} >
                     <NavLinkStyle>
-                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/autionService' >
+                        <NavLink style={{ textDecoration:'none', color:'white'}} to='/auctionService' >
                             <IconCnt>
                                 <Icon icon={connectdevelop} />
                             </IconCnt>

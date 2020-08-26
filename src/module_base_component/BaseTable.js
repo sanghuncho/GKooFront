@@ -67,3 +67,62 @@ export class BaseTablePagination extends React.Component{
         );
       }    
 }
+
+//It is not working customized pagination color of button:TODO
+//if list has over 10 rows, then the paginaton can be showed.
+const expandRow = {
+  renderer: row => (
+    <div>
+      <p>{ `상품 URL : ${row.productUrl}` }</p>
+      <p>{ `요청사항 : ${row.auctionMessage}` }</p>
+    </div>
+  ),
+  showExpandColumn: true,
+  expandColumnPosition: 'right',
+  expandByColumnOnly: true,
+  expandColumnRenderer: ({ expanded }) => {
+    if (expanded) {
+      return (
+        <b>-</b>
+      );
+    }
+    return (
+      <b>+</b>
+    );
+  },
+  expandHeaderColumnRenderer: ({ isAnyExpands }) => {
+    if (isAnyExpands) {
+      return <b>-</b>;
+    }
+    return <b>+</b>;
+  },
+};
+export class BaseExpandableTablePagination extends React.Component {
+  constructor(props) {
+      super(props); 
+    }
+    
+    render() {
+      let custom_pagination 
+      if (this.props.data.length > 10) {
+          custom_pagination = paginationFactory()
+      } else {
+          custom_pagination = ''
+      }
+
+      return (
+     
+        <div>
+          <BootstrapTable 
+              keyField= {this.props.keyField }
+              data={ this.props.data } 
+              columns={ this.props.columns } 
+              pagination={ custom_pagination } 
+              bordered={ this.props.bordered } 
+              noDataIndication={ this.props.noDataIndication }
+              expandRow={ expandRow }
+          />
+        </div>
+      );
+    }    
+}

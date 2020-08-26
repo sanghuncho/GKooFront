@@ -2,7 +2,7 @@ import * as React from "react";
 import { Card, Col, Container, Row, Button, OverlayTrigger } from 'react-bootstrap';
 import { Image } from 'react-bootstrap';
 import ShippingServiceSA from '../assets/ShippingServiceSA.jpg'
-import BuyingServiceSJ from '../assets/BuyingServiceSJ.jpg'
+import GKoo_logo from '../assets/GKoo_logo_green.jpg'
 
 export class CompanyIntroductionBottom  extends React.Component{
     render() {
@@ -13,11 +13,11 @@ export class CompanyIntroductionBottom  extends React.Component{
                 <Card.Body>
                     <Container>
                     <Row>
-                        {/* <Col>
-                            <Image src={BuyingServiceSJ} style={{ width: '80px', marginLeft:'10%', marginTop:'0px'}}/>
-                        </Col> */}
+                        <Col  xs={2}>
+                            <Image src={GKoo_logo} style={{ width: '120px', marginLeft:'5%', marginTop:'10%'}}/>
+                        </Col>
                         {/* <Col xs={7}> */}
-                        <Col>
+                        <Col xs={7}>
                             <Card.Text>
                             사업자등록번호: 311-34-00638 | 통신판매신고: 2020-대구남구-0282  <br/>
                             카카오톡 아이디: GKoo | 이메일: gkoosoft@gmail.com <br/>

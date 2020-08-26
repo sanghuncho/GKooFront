@@ -10,7 +10,8 @@ import { getFormattedDeliveryPrice } from '../module_base_component/BaseUtil'
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import { BaseTablePagination } from '../module_base_component/BaseTable'
 import { Image } from 'react-bootstrap';
-import { TrackingButton } from './DeliveryInformation'
+import { TrackingButton } from './DeliveryInformation';
+import { currencyFormatter } from '../module_payment/PaymentUtil';
 
 const OrderInfoTableStyle = styled.div`
   margin-top: 20px;
@@ -70,11 +71,11 @@ function deliveryStateFormatter(cell, row) {
 }
 
 //moved to paymentUtil since 04.07.2020
-function currencyFormatter(cell, row) {        
-  return (
-    <KoreaCurrencyFormatter cell={cell}/>
-  );
-}
+// function currencyFormatter(cell, row) {        
+//   return (
+//     <KoreaCurrencyFormatter cell={cell}/>
+//   );
+// }
 
 const columnsUserAccount = [
   {

@@ -66,3 +66,8 @@ export function isAdmin(keycloakRealmAccess){
   var result = keycloakRealmAccess.roles.filter(role => role === 'admin');
   return (result.length === 1) && (result[0] === 'admin')
 }
+
+export function validAuctionUser(keycloakRealmAccess){
+  var result = keycloakRealmAccess.roles.filter(role => role === 'auction');
+  return (result.length === 1) && (result[0] === 'auction')
+}

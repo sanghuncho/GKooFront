@@ -11,11 +11,12 @@ import { MyPageSideNav } from "./MyPageSideNav";
 import { Breadcrumb } from "react-bootstrap"
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { SearchPanel_ID, SearchOrderPanel } from '../module_base_component/BaseSearchPanel'
+import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
-import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal, validToken, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
+import { keycloakConfigLocal, headers, basePort, setTokenHeader, keycloakUrlLocal, 
+  validToken, getEmptyPage, isAdmin } from "../module_base_component/AuthService"
 var keycloak = Keycloak(keycloakConfigLocal);
 ///// <- keycloak /////
 
@@ -82,7 +83,8 @@ export class MyPage extends React.Component{
       deliveryKoreaData:'',
       userBaseInfo:'',
       userid:'',
-      isUseridChecked:false
+      isUseridChecked:false,
+      isAdmin:false
     }
     this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
     this.handleSearch = this.handleSearch.bind(this)

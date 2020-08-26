@@ -16,7 +16,7 @@ import { BuyingServiceIntro } from './module_buyingService/BuyingServiceIntro'
 import { BuyingService } from './module_buyingService/BuyingService'
 import { BuyingServiceRegistration } from './module_buyingService/BuyingServiceRegistration'
 import { BuyingServiceEbay } from './module_buyingService/BuyingServiceEbay'
-import { AutionService } from './module_buyingService/AutionService'
+import { AuctionService } from './module_buyingService/AuctionService'
 
 import { RequestShippingService } from './module_shippingService/RequestShippingService';
 import { ShippingService } from './module_shippingService_intro/ShippingService'
@@ -67,7 +67,7 @@ const Main = () => (
     <Route exact path='/buyingService' component={ BuyingService }></Route> 
     <Route exact path='/buyingServiceRegistration' component={ BuyingServiceRegistration }></Route> 
     <Route exact path='/buyingServiceEbay' component={ BuyingServiceEbay }></Route> 
-    <Route exact path='/autionService' component={ AutionService }></Route>  
+    <Route exact path='/auctionService' component={ AuctionService }></Route>  
 
     {/* 배송대행 모둘 */}
     <Route exact path='/shippingService/' component={ ShippingService }></Route> 
