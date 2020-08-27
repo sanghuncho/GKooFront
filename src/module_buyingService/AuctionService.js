@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { Breadcrumb, Card, Button, Form, InputGroup } from 'react-bootstrap';
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
+import { BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
 import { currencyFormatterEuro } from '../module_payment/PaymentUtil';
 import { BaseTablePagination, BaseExpandableTablePagination } from '../module_base_component/BaseTable'
 import { Redirect } from 'react-router';
@@ -214,8 +214,49 @@ class AuctionBidPanel extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          state_name:null,
+            productUrl:'',
+            bidValue:'',
+            auctionMessage:'',
         }
+        this.handleChangeProductUrl = this.handleChangeProductUrl.bind(this)
+        this.handleChangeBidValue = this.handleChangeBidValue.bind(this)
+        this.handleChangeMessage = this.handleChangeMessage.bind(this)
+    }
+
+    handleChangeProductUrl(event){
+        console.log(event.target.value)
+        this.setState({productUrl:event.target.value})
+    }
+
+    handleChangeBidValue(event){
+        console.log(event.target.value)
+        this.setState({bidValue:event.target.value})
+    }
+
+    handleChangeMessage(event){
+        console.log(event.target.value)
+        this.setState({auctionMessage:event.target.value})
+    }
+
+    handleRequestBid(){
+        let productUrl = this.state.productUrl 
+        let bidValue = this.state.bidValue
+        let auctionMessage = this.state.auctionMessage 
+        
+        var auctionBidServiceObject = [
+            {productUrl:productUrl},
+            {bidValue:bidValue},
+            {auctionMessage:auctionMessage},
+        ]
+        
+        fetch(basePort + '/auctionBidService', 
+                {method:'post', headers, 
+                  body:JSON.stringify(auctionBidServiceObject)})
+                .then((result) => { return result.json();})
+                .catch(error => {
+                    console.error('Error posting auctionBidService!', error);
+                    //Error posting
+                })
     }
       
     render() {
@@ -230,11 +271,11 @@ class AuctionBidPanel extends React.Component {
                         <BaseInputGroupUrl 
                             label="상품 URL"
                             placeholder="정확한 URL을 입력해주세요"
-                            handleChangeInput={this.handleChangeShopUrl} />
+                            handleChangeInput={this.handleChangeProductUrl} />
                          <BaseInputGroupEuro 
                             label="맥시멈 입찰가"
                             placeholder="최대입찰가를 유로로 입력해주세요"
-                            handleChangeInput={this.props.handleChangeShopDeliveryPrice} 
+                            handleChangeInput={this.handleChangeBidValue} 
                             />
                         <InputGroup size="sm" style={{ width:'100%'}} className="mb-3">
                             <InputGroup.Prepend>
@@ -246,8 +287,8 @@ class AuctionBidPanel extends React.Component {
                                     <Card.Body>
                                         <Form.Control id="basic-url" as="textarea" rows="3" 
                                             aria-describedby="basic-addon3"
-                                            value={this.state.deliveryMessage}
-                                            onChange={e => this.props.handleChangeMessage(e)}
+                                            value={this.state.auctionMessage}
+                                            onChange={e => this.handleChangeMessage(e)}
                                             style={{ height:'5em'}}
                                         />
                                     </Card.Body> 

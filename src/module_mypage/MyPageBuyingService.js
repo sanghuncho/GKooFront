@@ -82,7 +82,7 @@ export class MyPageBuyingService extends React.Component {
       userBaseInfo:'',
       userid:'',
       isAdmin:false
-    }
+    } 
     this.handleSearchChangeInput = this.handleSearchChangeInput.bind(this)
     this.handleSearch = this.handleSearch.bind(this)
   }

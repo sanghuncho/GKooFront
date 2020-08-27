@@ -38,7 +38,6 @@ const MyPageBodyTableStyle = styled.div`
 //   ]
 
 function deliveryStateFormatter(cell, row) {        
-  
   return (
     <DeliveryState cell={cell}/>
   );
