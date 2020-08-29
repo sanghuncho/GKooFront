@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { Breadcrumb, Card, Button, Form, InputGroup } from 'react-bootstrap';
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
+import { BaseInputGroupEuro, BaseInputGroupUrl, BaseInputGroupUrlReadable } from '../module_base_component/BaseInputGroup'
 import { currencyFormatterEuro } from '../module_payment/PaymentUtil';
 import { BaseTablePagination, BaseExpandableTablePagination } from '../module_base_component/BaseTable'
 import { Redirect } from 'react-router';
@@ -39,7 +39,8 @@ export class AuctionService extends React.Component {
             accessToken:"",
             userid:'',
             isAdmin:false,
-            validAuctionUser:false
+            validAuctionUser:false,
+            auctionBidData:[],
         };
     }
 
@@ -54,21 +55,41 @@ export class AuctionService extends React.Component {
                 //경매권한 체크
                 validAuctionUser:validAuctionUser(keycloak.realmAccess)
             })
-            fetchRegisterInitialCustomer(keycloak)
+            //save the token and userid for deletion of AuctionBidService
+            localStorage.setItem("react-token", keycloak.token);
+            localStorage.setItem("userid", keycloak.tokenParsed.preferred_username);
+            if(!this.state.isAdmin){
+                //회원일 경우 데이터 로딩시작, 관리자는 search
+                //fetchRegisterInitialCustomer(keycloak)
+                this.fetchAuctionBidList(keycloak.token)
+              }
         })
     }
 
+    fetchAuctionBidList(accessToken){
+      let userid = this.state.userid
+      setTokenHeader(accessToken)
+      fetch(basePort + '/fetchAuctionBidDataList/'+ userid, {headers})
+        .then((result) => {
+           return result.json();
+        }).then((data) => {
+            console.log(data)
+           this.setState({auctionBidData:data})
+        })   
+    }
+
     render() {
-        const token = this.state.accessToken
+        const accessToken = this.state.accessToken
         let auctionServiceController
 
-        if(validToken(token)){
+        if(validToken(accessToken)){
             auctionServiceController = 
                 <AuctionServiceController
                     accessToken={this.state.accessToken}
                     userid={this.state.userid}
                     isAdmin={this.state.isAdmin}
                     validAuctionUser={this.state.validAuctionUser}
+                    auctionBidData={this.state.auctionBidData}
                     />
         } else {
             auctionServiceController = getEmptyPage
@@ -94,11 +115,14 @@ export class AuctionServiceController extends React.Component {
         }
     }
 
-      
     render() {
         let auctionServicePane
         if(this.props.validAuctionUser){
-            auctionServicePane = <AuctionServiceListPanel/>
+            auctionServicePane = <AuctionServiceListPanel 
+                                    userid={this.props.userid}
+                                    accessToken={this.props.accessToken}
+                                    auctionBidData={this.props.auctionBidData}
+                                  />
         } else {
             {/* 경매보증금 안내 */}
             auctionServicePane = <AuctionDepositPanel/>
@@ -140,7 +164,11 @@ class AuctionServiceListPanel extends React.Component {
         return (
           <div>
               {/* 경매 대행 서비스 */}
-              <AuctionBidPanel />
+              <AuctionBidPanel 
+                    userid={this.props.userid} 
+                    accessToken={this.props.accessToken}
+                    auctionBidData={this.props.auctionBidData}
+               />
               
               {/* 흥정 대행 서비스 */}
               {/* <AuctionOfferPanel/> */}
@@ -174,9 +202,10 @@ const columnsAuctionService = [
         formatter:currencyFormatterEuro,
     }, {
       dataField: 'auctionResult',
-      text: '경매결과',      
+      text: '경매결과',
+      formatter:auctionResultFormatter
     },{
-      dataField: 'orderDate',
+      dataField: 'auctionBidDate',
       text: '신청날짜',
     },{
       dataField: 'auctionMessage',
@@ -189,9 +218,6 @@ const columnsAuctionService = [
     }
 
 ];
-
-const SUCCESS = "낙찰"
-const FAIL = "유찰"
 
 const data = [
     {"objectid":"1234",
@@ -217,10 +243,12 @@ class AuctionBidPanel extends React.Component {
             productUrl:'',
             bidValue:'',
             auctionMessage:'',
+            readyToPost:true,
         }
         this.handleChangeProductUrl = this.handleChangeProductUrl.bind(this)
         this.handleChangeBidValue = this.handleChangeBidValue.bind(this)
         this.handleChangeMessage = this.handleChangeMessage.bind(this)
+        this.handleContinueRequestBid = this.handleContinueRequestBid.bind(this)
     }
 
     handleChangeProductUrl(event){
@@ -239,27 +267,65 @@ class AuctionBidPanel extends React.Component {
     }
 
     handleRequestBid(){
+        let userid = this.props.userid
         let productUrl = this.state.productUrl 
         let bidValue = this.state.bidValue
         let auctionMessage = this.state.auctionMessage 
         
         var auctionBidServiceObject = [
+            {userid:userid},
             {productUrl:productUrl},
             {bidValue:bidValue},
             {auctionMessage:auctionMessage},
         ]
         
+        setTokenHeader(this.props.accessToken)
         fetch(basePort + '/auctionBidService', 
                 {method:'post', headers, 
                   body:JSON.stringify(auctionBidServiceObject)})
-                .then((result) => { return result.json();})
+                .then(response => { 
+                    this.setState({readyToPost:false})
+                    console.log(response)
+                    return response.json();})
+                    // console.log(response.ok)
+                    // if(response.ok) {
+                    //     return response.json();
+                    // } else {
+                    //     throw new Error('Auction biding service went wrong...');
+                    // }})
+                .then((data) => {
+                })
                 .catch(error => {
-                    console.error('Error posting auctionBidService!', error);
+                    //console.error('Error posting auctionBidService!', error);
                     //Error posting
                 })
     }
+
+    handleContinueRequestBid(){
+        this.setState({
+            productUrl:'',
+            bidValue:'',
+            auctionMessage:'',
+            readyToPost:true})
+    }
       
     render() {
+
+        let auctionBidServiceButton
+        if(this.state.readyToPost) {
+            auctionBidServiceButton = <Button variant="secondary" size="sm" 
+                                            onClick={(e) => this.handleRequestBid(e)} 
+                                            style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>
+                                            입찰 신청 
+                                      </Button>
+        } else {
+            auctionBidServiceButton = <Button variant="secondary" size="sm" 
+                                            onClick={(e) => this.handleContinueRequestBid(e)} 
+                                            style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>
+                                            입찰 계속
+                                      </Button>
+        }
+
         return (
           <div>
               <Card border="dark" style={{ width: '80%', marginTop:'1rem', marginBottom:'1rem' }}>
@@ -268,14 +334,17 @@ class AuctionBidPanel extends React.Component {
                     <Card border="dark" style={{ width: '90%', marginBottom:'1rem'}}>
                         <Card.Header>경매물품</Card.Header>
                         <Card.Body >
-                        <BaseInputGroupUrl 
+                        <BaseInputGroupUrlReadable 
                             label="상품 URL"
                             placeholder="정확한 URL을 입력해주세요"
-                            handleChangeInput={this.handleChangeProductUrl} />
-                         <BaseInputGroupEuro 
+                            handleChangeInput={this.handleChangeProductUrl}
+                            readOnly={!this.state.readyToPost}
+                            />
+                         <BaseInputGroupUrlReadable 
                             label="맥시멈 입찰가"
                             placeholder="최대입찰가를 유로로 입력해주세요"
-                            handleChangeInput={this.handleChangeBidValue} 
+                            handleChangeInput={this.handleChangeBidValue}
+                            readOnly={!this.state.readyToPost}
                             />
                         <InputGroup size="sm" style={{ width:'100%'}} className="mb-3">
                             <InputGroup.Prepend>
@@ -289,6 +358,7 @@ class AuctionBidPanel extends React.Component {
                                             aria-describedby="basic-addon3"
                                             value={this.state.auctionMessage}
                                             onChange={e => this.handleChangeMessage(e)}
+                                            readOnly={!this.state.readyToPost}
                                             style={{ height:'5em'}}
                                         />
                                     </Card.Body> 
@@ -297,11 +367,14 @@ class AuctionBidPanel extends React.Component {
                         </Card.Body>
                     </Card>
 
-                    <Button variant="secondary" size="sm" 
+                    {/* <Button variant="secondary" size="sm" 
                             onClick={(e) => this.handleRequestBid(e)} 
                             style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>
                             입찰 신청
-                    </Button>
+                    </Button> */}
+                    
+                    {auctionBidServiceButton}
+
                 </Card.Body>
             </Card>
 
@@ -312,11 +385,11 @@ class AuctionBidPanel extends React.Component {
                     {/*ToDo: contents located in center */}
                         <BaseExpandableTablePagination
                             keyField='objectid'  
-                            //data={ this.props.buyingOrderData } 
-                            data={ data } 
+                            data={ this.props.auctionBidData } 
+                            //data={ data } 
                             columns={ columnsAuctionService } 
                             bordered={ true }  
-                            noDataIndication="주문하신 물품이 없습니다"
+                            noDataIndication="입찰내역이 없습니다"
                         />
                     </AuctionBidTableStyle>
                 </Card.Body>
@@ -333,13 +406,63 @@ function auctionMessageFormatter(cell, row) {
             {message}
         </div>
     );
-  }
+}
+
+const SUCCESS = "낙찰"
+const FAIL = "유찰"
+
+//입찰접수
+//BID_READY(1),
+    
+//입찰완료
+//BID_COMPLETED(2),
+
+//낙찰
+//AUCTION_FAILED(3),
+
+//유찰
+//AUCTION_SUCCESS(4),
+
+//URL 에러
+//URL_UNKNOWN(5);
+export var auctonResult_map = new Map();
+    auctonResult_map.set("BID_READY" , "입찰접수")
+    auctonResult_map.set("BID_COMPLETED" , "입찰완료")
+    auctonResult_map.set("AUCTION_FAILED" , "낙찰")
+    auctonResult_map.set("AUCTION_SUCCESS" , "유찰")
+    auctonResult_map.set("URL_UNKNOWN" , "URL 에러")
+
+function auctionResultFormatter(cell, row) {
+    let result
+    switch (row.auctionResult) {
+        case "BID_READY":
+            result = auctonResult_map.get("BID_READY");
+            break
+        case 'BID_COMPLETED':
+            result = auctonResult_map.get("BID_COMPLETED");
+            break
+        case 'AUCTION_FAILED':
+            result = auctonResult_map.get("AUCTION_FAILED");
+            break
+        case 'AUCTION_SUCCESS':
+            result = auctonResult_map.get("AUCTION_SUCCESS");
+            break
+        case 'URL_UNKNOWN':
+            result = auctonResult_map.get("URL_UNKNOWN");
+            break
+    }
+    return (
+        <div> 
+            {result}
+        </div>
+    );
+}
 
 function openUrlPageFormatter(cell, row) {        
     return (
       <OpenUrlButton productUrl={cell}/>
     );
-  }
+}
 
 function extraServiceFormatter(cell, row) {        
     return (
@@ -383,9 +506,9 @@ class ExtraServiceButton extends React.Component {
     constructor(props, context) {
       super(props, context);
       this.state = {
-        redirect:false,
+        
       };
-      this.handleOpenUrlPage = this.handleOpenUrlPage.bind(this);
+      this.handleDeleteAuctionService = this.handleDeleteAuctionService.bind(this);
       
     }
     
@@ -393,17 +516,35 @@ class ExtraServiceButton extends React.Component {
      
     }
   
-    handleOpenUrlPage(){
-      this.setState({redirect: true});
+    handleDeleteAuctionService(){
+        let userid = localStorage.getItem("userid", keycloak.tokenParsed.preferred_username)
+        setTokenHeader(localStorage.getItem("react-token", keycloak.token))
+
+        const contents = [
+            {objectid:this.props.objectid},
+            {userid:userid},
+        ]
+
+        fetch(basePort + '/deleteAuctionBidData/' + userid, 
+          {method:'post', headers, 
+            body:JSON.stringify(contents)})
+            .then((response) => { 
+                if(response.accepted) {
+                    return response.json();
+                } else {
+                    throw new Error('Deletion of Auction biding service went wrong...');
+                }})
+            .catch(err => err);
+        window.location.reload();
     }
-  
+
     render() {
-      let result = this.props.auctionResult
-      let disableDeletion = ( result === SUCCESS || result === FAIL) ? false : true
+      let auctionResult = this.props.auctionResult
+      let disableDeletion = auctionResult === 'BID_COMPLETED' ? true : false
       return(
         <div>
           <Button variant="outline-secondary" size="sm" disabled={disableDeletion}
-            onClick={this.handleOpenUrlPage}>삭제</Button>
+            onClick={this.handleDeleteAuctionService}>삭제</Button>
         </div>
       );}
 }
