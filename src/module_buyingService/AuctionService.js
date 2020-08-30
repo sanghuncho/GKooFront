@@ -6,7 +6,7 @@ import {
   } from "../container";
 import React, { Component } from 'react';
 import { AppNavbar, LogoutButton } from '../AppNavbar'
-import { Breadcrumb, Card, Button, Form, InputGroup } from 'react-bootstrap';
+import { Breadcrumb, Card, Button, Form, InputGroup, FormControl } from 'react-bootstrap';
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 import { BaseInputGroupEuro, BaseInputGroupUrl, BaseInputGroupUrlReadable } from '../module_base_component/BaseInputGroup'
 import { currencyFormatterEuro } from '../module_payment/PaymentUtil';
@@ -40,7 +40,7 @@ export class AuctionService extends React.Component {
             userid:'',
             isAdmin:false,
             validAuctionUser:false,
-            auctionBidData:[],
+            auctionBidData:'',
         };
     }
 
@@ -73,7 +73,7 @@ export class AuctionService extends React.Component {
         .then((result) => {
            return result.json();
         }).then((data) => {
-            console.log(data)
+           console.log(data)
            this.setState({auctionBidData:data})
         })   
     }
@@ -303,10 +303,11 @@ class AuctionBidPanel extends React.Component {
 
     handleContinueRequestBid(){
         this.setState({
+            readyToPost:true,
             productUrl:'',
             bidValue:'',
-            auctionMessage:'',
-            readyToPost:true})
+            auctionMessage:''
+            })
     }
       
     render() {
@@ -338,6 +339,7 @@ class AuctionBidPanel extends React.Component {
                             label="상품 URL"
                             placeholder="정확한 URL을 입력해주세요"
                             handleChangeInput={this.handleChangeProductUrl}
+                            value={this.state.productUrl}
                             readOnly={!this.state.readyToPost}
                             />
                          <BaseInputGroupUrlReadable 
@@ -345,6 +347,8 @@ class AuctionBidPanel extends React.Component {
                             placeholder="최대입찰가를 유로로 입력해주세요"
                             handleChangeInput={this.handleChangeBidValue}
                             readOnly={!this.state.readyToPost}
+                            value={this.state.bidValue}
+                            type="number"
                             />
                         <InputGroup size="sm" style={{ width:'100%'}} className="mb-3">
                             <InputGroup.Prepend>
@@ -359,6 +363,7 @@ class AuctionBidPanel extends React.Component {
                                             value={this.state.auctionMessage}
                                             onChange={e => this.handleChangeMessage(e)}
                                             readOnly={!this.state.readyToPost}
+                                            value={this.state.auctionMessage}
                                             style={{ height:'5em'}}
                                         />
                                     </Card.Body> 
@@ -518,12 +523,16 @@ class ExtraServiceButton extends React.Component {
   
     handleDeleteAuctionService(){
         let userid = localStorage.getItem("userid", keycloak.tokenParsed.preferred_username)
+        let accessToken = localStorage.getItem("react-token", keycloak.token)
         setTokenHeader(localStorage.getItem("react-token", keycloak.token))
+        console.log(userid)
+        console.log(accessToken)
 
         const contents = [
             {objectid:this.props.objectid},
             {userid:userid},
         ]
+
 
         fetch(basePort + '/deleteAuctionBidData/' + userid, 
           {method:'post', headers, 

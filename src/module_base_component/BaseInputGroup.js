@@ -102,7 +102,9 @@ export class BaseInputGroupUrlReadable extends React.Component {
                 <FormControl id="basic-url" aria-describedby="basic-addon3"
                     onChange = {this.props.handleChangeInput} 
                     placeholder={this.props.placeholder}
-                    readOnly={this.props.readOnly}/>
+                    readOnly={this.props.readOnly}
+                    value={this.props.value}
+                    />
             </InputGroup>
           </div>
         );
