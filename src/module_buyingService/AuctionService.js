@@ -125,7 +125,9 @@ export class AuctionServiceController extends React.Component {
                                   />
         } else {
             {/* 경매보증금 안내 */}
-            auctionServicePane = <AuctionDepositPanel/>
+            auctionServicePane = <AuctionDepositPanel 
+                                    userid={this.props.userid} 
+                                    accessToken={this.props.accessToken}/>
         }
         return (
 
@@ -299,6 +301,19 @@ class AuctionBidPanel extends React.Component {
                     //console.error('Error posting auctionBidService!', error);
                     //Error posting
                 })
+               
+        fetch(basePort + '/emailAuctionBid', 
+                {method:'post', headers, 
+                  body:JSON.stringify(auctionBidServiceObject)})
+                .then(response => { 
+                    this.setState({readyToPost:false})
+                    console.log(response)
+                    return response.json();})
+                .then((data) => {
+                })
+                .catch(error => {
+                   
+                })      
     }
 
     handleContinueRequestBid(){
@@ -371,12 +386,6 @@ class AuctionBidPanel extends React.Component {
                         </InputGroup>
                         </Card.Body>
                     </Card>
-
-                    {/* <Button variant="secondary" size="sm" 
-                            onClick={(e) => this.handleRequestBid(e)} 
-                            style={{ marginRight: '10%', marginTop: '10px', float:"right"}}>
-                            입찰 신청
-                    </Button> */}
                     
                     {auctionBidServiceButton}
 
@@ -574,7 +583,9 @@ class AuctionDepositPanel extends React.Component {
     render() {
         let paymentDepositPanel
         if(this.state.openPaymentDepositPanel) {
-            paymentDepositPanel = <PaymentDepositPanel/>
+            paymentDepositPanel = <PaymentDepositPanel 
+                                        userid={this.props.userid} 
+                                        accessToken={this.props.accessToken}/>
         }
         return (
           <div>
@@ -622,7 +633,21 @@ class PaymentDepositPanel extends React.Component {
     }
 
     handleRequestValidUser(){
-        this.setState({requestValidUser:true});
+        let userid = this.props.userid
+        var auctionDepositObject = [
+            {userid:userid}
+        ]
+        
+        setTokenHeader(this.props.accessToken)
+        fetch(basePort + '/emailAuctionDeposit', 
+                {method:'post', headers, 
+                  body:JSON.stringify(auctionDepositObject)})
+                .then(response => { 
+                    this.setState({requestValidUser:true})
+                    console.log(response)
+                    return response.json();})
+                .then((data) => { })
+                .catch(error => { })
     }
       
     render() {
