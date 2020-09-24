@@ -101,3 +101,8 @@ function setTimer(method, time){
         method()
     }, time);
 }
+
+//change komma to punct
+export function priceFormatter(price){
+    return price.replace(/,/g, '.')
+}

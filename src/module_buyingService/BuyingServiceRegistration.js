@@ -19,7 +19,7 @@ import { CATEGORY_LIST, getItemTitleList } from './BuyingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 import { Redirect } from 'react-router';
 import { validateInputForm } from '../module_base_component/BaseInputGroup'
-import { window_reload } from '../module_base_component/BaseUtil'
+import { window_reload, priceFormatter } from '../module_base_component/BaseUtil'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -884,7 +884,7 @@ export class ProductContent extends React.Component {
 
     handleChangeProductPrice(event){
         var amount = this.state.productAmount
-        var price = event.target.value
+        var price = priceFormatter(event.target.value)
         var totalPrice = price*amount
         this.setState({productPrice:price})
         this.props.productContentObjectList[this.props.index].productPrice = price

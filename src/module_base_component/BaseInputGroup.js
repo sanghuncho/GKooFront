@@ -116,7 +116,7 @@ export function validateInputForm(fieldName,  value){
     switch(fieldName) {
         case 'transitNumber':
             //console.log(value.length === 8)
-            return value.length === 8
+            return value.length === 13
         case 'agreeWithCollection':
         console.log("agree")    
         console.log(value)

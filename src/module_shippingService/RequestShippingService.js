@@ -16,6 +16,7 @@ import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddr
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from './ShippingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 import { validateInputForm } from '../module_base_component/BaseInputGroup'
+import { priceFormatter } from '../module_base_component/BaseUtil'
 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer, validToken, getEmptyPage } from "../module_base_component/AuthService"
@@ -470,7 +471,7 @@ class InputDeliveryContentWrapper extends React.Component{
     }
 
     inputProductPrice(event){
-        const inputPrice = event.target.value
+        const inputPrice = priceFormatter(event.target.value)
         //const isProperPrice = Number.isInteger(parseInt(inputPrice))
         const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
         const productTotalPrice = (inputPrice === "") || (amount === "") ? "" : inputPrice*amount 
