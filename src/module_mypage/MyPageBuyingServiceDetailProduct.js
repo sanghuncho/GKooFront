@@ -6,6 +6,7 @@ import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange} from 'react-icons-kit/fa/'
 import { headers, basePort } from "../module_mypage/AuthService"
 import { Image } from 'react-bootstrap';
+import { getEuroCurrency } from '../module_base_component/BaseUtil'
 
 const WhiteSmoke = '#F5F5F5'
 
@@ -172,7 +173,7 @@ class EditorProductsList extends React.Component{
                         <InputGroup size="sm" style={{ width:'90%'}} className="mb-3" >
                             <InputGroup.Prepend>
                             <InputGroup.Text id="basic-addon3" style={{ width: '100px'}} >
-                                쇼핑몰 URL
+                                구매상품 URL
                             </InputGroup.Text>
                             </InputGroup.Prepend>
                             <FormControl id="basic-url" aria-describedby="basic-addon3"
@@ -229,7 +230,7 @@ class CompleteProductsListDisplay extends React.Component{
                 </thead>
                 <tbody>
                 <tr>
-                  <td width='300px'>쇼핑몰 URL</td>
+                  <td width='300px'>구매상품 URL</td>
                   <td width='300px'>{this.props.shopUrl}</td>
                 </tr>
                 </tbody>
@@ -238,7 +239,9 @@ class CompleteProductsListDisplay extends React.Component{
                 {array.map((itemName, index) => { return (
                     <div key={index}>
                       <MyPageDetailProduct productIndex={index+1}
-                        product={this.props.productsInfo[index]}/>
+                        product={this.props.productsInfo[index]}
+                        shopUrl={this.props.shopUrl}
+                        />
                     </div>
                 )})}
 
@@ -491,7 +494,7 @@ class MyPageDetailProduct extends React.Component{
                     </tr>
                     <tr>
                         <td width='300px'>상품링크</td>
-                        <td width='300px'><ProductSiteOpenButton/></td>
+                        <td width='300px'><ProductSiteOpenButton shopUrl={this.props.shopUrl}/></td>
                     </tr>
                     <tr>
                         <td width='300px'>카테고리</td>
@@ -511,15 +514,15 @@ class MyPageDetailProduct extends React.Component{
                     </tr>
                     <tr>
                         <td>단가</td>
-                        <td>{this.props.product.price}원</td>
+                        <td>{getEuroCurrency(this.props.product.price)}</td>
                     </tr>
                     <tr>
                         <td>수량</td>
-                        <td>{this.props.product.amount}개</td>
+                        <td>{this.props.product.amount}</td>
                     </tr>
                     <tr>
                         <td>총 가격</td>
-                        <td>{this.props.product.totalPrice}원</td>
+                        <td>{getEuroCurrency(this.props.product.totalPrice)}</td>
                     </tr>
                     
                     </tbody>
@@ -543,9 +546,8 @@ class ProductSiteOpenButton extends React.Component {
     }
   
     handleOpenProductSite(){
-      let trackingNr = this.props.deliveryTracking
       const url = 'https://www.ebay.de/itm/Business-Notebook-Laptop-Dell-latitude-3450-I3-8gb-500gb/283958087876?hash=item421d3890c4:g:XywAAOSw1elfCc16';
-      window.open(url, '_blank');
+      window.open(this.props.shopUrl, '_blank');
     }
   
     render() {

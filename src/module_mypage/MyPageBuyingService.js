@@ -166,6 +166,7 @@ export class MyPageBuyingService extends React.Component {
         })
     }
 
+    //@deprecated 마이페이지 구매대행 아래 3가지 표 데이타
     fetchPaymentData(token){
       let userid = this.state.userid
       setTokenHeader(token)

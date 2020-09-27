@@ -6,6 +6,7 @@ import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange} from 'react-icons-kit/fa/'
 import { setTokenHeader, headers, basePort } from "../module_base_component/AuthService"
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from '../module_shippingService/ShippingServiceConfig'
+import { getEuroCurrency } from '../module_base_component/BaseUtil'
 
 const WhiteSmoke = '#F5F5F5'
 
@@ -555,15 +556,15 @@ class MyPageDetailProduct extends React.Component{
                     </tr>
                     <tr>
                         <td>단가</td>
-                        <td>{this.props.product.price} EUR</td>
+                        <td>{getEuroCurrency(this.props.product.price)}</td>
                     </tr>
                     <tr>
                         <td>수량</td>
-                        <td>{this.props.product.amount}개</td>
+                        <td>{this.props.product.amount}</td>
                     </tr>
                     <tr>
                         <td>총 가격</td>
-                        <td>{this.props.product.totalPrice} EUR</td>
+                        <td>{getEuroCurrency(this.props.product.totalPrice)}</td>
                     </tr>
                     
                     </tbody>

@@ -8,7 +8,7 @@ import { MyPageBuyingServiceDetailProducts } from "./MyPageBuyingServiceDetailPr
 import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { PaymentBuyingServiceButton, PaymentDeliveryBuyingServiceButton } from '../module_mypage/PaymentInformation'
 import { TrackingButton } from '../module_mypage/DeliveryInformation'
-import { getKoreanCurrency } from '../module_base_component/BaseUtil'
+import { getKoreanCurrency, getEuroCurrency } from '../module_base_component/BaseUtil'
 import { SearchOrderPanel } from '../module_base_component/BaseSearchPanel'
 
 ///// keycloak -> /////
@@ -445,7 +445,7 @@ class MyPageDetailProductPrice extends React.Component{
       }
       
       render() {
-        let totalPrice = getKoreanCurrency(this.props.productListTotalPrice)
+        let totalPrice = getEuroCurrency(this.props.productListTotalPrice)
         return (
           <div>
                <Card border="dark" style={{ width: '80%', height:'8rem', marginTop:'1rem', marginBottom:'1rem' }}>

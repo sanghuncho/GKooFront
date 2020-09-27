@@ -783,7 +783,7 @@ export class ProductContentForm extends React.Component {
                         <Card.Header>상품 구매 주소</Card.Header>
                         <Card.Body >
                         <BaseInputGroupUrl 
-                            label="쇼핑몰 URL"
+                            label="구매상품 URL"
                             placeholder="정확한 URL을 입력해주세요"
                             handleChangeInput={this.handleChangeShopUrl}
                             maxLength={MAX_SHOP_URL_LENGTH}
