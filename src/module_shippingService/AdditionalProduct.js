@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { Card, Form, InputGroup, FormControl, Dropdown, DropdownButton, Button } from 'react-bootstrap';
 import { times, exchange} from 'react-icons-kit/fa/'
 import { Icon as BaseIcon } from "react-icons-kit";
+import { priceFormatter } from '../module_base_component/BaseUtil'
 import { CATEGORY_LIST, getItemTitleList } from './ShippingServiceConfig'
+import { validateInputForm, MAX_KOREA_NAME_LENGTH, MAX_ENGLISH_NAME_LENGTH, MAX_TRANSIT_NUMBER_LENGTH, 
+    MAX_PHONE_NUMBER_LENGTH, MAX_ZIP_CODE_LENGTH, MAX_DELIVERY_MESSAGE_LENGTH, MAX_SHOP_URL_LENGTH, 
+    MAX_DELIVERY_TRACKING_LENGTH, MAX_ADDRESS_LENGTH, MAX_BRAND_NAME_LENGTH, MAX_ITEM_NAME_LENGTH } from '../module_base_component/BaseInputGroup'
 
 const Icon = props => <BaseIcon size={16} icon={props.icon} />;
 const IconCnt = styled.div`
@@ -90,7 +94,7 @@ export class AdditionalProduct extends React.Component{
     }
 
     inputProductPrice(event){
-        const inputPrice = event.target.value
+        const inputPrice =  priceFormatter(event.target.value)
         //const isProperPrice = Number.isInteger(parseInt(inputPrice))
         const amount = this.state.productAmount === "" ? "" : parseInt(this.state.productAmount)
         const productTotalPrice = (inputPrice === "") || (amount === "") ? "" : inputPrice*amount 
@@ -196,7 +200,9 @@ export class AdditionalProduct extends React.Component{
                     </InputGroup.Prepend>
                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                         placeholder="정확한 브랜드이름을 입력해주세요"
-                        onChange = {this.inputBrandName}/>
+                        onChange = {this.inputBrandName}
+                        maxLength={MAX_BRAND_NAME_LENGTH}
+                        />
                 </InputGroup>
 
                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
@@ -210,7 +216,9 @@ export class AdditionalProduct extends React.Component{
                         placeholder="정확한 영문 상품명을 입력해주세요"
                         onChange={this.inputItemName}
                         type="text"
-                        isInvalid={warningInvalidItemName}/>
+                        isInvalid={warningInvalidItemName}
+                        maxLength={MAX_ITEM_NAME_LENGTH}
+                        />
                 </InputGroup>
                     
                 <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">

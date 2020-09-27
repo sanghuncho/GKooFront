@@ -15,8 +15,10 @@ import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
 import { CATEGORY_LIST, DELIVERY_COMPANY_LIST, getItemTitleList } from './ShippingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
-import { validateInputForm } from '../module_base_component/BaseInputGroup'
 import { priceFormatter } from '../module_base_component/BaseUtil'
+import { validateInputForm, MAX_KOREA_NAME_LENGTH, MAX_ENGLISH_NAME_LENGTH, MAX_TRANSIT_NUMBER_LENGTH, 
+    MAX_PHONE_NUMBER_LENGTH, MAX_ZIP_CODE_LENGTH, MAX_DELIVERY_MESSAGE_LENGTH, MAX_SHOP_URL_LENGTH, 
+    MAX_DELIVERY_TRACKING_LENGTH, MAX_ADDRESS_LENGTH, MAX_BRAND_NAME_LENGTH, MAX_ITEM_NAME_LENGTH } from '../module_base_component/BaseInputGroup'
 
 import * as Keycloak from 'keycloak-js';
 import { keycloakConfigLocal, INITIAL_PAGE, basePort, headers, setTokenHeader, fetchRegisterInitialCustomer, validToken, getEmptyPage } from "../module_base_component/AuthService"
@@ -139,6 +141,8 @@ export class ShippingServiceController extends React.Component{
                     </Card>
                     {didAgreeWith ? <ShippingCenter accessToken={this.props.accessToken} 
                                                     userid={this.props.userid} />:""}
+
+                    <CompanyIntroductionBottom/>
                 </BodyContainer>
             </AppContainer>
         </div>
@@ -730,7 +734,9 @@ class InputDeliveryContentWrapper extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                             onChange = {this.inputShopUrl} 
-                            placeholder="정확한 URL을 입력해주세요"/>
+                            placeholder="정확한 URL을 입력해주세요"
+                            maxLength={MAX_SHOP_URL_LENGTH}
+                            />
                     </InputGroup>
 
                     <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
@@ -751,7 +757,9 @@ class InputDeliveryContentWrapper extends React.Component{
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             style={{ width: '200px'}} 
                             placeholder="트랙킹번호"
-                            onChange = {this.inputTrackingNumber}/>
+                            onChange = {this.inputTrackingNumber}
+                            maxLength={MAX_DELIVERY_TRACKING_LENGTH}
+                            />
                         <InfoBadge infoText={"트랙킹번호 허위/미기재시 입고가 지연/미처리 될수 있습니다."} />
                     </InputGroup>
                     </Card.Body>
@@ -806,7 +814,9 @@ class InputDeliveryContentWrapper extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                             placeholder="정확한 브랜드이름을 입력해주세요"
-                            onChange = {this.inputBrandName}/>
+                            onChange = {this.inputBrandName}
+                            maxLength={MAX_BRAND_NAME_LENGTH}
+                            />
                     </InputGroup>
 
                     <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
@@ -820,7 +830,9 @@ class InputDeliveryContentWrapper extends React.Component{
                             placeholder="정확한 영문 상품명을 입력해주세요"
                             onChange={this.inputItemName}
                             type="text"
-                            isInvalid={warningInvalidItemName}/>
+                            isInvalid={warningInvalidItemName}
+                            maxLength={MAX_ITEM_NAME_LENGTH}
+                            />
                     </InputGroup>
 
                     <InputGroup size="sm" style={{ width:'70%'}} className="mb-3">
@@ -831,7 +843,7 @@ class InputDeliveryContentWrapper extends React.Component{
                         </InputGroup.Prepend>
                         <FormControl id="basic-url" aria-describedby="basic-addon3" 
                             placeholder="단가 EUR"
-                            val ue={this.state.productPrice}
+                            value={this.state.productPrice}
                             onChange = {this.inputProductPrice}/>
                         <IconCnt style={{marginTop:"2px",marginLeft:"2px", marginRight:"2px"}}>
                                 <Icon icon={ times } />
@@ -924,6 +936,7 @@ class InputDeliveryContentWrapper extends React.Component{
                                     <FormControl id="basic-url" aria-describedby="basic-addon3"
                                         onChange={this.inputReceiverNameByKorea}
                                         defaultValue={this.state.receiverNameByKorea}
+                                        maxLength={MAX_KOREA_NAME_LENGTH}
                                     />
                                 </InputGroup >
                                 
@@ -935,8 +948,9 @@ class InputDeliveryContentWrapper extends React.Component{
                                         </InputGroup.Prepend>
                                         <FormControl id="basic-url" aria-describedby="basic-addon3"
                                             style={{ width: '50px'}}
-                                            onChange = { this.inputReceiverNameByEnglish }
+                                            onChange = {this.inputReceiverNameByEnglish}
                                             defaultValue={this.state.receiverNameByEnglish}
+                                            maxLength={MAX_ENGLISH_NAME_LENGTH}
                                             />
                                     </InputGroup>
                                     <InfoBadge infoText={"상품을 수취하실 분의 성함/사업자 상호를 적어주세요. 상품도착후 변경은 불가능합니다"} />
@@ -967,7 +981,8 @@ class InputDeliveryContentWrapper extends React.Component{
                                                 defaultValue={this.state.transitNumber}
                                                 style={{ marginRight:'10px'}}
                                                 required
-                                                isInvalid={ this.state.isInvalidTransitNumber }
+                                                isInvalid={this.state.isInvalidTransitNumber}
+                                                maxLength={MAX_TRANSIT_NUMBER_LENGTH}
                                             />
                                             <Button size="sm" variant='secondary'
                                                 onClick={() => this.handleOpenHowToGetTransitNr()} 
@@ -1010,6 +1025,7 @@ class InputDeliveryContentWrapper extends React.Component{
                                     onChange = { this.changeHandlerPhonenumberFirst }
                                     style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                                     defaultValue={this.state.phonenumberFirst}
+                                    maxLength={MAX_PHONE_NUMBER_LENGTH}
                                 />
                                 <InputGroup.Prepend >
                                 <InputGroup.Text id="basic-addon3" >
@@ -1020,6 +1036,7 @@ class InputDeliveryContentWrapper extends React.Component{
                                     onChange = { this.changeHandlerPhonenumberSecond }
                                     style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                                     defaultValue={this.state.phonenumberSecond}
+                                    maxLength={MAX_PHONE_NUMBER_LENGTH}
                                 />
                                 </InputGroup>
 
@@ -1033,6 +1050,7 @@ class InputDeliveryContentWrapper extends React.Component{
                                         style={{ marginRight:'10px'}}
                                         onChange={e => this.inputPostCode(e)}
                                         defaultValue={this.state.postCode}
+                                        maxLength={MAX_ZIP_CODE_LENGTH}
                                         />
                                     {/* 추후 개발 
                                     <Button size="sm" variant='secondary' >우편번호 찾기</Button> */}
@@ -1047,7 +1065,7 @@ class InputDeliveryContentWrapper extends React.Component{
                                         as="textarea" rows="2"
                                         onChange={e => this.inputDeliveryAddress(e)}
                                         defaultValue={this.state.deliveryAddress}
-                                       
+                                        maxLength={MAX_ADDRESS_LENGTH}
                                         />
                                 </InputGroup >
                             </Card.Body> 
@@ -1070,7 +1088,9 @@ class InputDeliveryContentWrapper extends React.Component{
                                             aria-describedby="basic-addon3"
                                             value={this.state.deliveryMessage}
                                             onChange={e => this.inputDeliveryMessage(e)}
-                                            style={{ height:'5em'}}/>
+                                            style={{ height:'5em'}}
+                                            maxLength={MAX_DELIVERY_MESSAGE_LENGTH}
+                                            />
                             </Card.Body> 
                             </Card> 
                         </InputGroup>
@@ -1144,7 +1164,7 @@ class InputDeliveryContentWrapper extends React.Component{
                         />
                 </Card>
 
-                <CompanyIntroductionBottom/>
+                {/* <CompanyIntroductionBottom/> */}
             </div>
             );
         }

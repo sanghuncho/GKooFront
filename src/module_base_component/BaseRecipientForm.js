@@ -2,6 +2,9 @@ import * as React from "react";
 import { Card, Form, InputGroup, FormControl, Button, OverlayTrigger } from 'react-bootstrap';
 import { InfoBadge } from "../module_base_component/InfoBadge";
 import { FavoriteAddressListPanel } from '../module_shippingService/FavoriteAddressListPanel'
+import {  MAX_KOREA_NAME_LENGTH, MAX_ENGLISH_NAME_LENGTH, 
+    MAX_TRANSIT_NUMBER_LENGTH, MAX_PHONE_NUMBER_LENGTH, 
+    MAX_ZIP_CODE_LENGTH, MAX_DELIVERY_MESSAGE_LENGTH, MAX_ADDRESS_LENGTH } from '../module_base_component/BaseInputGroup'
 
 export class BaseRecipientWrapper extends React.Component {
     constructor(props) {
@@ -134,6 +137,7 @@ export class BaseRecipientNameForm extends React.Component {
                             <FormControl id="basic-url" aria-describedby="basic-addon3"
                                 onChange={this.props.handleChangeReceiverNameByKorea}
                                 defaultValue={this.props.receiverNameByKorea}
+                                maxLength={MAX_KOREA_NAME_LENGTH}
                             />
                         </InputGroup >
                                 
@@ -147,6 +151,7 @@ export class BaseRecipientNameForm extends React.Component {
                                 style={{ width: '50px'}}
                                 onChange = { this.props.handleChangeReceiverNameByEnglish }
                                 defaultValue={this.props.receiverNameByEnglish}
+                                maxLength={MAX_ENGLISH_NAME_LENGTH}
                             />
                         </InputGroup>
                         
@@ -196,9 +201,10 @@ export class BaseRecipientTransitNrForm extends React.Component {
                                     placeholder="8자리 고유번호" 
                                     onChange = { this.props.handleChangeTransitNumber }
                                     defaultValue={this.props.transitNumber}
-                                    style={{ marginRight:'10px'}}
+                                    style={{marginRight:'10px'}}
                                     required
-                                    isInvalid={ this.props.isInvalidTransitNumber }
+                                    isInvalid={this.props.isInvalidTransitNumber}
+                                    maxLength={MAX_TRANSIT_NUMBER_LENGTH}
                                 />
                                 <Button size="sm" variant='secondary'
                                     onClick={() => this.handleOpenHowToGetTransitNr()}
@@ -254,6 +260,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                             onChange = { this.props.handleChangePhonenumberFirst }
                             style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                             defaultValue={this.props.phonenumberFirst}
+                            maxLength={MAX_PHONE_NUMBER_LENGTH}
                         />
                         <InputGroup.Prepend >
                         <InputGroup.Text id="basic-addon3" >
@@ -264,6 +271,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                             onChange = { this.props.handleChangePhonenumberSecond }
                             style={{backgroundColor: '#FFFFFF', marginRight:'1px'}}
                             defaultValue={this.props.phonenumberSecond}
+                            maxLength={MAX_PHONE_NUMBER_LENGTH}
                         />
                         </InputGroup>
 
@@ -277,6 +285,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                             style={{ marginRight:'10px'}}
                             onChange={ this.props.handleChangePostCode}
                             defaultValue={this.props.postCode}
+                            maxLength={MAX_ZIP_CODE_LENGTH}
                         />
                         {/* 추후 개발 
                             <Button size="sm" variant='secondary' >우편번호 찾기</Button> */}
@@ -291,6 +300,7 @@ export class BaseRecipientAddressContactNrForm extends React.Component {
                             as="textarea" rows="2"
                             onChange={this.props.handleChangeAddress}
                             value={this.props.deliveryAddress}
+                            maxLength={MAX_ADDRESS_LENGTH}
                         />
                     </InputGroup >
                 </Card.Body> 
@@ -325,6 +335,7 @@ export class BaseRecipientMessageForm extends React.Component {
                                 value={this.state.deliveryMessage}
                                 onChange={e => this.props.handleChangeMessage(e)}
                                 style={{ height:'5em'}}
+                                maxLength={MAX_DELIVERY_MESSAGE_LENGTH}
                             />
                     </Card.Body> 
                 </Card> 

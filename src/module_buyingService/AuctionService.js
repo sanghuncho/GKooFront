@@ -11,7 +11,8 @@ import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyI
 import { BaseInputGroupEuro, BaseInputGroupUrl, BaseInputGroupUrlReadable } from '../module_base_component/BaseInputGroup'
 import { currencyFormatterEuro } from '../module_payment/PaymentUtil';
 import { BaseTablePagination, BaseExpandableTablePagination } from '../module_base_component/BaseTable'
-import { Redirect } from 'react-router';
+import { priceFormatter } from '../module_base_component/BaseUtil'
+import { MAX_SHOP_URL_LENGTH, MAX_DELIVERY_MESSAGE_LENGTH } from '../module_base_component/BaseInputGroup'
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -260,7 +261,7 @@ class AuctionBidPanel extends React.Component {
 
     handleChangeBidValue(event){
         console.log(event.target.value)
-        this.setState({bidValue:event.target.value})
+        this.setState({bidValue:priceFormatter(event.target.value)})
     }
 
     handleChangeMessage(event){
@@ -356,6 +357,7 @@ class AuctionBidPanel extends React.Component {
                             handleChangeInput={this.handleChangeProductUrl}
                             value={this.state.productUrl}
                             readOnly={!this.state.readyToPost}
+                            maxLength={MAX_SHOP_URL_LENGTH}
                             />
                          <BaseInputGroupUrlReadable 
                             label="맥시멈 입찰가"
@@ -380,6 +382,7 @@ class AuctionBidPanel extends React.Component {
                                             readOnly={!this.state.readyToPost}
                                             value={this.state.auctionMessage}
                                             style={{ height:'5em'}}
+                                            maxLength={MAX_DELIVERY_MESSAGE_LENGTH}
                                         />
                                     </Card.Body> 
                                 </Card> 

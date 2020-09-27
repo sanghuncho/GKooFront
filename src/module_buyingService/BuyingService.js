@@ -9,7 +9,7 @@ import { BuyingServiceNavbar } from './BuyingServiceIntro'
 import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
 import { times, exchange } from 'react-icons-kit/fa/'
-import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
+import { getKoreanCurrencyWithInfoBadge, priceFormatter } from '../module_base_component/BaseUtil'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
 ///// keycloak -> /////
@@ -237,11 +237,11 @@ export class BuyingBox extends React.Component {
     }
 
     handleProductsValue(event){
-        this.setState({productsValue:event.target.value})
+        this.setState({productsValue:priceFormatter(event.target.value)})
     }
 
     handleDeliveryValue(event){
-        this.setState({deliveryValue:event.target.value})
+        this.setState({deliveryValue:priceFormatter(event.target.value)})
     }
       
     render() {

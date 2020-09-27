@@ -9,7 +9,8 @@ import { AppNavbar, LogoutButton } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
 import { Breadcrumb, Card, Form, Button, Row, Col, Container, InputGroup, Modal, Spinner } from 'react-bootstrap';
 import { ServiceNoticeBoard } from '../module_base_component/ServiceNoticeBoard'
-import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl } from '../module_base_component/BaseInputGroup'
+import { BaseInputGroup, BaseInputGroupEuro, BaseInputGroupUrl, 
+    validateInputForm, MAX_BRAND_NAME_LENGTH, MAX_ITEM_NAME_LENGTH, MAX_SHOP_URL_LENGTH } from '../module_base_component/BaseInputGroup'
 import { BaseDropdown, BaseDropdownDisabled } from '../module_base_component/BaseDropdown'
 import { getKoreanCurrencyWithInfoBadge } from '../module_base_component/BaseUtil'
 import { BaseRecipientWrapper } from '../module_base_component/BaseRecipientForm'
@@ -18,7 +19,6 @@ import { LogisticsCenterFont, LogisticsCenterWarnFont, EMPTY_PAGE } from '../mod
 import { CATEGORY_LIST, getItemTitleList } from './BuyingServiceConfig'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 import { Redirect } from 'react-router';
-import { validateInputForm } from '../module_base_component/BaseInputGroup'
 import { window_reload, priceFormatter } from '../module_base_component/BaseUtil'
 
 ///// keycloak -> /////
@@ -369,7 +369,7 @@ class BuyingServiceContentWrapper extends React.Component {
     }
 
     handleChangeShopDeliveryPrice(event){
-        this.setState({shopDeliveryPrice:event.target.value})
+        this.setState({shopDeliveryPrice:priceFormatter(event.target.value)})
         console.log(event.target.value)
     }
 
@@ -785,7 +785,9 @@ export class ProductContentForm extends React.Component {
                         <BaseInputGroupUrl 
                             label="쇼핑몰 URL"
                             placeholder="정확한 URL을 입력해주세요"
-                            handleChangeInput={this.handleChangeShopUrl} />
+                            handleChangeInput={this.handleChangeShopUrl}
+                            maxLength={MAX_SHOP_URL_LENGTH}
+                            />
                          <BaseInputGroupEuro 
                             label="독일내 배송비"
                             placeholder="무료배송일 경우 0 으로 기입해주세요"
@@ -935,22 +937,24 @@ export class ProductContent extends React.Component {
                 />
 
                 <BaseInputGroup 
-                label="브랜드(영문)"
-                placeholder="정확한 브랜드이름을 입력해주세요"
-                handleChangeInput={this.handleChangeBrandName}
+                    label="브랜드(영문)"
+                    placeholder="정확한 브랜드이름을 입력해주세요"
+                    handleChangeInput={this.handleChangeBrandName}
+                    maxLength={MAX_BRAND_NAME_LENGTH}
                 />
 
                 <BaseInputGroup 
                     label="상품명(영문)"
                     placeholder="정확한 영문 상품명을 입력해주세요"
                     handleChangeInput={this.handleChangeItemName}
+                    maxLength={MAX_ITEM_NAME_LENGTH}
                 />
                             
                 <BaseProductPriceCalc
                     handleChangeProductPrice={this.handleChangeProductPrice}
                     handleChangeProductAmount={this.handleChangeProductAmount}
-                    price = {this.state.productPrice}
-                    amount = {this.state.productAmount}
+                    price={this.state.productPrice}
+                    amount={this.state.productAmount}
                 />
 
                 {buttonDeleteProduct}
