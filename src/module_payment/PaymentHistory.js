@@ -14,6 +14,7 @@ import { BaseTablePagination } from '../module_base_component/BaseTable'
 import { currencyFormatter, currencyFormatterEuro } from '../module_payment/PaymentUtil'
 import { Redirect } from 'react-router';
 import { SearchPanel_ID } from '../module_base_component/BaseSearchPanel'
+import { itemnameFormatter } from "../module_base_component/BaseUtil";
 
 ///// keycloak -> /////
 import * as Keycloak from 'keycloak-js';
@@ -209,8 +210,6 @@ export class PaymentHistory extends React.Component {
         );}           
 }
 
-
-
 export class PaymentHistoryController extends React.Component{
   constructor(props) {
       super(props);
@@ -277,33 +276,49 @@ const columnsPaymentHistoryTransfer = [
     dataField: 'paymentDate',
     text: '신청날짜',
     headerStyle: (colum, colIndex) => {
-      return { width: '100px', textAlign: 'center' };
+      return { width: '100px', textAlign: 'left' };
     }
   },
   {
     dataField: 'depositPayment',
     text: '결제금액',
     formatter:currencyFormatter,
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'left' };
+    }
   },
   {
     dataField: 'buyingPayment',
     text: '구매/경매대행',
     formatter:currencyFormatter,
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'left' };
+    }
   },
   {
     dataField: 'shippingPayment',
     text: '배송대행',
     formatter:currencyFormatter,
+    text: '신청날짜',
+    headerStyle: (colum, colIndex) => {
+      return { width: '100px', textAlign: 'left' };
+    }
   },
   {
     dataField: 'orderid',
     text: '신청번호',
+    headerStyle: (colum, colIndex) => {
+      return { width: '130px', textAlign: 'left' };
+    }
   },
   {
     dataField: 'itemname',
     text: '상품명',
+    formatter:itemnameFormatter,
     headerStyle: (colum, colIndex) => {
-      return { width: '130px', textAlign: 'center' };
+      return { width: '200px', textAlign: 'left' };
     }
   }, 
   {

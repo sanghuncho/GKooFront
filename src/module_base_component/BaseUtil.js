@@ -105,3 +105,20 @@ function setTimer(method, time){
 export function priceFormatter(price){
     return price.replace(/,/g, '.')
 }
+
+//return the limited length of itemname
+export function itemnameFormatter(itemname){
+    return trimmedStringFormatter(itemname, 35)
+}
+
+//return the limited length of input string
+function trimmedStringFormatter(orgString, length){
+    var stringLength = orgString.length
+    var formattedString
+    if (stringLength > 35){
+        formattedString = orgString.substring(0, length) + '...'
+    } else {
+        formattedString = orgString
+    }
+    return formattedString
+}
