@@ -70,8 +70,8 @@ const Main = () => (
     <Route exact path='/auctionService' component={ AuctionService }></Route>  
 
     {/* 배송대행 모둘 */}
-    <Route exact path='/shippingService/' component={ ShippingService }></Route> 
-    <Route exact path='/shippingServiceInfo/' component={ ShippingServiceInfo }></Route> 
+    <Route exact path='/shippingService' component={ ShippingService }></Route> 
+    <Route exact path='/shippingServiceInfo' component={ ShippingServiceInfo }></Route> 
     <Route exact path='/requestshipping' component={ RequestShippingService }></Route>
     <Route exact path='/shippingServiceAddressPane' component={ ShippingServiceAddressPane }></Route>
     <Route exact path='/deliveryPriceTable' component={ DeliveryPriceTable }></Route> 
