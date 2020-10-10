@@ -198,7 +198,7 @@ export class BaseRecipientTransitNrForm extends React.Component {
                         <Form noValidate validated={this.props.validTransitNumber}>
                             <InputGroup size="sm" className="mb-3" style={{ width: '50%', marginTop:'10px'}}>
                                 <FormControl id="basic-url" aria-describedby="basic-addon3" 
-                                    placeholder="8자리 고유번호" 
+                                    placeholder="13자리 통관고유부호 e.g P012345678912" 
                                     onChange = { this.props.handleChangeTransitNumber }
                                     defaultValue={this.props.transitNumber}
                                     style={{marginRight:'10px'}}

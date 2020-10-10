@@ -152,7 +152,7 @@ export class TrackingButton extends React.Component {
 
     handleOpenTrackingSite(){
       let trackingNr = this.props.deliveryTracking
-      const url = 'http://nplus.doortodoor.co.kr/web/info.jsp?slipno=' + trackingNr;
+      const url = 'https://www.doortodoor.co.kr/parcel/doortodoor.do?fsp_action=PARC_ACT_002&fsp_cmd=retrieveInvNoACT&invc_no=' + trackingNr;
       window.open(url, '_blank');
     }
   

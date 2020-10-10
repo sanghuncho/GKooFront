@@ -8,7 +8,6 @@ import { AppNavbar } from '../AppNavbar'
 import { BuyingServiceNavbar } from './BuyingServiceIntro'
 import { Card, Form, InputGroup, Row, Col, Container, Button, Breadcrumb, Spinner } from 'react-bootstrap';
 import { Icon as BaseIcon } from "react-icons-kit";
-import { times, exchange } from 'react-icons-kit/fa/'
 import { getKoreanCurrencyWithInfoBadge, priceFormatter } from '../module_base_component/BaseUtil'
 import { CompanyIntroductionBottom } from '../module_base_component/BaseCompanyIntroduction'
 
@@ -85,13 +84,13 @@ export class BuyingServiceWrapper extends React.Component {
     }
 
     handleProductsValue(event){
-        let productsValue = event.target.value
+        let productsValue = priceFormatter(event.target.value)
         let productsValueValid = productsValue > 0
         this.setState({productsValue:productsValue, productsValueValid:productsValueValid})
     }
 
     handleDeliveryValue(event){
-        let deliveryValue = event.target.value
+        let deliveryValue = priceFormatter(event.target.value)
         let deliveryValueValid = deliveryValue >= 0
         this.setState({deliveryValue:deliveryValue, deliveryValueValid:deliveryValueValid})
     }
@@ -173,7 +172,7 @@ export class BuyingServiceWrapper extends React.Component {
                                     </InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control id="basic-url" aria-describedby="basic-addon3" 
-                                    placeholder="결제하실때 판매자가 책정한 배송비를 유로로 기입해주세요"
+                                    placeholder="결제하실때 판매자가 책정한 배송비를 유로로 기입해주세요(무료배송은 0 기입)"
                                     onChange={this.handleDeliveryValue}
                                     //type="text"
                                     //isInvalid={warningInvalidItemName}
