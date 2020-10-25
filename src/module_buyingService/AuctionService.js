@@ -63,7 +63,7 @@ export class AuctionService extends React.Component {
                 //회원일 경우 데이터 로딩시작, 관리자는 search
                 //fetchRegisterInitialCustomer(keycloak)
                 this.fetchAuctionBidList(keycloak.token)
-              }
+            }
         })
     }
 
@@ -434,10 +434,10 @@ const FAIL = "유찰"
 //입찰완료
 //BID_COMPLETED(2),
 
-//낙찰
+//유찰
 //AUCTION_FAILED(3),
 
-//유찰
+//낙찰
 //AUCTION_SUCCESS(4),
 
 //URL 에러
@@ -445,8 +445,8 @@ const FAIL = "유찰"
 export var auctonResult_map = new Map();
     auctonResult_map.set("BID_READY" , "입찰접수")
     auctonResult_map.set("BID_COMPLETED" , "입찰완료")
-    auctonResult_map.set("AUCTION_FAILED" , "낙찰")
-    auctonResult_map.set("AUCTION_SUCCESS" , "유찰")
+    auctonResult_map.set("AUCTION_FAILED" , "유찰")
+    auctonResult_map.set("AUCTION_SUCCESS" , "낙찰")
     auctonResult_map.set("URL_UNKNOWN" , "URL 에러")
 
 function auctionResultFormatter(cell, row) {
