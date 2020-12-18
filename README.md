@@ -48,5 +48,4 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 Copy and put the three files <code class="literal">docker-compose.yml</code>, <code class="literal">logstash.conf</code> and <code class="literal">logstash.yml</code> in the same directory
 
    ```sh
-   docker-compose start
-   docker-compose stop 
+   docker-compose start / docker-compose stop 
