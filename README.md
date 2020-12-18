@@ -45,9 +45,8 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ## Logstash, elasticsearch, kibana in docker-container
 
-Copy and put the three files <code class="literal">docker-compose.yml</code>, <code class="literal">logstash.conf</code> and <code class="literal">logstash.yml</code> in <code class="literal">elasticsearch-node</code> in the same directory
+Copy and put the three files <code class="literal">docker-compose.yml</code>, <code class="literal">logstash.conf</code> and <code class="literal">logstash.yml</code> in the same directory
 
    ```sh
    docker-compose start
    docker-compose stop 
-    ```
